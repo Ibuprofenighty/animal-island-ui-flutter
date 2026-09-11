@@ -6,19 +6,21 @@
 // Standard Modal
 AnimalModal.show({
   required BuildContext context,
-  required String title,
-  required Widget content,
-  String okText = 'OK',
+  Widget? title,
+  Widget? content,
+  String? okText,
   String? cancelText,
   VoidCallback? onOk,
   VoidCallback? onCancel,
+  bool barrierDismissible = true,
 })
 
 // Dialogue Box with Character Speech Stream
 AnimalModal.showDialogue({
   required BuildContext context,
-  required String speaker,
-  required String dialogue,
+  String? speaker,
+  String? dialogue,
+  String? message,
   Widget? avatar,
   VoidCallback? onFinish,
 })
@@ -29,11 +31,13 @@ AnimalModal.showDialogue({
 ```dart
 AnimalDrawer.show({
   required BuildContext context,
-  String? title,
+  required Widget child,
+  Widget? title,
   Widget? footer,
   bool maskClosable = true,
   AnimalDrawerPlacement placement = AnimalDrawerPlacement.right,
-  required Widget child,
+  double? width,
+  double? height,
 })
 // Placements: left, right, top, bottom
 ```
@@ -43,11 +47,12 @@ AnimalDrawer.show({
 ```dart
 AnimalTooltip({
   Key? key,
-  required String message,
-  AnimalTooltipVariant variant = AnimalTooltipVariant.bubble,
-  AnimalTooltipPlacement placement = AnimalTooltipPlacement.top,
-  Duration waitDuration = const Duration(milliseconds: 300),
   required Widget child,
+  required String message,
+  Widget? title,
+  AnimalTooltipVariant variant = AnimalTooltipVariant.standard, // standard, island
+  bool bordered = true,
+  TooltipTriggerMode triggerMode = TooltipTriggerMode.tap,
+  Duration waitDuration = const Duration(milliseconds: 300),
 })
-// Variants: bubble, island
 ```

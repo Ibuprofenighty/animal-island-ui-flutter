@@ -93,7 +93,7 @@ AnimalRadioGroup<T>({
   Key? key,
   required List<AnimalOption<T>> options,
   required T? value,
-  ValueChanged<T?>? onChanged,
+  ValueChanged<T>? onChanged,
   Axis direction = Axis.horizontal,
   bool disabled = false,
   AnimalRadioSize size = AnimalRadioSize.middle,

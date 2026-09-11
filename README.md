@@ -1,74 +1,85 @@
-# Animal Island UI for Flutter (animal_island_ui)
+# 🍃 Animal Island UI for Flutter (animal_island_ui)
 
+<br/>
 <div align="center">
-  <h3>🏝️ 一款治愈系、动森风格的 Flutter 企业级开源 UI 组件库 🏝️</h3>
-  <p>A Kawaii & Cozy Game-like UI Component Library for Flutter, faithfully ported from <a href="https://github.com/guokaigdg/animal-island-ui">animal-island-ui</a>.</p>
+  <h3>🏝️ A Cozy, Kawaii Island-Style UI Component Library for Flutter 🏝️</h3>
+  <p>Faithfully ported and re-architected from <a href="https://github.com/guokaigdg/animal-island-ui">animal-island-ui</a> for enterprise production Flutter applications.</p>
 </div>
-
 <br/>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Flutter-%3E%3D3.19-02569B?logo=flutter" alt="Flutter">
-  <img src="https://img.shields.io/badge/Dart-%3E%3D3.3-0175C2?logo=dart" alt="Dart">
-  <img src="https://img.shields.io/badge/Components-36-brightgreen" alt="Components">
-  <img src="https://img.shields.io/badge/Icons-101-orange" alt="Icons">
-  <img src="https://img.shields.io/badge/License-CC--BY--NC--4.0-blue" alt="License">
-  <img src="https://img.shields.io/badge/Analysis-0%20Issues-brightgreen" alt="Lints">
+  <img src="https://img.shields.io/badge/Flutter-%3E%3D3.19-02569B?logo=flutter&style=flat-square" alt="Flutter">
+  <img src="https://img.shields.io/badge/Dart-%3E%3D3.3-0175C2?logo=dart&style=flat-square" alt="Dart">
+  <img src="https://img.shields.io/badge/components-36-blue?style=flat-square" alt="Components">
+  <img src="https://img.shields.io/badge/icons-101-orange?style=flat-square" alt="Icons">
+  <img src="https://img.shields.io/badge/license-CC--BY--NC--4.0-brightgreen.svg?style=flat-square" alt="License: CC BY-NC 4.0">
+  <img src="https://img.shields.io/badge/analysis-0%20issues-brightgreen?style=flat-square" alt="Analysis">
 </div>
-
 <br/>
 
----
+<p align="center">
+  English | <a href="./docs/README.zh-CN.md">简体中文</a>
+</p>
 
-## ✨ 核心特色 (Key Highlights)
+## Introduction
 
-- 🎮 **3D 拟真按压手感 (Tactile 3D Depth)**：原生微触感（`HapticFeedback.lightImpact()`）联动 4~5px 纯色切面实体下沉阴影与弹簧阻尼回弹（`Curves.easeOutBack`），还原 Nintendo Switch 动森手柄触觉！
-- 🍃 **101 款可爱矢量内置图标 (101 Cute Icons)**：全套提取自原始水手与岛民矢量库，支持自适应描边变色、尺寸缩放与 Q 弹（Bounce）动效。
-- 🫧 **三次贝塞尔有机气泡弹窗 (Organic Blob Modal)**：严格实现规范中 `#animal-modal-clip` 有机水滴不规则轮廓，拒绝生硬平直矩形。
-- 🎀 **立体折角燕尾彩带 (Swallowtail Ribbon Title)**：双翼燕尾裁切、折叠三角阴影与三维透视倾斜。
-- 🎨 **13 款动森应用瓦片配色 (Island App-Tiles)**：预设 `appPink`, `appTeal`, `appYellow`, `appGreen`, `purple`, `limeGreen` 等海岛马卡龙色板。
-- 🛡️ **严格落地《七大设计法则》与《14 条视觉硬规则》**：
-  - 严禁纯黑纯冷灰：文字采用大地棕色阶（`#794f27`），底色采用羊皮纸色（`#f8f8f0`）。
-  - 交互控件必须为 50px 胶囊形（Pill），任何元素圆角不低于 12px。
-  - 聚焦环统一采用暖黄（`#ffcc00`），严禁使用系统冷蓝色。
+This project is a lightweight, healing island-style UI component library built for Flutter, faithfully ported from [guokaigdg/animal-island-ui](https://github.com/guokaigdg/animal-island-ui). It adheres strictly to the original warm life-sim game design language, while providing enterprise-grade production quality: zero third-party UI dependencies (relying solely on vector rendering), zero memory leaks, virtualized scrolling, and zero-GC frame performance.
 
----
+## Key Highlights
 
-## 📦 组件总览 (36 Components Catalog)
+- 🎮 **Tactile 3D Depth**: Native haptic feedback (`HapticFeedback.lightImpact()`) coupled with 4~5px solid stacked sinking shadows and smooth spring physics (`Curves.easeOutBack`), recreating the tactile response of a Nintendo Switch game console!
+- 🍃 **101 Native Vector Icons**: Full suite of iconic island symbols (leaf, apple, turnip, bell, fossil, star) rendered directly with vector paths, supporting tinting, scaling, and organic bounce animations.
+- 🫧 **Cubic-Bezier Organic Blob Modal**: Uses `AnimalBlobClipper` to create a natural water-droplet silhouette, rejecting rigid rectangular dialogue boxes.
+- 🎀 **Swallowtail Ribbon Title**: Dual-winged swallowtail cuts, folded shadow triangles, and three-dimensional perspective tilt.
+- 🎨 **13 Island App-Tile Palettes**: Earth-brown text, cream parchment backgrounds, mint-teal accents, and 13 vibrant fruit color cards out-of-the-box.
+- ⚡ **High-Performance Zero-GC Architecture**: Long data tables feature virtualized scrolling ($O(\text{visibleRows})$), typewriter text uses pre-cached Unicode graphemes for zero-GC frame ticks, and carousel timers automatically pause when inactive via `TickerMode`.
 
-| 分类 | 包含组件 | 说明 |
-| :--- | :--- | :--- |
-| **基础控件 (General)** | `AnimalButton`, `AnimalTitle`, `AnimalDivider`, `AnimalBackground`, `AnimalCursor`, `AnimalIcon` | 3D 下沉按键、燕尾彩带标题、小叶子虚线、波点背景 |
-| **交互表单 (Forms)** | `AnimalInput`, `AnimalSwitch`, `AnimalCheckbox`, `AnimalRadio`, `AnimalSelect`, `AnimalDatePicker`, `AnimalTimePicker`, `AnimalForm`, `AnimalFormItem` | 50px 胶囊输入框、内阴影滑块、同心圆单选、岛屿日历与时间滚轮 |
-| **数据展示 (Data Display)** | `AnimalCard`, `AnimalTag`, `AnimalCollapse`, `AnimalCarousel`, `AnimalTable`, `AnimalPagination`, `AnimalCountdown`, `AnimalTime`, `AnimalCodeBlock`, `AnimalImage` | 13 色瓦片卡片、数字翻牌瓦片倒计时、圆角斑马纹表格 |
-| **反馈浮层 (Feedback)** | `AnimalModal`, `AnimalDrawer`, `AnimalTooltip`, `AnimalNotification`, `AnimalLoading`, `AnimalSkeleton`, `AnimalProgress` | 有机气泡弹窗、圆角侧抽屉、糖果条纹进度条、旋转小树叶 |
-| **特色导航 (Navigation)** | `AnimalTabs`, `AnimalBackTop`, `AnimalFooter`, `AnimalTypewriter` | 胶囊滑块指示选项卡、小火箭起飞回顶、海岸线波浪底栏、NPC 对话打字机 |
+## Preview
 
----
+- **Interactive Gallery**: Run the comprehensive example app in the `example/` directory directly on Web, Windows, macOS, iOS, or Android.
+- **Cross-Platform Verified**: Pixel-perfect fidelity across desktop, mobile, and web runtimes.
 
-## 🚀 快速上手 (Quick Start)
+## 🚀 Use AI to Generate animal-island-ui Pages
 
-### 1. 添加依赖
+Non-developer or want to prototype fast? Use the [one-click prompt](./docs/one-click-prompt.md) — no manual setup needed.
 
-在你的 Flutter 项目 `pubspec.yaml` 中引入：
+**4 steps:**
+
+1. Copy the prompt block from [`docs/one-click-prompt.md`](./docs/one-click-prompt.md).
+2. Paste it into any URL-capable AI tool (Cursor / Claude / ChatGPT / Gemini / Windsurf).
+3. Specify what page you want (e.g. "villager journal", "island shop checkout", "inventory modal").
+4. Copy the complete, ready-to-run Flutter code.
+
+Using an AI coding agent (Claude Code / Cursor / Windsurf)? Install the official skill:
+- [`skills/animal-island-ui-style-flutter/`](./skills/animal-island-ui-style-flutter/SKILL.md)
+
+## Installation
+
+Add the dependency to your Flutter project's `pubspec.yaml`:
 
 ```yaml
 dependencies:
   animal_island_ui:
-    path: ../animal_island_ui # 或发布到 pub.dev 后的版本号
+    path: ../animal_island_ui # or pub.dev version
 ```
 
-### 2. 配置主题
+Or run:
 
-在根 `MaterialApp` 中注入 `AnimalIslandTheme`：
+```bash
+flutter pub add animal_island_ui
+```
+
+## Quick Start
+
+### 1. Configure Theme
+
+Wrap your root `MaterialApp` with `AnimalIslandTheme` or use the official `toThemeData()` export:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -76,83 +87,95 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        scaffoldBackgroundColor: AnimalColors.bg,
-        extensions: const [AnimalIslandTheme.light], // 支持 AnimalIslandTheme.dark
-      ),
-      home: const HomePage(),
+      theme: AnimalIslandTheme.light.toThemeData(),
+      darkTheme: AnimalIslandTheme.dark.toThemeData(),
+      home: const IslandHomePage(),
     );
   }
 }
 ```
 
-### 3. 使用核心组件
+### 2. Use Core Components
 
-#### 3D 拟真按压按钮 (AnimalButton)
 ```dart
+// 3D Physical Sinking Button
 AnimalButton(
   type: AnimalButtonType.primary,
   size: AnimalButtonSize.middle,
   icon: const LeafIcon(size: 18, color: Colors.white),
-  onPressed: () => print('Hello Island!'),
-  child: const Text('Touch Me'),
+  onPressed: () => print('Adventure started!'),
+  child: const Text('Explore Island'),
 )
-```
 
-#### 50px 胶囊形输入框 (AnimalInput)
-```dart
+// 50px Pill Input
 AnimalInput(
-  placeholder: 'Enter Island Name...',
+  placeholder: 'Search deserted island...',
   prefix: const SearchIcon(size: 18, color: AnimalColors.primary),
-  shadow: true, // 开启 3D 实体下沉底边
+  shadow: true,
   clearable: true,
   onChanged: (text) => print(text),
 )
-```
 
-#### 有机气泡弹窗 (AnimalModal)
-```dart
+// Organic Blob Modal
 AnimalModal.show(
   context: context,
-  title: const Text('Tom Nook Says...'),
-  content: const Text('Welcome to your getaway island package!'),
-  okText: 'Pay Mortgage',
-  onOk: () => print('Paid!'),
+  title: const Text('Island Broadcast'),
+  content: const Text('Fireworks show at the plaza tonight at 8 PM!'),
+  okText: 'Check it out',
+  onOk: () => print('Attending!'),
 );
-```
 
-#### 101 款可爱矢量图标 (AnimalIcons)
-```dart
-// 方式 A: 直接使用具名图标小部件
+// 101 Vector Icons
 const LeafIcon(size: 28, color: AnimalColors.primary, bounce: true)
 const AppleIcon(size: 28)
-const HeartIcon(size: 28, color: AnimalColors.error)
-
-// 方式 B: 使用通用容器
-AnimalIcon(
-  name: AnimalIconName.bell,
-  size: 32,
-  bounce: true,
-  onTap: () => print('Bounced!'),
-)
+const BellIcon(size: 28, color: AnimalColors.bellGold)
 ```
 
----
+## Components Catalog (36 Components)
 
-## 🎪 运行成品演示应用 (Animal Island Gallery)
+| Category | Components | Highlights |
+| :--- | :--- | :--- |
+| **General** | `AnimalButton`, `AnimalTitle`, `AnimalDivider`, `AnimalBackground`, `AnimalCursor`, `AnimalIcon` | 3D sinking buttons, swallowtail ribbon banners, leaf dividers, polka-dot backgrounds, pointer cursor |
+| **Form Controls** | `AnimalInput`, `AnimalSwitch`, `AnimalCheckbox` (+Group), `AnimalRadio` (+Group), `AnimalSelect`, `AnimalDatePicker`, `AnimalTimePicker`, `AnimalForm`, `AnimalFormItem` | 50px pill inputs, warm focus glow switches, concentric radios, island calendar & time wheels |
+| **Data Display** | `AnimalCard`, `AnimalTag`, `AnimalCollapse`, `AnimalCarousel`, `AnimalTable`, `AnimalPagination`, `AnimalCountdown`, `AnimalTime`, `AnimalCodeBlock`, `AnimalImage` | 13-color fruit cards, sticky-header virtualized tables, odometer countdown tiles, typewriter cards |
+| **Feedback** | `AnimalModal`, `AnimalDrawer`, `AnimalTooltip`, `AnimalNotification`, `AnimalLoading`, `AnimalSkeleton`, `AnimalProgress` | Water-droplet modals, slide drawers, speech balloon tooltips, twirling leaf loaders, striped progress |
+| **Navigation** | `AnimalTabs`, `AnimalBackTop`, `AnimalFooter`, `AnimalTypewriter` | Pill slider tabs, blast-off rocket back-to-top, coastline ocean wave footer, dialogue stream typewriter |
 
-项目内置了完整的交互式展示应用（包含全部 36 个组件的可视化 Playground 与 101 个图标的实时检索动画）：
+## Documentation
+
+Routed by audience and scenario (English primary; Chinese mirrors under [`docs/zh-CN/`](./docs/zh-CN/)):
+
+| Document | Path | Purpose |
+| :--- | :--- | :--- |
+| 🎨 **Design System & Rules** | [`docs/design-system/`](./docs/design-system/README.md) | Canonical design definition — tokens, 7 design laws & 14 visual hard rules, per-component specs. |
+| 🤖 **AI Agent Skill** | [`skills/animal-island-ui-style-flutter/`](./skills/animal-island-ui-style-flutter/SKILL.md) | Official skill for Cursor / Claude Code / Windsurf coding agents with component API references. |
+| 🚀 **One-Click Prompt** | [`docs/one-click-prompt.md`](./docs/one-click-prompt.md) | Single bootstrap prompt for non-developers to generate complete island-style pages with AI. |
+| 💡 **Design Prompts** | [`docs/design-prompts.md`](./docs/design-prompts.md) | Prompts for design and image tools (v0, Figma AI, Midjourney, DALL-E). |
+| 🛠️ **Development Guide** | [`docs/development/`](./docs/development/README.md) | Repository architecture, component development, coding standards, testing & build contracts. |
+| 🏛️ **Architecture Decisions** | [`docs/adr/`](./docs/adr/README.md) | Architecture decision records (ADR-0001 through ADR-0005). |
+| 🤝 **Contributing** | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Guidelines for filing issues and submitting pull requests. |
+
+## Local Development
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/Ibuprofenighty/animal-island-ui-flutter.git
+cd animal-island-ui-flutter
+
+# 2. Run the interactive gallery
 cd example
-flutter run -d chrome # 在浏览器中体验
-# 或
-flutter run -d windows # 在 Windows 桌面端以原生 120fps 体验
+flutter run -d chrome # Web preview
+# or
+flutter run -d windows # Native Windows 120fps
 ```
 
----
+## Notes & Disclaimer
 
-## 📜 开源协议 (License)
+- This project is intended strictly for personal learning, research, and non-commercial demonstration. **Any form of commercial use, resale, or monetization is strictly prohibited**.
+- This is an independent open-source Flutter component library. It is not an official product of Nintendo or any game company and has no association, authorization, or partnership with them.
+- All visual assets (icons, illustrations, widgets) in this repository are independently drawn and coded.
 
-本项目遵循 **CC BY-NC 4.0** 协议开源（与原项目一致），仅供个人学习、技术练习与非商业用途使用。
-所有设计资产及灵感归原项目 `guokaigdg/animal-island-ui` 及其版权方所有。
+## License
+
+Licensed under **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
+See the [LICENSE](LICENSE) file for the full text.

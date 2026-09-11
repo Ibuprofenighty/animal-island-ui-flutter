@@ -5,9 +5,12 @@
 ```dart
 AnimalTable({
   Key? key,
-  required List<String> columns,
-  required List<List<String>> rows,
-  EdgeInsetsGeometry? padding,
+  required List<AnimalTableColumn> columns,
+  required List<List<Widget>> rows,
+  bool loading = false,
+  Widget? emptyWidget,
+  double? minWidth,
+  double? maxHeight,
 })
 ```
 
@@ -39,12 +42,16 @@ AnimalCodeBlock({
 ```dart
 AnimalTag({
   Key? key,
-  required String label,
-  AnimalCardColor color = AnimalCardColor.mintTeal,
+  required Widget child,
+  AnimalTagVariant variant = AnimalTagVariant.neutral,
+  AnimalTileColor? color,
   AnimalTagSize size = AnimalTagSize.middle,
-  bool closable = false,
+  bool disabled = false,
+  Widget? icon,
   VoidCallback? onClose,
+  VoidCallback? onTap,
 })
+// Sizes: small, middle, large
 ```
 
 ## Image
@@ -52,14 +59,17 @@ AnimalTag({
 ```dart
 AnimalImage({
   Key? key,
-  required String src,
+  required ImageProvider image,
   double? width,
   double? height,
   BoxFit fit = BoxFit.cover,
-  AnimalImageVariant variant = AnimalImageVariant.plain,
-  bool preview = true,
+  AnimalImageVariant variant = AnimalImageVariant.standard,
+  AnimalTileColor? color,
+  BorderRadius? borderRadius,
+  bool preview = false,
   Widget? placeholder,
   Widget? fallback,
+  String? semanticLabel,
 })
-// Variants: plain, bordered
+// Variants: standard, bordered
 ```

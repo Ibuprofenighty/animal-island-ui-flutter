@@ -15,6 +15,8 @@ enum AnimalButtonType {
   text,
   link,
   danger,
+  success,
+  warning,
 }
 
 /// Button dimensions matching animal-island-ui.
@@ -148,6 +150,30 @@ class AnimalButton extends StatelessWidget {
           depthColor = null;
           textColor = isDanger ? theme.error : theme.primary;
           depth = 0.0;
+        case AnimalButtonType.success:
+          if (ghost) {
+            surfaceColor = Colors.transparent;
+            textColor = isDanger ? theme.error : theme.success;
+            border = Border.all(color: textColor, width: 1.8);
+            depth = 0.0;
+          } else {
+            surfaceColor = isDanger ? theme.error : theme.success;
+            depthColor = isDanger ? AnimalColors.errorActive : theme.successActive;
+            textColor = Colors.white;
+            depth = 4.0;
+          }
+        case AnimalButtonType.warning:
+          if (ghost) {
+            surfaceColor = Colors.transparent;
+            textColor = isDanger ? theme.error : theme.warning;
+            border = Border.all(color: textColor, width: 1.8);
+            depth = 0.0;
+          } else {
+            surfaceColor = isDanger ? theme.error : theme.warning;
+            depthColor = isDanger ? AnimalColors.errorActive : theme.warningActive;
+            textColor = Colors.white;
+            depth = 4.0;
+          }
       }
     }
 

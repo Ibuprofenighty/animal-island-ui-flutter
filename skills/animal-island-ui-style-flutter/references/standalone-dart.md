@@ -10,15 +10,15 @@ void main() {
   runApp(
     MaterialApp(
       home: Scaffold(
-        backgroundColor: AnimalColors.background,
+        backgroundColor: AnimalColors.bg,
         body: Center(
           child: AnimalCard(
-            color: AnimalCardColor.mintTeal,
+            color: AnimalTileColor.mintTeal,
             pattern: true,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const AnimalTitle(title: 'Cozy Island'),
+                const AnimalTitle(child: Text('Cozy Island')),
                 const SizedBox(height: 16),
                 AnimalButton(
                   type: AnimalButtonType.primary,

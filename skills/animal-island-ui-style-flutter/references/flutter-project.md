@@ -26,7 +26,7 @@ class IslandApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        scaffoldBackgroundColor: AnimalColors.background,
+        scaffoldBackgroundColor: AnimalColors.bg,
         fontFamily: 'Nunito',
         extensions: const [AnimalIslandTheme.light],
       ),
@@ -49,7 +49,7 @@ AnimalButton(
 // Organic Blob Modal
 AnimalModal.show(
   context: context,
-  title: 'Island Mail',
+  title: const Text('Island Mail'),
   content: const Text('You received a letter from Mom!'),
 )
 ```

@@ -29,6 +29,12 @@ enum AnimalCardPattern {
 /// - Full keyboard accessibility when interactive (Tab to focus, Space / Enter to activate when [onTap] is provided)
 class AnimalCard extends StatefulWidget {
   final Widget child;
+
+  /// Optional header widget rendered above [child], separated by a subtle divider.
+  final Widget? header;
+
+  /// Optional footer widget rendered below [child], separated by a subtle divider.
+  final Widget? footer;
   final AnimalCardType type;
   final AnimalTileColor color;
   final AnimalCardPattern pattern;
@@ -42,6 +48,8 @@ class AnimalCard extends StatefulWidget {
   const AnimalCard({
     super.key,
     required this.child,
+    this.header,
+    this.footer,
     this.type = AnimalCardType.defaultCard,
     this.color = AnimalTileColor.def,
     this.pattern = AnimalCardPattern.none,
@@ -94,6 +102,46 @@ class _AnimalCardState extends State<AnimalCard> {
       ),
       child: widget.child,
     );
+
+    if (widget.header != null || widget.footer != null) {
+      final dividerColor = borderColor.withValues(alpha: 0.35);
+      coreContent = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (widget.header != null) ...[
+            DefaultTextStyle(
+              style: TextStyle(
+                fontFamily: 'Nunito',
+                fontFamilyFallback: const ['Noto Sans SC', 'sans-serif'],
+                fontSize: 16.0,
+                fontWeight: FontWeight.w800,
+                color: defaultTextColor,
+              ),
+              child: widget.header!,
+            ),
+            const SizedBox(height: 12.0),
+            Container(height: 1.0, color: dividerColor),
+            const SizedBox(height: 12.0),
+          ],
+          coreContent,
+          if (widget.footer != null) ...[
+            const SizedBox(height: 12.0),
+            Container(height: 1.0, color: dividerColor),
+            const SizedBox(height: 12.0),
+            DefaultTextStyle(
+              style: TextStyle(
+                fontFamily: 'Nunito',
+                fontFamilyFallback: const ['Noto Sans SC', 'sans-serif'],
+                fontSize: 14.0,
+                color: defaultTextColor,
+              ),
+              child: widget.footer!,
+            ),
+          ],
+        ],
+      );
+    }
 
     Widget cardContent = coreContent;
     if (hasPattern) {

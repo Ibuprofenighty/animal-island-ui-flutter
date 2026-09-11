@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import '../../tokens/colors.dart';
 import '../../tokens/radii.dart';
@@ -91,6 +92,19 @@ class AnimalProgress extends StatefulWidget {
     this.animated = true,
     this.format,
   });
+
+  /// Factory constructor for a cozy circular progress ring.
+  const factory AnimalProgress.circle({
+    Key? key,
+    required double percent,
+    double size,
+    double strokeWidth,
+    AnimalProgressStatus status,
+    Color? color,
+    Color? trackColor,
+    bool showInfo,
+    String Function(double percent)? format,
+  }) = _AnimalCircularProgress;
 
   @override
   State<AnimalProgress> createState() => _AnimalProgressState();
@@ -370,6 +384,139 @@ class _CandyStripePainter extends CustomPainter {
     return oldDelegate.fillColor != fillColor ||
         oldDelegate.striped != striped ||
         oldDelegate.phase != phase;
+  }
+}
+
+class _AnimalCircularProgress extends AnimalProgress {
+  final double circleSize;
+  final double strokeWidth;
+  final bool showInfo;
+
+  const _AnimalCircularProgress({
+    super.key,
+    required super.percent,
+    double size = 120.0,
+    this.strokeWidth = 10.0,
+    super.status = AnimalProgressStatus.normal,
+    super.color,
+    super.trackColor,
+    this.showInfo = true,
+    super.format,
+  })  : circleSize = size,
+        super(
+          striped: false,
+          animated: false,
+        );
+
+  @override
+  State<AnimalProgress> createState() => _AnimalCircularProgressState();
+}
+
+class _AnimalCircularProgressState extends State<_AnimalCircularProgress> {
+  @override
+  Widget build(BuildContext context) {
+    final theme = AnimalIslandTheme.of(context);
+    final clamped = widget.percent.clamp(0.0, 1.0);
+    final fillColor = widget.color ??
+        (widget.status == AnimalProgressStatus.success
+            ? theme.success
+            : (widget.status == AnimalProgressStatus.exception
+                ? theme.error
+                : theme.primary));
+    final trackColor = widget.trackColor ??
+        (theme.isDark ? theme.surfaceAlt : AnimalColors.bgDisabled);
+    final infoText = widget.format != null
+        ? widget.format!(clamped)
+        : '${(clamped * 100).toInt()}%';
+
+    return Semantics(
+      label: '环形进度',
+      value: infoText,
+      child: SizedBox(
+        width: widget.circleSize,
+        height: widget.circleSize,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            CustomPaint(
+              size: Size(widget.circleSize, widget.circleSize),
+              painter: _CircularProgressPainter(
+                percent: clamped,
+                strokeWidth: widget.strokeWidth,
+                fillColor: fillColor,
+                trackColor: trackColor,
+              ),
+            ),
+            if (widget.showInfo)
+              Text(
+                infoText,
+                style: TextStyle(
+                  fontFamily: 'Nunito',
+                  fontFamilyFallback: const ['Noto Sans SC', 'sans-serif'],
+                  fontSize: widget.circleSize * 0.2,
+                  fontWeight: FontWeight.w900,
+                  color: theme.text,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CircularProgressPainter extends CustomPainter {
+  final double percent;
+  final double strokeWidth;
+  final Color fillColor;
+  final Color trackColor;
+
+  const _CircularProgressPainter({
+    required this.percent,
+    required this.strokeWidth,
+    required this.fillColor,
+    required this.trackColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (math.min(size.width, size.height) - strokeWidth) / 2;
+    if (radius <= 0) return;
+
+    // Track
+    final trackPaint = Paint()
+      ..color = trackColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+    canvas.drawCircle(center, radius, trackPaint);
+
+    // Progress arc
+    if (percent > 0) {
+      final progressPaint = Paint()
+        ..color = fillColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth
+        ..strokeCap = StrokeCap.round;
+
+      final startAngle = -math.pi / 2;
+      final sweepAngle = 2 * math.pi * percent;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweepAngle,
+        false,
+        progressPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _CircularProgressPainter oldDelegate) {
+    return oldDelegate.percent != percent ||
+        oldDelegate.strokeWidth != strokeWidth ||
+        oldDelegate.fillColor != fillColor ||
+        oldDelegate.trackColor != trackColor;
   }
 }
 

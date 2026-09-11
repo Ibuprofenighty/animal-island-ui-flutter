@@ -31,6 +31,5 @@ AnimalNotification.info(context, {required String message, String? description, 
 ### Management
 
 ```dart
-AnimalNotification.close(String key);
-AnimalNotification.destroy();
+AnimalNotification.destroy([String? key]); // Dismiss specific notification by key, or all if omitted
 ```

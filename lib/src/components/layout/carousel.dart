@@ -66,6 +66,7 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
   late int _currentIndex;
   Timer? _timer;
   bool _isHovered = false;
+  bool _tickerModeEnabled = true;
 
   @override
   void initState() {
@@ -77,7 +78,19 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
       _currentIndex = 0;
     }
     _pageController = PageController(initialPage: _currentIndex);
-    _restartTimer();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ignore: deprecated_member_use
+    final enabled = TickerMode.of(context);
+    if (_tickerModeEnabled != enabled) {
+      _tickerModeEnabled = enabled;
+      _restartTimer();
+    } else if (_timer == null && _tickerModeEnabled) {
+      _restartTimer();
+    }
   }
 
   @override
@@ -112,12 +125,14 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
 
   void _restartTimer() {
     _timer?.cancel();
-    if (widget.autoPlay && widget.items.length > 1 && !_isHovered) {
+    _timer = null;
+    if (widget.autoPlay && widget.items.length > 1 && !_isHovered && _tickerModeEnabled) {
       _timer = Timer.periodic(widget.autoPlayInterval, (_) {
-        if (!mounted || widget.items.length <= 1) return;
+        if (!mounted || widget.items.length <= 1 || !_tickerModeEnabled) return;
         final nextIndex = (_currentIndex + 1);
         if (nextIndex >= widget.items.length && !widget.loop) {
           _timer?.cancel();
+          _timer = null;
           return;
         }
         final targetIndex = nextIndex % widget.items.length;
@@ -127,7 +142,7 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
   }
 
   void _goToPage(int index) {
-    if (!_pageController.hasClients) return;
+    if (!mounted || !_pageController.hasClients || !_tickerModeEnabled) return;
     _pageController.animateToPage(
       index,
       duration: AnimalMotion.normal,

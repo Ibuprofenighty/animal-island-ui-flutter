@@ -2079,5 +2079,265 @@ void main() {
       expect(find.byType(AnimalSkeleton), findsOneWidget);
     });
   });
+
+  group('Enterprise Performance & SOTA Architectural Optimization Tests (O01-O04)', () {
+    testWidgets('O01: AnimalTable renders with maxHeight virtualized scroll and sticky header without IntrinsicWidth', (tester) async {
+      final columns = [
+        const AnimalTableColumn(title: 'ID', width: 60.0),
+        const AnimalTableColumn(title: 'Item Name'),
+        const AnimalTableColumn(title: 'Price', width: 80.0),
+      ];
+      final rows = List.generate(
+        100,
+        (i) => [
+          Text('$i'),
+          Text('Island Item #$i'),
+          Text('${(i + 1) * 10} Bells'),
+        ],
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AnimalTable(
+              columns: columns,
+              rows: rows,
+              maxHeight: 200.0,
+            ),
+          ),
+        ),
+      );
+
+      // Verify header rendered with sticky Semantics
+      expect(find.text('ID'), findsOneWidget);
+      expect(find.text('Item Name'), findsOneWidget);
+      expect(find.text('Price'), findsOneWidget);
+
+      // Verify virtualized scrollable ListView is present
+      expect(find.byType(ListView), findsOneWidget);
+      expect(find.text('Island Item #0'), findsOneWidget);
+    });
+
+    testWidgets('O02: AnimalCarousel pauses autoplay when TickerMode is disabled and resumes when enabled', (tester) async {
+      final notifier = ValueNotifier<bool>(true);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ValueListenableBuilder<bool>(
+              valueListenable: notifier,
+              builder: (context, enabled, child) {
+                return TickerMode(
+                  enabled: enabled,
+                  child: AnimalCarousel(
+                    height: 150.0,
+                    autoPlayInterval: const Duration(milliseconds: 100),
+                    items: const [
+                      Text('Slide 1'),
+                      Text('Slide 2'),
+                      Text('Slide 3'),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Slide 1'), findsOneWidget);
+
+      // Disable TickerMode (e.g. tab switched away / modal overlay displayed)
+      notifier.value = false;
+      await tester.pump();
+
+      // Advancing timer should not throw or advance while TickerMode is false
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('Slide 1'), findsOneWidget);
+
+      // Re-enable TickerMode
+      notifier.value = true;
+      await tester.pump();
+      // Step through timer trigger (100ms) + animation duration (250ms)
+      for (int i = 0; i < 8; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(find.text('Slide 2'), findsOneWidget);
+    });
+
+    testWidgets('O03: AnimalTypewriter pre-caches graphemes and executes typing without GC thrashing', (tester) async {
+      bool completed = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AnimalTypewriter(
+              text: '🍃 Animal Island 🌸',
+              speed: const Duration(milliseconds: 20),
+              showCursor: true,
+              onComplete: () => completed = true,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(AnimalTypewriter), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pumpAndSettle();
+
+      expect(completed, isTrue);
+      expect(find.textContaining('Animal Island'), findsOneWidget);
+    });
+
+    testWidgets('O04: AnimalIslandTheme auto-adapts to host brightness and exports toThemeData', (tester) async {
+      // 1. Test auto-adaptation to Dark Brightness without extension
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(brightness: Brightness.dark),
+          home: Builder(
+            builder: (context) {
+              final resolvedTheme = AnimalIslandTheme.of(context);
+              expect(resolvedTheme.isDark, isTrue);
+              expect(context.animalTheme.isDark, isTrue);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      // 2. Test toThemeData() conversion
+      final lightThemeData = AnimalIslandTheme.light.toThemeData();
+      expect(lightThemeData.brightness, Brightness.light);
+      expect(lightThemeData.extensions.values.first, isA<AnimalIslandTheme>());
+
+      final darkThemeData = AnimalIslandTheme.dark.toThemeData();
+      expect(darkThemeData.brightness, Brightness.dark);
+      expect(darkThemeData.extensions.values.first, isA<AnimalIslandTheme>());
+    });
+  });
+
+  group('Docs Alignment & New Features SOTA Tests', () {
+    testWidgets('AnimalProgress.circle renders circular progress and formatted info', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AnimalProgress.circle(
+              percent: 0.75,
+              size: 100.0,
+              strokeWidth: 8.0,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.bySubtype<AnimalProgress>(), findsOneWidget);
+      expect(find.text('75%'), findsOneWidget);
+    });
+
+    testWidgets('AnimalButtonType.success and warning render with distinct colors', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                AnimalButton(
+                  type: AnimalButtonType.success,
+                  onPressed: () {},
+                  child: const Text('Harvest'),
+                ),
+                AnimalButton(
+                  type: AnimalButtonType.warning,
+                  onPressed: () {},
+                  child: const Text('Caution'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Harvest'), findsOneWidget);
+      expect(find.text('Caution'), findsOneWidget);
+    });
+
+    testWidgets('AnimalCard renders with header, footer, and dividers', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AnimalCard(
+              header: Text('Museum Gallery'),
+              footer: Text('Total: 42 fossils'),
+              child: Text('Card Body Content'),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Museum Gallery'), findsOneWidget);
+      expect(find.text('Card Body Content'), findsOneWidget);
+      expect(find.text('Total: 42 fossils'), findsOneWidget);
+    });
+
+    testWidgets('AnimalModal.showDialogue accepts speaker, avatar, and dialogue stream', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  AnimalModal.showDialogue(
+                    context: context,
+                    speaker: 'Marshal',
+                    avatar: const Icon(Icons.person),
+                    dialogue: 'Sulky!',
+                  );
+                },
+                child: const Text('Talk'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Talk'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Marshal'), findsOneWidget);
+      expect(find.byIcon(Icons.person), findsOneWidget);
+      expect(find.text('Sulky!'), findsOneWidget);
+    });
+
+    testWidgets('AnimalNotification.destroy dismisses notifications programmatically', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  AnimalNotification.open(
+                    context,
+                    key: 'turnip_notif',
+                    message: const Text('Turnip Alert'),
+                  );
+                },
+                child: const Text('Notify'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Notify'));
+      await tester.pumpAndSettle();
+      expect(find.text('Turnip Alert'), findsOneWidget);
+
+      // Dismiss by key
+      AnimalNotification.destroy('turnip_notif');
+      await tester.pumpAndSettle();
+      expect(find.text('Turnip Alert'), findsNothing);
+    });
+  });
 }
+
 

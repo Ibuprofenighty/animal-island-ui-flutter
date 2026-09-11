@@ -37,9 +37,14 @@ class _AnimalTypewriterState extends State<AnimalTypewriter> {
   bool _cursorVisible = true;
   Timer? _cursorTimer;
 
+  late List<String> _graphemes;
+  late List<String> _prefixStrings;
+  late List<String> _suffixStrings;
+
   @override
   void initState() {
     super.initState();
+    _initGraphemes();
     _startTyping();
     if (widget.showCursor) {
       _cursorTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
@@ -49,9 +54,28 @@ class _AnimalTypewriterState extends State<AnimalTypewriter> {
     }
   }
 
+  void _initGraphemes() {
+    _graphemes = widget.text.characters.toList(growable: false);
+    final count = _graphemes.length;
+    _prefixStrings = List<String>.generate(count + 1, (i) {
+      if (i == 0) return '';
+      if (i == count) return widget.text;
+      return _graphemes.take(i).join();
+    }, growable: false);
+    _suffixStrings = List<String>.generate(count + 1, (i) {
+      if (i == 0) return widget.text;
+      if (i == count) return '';
+      return _graphemes.skip(i).join();
+    }, growable: false);
+  }
+
   void _startTyping() {
-    final totalLength = widget.text.characters.length;
+    final totalLength = _graphemes.length;
     _timer?.cancel();
+    if (totalLength == 0) {
+      widget.onComplete?.call();
+      return;
+    }
     _timer = Timer.periodic(widget.speed, (timer) {
       if (!mounted) {
         timer.cancel();
@@ -79,9 +103,13 @@ class _AnimalTypewriterState extends State<AnimalTypewriter> {
         });
       }
     }
-    if (oldWidget.text != widget.text || oldWidget.speed != widget.speed) {
+    if (oldWidget.text != widget.text) {
       _timer?.cancel();
       _charIndex = 0;
+      _initGraphemes();
+      _startTyping();
+    } else if (oldWidget.speed != widget.speed) {
+      _timer?.cancel();
       _startTyping();
     }
   }
@@ -103,11 +131,10 @@ class _AnimalTypewriterState extends State<AnimalTypewriter> {
         : baseStyle.color!;
     final effectiveStyle = baseStyle.copyWith(color: textColor);
 
-    final chars = widget.text.characters;
-    final totalChars = chars.length;
+    final totalChars = _graphemes.length;
     final clampedIndex = _charIndex.clamp(0, totalChars);
-    final revealed = chars.take(clampedIndex).toString();
-    final unrevealed = chars.skip(clampedIndex).toString();
+    final revealed = _prefixStrings[clampedIndex];
+    final unrevealed = _suffixStrings[clampedIndex];
     final isDone = clampedIndex >= totalChars;
 
     final cursorOpacity = (!isDone && widget.showCursor && _cursorVisible) ? 1.0 : 0.0;

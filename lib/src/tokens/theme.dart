@@ -89,9 +89,18 @@ class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
     this.isDark = false,
   });
 
-  /// Resolves the current theme from BuildContext, falling back to light.
+  /// Resolves the current theme from BuildContext.
+  ///
+  /// If an [AnimalIslandTheme] is registered as a [ThemeExtension] on [ThemeData],
+  /// it is returned directly. Otherwise, it automatically adapts to the host app's
+  /// [ThemeData.brightness], returning [AnimalIslandTheme.dark] for dark mode and
+  /// [AnimalIslandTheme.light] for light mode.
   static AnimalIslandTheme of(BuildContext context) {
-    return Theme.of(context).extension<AnimalIslandTheme>() ?? AnimalIslandTheme.light;
+    final extension = Theme.of(context).extension<AnimalIslandTheme>();
+    if (extension != null) return extension;
+    return Theme.of(context).brightness == Brightness.dark
+        ? AnimalIslandTheme.dark
+        : AnimalIslandTheme.light;
   }
 
   /// Default light parchment theme (canonical Animal Crossing island aesthetic)
@@ -249,10 +258,37 @@ class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
       isDark: t < 0.5 ? isDark : other.isDark,
     );
   }
+
+  /// Converts this [AnimalIslandTheme] into a complete Flutter [ThemeData]
+  /// configured with cohesive ColorScheme, scaffold color, card color, and extension registration.
+  ThemeData toThemeData() {
+    final colorScheme = ColorScheme(
+      brightness: isDark ? Brightness.dark : Brightness.light,
+      primary: primary,
+      onPrimary: Colors.white,
+      secondary: focusYellow,
+      onSecondary: const Color(0xFF4A3E3D),
+      error: error,
+      onError: Colors.white,
+      surface: bgContent,
+      onSurface: text,
+    );
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: isDark ? Brightness.dark : Brightness.light,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: bg,
+      cardColor: bgContent,
+      dividerColor: border,
+      extensions: <ThemeExtension<dynamic>>[
+        this,
+      ],
+    );
+  }
 }
 
 /// Syntactic sugar extension for convenient access in BuildContext
 extension AnimalIslandThemeContext on BuildContext {
-  AnimalIslandTheme get animalTheme =>
-      Theme.of(this).extension<AnimalIslandTheme>() ?? AnimalIslandTheme.light;
+  AnimalIslandTheme get animalTheme => AnimalIslandTheme.of(this);
 }

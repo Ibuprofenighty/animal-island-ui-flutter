@@ -23,7 +23,7 @@ Canonical design system: https://github.com/guokaigdg/animal-island-ui
 
 ## The style in one paragraph
 
-Warm parchment backgrounds (`AnimalColors.background` #F8F8F0), earth-brown text (`#794F27`, never pure black), mint-teal primary accent (`#19C8B9`), large-radius pill shapes (buttons and inputs are 50px pills; nothing interactive below 12px radius), 3D game button stacked shadow on primary buttons only (Offset(0, 5), blurRadius = 0), rounded Nunito + Noto Sans SC typography, soft spring curves over 150–350ms, and a mix of geometric shapes (swallowtail ribbon Title, digit-tile Countdown) with organic ones (SVG blob-clipped Modal).
+Warm parchment backgrounds (`AnimalColors.bg` #F8F8F0), earth-brown text (`#794F27`, never pure black), mint-teal primary accent (`#19C8B9`), large-radius pill shapes (buttons and inputs are 50px pills; nothing interactive below 12px radius), 3D game button stacked shadow on primary buttons only (Offset(0, 5), blurRadius = 0), rounded Nunito + Noto Sans SC typography, soft spring curves over 150–350ms, and a mix of geometric shapes (swallowtail ribbon Title, digit-tile Countdown) with organic ones (SVG blob-clipped Modal).
 
 ## Component catalog
 
@@ -45,7 +45,7 @@ Props and constructors are grouped by category under `references/components/`:
 
 1. Never invent widget parameters. Every argument must exist on the Flutter class.
 2. Import only from package root: `import 'package:animal_island_ui/animal_island_ui.dart';`.
-3. Never use pure black text (`Colors.black`) or cold gray backgrounds. Use `AnimalColors.textPrimary` and `AnimalColors.background`.
+3. Never use pure black text (`Colors.black`) or cold gray backgrounds. Use `AnimalColors.text` (or `AnimalIslandTheme.of(context).textPrimary`) and `AnimalColors.bg` (or `AnimalIslandTheme.of(context).bg`).
 4. Never use cold blue focus rings. Focus colors are warm yellow (`#FFCC00`) or mint primary.
 5. Never give an interactive element corners sharper than 12px radius; buttons and inputs are 50px pills.
 6. The 3D pixel-stack shadow (`Offset(0, 5)`) belongs to primary buttons only. Cards have no box-shadow. Switch has no outer blur shadow.

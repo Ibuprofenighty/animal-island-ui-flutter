@@ -5,15 +5,28 @@
 ```dart
 AnimalProgress({
   Key? key,
-  required double percent,
-  AnimalProgressType type = AnimalProgressType.line,
+  required double percent, // 0.0 to 1.0
   AnimalProgressSize size = AnimalProgressSize.middle,
   AnimalProgressStatus status = AnimalProgressStatus.normal,
   AnimalProgressInfoPosition infoPosition = AnimalProgressInfoPosition.right,
-  bool animatedStripes = true,
-  Color? strokeColor,
-  Color? trailColor,
-  Widget? format,
+  bool striped = false,
+  bool animated = false,
+  double? height,
+  Color? fillColor,
+  Color? trackColor,
+  String Function(double percent)? format,
+})
+
+AnimalProgress.circle({
+  Key? key,
+  required double percent, // 0.0 to 1.0
+  double size = 120.0,
+  double strokeWidth = 10.0,
+  AnimalProgressStatus status = AnimalProgressStatus.normal,
+  Color? fillColor,
+  Color? trackColor,
+  bool showInfo = true,
+  String Function(double percent)? format,
 })
 ```
 
@@ -22,15 +35,17 @@ AnimalProgress({
 ```dart
 AnimalLoading({
   Key? key,
-  AnimalLoadingVariant variant = AnimalLoadingVariant.spinner,
+  AnimalLoadingType type = AnimalLoadingType.spinner, // spinner, snowflake, dots
   double size = 32.0,
   Color? color,
-  String? text,
+  String? tip,
+  Widget? tipWidget,
+  bool fullScreen = false,
 })
 ```
 
 Overlay Portal:
-- `AnimalLoading.show(BuildContext context, {String? text, AnimalLoadingVariant variant})`
+- `AnimalLoading.show(BuildContext context, {String? tip, Widget? tipWidget, AnimalLoadingType type, Color? color})`
 - `AnimalLoading.hide(BuildContext context)`
 
 ## Skeleton
@@ -39,17 +54,15 @@ Overlay Portal:
 AnimalSkeleton({
   Key? key,
   bool loading = true,
-  double? width,
-  double? height,
-  BorderRadius? borderRadius,
+  bool active = true,
   Widget? child,
 })
 
 // Factory Presets:
-AnimalSkeleton.button({Key? key, double? width, double? height})
-AnimalSkeleton.input({Key? key, double? width, double? height})
-AnimalSkeleton.avatar({Key? key, double size = 40.0, BoxShape shape = BoxShape.circle})
-AnimalSkeleton.paragraph({Key? key, int lines = 3, double? width})
+AnimalSkeleton.button({Key? key, double? width, double? height, bool active = true})
+AnimalSkeleton.input({Key? key, double? width, double? height, bool active = true})
+AnimalSkeleton.avatar({Key? key, double size = 40.0, BoxShape shape = BoxShape.circle, bool active = true})
+AnimalSkeleton.paragraph({Key? key, int rows = 3, double? width, bool active = true})
 ```
 
 ## BackTop
@@ -59,10 +72,10 @@ AnimalBackTop({
   Key? key,
   required ScrollController scrollController,
   double visibilityHeight = 400.0,
-  double target = 0.0,
-  Duration duration = const Duration(milliseconds: 450),
-  Curve curve = Curves.easeOutBack,
-  Widget? child,
+  double? visibilityThreshold,
+  Duration duration = const Duration(milliseconds: 500),
+  Widget? icon,
+  VoidCallback? onClick,
 })
 ```
 
@@ -71,11 +84,14 @@ AnimalBackTop({
 ```dart
 AnimalCountdown({
   Key? key,
-  required DateTime targetTime,
+  DateTime? targetTime,
+  Duration? remaining,
   String format = 'HH:mm:ss',
+  AnimalCountdownSize size = AnimalCountdownSize.middle,
   AnimalCountdownVariant variant = AnimalCountdownVariant.standard,
-  VoidCallback? onFinish,
+  bool bordered = true,
   ValueChanged<Duration>? onChange,
+  VoidCallback? onFinish,
 })
 ```
 
@@ -84,9 +100,7 @@ AnimalCountdown({
 ```dart
 AnimalTime({
   Key? key,
-  required DateTime dateTime,
-  String? format,
-  bool relative = false,
-  bool autoUpdate = true,
+  DateTime? time,
+  bool live = false,
 })
 ```

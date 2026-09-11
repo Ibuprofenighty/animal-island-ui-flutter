@@ -15,7 +15,7 @@ AnimalButton({
   VoidCallback? onPressed,
   required Widget child,
 })
-// Types: primary, success, warning, danger, dashed
+// Types: primary, defaultButton, dashed, text, link, danger, success, warning
 ```
 
 ## Icon

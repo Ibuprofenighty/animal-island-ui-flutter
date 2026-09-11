@@ -5,8 +5,8 @@
 ```dart
 AnimalCard({
   Key? key,
-  AnimalCardType type = AnimalCardType.card,
-  AnimalCardColor color = AnimalCardColor.mintTeal,
+  AnimalCardType type = AnimalCardType.defaultCard,
+  AnimalTileColor color = AnimalTileColor.mintTeal,
   bool pattern = false,
   bool hoverable = false,
   EdgeInsetsGeometry? padding,
@@ -14,7 +14,7 @@ AnimalCard({
   Widget? footer,
   required Widget child,
 })
-// Types: card, flat, dashed
+// Types: defaultCard, dashed
 ```
 
 ## Title
@@ -22,10 +22,11 @@ AnimalCard({
 ```dart
 AnimalTitle({
   Key? key,
-  required String title,
-  int level = 1,
-  AnimalTitleColor color = AnimalTitleColor.leafGreen,
+  AnimalTileColor color = AnimalTileColor.leafGreen,
+  AnimalTitleSize size = AnimalTitleSize.medium,
+  required Widget child,
 })
+// Sizes: small, medium, large
 ```
 
 ## Divider
@@ -33,13 +34,15 @@ AnimalTitle({
 ```dart
 AnimalDivider({
   Key? key,
-  AnimalDividerStyle style = AnimalDividerStyle.solid,
-  bool plain = false,
+  AnimalDividerType type = AnimalDividerType.solid,
   Color? color,
+  double thickness = 2.0,
 })
 
 // Presets:
-AnimalDivider.plain({Key? key, AnimalDividerStyle style = AnimalDividerStyle.solid, Color? color})
+AnimalDivider.solid({Key? key, Color? color, double thickness = 2.0})
+AnimalDivider.dashed({Key? key, Color? color, double thickness = 2.0})
+AnimalDivider.dotted({Key? key, Color? color, double thickness = 2.0})
 AnimalDivider.leaf({Key? key, Color? color})
 AnimalDivider.star({Key? key, Color? color})
 AnimalDivider.flower({Key? key, Color? color})
@@ -50,10 +53,10 @@ AnimalDivider.flower({Key? key, Color? color})
 ```dart
 AnimalBackground({
   Key? key,
-  AnimalBackgroundType type = AnimalBackgroundType.dots,
+  AnimalBackgroundPattern pattern = AnimalBackgroundPattern.dots,
   required Widget child,
 })
-// Types: dots, sprinkles
+// Patterns: parchment, dots, grid
 ```
 
 ## Collapse
@@ -69,8 +72,8 @@ AnimalCollapse({
 // Single Q&A Constructor:
 AnimalCollapse.single({
   Key? key,
-  required String title,
-  required Widget content,
+  required String question,
+  required String answer,
   bool initiallyExpanded = false,
   ValueChanged<bool>? onChanged,
 })

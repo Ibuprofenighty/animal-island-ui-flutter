@@ -107,22 +107,44 @@ class AnimalModal extends StatelessWidget {
   /// Displays a dialogue modal with character speech typewriter effect.
   static Future<T?> showDialogue<T>({
     required BuildContext context,
+    String? speaker,
     Widget? title,
-    required String message,
+    String? dialogue,
+    String? message,
+    Widget? avatar,
+    VoidCallback? onFinish,
     Widget? footer,
     VoidCallback? onOk,
     String okText = 'Understood!',
     String? cancelText,
     double width = 500.0,
   }) {
+    assert(dialogue != null || message != null, 'Either dialogue or message must be provided');
+    final effectiveMessage = dialogue ?? message!;
+    final effectiveTitle = title ?? (speaker != null ? Text(speaker) : null);
+
+    Widget dialogueContent = AnimalTypewriter(
+      text: effectiveMessage,
+      speed: const Duration(milliseconds: 35),
+      textAlign: TextAlign.left,
+      onComplete: onFinish,
+    );
+
+    if (avatar != null) {
+      dialogueContent = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          avatar,
+          const SizedBox(width: 14.0),
+          Expanded(child: dialogueContent),
+        ],
+      );
+    }
+
     return show<T>(
       context: context,
-      title: title,
-      content: AnimalTypewriter(
-        text: message,
-        speed: const Duration(milliseconds: 35),
-        textAlign: TextAlign.left,
-      ),
+      title: effectiveTitle,
+      content: dialogueContent,
       footer: footer,
       onOk: onOk,
       okText: okText,
