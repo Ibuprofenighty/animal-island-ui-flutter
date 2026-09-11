@@ -126,7 +126,14 @@ class _AnimalTimePickerState extends State<AnimalTimePicker> {
   @override
   void initState() {
     super.initState();
-    _initTime();
+    final now = DateTime.now();
+    final rawHour = widget.value?.hour ?? now.hour;
+    final rawMinute = widget.value?.minute ?? now.minute;
+    final rawSecond = widget.second ?? now.second;
+    _selectedHour = _snapToStep(rawHour, _hours);
+    _selectedMinute = _snapToStep(rawMinute, _minutes);
+    _selectedSecond = _snapToStep(rawSecond, _seconds);
+
     _hourController = FixedExtentScrollController(
       initialItem: _hours.indexOf(_selectedHour).clamp(0, _hours.length - 1),
     );
@@ -138,29 +145,13 @@ class _AnimalTimePickerState extends State<AnimalTimePicker> {
     );
   }
 
-  void _initTime() {
-    final rawHour = widget.value?.hour ?? DateTime.now().hour;
-    final rawMinute = widget.value?.minute ?? DateTime.now().minute;
-    final rawSecond = widget.second ?? DateTime.now().second;
-    _selectedHour = _snapToStep(rawHour, _hours);
-    _selectedMinute = _snapToStep(rawMinute, _minutes);
-    _selectedSecond = _snapToStep(rawSecond, _seconds);
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final formItem = AnimalFormItemScope.of(context);
     if (formItem != null && formItem.name != null && formItem.currentValue is TimeOfDay) {
       final t = formItem.currentValue as TimeOfDay;
-      if (t.hour != _selectedHour || t.minute != _selectedMinute) {
-        _selectedHour = _snapToStep(t.hour, _hours);
-        _selectedMinute = _snapToStep(t.minute, _minutes);
-        final hIdx = _hours.indexOf(_selectedHour);
-        final mIdx = _minutes.indexOf(_selectedMinute);
-        if (hIdx >= 0 && _hourController.hasClients) _hourController.jumpToItem(hIdx);
-        if (mIdx >= 0 && _minuteController.hasClients) _minuteController.jumpToItem(mIdx);
-      }
+      _syncExternalTime(t.hour, t.minute, null);
     }
   }
 
@@ -168,13 +159,59 @@ class _AnimalTimePickerState extends State<AnimalTimePicker> {
   void didUpdateWidget(covariant AnimalTimePicker oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value || oldWidget.second != widget.second) {
-      _initTime();
-      final hIdx = _hours.indexOf(_selectedHour);
-      final mIdx = _minutes.indexOf(_selectedMinute);
-      final sIdx = _seconds.indexOf(_selectedSecond);
-      if (hIdx >= 0 && _hourController.hasClients) _hourController.jumpToItem(hIdx);
-      if (mIdx >= 0 && _minuteController.hasClients) _minuteController.jumpToItem(mIdx);
-      if (sIdx >= 0 && _secondController.hasClients) _secondController.jumpToItem(sIdx);
+      if (widget.value == null && oldWidget.value != null && !_isClearing) {
+        _selectedHour = _hours.first;
+        _selectedMinute = _minutes.first;
+        _selectedSecond = _seconds.first;
+        if (_hourController.hasClients && _hourController.selectedItem != 0) {
+          _hourController.jumpToItem(0);
+        }
+        if (_minuteController.hasClients && _minuteController.selectedItem != 0) {
+          _minuteController.jumpToItem(0);
+        }
+        if (_secondController.hasClients && _hasSeconds && _secondController.selectedItem != 0) {
+          _secondController.jumpToItem(0);
+        }
+      } else if (widget.value != null) {
+        _syncExternalTime(widget.value!.hour, widget.value!.minute, widget.second);
+      } else if (widget.second != null && widget.second != _selectedSecond) {
+        _syncExternalTime(null, null, widget.second);
+      }
+    }
+  }
+
+  void _syncExternalTime(int? externalHour, int? externalMinute, int? externalSecond) {
+    if (externalHour != null) {
+      final snappedH = _snapToStep(externalHour, _hours);
+      if (snappedH != _selectedHour) {
+        _selectedHour = snappedH;
+        final hIdx = _hours.indexOf(snappedH);
+        if (hIdx >= 0 && _hourController.hasClients && _hourController.selectedItem != hIdx) {
+          _hourController.jumpToItem(hIdx);
+        }
+      }
+    }
+
+    if (externalMinute != null) {
+      final snappedM = _snapToStep(externalMinute, _minutes);
+      if (snappedM != _selectedMinute) {
+        _selectedMinute = snappedM;
+        final mIdx = _minutes.indexOf(snappedM);
+        if (mIdx >= 0 && _minuteController.hasClients && _minuteController.selectedItem != mIdx) {
+          _minuteController.jumpToItem(mIdx);
+        }
+      }
+    }
+
+    if (externalSecond != null) {
+      final snappedS = _snapToStep(externalSecond, _seconds);
+      if (snappedS != _selectedSecond) {
+        _selectedSecond = snappedS;
+        final sIdx = _seconds.indexOf(snappedS);
+        if (sIdx >= 0 && _secondController.hasClients && _secondController.selectedItem != sIdx) {
+          _secondController.jumpToItem(sIdx);
+        }
+      }
     }
   }
 
@@ -322,8 +359,10 @@ class _AnimalTimePickerState extends State<AnimalTimePicker> {
                         selectedVal: _selectedHour,
                         unitLabel: 'hours',
                         onSelectedItemChanged: (idx) {
-                          setState(() => _selectedHour = _hours[idx]);
-                          _notifyChange();
+                          if (_selectedHour != _hours[idx]) {
+                            setState(() => _selectedHour = _hours[idx]);
+                            _notifyChange();
+                          }
                         },
                         theme: theme,
                       ),
@@ -336,8 +375,10 @@ class _AnimalTimePickerState extends State<AnimalTimePicker> {
                         selectedVal: _selectedMinute,
                         unitLabel: 'minutes',
                         onSelectedItemChanged: (idx) {
-                          setState(() => _selectedMinute = _minutes[idx]);
-                          _notifyChange();
+                          if (_selectedMinute != _minutes[idx]) {
+                            setState(() => _selectedMinute = _minutes[idx]);
+                            _notifyChange();
+                          }
                         },
                         theme: theme,
                       ),
@@ -351,8 +392,10 @@ class _AnimalTimePickerState extends State<AnimalTimePicker> {
                           selectedVal: _selectedSecond,
                           unitLabel: 'seconds',
                           onSelectedItemChanged: (idx) {
-                            setState(() => _selectedSecond = _seconds[idx]);
-                            _notifyChange();
+                            if (_selectedSecond != _seconds[idx]) {
+                              setState(() => _selectedSecond = _seconds[idx]);
+                              _notifyChange();
+                            }
                           },
                           theme: theme,
                         ),
@@ -504,10 +547,19 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
   final MenuController _menuController = MenuController();
   FocusNode? _internalFocusNode;
   bool _isFocused = false;
+  int? _internalSecond;
 
   FocusNode get _effectiveFocusNode {
     final formItem = AnimalFormItemScope.of(context);
     return widget.focusNode ?? formItem?.focusNode ?? (_internalFocusNode ??= FocusNode());
+  }
+
+  @override
+  void didUpdateWidget(covariant _AnimalTimePickerPopover oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.second != widget.second) {
+      _internalSecond = widget.second;
+    }
   }
 
   @override
@@ -532,7 +584,8 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
     final h = val.hour.toString().padLeft(2, '0');
     final m = val.minute.toString().padLeft(2, '0');
     if (widget.format.contains('ss')) {
-      final s = (widget.second ?? 0).toString().padLeft(2, '0');
+      final effectiveSec = widget.second ?? _internalSecond ?? 0;
+      final s = effectiveSec.toString().padLeft(2, '0');
       return '$h:$m:$s';
     }
     return '$h:$m';
@@ -605,7 +658,7 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
         menuChildren: [
           AnimalTimePicker(
             value: effectiveValue,
-            second: widget.second,
+            second: widget.second ?? _internalSecond,
             format: widget.format,
             hourStep: widget.hourStep,
             minuteStep: widget.minuteStep,
@@ -616,7 +669,12 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
             onChanged: (time) {
               widget.onChanged?.call(time);
             },
-            onFullTimeChanged: widget.onFullTimeChanged,
+            onFullTimeChanged: (h, m, s) {
+              if (s != _internalSecond) {
+                setState(() => _internalSecond = s);
+              }
+              widget.onFullTimeChanged?.call(h, m, s);
+            },
           ),
         ],
         style: const MenuStyle(
@@ -686,8 +744,10 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
                     if (widget.allowClear && hasValue && !widget.disabled)
                       _TimePickerClearButton(
                         onClear: () {
+                          setState(() => _internalSecond = null);
                           formItem?.onChanged?.call(null);
                           widget.onChanged?.call(null);
+                          widget.onFullTimeChanged?.call(null, null, null);
                         },
                       ),
                   ],

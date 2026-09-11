@@ -2337,6 +2337,73 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Turnip Alert'), findsNothing);
     });
+
+    testWidgets('AnimalTimePicker preserves second when hour/minute updates and blocks self-induced jumpToItem feedback loop', (tester) async {
+      TimeOfDay? currentTime = const TimeOfDay(hour: 10, minute: 30);
+      int? currentSec = 45;
+      late StateSetter parentSetState;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (context, setState) {
+                parentSetState = setState;
+                return AnimalTimePicker(
+                  value: currentTime,
+                  second: currentSec,
+                  format: 'HH:mm:ss',
+                  onChanged: (t) {
+                    setState(() => currentTime = t);
+                  },
+                  onFullTimeChanged: (h, m, s) {
+                    setState(() {
+                      currentSec = s;
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(find.text('10'), findsWidgets);
+      expect(find.text('30'), findsWidgets);
+      expect(find.text('45'), findsWidgets);
+
+      // 1. Simulate parent update passing new TimeOfDay without second (the classic issue)
+      parentSetState(() {
+        currentTime = const TimeOfDay(hour: 12, minute: 15);
+      });
+      await tester.pumpAndSettle();
+
+      // Verify hour and minute updated to 12:15, and second remained 45 (not mutated to wall clock second)
+      expect(find.text('12'), findsWidgets);
+      expect(find.text('15'), findsWidgets);
+      expect(find.text('45'), findsWidgets);
+    });
+
+    testWidgets('AnimalTimePicker.popover tracks seconds in HH:mm:ss mode cleanly', (tester) async {
+      TimeOfDay? pickedTime = const TimeOfDay(hour: 9, minute: 20);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AnimalTimePicker.popover(
+              value: pickedTime,
+              second: 33,
+              format: 'HH:mm:ss',
+              onChanged: (t) => pickedTime = t,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(find.text('09:20:33'), findsOneWidget);
+    });
   });
 }
 
