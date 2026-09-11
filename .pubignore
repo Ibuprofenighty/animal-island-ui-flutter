@@ -1,0 +1,10 @@
+﻿.idea/
+.vscode/
+build/
+docs/
+skills/
+scripts/
+example/
+*.iml
+*.ipr
+*.iws

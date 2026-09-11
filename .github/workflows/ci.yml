@@ -1,0 +1,45 @@
+name: CI Gate
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  analyze_and_test:
+    name: Analyze & Unit/Widget Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          if [ -d "animal_island_ui" ]; then cd animal_island_ui; fi
+          flutter pub get
+
+      - name: Analyze code
+        run: |
+          if [ -d "animal_island_ui" ]; then cd animal_island_ui; fi
+          flutter analyze --fatal-infos
+
+      - name: Run tests with coverage
+        run: |
+          if [ -d "animal_island_ui" ]; then cd animal_island_ui; fi
+          flutter test --coverage
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check documentation sync
+        run: |
+          if [ -d "animal_island_ui" ]; then cd animal_island_ui; fi
+          node scripts/check-docs-sync.mjs
