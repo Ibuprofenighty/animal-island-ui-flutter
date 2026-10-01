@@ -1,0 +1,43 @@
+name: Locked toolchain
+description: >-
+  Installs the Flutter SDK, and optionally Node.js and Java, at the versions
+  recorded in catalog/sdk.lock.json, the single source of toolchain versions.
+inputs:
+  node:
+    description: Also install the locked Node.js major version.
+    default: 'false'
+  java:
+    description: Also install the locked Java version.
+    default: 'false'
+runs:
+  using: composite
+  steps:
+    - name: Read catalog/sdk.lock.json
+      id: lock
+      shell: bash
+      run: |
+        lock=catalog/sdk.lock.json
+        echo "flutter=$(jq -er '.flutter.frameworkVersion' "$lock")" >> "$GITHUB_OUTPUT"
+        echo "channel=$(jq -er '.flutter.channel' "$lock")" >> "$GITHUB_OUTPUT"
+        echo "node=$(jq -er '.dependencyLocks.web.nodeMajor' "$lock")" >> "$GITHUB_OUTPUT"
+        echo "java=$(jq -er '.ci.javaVersion' "$lock")" >> "$GITHUB_OUTPUT"
+
+    - name: Set up Java
+      if: inputs.java == 'true'
+      uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
+      with:
+        distribution: temurin
+        java-version: ${{ steps.lock.outputs.java }}
+
+    - name: Set up Flutter SDK
+      uses: subosito/flutter-action@44ac965b96f18d999802d4b807e3256d5a3f9fa1 # v2.18.0
+      with:
+        flutter-version: ${{ steps.lock.outputs.flutter }}
+        channel: ${{ steps.lock.outputs.channel }}
+        cache: true
+
+    - name: Set up Node.js
+      if: inputs.node == 'true'
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+      with:
+        node-version: ${{ steps.lock.outputs.node }}

@@ -1,0 +1,52 @@
+import 'package:flutter/material.dart';
+import 'package:animal_island_ui/animal_island_ui.dart';
+
+import '../gallery/story_card.dart';
+
+class FormItemStory extends StatelessWidget {
+  const FormItemStory({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AnimalIslandTheme.of(context);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AnimalTitle(
+            size: AnimalTitleSize.large,
+            child: const Text('FormItem (C20)'),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Explicit builder binding form item eliminating ambient scope theft and providing smooth error transitions',
+            style: theme.typography.body.copyWith(
+              color: theme.colors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 24),
+          StoryCard(
+            title: 'FormItem Anatomy',
+            capabilityIds: const ['C20-FI', 'FI01'],
+            child: AnimalForm(
+              child: AnimalFormItem<String>(
+                fieldKey: const AnimalFieldKey<String>('demo'),
+                label: 'Sample Label',
+                help: 'Helpful hint explaining requirements',
+                required: true,
+                builder: (context, binding) {
+                  return AnimalInput(
+                    placeholder: 'Enter content...',
+                    onChanged: binding.onChanged,
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

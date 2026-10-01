@@ -1,0 +1,289 @@
+﻿components:
+  - id: C01
+    name: AnimalButton
+    stage: S05
+    legacyPath: lib/src/components/general/button.dart
+    targetPath: lib/src/components/button/button.dart
+    requirements: [R02, R03, R04, R05]
+    tests: [BTN01, BTN02, BTN03, BTN04]
+    decision: "Orthogonal variant and tone; filled primary/error tactile 3D shadow; remove danger dual-source"
+  - id: C02
+    name: AnimalIcon
+    stage: S05
+    legacyPath: lib/src/icons/icon_widget.dart
+    targetPath: lib/src/icons/icon.dart
+    requirements: [R02, R03, R06, R09]
+    tests: [ICO01, ICO02, ICO03, ICO04, ICO05]
+    decision: "Single renderer + immutable descriptor; purge 101 standalone widget wrappers; alpha stroke preservation"
+  - id: C03
+    name: AnimalTypewriter
+    stage: S11
+    legacyPath: lib/src/components/general/typewriter.dart
+    targetPath: lib/src/components/typewriter/typewriter.dart
+    requirements: [R02, R04, R06]
+    tests: [TYP01, TYP02, TYP03, TYP04]
+    decision: "O(n) linear grapheme index; eradicate prefix/suffix full-history caching"
+  - id: C04
+    name: AnimalCursor
+    stage: S05
+    legacyPath: lib/src/components/general/cursor.dart
+    targetPath: lib/src/components/cursor/cursor.dart
+    requirements: [R02, R03]
+    tests: [CUR01, CUR02, CUR03]
+    decision: "Render overlay only for mouse devices; transparent hit testing"
+  - id: C05
+    name: AnimalCard
+    stage: S05
+    legacyPath: lib/src/components/layout/card.dart
+    targetPath: lib/src/components/card/card.dart
+    requirements: [R02, R03]
+    tests: [CARD01, CARD02, CARD03]
+    decision: "Delete patterned boolean duplication; no default box-shadow; hover lift"
+  - id: C06
+    name: AnimalTitle
+    stage: S05
+    legacyPath: lib/src/components/layout/title.dart
+    targetPath: lib/src/components/title/title.dart
+    requirements: [R02, R03]
+    tests: [TIT01, TIT02, TIT03]
+    decision: "Retain true swallowtail and folded corner ribbon geometry"
+  - id: C07
+    name: AnimalDivider
+    stage: S05
+    legacyPath: lib/src/components/layout/divider.dart
+    targetPath: lib/src/components/divider/divider.dart
+    requirements: [R02, R03]
+    tests: [DIV01, DIV02, DIV03]
+    decision: "Single painter for all presets; decorative semantics filtering"
+  - id: C08
+    name: AnimalBackground
+    stage: S05
+    legacyPath: lib/src/components/layout/background.dart
+    targetPath: lib/src/components/background/background.dart
+    requirements: [R02, R03]
+    tests: [BG01, BG02, BG03]
+    decision: "Deterministic painter without unbounded layout thrashing"
+  - id: C09
+    name: AnimalCollapse
+    stage: S10
+    legacyPath: lib/src/components/layout/collapse.dart
+    targetPath: lib/src/components/collapse/collapse.dart
+    requirements: [R02, R04]
+    tests: [COL01, COL02, COL03, COL04]
+    decision: "Stable item ID with controlled expandedIds set; remove positional state"
+  - id: C10
+    name: AnimalTabs
+    stage: S10
+    legacyPath: lib/src/components/layout/tabs.dart
+    targetPath: lib/src/components/tabs/tabs.dart
+    requirements: [R02, R04, R05]
+    tests: [TAB01, TAB02, TAB03, TAB04]
+    decision: "Layout-driven indicator positioning; roving focus keyboard model"
+  - id: C11
+    name: AnimalCarousel
+    stage: S10
+    legacyPath: lib/src/components/layout/carousel.dart
+    targetPath: lib/src/components/carousel/carousel.dart
+    requirements: [R02, R04]
+    tests: [CAR01, CAR02, CAR03, CAR04]
+    decision: "Single controlled activeIndex; pause autoplay on hover/focus/TickerMode"
+  - id: C12
+    name: AnimalInput
+    stage: S07
+    legacyPath: lib/src/components/form_controls/input.dart
+    targetPath: lib/src/components/input/input.dart
+    requirements: [R02, R04, R05]
+    tests: [INP01, INP02, INP03, INP04]
+    decision: "Single controller ownership; clearable via pointer and keyboard"
+  - id: C13
+    name: AnimalSwitch
+    stage: S07
+    legacyPath: lib/src/components/form_controls/switch.dart
+    targetPath: lib/src/components/switch/switch.dart
+    requirements: [R02, R03, R04]
+    tests: [SW01, SW02, SW03]
+    decision: "Controlled boolean value; inset track without outer blur shadow"
+  - id: C14
+    name: AnimalCheckbox
+    stage: S07
+    legacyPath: lib/src/components/form_controls/checkbox.dart
+    targetPath: lib/src/components/checkbox/checkbox.dart
+    requirements: [R02, R04, R05]
+    tests: [CHK01, CHK02, CHK03, CHK04]
+    decision: "Move Option to foundation; stable group values without child scope pollution"
+  - id: C15
+    name: AnimalRadio
+    stage: S07
+    legacyPath: lib/src/components/form_controls/radio.dart
+    targetPath: lib/src/components/radio/radio.dart
+    requirements: [R02, R03, R04]
+    tests: [RAD01, RAD02, RAD03, RAD04]
+    decision: "Restore rounded square with SVG check visual; true radio group mutual exclusion"
+  - id: C16
+    name: AnimalSelect
+    stage: S07
+    legacyPath: lib/src/components/form_controls/select.dart
+    targetPath: lib/src/components/select/select.dart
+    requirements: [R02, R04, R05]
+    tests: [SEL01, SEL02, SEL03, SEL04]
+    decision: "Purge typedef alias; anchor + popup menu keyboard navigation and focus restoration"
+  - id: C17
+    name: AnimalDatePicker
+    stage: S08
+    legacyPath: lib/src/components/form_controls/date_picker.dart
+    targetPath: lib/src/components/date_picker/date_picker.dart
+    requirements: [R02, R04, R05]
+    tests: [DAT01, DAT02, DAT03, DAT04, DAT05]
+    decision: "AnimalDate/Range timezone-free model; single calendar panel for inline & popover"
+  - id: C18
+    name: AnimalTimePicker
+    stage: S08
+    legacyPath: lib/src/components/form_controls/time_picker.dart
+    targetPath: lib/src/components/time_picker/time_picker.dart
+    requirements: [R02, R04]
+    tests: [TIM01, TIM02, TIM03, TIM04, TIM05]
+    decision: "AnimalTimeValue atomic model; preserve seconds; eliminate recursive wheel feedback"
+  - id: C19
+    name: AnimalForm
+    stage: S06
+    legacyPath: lib/src/components/form/form.dart
+    targetPath: lib/src/components/form/form.dart
+    requirements: [R02, R04]
+    tests: [FOR01, FOR02, FOR03, FOR04, FOR05]
+    decision: "Typed controller + field keys; revision + epoch latest-wins async validation"
+  - id: C20
+    name: AnimalFormItem
+    stage: S06
+    legacyPath: lib/src/components/form/form.dart
+    targetPath: lib/src/components/form/form_item.dart
+    requirements: [R02, R04, R05]
+    tests: [FI01, FI02, FI03, FI04]
+    decision: "Explicit builder binding; remove ambient scope theft; single field ownership"
+  - id: C21
+    name: AnimalModal
+    stage: S09
+    legacyPath: lib/src/components/overlays/modal.dart
+    targetPath: lib/src/components/modal/modal.dart
+    requirements: [R02, R03, R04]
+    tests: [MOD01, MOD02, MOD03, MOD04]
+    decision: "Current String dialogue API; N08 removed the unused model, and N20 will introduce and connect the single typed dialogue contract"
+  - id: C22
+    name: AnimalDrawer
+    stage: S09
+    legacyPath: lib/src/components/overlays/drawer.dart
+    targetPath: lib/src/components/drawer/drawer.dart
+    requirements: [R02, R04]
+    tests: [DRW01, DRW02, DRW03]
+    decision: "Unified four-direction route layout with safe areas and focus trapping"
+  - id: C23
+    name: AnimalTooltip
+    stage: S09
+    legacyPath: lib/src/components/overlays/tooltip.dart
+    targetPath: lib/src/components/tooltip/tooltip.dart
+    requirements: [R02, R04]
+    tests: [TIP01, TIP02, TIP03]
+    decision: "Disjunctive message/richMessage payload; eliminate dual-argument assertion crashes"
+  - id: C24
+    name: AnimalProgress
+    stage: S11
+    legacyPath: lib/src/components/feedback/progress.dart
+    targetPath: lib/src/components/progress/progress.dart
+    requirements: [R02, R03, R04]
+    tests: [PRO01, PRO02, PRO03]
+    decision: "Shared model and status resolver for bar and circle; NaN/Infinity rejection"
+  - id: C25
+    name: AnimalLoading
+    stage: S09
+    legacyPath: lib/src/components/feedback/loading.dart
+    targetPath: lib/src/components/loading/loading.dart
+    requirements: [R02, R04]
+    tests: [LOD01, LOD02, LOD03]
+    decision: "Scoped handle lifecycle; eliminate static process-wide entry leaks"
+  - id: C26
+    name: AnimalSkeleton
+    stage: S11
+    legacyPath: lib/src/components/feedback/skeleton.dart
+    targetPath: lib/src/components/skeleton/skeleton.dart
+    requirements: [R02, R03]
+    tests: [SKL01, SKL02, SKL03]
+    decision: "Shared block preset renderer; stop ticking repeat tickers when inactive"
+  - id: C27
+    name: AnimalBackTop
+    stage: S10
+    legacyPath: lib/src/components/feedback/back_top.dart
+    targetPath: lib/src/components/back_top/back_top.dart
+    requirements: [R02, R04]
+    tests: [BTP01, BTP02, BTP03]
+    decision: "Purge visibilityThreshold alias; immediate visibility recalculation on threshold change"
+  - id: C28
+    name: AnimalCountdown
+    stage: S11
+    legacyPath: lib/src/components/feedback/countdown.dart
+    targetPath: lib/src/components/countdown/countdown.dart
+    requirements: [R02, R04]
+    tests: [CDN01, CDN02, CDN03]
+    decision: "Unified deadline scheduling engine; exactly-once completion invocation"
+  - id: C29
+    name: AnimalTime
+    stage: S11
+    legacyPath: lib/src/components/feedback/time.dart
+    targetPath: lib/src/components/time/time.dart
+    requirements: [R02, R04, R05]
+    tests: [CLK01, CLK02, CLK03]
+    decision: "Injectable Clock model; suppress unsolicited per-second screen-reader chatter"
+  - id: C30
+    name: AnimalNotification
+    stage: S09
+    legacyPath: lib/src/components/notification/notification.dart
+    targetPath: lib/src/components/notification/notification.dart
+    requirements: [R02, R04]
+    tests: [NOT01, NOT02, NOT03, NOT04, NOT05]
+    decision: "Scoped host queue; synchronous transaction; exactly-once close semantics; eliminate static queue"
+  - id: C31
+    name: AnimalTable
+    stage: S12
+    legacyPath: lib/src/components/data_display/table.dart
+    targetPath: lib/src/components/table/table.dart
+    requirements: [R02, R04, R06]
+    tests: [TBL01, TBL02, TBL03, TBL04, TBL05]
+    decision: "Single lazy rowBuilder engine; finite viewport layout; eliminate eager widget list bypass"
+  - id: C32
+    name: AnimalPagination
+    stage: S12
+    legacyPath: lib/src/components/data_display/pagination.dart
+    targetPath: lib/src/components/pagination/pagination.dart
+    requirements: [R02, R04, R05]
+    tests: [PAG01, PAG02, PAG03]
+    decision: "Integer arithmetic safety; adaptive window sizing; remove arbitrary 999999 truncation"
+  - id: C33
+    name: AnimalCodeBlock
+    stage: S12
+    legacyPath: lib/src/components/data_display/code_block.dart
+    targetPath: lib/src/components/code_block/code_block.dart
+    requirements: [R02, R04]
+    tests: [COD01, COD02, COD03]
+    decision: "Await Clipboard future; error feedback; cancelable state reset on rapid copy"
+  - id: C34
+    name: AnimalTag
+    stage: S12
+    legacyPath: lib/src/components/data_display/tag.dart
+    targetPath: lib/src/components/tag/tag.dart
+    requirements: [R02, R04, R05]
+    tests: [TAG01, TAG02, TAG03]
+    decision: "Decouple tag click and close click focus targets; exact keyboard activation"
+  - id: C35
+    name: AnimalImage
+    stage: S12
+    legacyPath: lib/src/components/data_display/image.dart
+    targetPath: lib/src/components/image/image.dart
+    requirements: [R02, R04]
+    tests: [IMG01, IMG02, IMG03, IMG04]
+    decision: "Single preview route; graceful error fallback; keyboard escape recovery"
+  - id: C36
+    name: AnimalFooter
+    stage: S05
+    legacyPath: lib/src/components/decorative/footer.dart
+    targetPath: lib/src/components/footer/footer.dart
+    requirements: [R02, R03]
+    tests: [FOT01, FOT02, FOT03]
+    decision: "Theme-aware decoration painter; localized default copy; no emoji fallbacks"

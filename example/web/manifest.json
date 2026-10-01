@@ -1,11 +1,11 @@
 {
-    "name": "example",
-    "short_name": "example",
+    "name": "Animal Island UI Gallery",
+    "short_name": "AnimalIslandUI",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FAF8F5",
+    "theme_color": "#78B159",
+    "description": "Animal Island UI Gallery - A cozy Kawaii component library for Flutter inspired by Animal Crossing",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

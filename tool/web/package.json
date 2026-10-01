@@ -1,0 +1,21 @@
+{
+  "name": "animal-island-ui-web-verification",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  },
+  "description": "Playwright automated browser verification harness for Animal Island UI Gallery",
+  "scripts": {
+    "test": "playwright test",
+    "test:a11y": "playwright test tests/accessibility.spec.ts",
+    "test:assets": "playwright test tests/assets.spec.ts",
+    "test:gallery": "playwright test tests/gallery.spec.ts",
+    "test:deployed": "playwright test tests/deployed.spec.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.3.3"
+  }
+}

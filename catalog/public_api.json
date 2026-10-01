@@ -1,0 +1,1955 @@
+{
+  "version": "1.0.0",
+  "entrypoint": "lib/animal_island_ui.dart",
+  "exports": {
+    "lib/src/components/back_top/back_top.dart": {
+      "classes": {
+        "AnimalBackTop": {
+          "constructors": [
+            "AnimalBackTop"
+          ],
+          "fields": [
+            "duration",
+            "icon",
+            "onClick",
+            "scrollController",
+            "visibilityHeight"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/background/background.dart": {
+      "classes": {
+        "AnimalBackground": {
+          "constructors": [
+            "AnimalBackground"
+          ],
+          "fields": [
+            "backgroundColor",
+            "child",
+            "expand",
+            "patternColor",
+            "type"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalBackgroundType": [
+          "dots",
+          "grid",
+          "parchment"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/button/button.dart": {
+      "classes": {
+        "AnimalButton": {
+          "constructors": [
+            "AnimalButton"
+          ],
+          "fields": [
+            "block",
+            "child",
+            "disabled",
+            "focusNode",
+            "icon",
+            "loading",
+            "onPressed",
+            "semanticLabel",
+            "size",
+            "tone",
+            "variant"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalButtonSize": [
+          "large",
+          "middle",
+          "small"
+        ],
+        "AnimalButtonTone": [
+          "danger",
+          "neutral",
+          "primary",
+          "success",
+          "warning"
+        ],
+        "AnimalButtonVariant": [
+          "dashed",
+          "filled",
+          "link",
+          "outlined",
+          "text"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/card/card.dart": {
+      "classes": {
+        "AnimalCard": {
+          "constructors": [
+            "AnimalCard"
+          ],
+          "fields": [
+            "borderRadius",
+            "child",
+            "color",
+            "customBackgroundColor",
+            "customBorderColor",
+            "footer",
+            "header",
+            "hoverable",
+            "margin",
+            "onTap",
+            "padding",
+            "pattern",
+            "semanticLabel",
+            "type"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalCardPattern": [
+          "dots",
+          "none",
+          "sprinkles",
+          "stripes"
+        ],
+        "AnimalCardType": [
+          "dashed",
+          "defaultCard"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/carousel/carousel.dart": {
+      "classes": {
+        "AnimalCarousel": {
+          "constructors": [
+            "AnimalCarousel"
+          ],
+          "fields": [
+            "activeIndex",
+            "autoPlay",
+            "autoPlayInterval",
+            "defaultActiveIndex",
+            "height",
+            "items",
+            "loop",
+            "onChange",
+            "pauseOnHover",
+            "showArrows",
+            "showDots"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/checkbox/checkbox.dart": {
+      "classes": {
+        "AnimalCheckbox": {
+          "constructors": [
+            "AnimalCheckbox"
+          ],
+          "fields": [
+            "disabled",
+            "focusNode",
+            "indeterminate",
+            "label",
+            "onChanged",
+            "size",
+            "value"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalCheckboxSize": [
+          "large",
+          "middle",
+          "small"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/checkbox/checkbox_group.dart": {
+      "classes": {
+        "AnimalCheckboxGroup": {
+          "constructors": [
+            "AnimalCheckboxGroup"
+          ],
+          "fields": [
+            "direction",
+            "disabled",
+            "focusNode",
+            "onChanged",
+            "options",
+            "size",
+            "value"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/code_block/code_block.dart": {
+      "classes": {
+        "AnimalCodeBlock": {
+          "constructors": [
+            "AnimalCodeBlock"
+          ],
+          "fields": [
+            "code",
+            "language"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/collapse/collapse.dart": {
+      "classes": {
+        "AnimalCollapse": {
+          "constructors": [
+            "AnimalCollapse",
+            "AnimalCollapse.single"
+          ],
+          "fields": [
+            "accordion",
+            "activeIds",
+            "defaultActiveIds",
+            "disabled",
+            "items",
+            "onChanged"
+          ]
+        },
+        "AnimalCollapseItem": {
+          "constructors": [
+            "AnimalCollapseItem"
+          ],
+          "fields": [
+            "content",
+            "disabled",
+            "extra",
+            "id",
+            "title"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/countdown/countdown.dart": {
+      "classes": {
+        "AnimalCountdown": {
+          "constructors": [
+            "AnimalCountdown"
+          ],
+          "fields": [
+            "bordered",
+            "clock",
+            "format",
+            "onChange",
+            "onFinish",
+            "prefix",
+            "remaining",
+            "size",
+            "targetTime",
+            "variant"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalCountdownSize": [
+          "large",
+          "middle",
+          "small"
+        ],
+        "AnimalCountdownVariant": [
+          "island",
+          "standard"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/cursor/cursor.dart": {
+      "classes": {
+        "AnimalCursor": {
+          "constructors": [
+            "AnimalCursor"
+          ],
+          "fields": [
+            "child",
+            "customCursor",
+            "forceAll",
+            "type"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalCursorType": [
+          "defaultCursor",
+          "notAllowed",
+          "pointer",
+          "raindrop",
+          "text"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/date_picker/date_picker.dart": {
+      "classes": {
+        "AnimalDatePicker": {
+          "constructors": [
+            "AnimalDatePicker"
+          ],
+          "fields": [
+            "allowClear",
+            "disabled",
+            "disabledDate",
+            "firstDate",
+            "focusNode",
+            "lastDate",
+            "onChanged",
+            "onRangeChanged",
+            "picker",
+            "range",
+            "rangeValue",
+            "showToday",
+            "value"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalDatePickerMode": [
+          "date",
+          "month"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/divider/divider.dart": {
+      "classes": {
+        "AnimalDivider": {
+          "constructors": [
+            "AnimalDivider",
+            "AnimalDivider.flower",
+            "AnimalDivider.leaf",
+            "AnimalDivider.plain",
+            "AnimalDivider.star"
+          ],
+          "fields": [
+            "child",
+            "color",
+            "endIndent",
+            "icon",
+            "indent",
+            "thickness",
+            "type"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalDividerType": [
+          "dashed",
+          "dotted",
+          "solid",
+          "wavy"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/drawer/drawer.dart": {
+      "classes": {
+        "AnimalDrawer": {
+          "constructors": [
+            "AnimalDrawer"
+          ],
+          "fields": [
+            "child",
+            "footer",
+            "height",
+            "onClose",
+            "placement",
+            "title",
+            "width"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalDrawerPlacement": [
+          "bottom",
+          "left",
+          "right",
+          "top"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/footer/footer.dart": {
+      "classes": {
+        "AnimalFooter": {
+          "constructors": [
+            "AnimalFooter"
+          ],
+          "fields": [
+            "content",
+            "defaultText",
+            "seamless",
+            "type"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalFooterType": [
+          "sea",
+          "tree"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/form/field_binding.dart": {
+      "classes": {
+        "AnimalFieldBinding": {
+          "constructors": [
+            "AnimalFieldBinding"
+          ],
+          "fields": [
+            "dirty",
+            "error",
+            "focusNode",
+            "hasError",
+            "hashCode",
+            "isValid",
+            "isValidating",
+            "name",
+            "onBlur",
+            "onChanged",
+            "status",
+            "touched",
+            "value"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/form/field_key.dart": {
+      "classes": {
+        "AnimalFieldKey": {
+          "constructors": [
+            "AnimalFieldKey"
+          ],
+          "fields": [
+            "hashCode",
+            "name"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/form/form.dart": {
+      "classes": {
+        "AnimalForm": {
+          "constructors": [
+            "AnimalForm"
+          ],
+          "fields": [
+            "child",
+            "controller",
+            "initialValues",
+            "onChanged",
+            "onSubmit"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/form/form_controller.dart": {
+      "classes": {
+        "AnimalFormController": {
+          "constructors": [
+            "AnimalFormController"
+          ],
+          "fields": [
+            "defaultSubmitHandler",
+            "epoch",
+            "isDirty",
+            "isDisposed",
+            "isSubmitting",
+            "isValid",
+            "values"
+          ]
+        },
+        "AnimalSubmitResult": {
+          "constructors": [
+            "AnimalSubmitResult.error"
+          ],
+          "fields": [
+            "busy",
+            "changedDuringValidation",
+            "error",
+            "invalid",
+            "isSuccess",
+            "status",
+            "success"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalSubmitStatus": [
+          "busy",
+          "changedDuringValidation",
+          "error",
+          "invalid",
+          "success"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/form/form_item.dart": {
+      "classes": {
+        "AnimalFormItem": {
+          "constructors": [
+            "AnimalFormItem"
+          ],
+          "fields": [
+            "builder",
+            "child",
+            "fieldKey",
+            "focusNode",
+            "help",
+            "initialValue",
+            "label",
+            "labelWidget",
+            "margin",
+            "name",
+            "required",
+            "rules"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/form/validation.dart": {
+      "classes": {
+        "AnimalRule": {
+          "constructors": [
+            "AnimalRule.custom",
+            "AnimalRule.email",
+            "AnimalRule.length",
+            "AnimalRule.max",
+            "AnimalRule.min",
+            "AnimalRule.pattern",
+            "AnimalRule.required",
+            "AnimalRule.url"
+          ],
+          "fields": [
+            "customValidator",
+            "max",
+            "maxLength",
+            "message",
+            "min",
+            "minLength",
+            "pattern",
+            "type"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalRuleType": [
+          "custom",
+          "email",
+          "length",
+          "max",
+          "min",
+          "pattern",
+          "required",
+          "url"
+        ],
+        "AnimalValidationStatus": [
+          "idle",
+          "invalid",
+          "valid",
+          "validating"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/image/image.dart": {
+      "classes": {
+        "AnimalImage": {
+          "constructors": [
+            "AnimalImage"
+          ],
+          "fields": [
+            "borderRadius",
+            "color",
+            "fallback",
+            "fit",
+            "height",
+            "image",
+            "placeholder",
+            "preview",
+            "semanticLabel",
+            "variant",
+            "width"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalImageVariant": [
+          "bordered",
+          "standard"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/input/input.dart": {
+      "classes": {
+        "AnimalInput": {
+          "constructors": [
+            "AnimalInput"
+          ],
+          "fields": [
+            "autofocus",
+            "clearable",
+            "controller",
+            "disabled",
+            "focusNode",
+            "initialValue",
+            "inputFormatters",
+            "keyboardType",
+            "maxLines",
+            "minLines",
+            "obscureText",
+            "onChanged",
+            "onSubmitted",
+            "placeholder",
+            "prefix",
+            "readOnly",
+            "shadow",
+            "size",
+            "status",
+            "suffix",
+            "textInputAction",
+            "value"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalInputSize": [
+          "large",
+          "middle",
+          "small"
+        ],
+        "AnimalInputStatus": [
+          "error",
+          "normal",
+          "warning"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/loading/loading.dart": {
+      "classes": {
+        "AnimalLoading": {
+          "constructors": [
+            "AnimalLoading",
+            "AnimalLoading.dots",
+            "AnimalLoading.snowflake",
+            "AnimalLoading.spinner"
+          ],
+          "fields": [
+            "barrierColor",
+            "color",
+            "fullScreen",
+            "size",
+            "snowCount",
+            "snowSeed",
+            "tip",
+            "tipWidget",
+            "type"
+          ]
+        },
+        "AnimalLoadingHandle": {
+          "constructors": [],
+          "fields": [
+            "isClosed"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalLoadingType": [
+          "dots",
+          "snowflake",
+          "spinner"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/modal/modal.dart": {
+      "classes": {
+        "AnimalModal": {
+          "constructors": [
+            "AnimalModal"
+          ],
+          "fields": [
+            "cancelText",
+            "content",
+            "footer",
+            "okText",
+            "onClose",
+            "onOk",
+            "title",
+            "typeSpeed",
+            "typewriter",
+            "width"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/notification/notification.dart": {
+      "classes": {
+        "AnimalNotification": {
+          "constructors": [
+            "AnimalNotification"
+          ],
+          "fields": []
+        }
+      },
+      "enums": {
+        "AnimalNotificationPlacement": [
+          "bottom",
+          "bottomLeft",
+          "bottomRight",
+          "top",
+          "topLeft",
+          "topRight"
+        ],
+        "AnimalNotificationType": [
+          "error",
+          "info",
+          "success",
+          "warning"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/overlay_host/overlay_host.dart": {
+      "classes": {
+        "AnimalOverlayController": {
+          "constructors": [
+            "AnimalOverlayController"
+          ],
+          "fields": [
+            "activeCount",
+            "activeHandles",
+            "isDisposed"
+          ]
+        },
+        "AnimalOverlayEntryHandle": {
+          "constructors": [],
+          "fields": [
+            "id",
+            "isActive",
+            "isClosing",
+            "isDisposed",
+            "state"
+          ]
+        },
+        "AnimalOverlayHost": {
+          "constructors": [
+            "AnimalOverlayHost"
+          ],
+          "fields": [
+            "child",
+            "controller"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalOverlayEntryState": [
+          "active",
+          "closing",
+          "created",
+          "disposed",
+          "inserting"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/pagination/pagination.dart": {
+      "classes": {
+        "AnimalPagination": {
+          "constructors": [
+            "AnimalPagination"
+          ],
+          "fields": [
+            "current",
+            "disabled",
+            "onChanged",
+            "pageSize",
+            "simple",
+            "total",
+            "totalPages"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/progress/progress.dart": {
+      "classes": {
+        "AnimalProgress": {
+          "constructors": [
+            "AnimalProgress",
+            "AnimalProgress.circle"
+          ],
+          "fields": [
+            "animated",
+            "color",
+            "format",
+            "height",
+            "infoPosition",
+            "percent",
+            "size",
+            "status",
+            "striped",
+            "trackColor"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalProgressInfoPosition": [
+          "inside",
+          "none",
+          "right",
+          "top"
+        ],
+        "AnimalProgressSize": [
+          "large",
+          "middle",
+          "small"
+        ],
+        "AnimalProgressStatus": [
+          "active",
+          "exception",
+          "normal",
+          "success"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/radio/radio.dart": {
+      "classes": {
+        "AnimalRadio": {
+          "constructors": [
+            "AnimalRadio"
+          ],
+          "fields": [
+            "activeColor",
+            "disabled",
+            "focusNode",
+            "groupValue",
+            "label",
+            "onChanged",
+            "size",
+            "value"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalRadioSize": [
+          "large",
+          "middle",
+          "small"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/radio/radio_group.dart": {
+      "classes": {
+        "AnimalRadioGroup": {
+          "constructors": [
+            "AnimalRadioGroup"
+          ],
+          "fields": [
+            "activeColor",
+            "direction",
+            "disabled",
+            "focusNode",
+            "onChanged",
+            "options",
+            "size",
+            "value"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/select/select.dart": {
+      "classes": {
+        "AnimalSelect": {
+          "constructors": [
+            "AnimalSelect"
+          ],
+          "fields": [
+            "allowClear",
+            "disabled",
+            "focusNode",
+            "onChanged",
+            "options",
+            "placeholder",
+            "status",
+            "value"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/skeleton/skeleton.dart": {
+      "classes": {
+        "AnimalSkeleton": {
+          "constructors": [
+            "AnimalSkeleton",
+            "AnimalSkeleton.avatar",
+            "AnimalSkeleton.button",
+            "AnimalSkeleton.input",
+            "AnimalSkeleton.paragraph"
+          ],
+          "fields": [
+            "active",
+            "borderRadius",
+            "child",
+            "height",
+            "loading",
+            "rowWidths",
+            "rows",
+            "variant",
+            "width"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalSkeletonVariant": [
+          "circle",
+          "paragraph",
+          "rect",
+          "text"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/switch/switch.dart": {
+      "classes": {
+        "AnimalSwitch": {
+          "constructors": [
+            "AnimalSwitch"
+          ],
+          "fields": [
+            "checkedChildren",
+            "disabled",
+            "focusNode",
+            "loading",
+            "onChanged",
+            "size",
+            "unCheckedChildren",
+            "value"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalSwitchSize": [
+          "defaultSize",
+          "small"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/table/table.dart": {
+      "classes": {
+        "AnimalTable": {
+          "constructors": [
+            "AnimalTable"
+          ],
+          "fields": [
+            "columns",
+            "emptyWidget",
+            "horizontalScrollController",
+            "loading",
+            "maxHeight",
+            "minWidth",
+            "rowBuilder",
+            "rowCount",
+            "rowKey",
+            "verticalScrollController"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/table/table_column.dart": {
+      "classes": {
+        "AnimalTableColumn": {
+          "constructors": [
+            "AnimalTableColumn"
+          ],
+          "fields": [
+            "alignment",
+            "flex",
+            "title",
+            "width"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/tabs/tabs.dart": {
+      "classes": {
+        "AnimalTabItem": {
+          "constructors": [
+            "AnimalTabItem"
+          ],
+          "fields": [
+            "disabled",
+            "icon",
+            "id",
+            "label"
+          ]
+        },
+        "AnimalTabs": {
+          "constructors": [
+            "AnimalTabs"
+          ],
+          "fields": [
+            "onChanged",
+            "scrollable",
+            "selectedIndex",
+            "tabs"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/tag/tag.dart": {
+      "classes": {
+        "AnimalTag": {
+          "constructors": [
+            "AnimalTag"
+          ],
+          "fields": [
+            "child",
+            "color",
+            "disabled",
+            "focusNode",
+            "icon",
+            "onClose",
+            "onTap",
+            "size",
+            "variant"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalTagSize": [
+          "large",
+          "middle",
+          "small"
+        ],
+        "AnimalTagVariant": [
+          "error",
+          "neutral",
+          "primary",
+          "success",
+          "warning"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/time/time.dart": {
+      "classes": {
+        "AnimalTime": {
+          "constructors": [
+            "AnimalTime"
+          ],
+          "fields": [
+            "clock",
+            "live",
+            "liveRegion",
+            "time"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/time_picker/time_picker.dart": {
+      "classes": {
+        "AnimalTimePicker": {
+          "constructors": [
+            "AnimalTimePicker"
+          ],
+          "fields": [
+            "allowClear",
+            "disabled",
+            "focusNode",
+            "format",
+            "hourStep",
+            "minuteStep",
+            "onChanged",
+            "secondStep",
+            "showNow",
+            "value"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/title/title.dart": {
+      "classes": {
+        "AnimalTitle": {
+          "constructors": [
+            "AnimalTitle"
+          ],
+          "fields": [
+            "child",
+            "color",
+            "customFrontColor",
+            "customTextColor",
+            "semanticLabel",
+            "size"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalTitleSize": [
+          "large",
+          "middle",
+          "small"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/tooltip/tooltip.dart": {
+      "classes": {
+        "AnimalTooltip": {
+          "constructors": [
+            "AnimalTooltip"
+          ],
+          "fields": [
+            "bordered",
+            "child",
+            "message",
+            "showDuration",
+            "title",
+            "triggerMode",
+            "variant",
+            "waitDuration"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalTooltipVariant": [
+          "island",
+          "standard"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/components/typewriter/typewriter.dart": {
+      "classes": {
+        "AnimalTypewriter": {
+          "constructors": [
+            "AnimalTypewriter"
+          ],
+          "fields": [
+            "onComplete",
+            "showCursor",
+            "speed",
+            "style",
+            "text",
+            "textAlign"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/forms/animal_validation_issue.dart": {
+      "classes": {
+        "AnimalValidationIssue": {
+          "constructors": [
+            "AnimalValidationIssue.email",
+            "AnimalValidationIssue.lengthRange",
+            "AnimalValidationIssue.literal",
+            "AnimalValidationIssue.maximum",
+            "AnimalValidationIssue.maximumLength",
+            "AnimalValidationIssue.minimum",
+            "AnimalValidationIssue.minimumLength",
+            "AnimalValidationIssue.pattern",
+            "AnimalValidationIssue.required",
+            "AnimalValidationIssue.url",
+            "AnimalValidationIssue.validationFailure"
+          ],
+          "fields": [
+            "hashCode",
+            "kind",
+            "literalText",
+            "lowerLength",
+            "number",
+            "upperLength"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalValidationIssueKind": [
+          "email",
+          "lengthRange",
+          "literal",
+          "maximum",
+          "maximumLength",
+          "minimum",
+          "minimumLength",
+          "pattern",
+          "requiredField",
+          "url",
+          "validationFailure"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/localization/animal_locale_resolution.dart": {
+      "classes": {},
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {
+        "resolveAnimalLocale": {
+          "returnType": "Locale",
+          "parameters": [
+            "Locale? requestedLocale"
+          ]
+        }
+      }
+    },
+    "lib/src/foundation/localization/generated/animal_localizations.g.dart": {
+      "classes": {
+        "AnimalLocalizations": {
+          "constructors": [
+            "AnimalLocalizations"
+          ],
+          "fields": [
+            "backToTop",
+            "cancel",
+            "carouselNextSlide",
+            "carouselPreviousSlide",
+            "circularProgressLabel",
+            "clear",
+            "clearDate",
+            "clearTime",
+            "close",
+            "codeCopiedSemanticLabel",
+            "codeCopyLabel",
+            "codeCopySemanticLabel",
+            "codeDefaultLanguage",
+            "copied",
+            "copyFailed",
+            "countdownUnitDays",
+            "countdownUnitHours",
+            "countdownUnitMinutes",
+            "countdownUnitSeconds",
+            "currentTimeLabel",
+            "datePickerNextYear",
+            "datePickerPreviousYear",
+            "datePickerRangePlaceholder",
+            "datePickerSinglePlaceholder",
+            "delegate",
+            "dismiss",
+            "drawerCloseLabel",
+            "drawerSemanticsLabel",
+            "empty",
+            "footerDefaultText",
+            "galleryAppTitle",
+            "galleryBrandName",
+            "galleryCategoryDataDisplay",
+            "galleryCategoryDecorative",
+            "galleryCategoryExplore",
+            "galleryCategoryFeedback",
+            "galleryCategoryFormControls",
+            "galleryCategoryFormEngine",
+            "galleryCategoryGeneral",
+            "galleryCategoryLayout",
+            "galleryCategoryNavigation",
+            "galleryCategoryNotifications",
+            "galleryCategoryOverlays",
+            "galleryCategoryRecipes",
+            "galleryChipButton",
+            "galleryChipCodeBlock",
+            "galleryChipDateTime",
+            "galleryChipIcons",
+            "galleryChipImage",
+            "galleryChipInputForms",
+            "galleryChipModal",
+            "galleryChipNotifications",
+            "galleryChipPagination",
+            "galleryChipTable",
+            "galleryChipTabs",
+            "galleryChipTypewriter",
+            "galleryComponentC01",
+            "galleryComponentC02",
+            "galleryComponentC03",
+            "galleryComponentC04",
+            "galleryComponentC05",
+            "galleryComponentC06",
+            "galleryComponentC07",
+            "galleryComponentC08",
+            "galleryComponentC09",
+            "galleryComponentC10",
+            "galleryComponentC11",
+            "galleryComponentC12",
+            "galleryComponentC13",
+            "galleryComponentC14",
+            "galleryComponentC15",
+            "galleryComponentC16",
+            "galleryComponentC17",
+            "galleryComponentC18",
+            "galleryComponentC19",
+            "galleryComponentC20",
+            "galleryComponentC21",
+            "galleryComponentC22",
+            "galleryComponentC23",
+            "galleryComponentC24",
+            "galleryComponentC25",
+            "galleryComponentC26",
+            "galleryComponentC27",
+            "galleryComponentC28",
+            "galleryComponentC29",
+            "galleryComponentC30",
+            "galleryComponentC31",
+            "galleryComponentC32",
+            "galleryComponentC33",
+            "galleryComponentC34",
+            "galleryComponentC35",
+            "galleryComponentC36",
+            "galleryDemoBadge",
+            "galleryDevelopmentCandidateBadge",
+            "galleryExploreCategoriesTitle",
+            "galleryIconsNav",
+            "galleryLaunchRecipe",
+            "galleryLocaleSwitch",
+            "galleryLocaleSwitchValue",
+            "galleryMetricComponents",
+            "galleryMetricIcons",
+            "galleryNotFoundTitle",
+            "galleryOverviewNav",
+            "galleryProvenanceNav",
+            "galleryRecipeBadge",
+            "galleryRecipeFormDescription",
+            "galleryRecipeFormNav",
+            "galleryRecipeFormTitle",
+            "galleryRecipeOverlayDescription",
+            "galleryRecipeOverlayNav",
+            "galleryRecipeOverlayTitle",
+            "galleryRecipeTableDescription",
+            "galleryRecipeTableNav",
+            "galleryRecipeTableTitle",
+            "galleryRecipesTitle",
+            "galleryReducedMotionOff",
+            "galleryReducedMotionOn",
+            "galleryReturnOverview",
+            "gallerySearchAction",
+            "gallerySearchTooltip",
+            "galleryTextScaleTooltip",
+            "galleryThemeDark",
+            "galleryThemeLight",
+            "galleryThemeTooltip",
+            "galleryWelcomeSubtitle",
+            "galleryWelcomeTitle",
+            "imagePreviewCloseLabel",
+            "imagePreviewDefaultSemanticLabel",
+            "inputClearLabel",
+            "loading",
+            "localeName",
+            "localizationsDelegates",
+            "modalCloseLabel",
+            "modalConfirm",
+            "modalContinue",
+            "notificationDismissLabel",
+            "now",
+            "paginationNext",
+            "paginationPrevious",
+            "paginationSkipBackward",
+            "paginationSkipForward",
+            "progressLabel",
+            "provenanceApiHash",
+            "provenanceBuildSdk",
+            "provenanceDescription",
+            "provenanceLicense",
+            "provenancePackageIdentity",
+            "provenanceReleaseIdentity",
+            "provenanceSourceCommit",
+            "provenanceTitle",
+            "provenanceUnavailable",
+            "provenanceUpstream",
+            "provenanceUpstreamValue",
+            "requiredField",
+            "selectClearLabel",
+            "selectPlaceholder",
+            "supportedLocales",
+            "switchSemanticLabel",
+            "tableLoadingLabel",
+            "tagRemoveLabel",
+            "timePickerPlaceholder",
+            "timePickerTitle",
+            "today",
+            "validationEmail",
+            "validationFailure",
+            "validationPattern",
+            "validationUrl"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {
+        "lookupAnimalLocalizations": {
+          "returnType": "AnimalLocalizations",
+          "parameters": [
+            "Locale locale"
+          ]
+        }
+      }
+    },
+    "lib/src/foundation/models/clock.dart": {
+      "classes": {
+        "AnimalClock": {
+          "constructors": [
+            "AnimalClock"
+          ],
+          "fields": []
+        },
+        "SystemClock": {
+          "constructors": [
+            "SystemClock"
+          ],
+          "fields": []
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/models/date.dart": {
+      "classes": {
+        "AnimalDate": {
+          "constructors": [
+            "AnimalDate",
+            "AnimalDate.fromDateTime",
+            "AnimalDate.today"
+          ],
+          "fields": [
+            "day",
+            "hashCode",
+            "month",
+            "year"
+          ]
+        },
+        "AnimalDateRange": {
+          "constructors": [
+            "AnimalDateRange"
+          ],
+          "fields": [
+            "end",
+            "hashCode",
+            "start"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/models/option.dart": {
+      "classes": {
+        "AnimalOption": {
+          "constructors": [
+            "AnimalOption"
+          ],
+          "fields": [
+            "disabled",
+            "hashCode",
+            "icon",
+            "label",
+            "semanticLabel",
+            "value"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/models/time.dart": {
+      "classes": {
+        "AnimalTimeValue": {
+          "constructors": [
+            "AnimalTimeValue",
+            "AnimalTimeValue.fromTimeOfDay",
+            "AnimalTimeValue.now"
+          ],
+          "fields": [
+            "hashCode",
+            "hour",
+            "minute",
+            "second"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/colors.dart": {
+      "classes": {
+        "AnimalThemeColors": {
+          "constructors": [
+            "AnimalThemeColors"
+          ],
+          "fields": [
+            "bg",
+            "bgContent",
+            "bgDisabled",
+            "bgInput",
+            "bgInputDisabled",
+            "bgSecondary",
+            "border",
+            "borderLight",
+            "brightness",
+            "dark",
+            "error",
+            "errorBg",
+            "errorText",
+            "focusYellow",
+            "hashCode",
+            "info",
+            "infoBg",
+            "infoText",
+            "light",
+            "onError",
+            "onPrimary",
+            "onSuccess",
+            "onWarning",
+            "primary",
+            "primaryActive",
+            "primaryBg",
+            "primaryText",
+            "success",
+            "successBg",
+            "successText",
+            "surfaceAlt",
+            "surfaceHeader",
+            "surfaceSubtle",
+            "text",
+            "textBody",
+            "textDisabled",
+            "textMuted",
+            "textSecondary",
+            "tileColors",
+            "warning",
+            "warningBg",
+            "warningText"
+          ]
+        },
+        "AnimalTileColors": {
+          "constructors": [
+            "AnimalTileColors"
+          ],
+          "fields": [
+            "background",
+            "foreground",
+            "hashCode"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalTileColor": [
+          "appBlue",
+          "appGreen",
+          "appOrange",
+          "appPink",
+          "appRed",
+          "appTeal",
+          "appYellow",
+          "brown",
+          "def",
+          "limeGreen",
+          "purple",
+          "warmPeachPink",
+          "yellowGreen"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/motion.dart": {
+      "classes": {
+        "AnimalThemeMotion": {
+          "constructors": [
+            "AnimalThemeMotion"
+          ],
+          "fields": [
+            "ease",
+            "fast",
+            "hashCode",
+            "normal",
+            "slow",
+            "spring",
+            "standard"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/radii.dart": {
+      "classes": {
+        "AnimalThemeRadii": {
+          "constructors": [
+            "AnimalThemeRadii"
+          ],
+          "fields": [
+            "card",
+            "cardBorder",
+            "hashCode",
+            "pill",
+            "pillBorder",
+            "sm",
+            "smBorder",
+            "standard",
+            "tooltip",
+            "tooltipBorder"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/shadows.dart": {
+      "classes": {
+        "AnimalThemeShadows": {
+          "constructors": [
+            "AnimalThemeShadows"
+          ],
+          "fields": [
+            "button3d",
+            "dark",
+            "hashCode",
+            "input3d",
+            "light",
+            "modal",
+            "softElevation"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/spacing.dart": {
+      "classes": {
+        "AnimalThemeSpacing": {
+          "constructors": [
+            "AnimalThemeSpacing"
+          ],
+          "fields": [
+            "hashCode",
+            "lg",
+            "md",
+            "sm",
+            "standard",
+            "xl",
+            "xs",
+            "xxl",
+            "xxs"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/theme.dart": {
+      "classes": {
+        "AnimalIslandTheme": {
+          "constructors": [
+            "AnimalIslandTheme"
+          ],
+          "fields": [
+            "colors",
+            "dark",
+            "hashCode",
+            "light",
+            "motion",
+            "radii",
+            "shadows",
+            "spacing",
+            "typography"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/typography.dart": {
+      "classes": {
+        "AnimalThemeTypography": {
+          "constructors": [
+            "AnimalThemeTypography"
+          ],
+          "fields": [
+            "body",
+            "button",
+            "caption",
+            "code",
+            "countdown",
+            "digitLarge",
+            "fontFamily",
+            "fontFamilyFallback",
+            "hashCode",
+            "heading",
+            "secondary",
+            "standard",
+            "subheading",
+            "title"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/icons/icon.dart": {
+      "classes": {
+        "AnimalIcon": {
+          "constructors": [
+            "AnimalIcon"
+          ],
+          "fields": [
+            "bounce",
+            "color",
+            "data",
+            "focusNode",
+            "monochrome",
+            "onTap",
+            "semanticLabel",
+            "size",
+            "strokeColor",
+            "strokeWidth"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/icons/icon_data.dart": {
+      "classes": {
+        "AnimalIconData": {
+          "constructors": [
+            "AnimalIconData",
+            "AnimalIconData.svg"
+          ],
+          "fields": [
+            "hashCode",
+            "name",
+            "semanticLabel",
+            "svg"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/icons/icons.g.dart": {
+      "classes": {
+        "AnimalIcons": {
+          "constructors": [
+            "AnimalIcons"
+          ],
+          "fields": [
+            "airplane",
+            "all",
+            "anchor",
+            "apple",
+            "balloon",
+            "bear",
+            "bee",
+            "bell",
+            "bicycle",
+            "bird",
+            "book",
+            "bookmark",
+            "bulb",
+            "butterfly",
+            "cactus",
+            "cake",
+            "calendar",
+            "camera",
+            "candle",
+            "car",
+            "cart",
+            "cat",
+            "chat",
+            "check",
+            "cherry",
+            "clock",
+            "close",
+            "cloud",
+            "code",
+            "coffee",
+            "compass",
+            "creditCard",
+            "dog",
+            "donut",
+            "download",
+            "edit",
+            "eye",
+            "file",
+            "fish",
+            "flag",
+            "flame",
+            "flower",
+            "folder",
+            "fox",
+            "frog",
+            "gift",
+            "globe",
+            "headphones",
+            "heart",
+            "home",
+            "icecream",
+            "image",
+            "key",
+            "ladybug",
+            "lamp",
+            "leaf",
+            "lemon",
+            "location",
+            "lock",
+            "magnet",
+            "mail",
+            "map",
+            "mic",
+            "moon",
+            "mushroom",
+            "music",
+            "owl",
+            "paintbrush",
+            "pencil",
+            "penguin",
+            "phone",
+            "play",
+            "plus",
+            "rabbit",
+            "rainbow",
+            "refresh",
+            "rocket",
+            "sailboat",
+            "save",
+            "search",
+            "settings",
+            "share",
+            "shoppingBag",
+            "smile",
+            "snail",
+            "snowflake",
+            "star",
+            "strawberry",
+            "sun",
+            "tag",
+            "thermometer",
+            "thumbsUp",
+            "train",
+            "trash",
+            "tree",
+            "trophy",
+            "umbrella",
+            "upload",
+            "user",
+            "values",
+            "video",
+            "watermelon",
+            "wifi"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    }
+  },
+  "sha256": "f9977f1933f4fc76a18f43fbc6ffcc42929dd9786331e051126b7d6549b0d2b9"
+}

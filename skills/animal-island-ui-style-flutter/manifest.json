@@ -1,0 +1,15 @@
+{
+  "name": "animal-island-ui-style-flutter",
+  "package": "animal_island_ui",
+  "version": "1.0.0",
+  "sdk": ">=3.47.5",
+  "dartSdk": ">=3.13.4 <4.0.0",
+  "publicApiSha256": "8521b94f0e832f7f6d501c19803d63ec80729185ee8176249b265cbb9d90f941",
+  "singleEntrypoint": "skills/animal-island-ui-style-flutter/SKILL.md",
+  "setupGuide": "skills/animal-island-ui-style-flutter/references/setup.md",
+  "componentsDirectory": "skills/animal-island-ui-style-flutter/references/components",
+  "componentsCount": 36,
+  "iconsCount": 101,
+  "totalReferences": 37,
+  "generator": "tool/generate_docs.dart"
+}

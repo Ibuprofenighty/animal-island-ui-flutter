@@ -19,7 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.13.3
+  sdk: ">=3.13.4 <4.0.0"
+  flutter: ">=3.47.5"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -40,6 +41,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -59,6 +62,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - licenses/BSD-3-Clause-Flutter-SDK.txt
+    - licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -69,16 +76,4 @@ flutter:
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/to/asset-from-package
-
-  # To configure the custom Animal Island UI typography, add the Nunito and
-  # ZCOOL KuaiLe font assets as shown below:
-  # fonts:
-  #   - family: Nunito
-  #     fonts:
-  #       - asset: assets/fonts/Nunito-Regular.ttf
-  #       - asset: assets/fonts/Nunito-Bold.ttf
-  #         weight: 700
-  #   - family: ZCOOL KuaiLe
-  #     fonts:
-  #       - asset: assets/fonts/ZCOOLKuaiLe-Regular.ttf
 

@@ -1,0 +1,16 @@
+﻿Animal Island UI (Flutter)
+Copyright (c) 2026 guokaigdg (Upstream project & visual identity)
+Copyright (c) 2026 ibuprofenighty (Flutter implementation)
+
+This product is based on and inspired by:
+- Upstream repository: https://github.com/guokaigdg/animal-island-ui
+- Upstream demo: https://guokaigdg.github.io/animal-island-ui/#/
+- License: Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+
+Third-Party Notices:
+- Animal Crossing is a trademark of Nintendo Co., Ltd.
+- Fonts: The bundled font files are the Nunito and Noto Sans SC variable fonts from the locked Google Fonts source commit, licensed under SIL Open Font License 1.1. Exact source files, hashes, weight axes, coverage scope and bundled license texts are recorded in `catalog/assets.lock.json` and `assets/licenses/`.
+- Icons: 101 vector SVG icons derived from upstream animal-island-ui design catalog under CC BY-NC 4.0.
+
+License scope:
+The current CC BY-NC 4.0 publication does not grant commercial reuse. Any future commercial distribution claim requires rights for the exact code and assets involved. This project's production-grade engineering acceptance does not require obtaining such authorization.

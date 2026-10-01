@@ -1,10 +1,40 @@
-﻿.idea/
-.vscode/
-build/
+# Dev & CI Tools
+.github/
+tool/
+scratch/
+test/
+
+# Internal catalogs & evidence
+catalog/
+evidence/
+north-star/
+governance/
+artifacts/
+
+# Documentation & Skills (shipped separately / online)
 docs/
 skills/
-scripts/
-example/
+
+# IDE & Editor caches
+.idea/
+.vscode/
 *.iml
 *.ipr
 *.iws
+
+# Build artifacts & caches
+build/
+.dart_tool/
+coverage/
+node_modules/
+
+# Example platform runner internals (desktop / mobile harnesses)
+example/android/
+example/ios/
+example/macos/
+example/linux/
+example/windows/
+example/web/
+example/build/
+example/.dart_tool/
+example/integration_test/

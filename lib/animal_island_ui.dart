@@ -10,79 +10,130 @@
 library;
 
 // =============================================================================
-// 1. Design Tokens
+// 1. Design Tokens & Foundation Models
 // =============================================================================
-export 'src/tokens/colors.dart';
-export 'src/tokens/typography.dart';
-export 'src/tokens/shadows.dart';
-export 'src/tokens/radii.dart';
-export 'src/tokens/theme.dart';
+export 'src/foundation/theme/colors.dart'
+    show AnimalThemeColors, AnimalTileColor, AnimalTileColors;
+export 'src/foundation/theme/typography.dart' show AnimalThemeTypography;
+export 'src/foundation/theme/shadows.dart' show AnimalThemeShadows;
+export 'src/foundation/theme/radii.dart' show AnimalThemeRadii;
+export 'src/foundation/theme/spacing.dart' show AnimalThemeSpacing;
+export 'src/foundation/theme/motion.dart' show AnimalThemeMotion;
+export 'src/foundation/theme/theme.dart' show AnimalIslandTheme;
+export 'src/foundation/forms/animal_validation_issue.dart'
+    show AnimalValidationIssue, AnimalValidationIssueKind;
+export 'src/foundation/localization/animal_locale_resolution.dart'
+    show resolveAnimalLocale;
+export 'src/foundation/localization/generated/animal_localizations.g.dart'
+    show AnimalLocalizations, lookupAnimalLocalizations;
+export 'src/foundation/models/option.dart' show AnimalOption;
+export 'src/foundation/models/date.dart' show AnimalDate, AnimalDateRange;
+export 'src/foundation/models/time.dart' show AnimalTimeValue;
+export 'src/foundation/models/clock.dart' show AnimalClock, SystemClock;
 
 // =============================================================================
-// 2. Low-level Primitives
+// 2. Overlay Realm & Scoped Host
 // =============================================================================
-export 'src/primitives/pressable.dart';
-export 'src/primitives/blob_clipper.dart';
-export 'src/primitives/ribbon_painter.dart';
+export 'src/components/overlay_host/overlay_host.dart'
+    show
+        AnimalOverlayController,
+        AnimalOverlayEntryHandle,
+        AnimalOverlayEntryState,
+        AnimalOverlayHost;
 
 // =============================================================================
 // 3. 101 Vector Icons
 // =============================================================================
-export 'src/icons/animal_icons.dart';
-export 'src/icons/icon_widget.dart';
+export 'src/icons/icon.dart' show AnimalIcon;
+export 'src/icons/icon_data.dart' show AnimalIconData;
+export 'src/icons/icons.g.dart' show AnimalIcons;
 
 // =============================================================================
 // 4. Canonical Component Categories (9 Distinct Design System Categories)
 // =============================================================================
 
 // Category 1: General (Button, Cursor, Typewriter, Icon)
-export 'src/components/general/button.dart';
-export 'src/components/general/cursor.dart';
-export 'src/components/general/typewriter.dart';
+export 'src/components/button/button.dart'
+    show AnimalButton, AnimalButtonSize, AnimalButtonTone, AnimalButtonVariant;
+export 'src/components/cursor/cursor.dart' show AnimalCursor, AnimalCursorType;
+export 'src/components/typewriter/typewriter.dart' show AnimalTypewriter;
 
-// Category 2: Layout (Card, Title, Divider, Background, Collapse, Tabs, Carousel)
-export 'src/components/layout/card.dart';
-export 'src/components/layout/title.dart';
-export 'src/components/layout/divider.dart';
-export 'src/components/layout/background.dart';
-export 'src/components/layout/collapse.dart';
-export 'src/components/layout/tabs.dart';
-export 'src/components/layout/carousel.dart';
+// Category 2: Structure & Navigation (Card, Title, Divider, Background, Collapse, Tabs, Carousel)
+export 'src/components/card/card.dart'
+    show AnimalCard, AnimalCardPattern, AnimalCardType;
+export 'src/components/title/title.dart' show AnimalTitle, AnimalTitleSize;
+export 'src/components/divider/divider.dart'
+    show AnimalDivider, AnimalDividerType;
+export 'src/components/background/background.dart'
+    show AnimalBackground, AnimalBackgroundType;
+export 'src/components/collapse/collapse.dart'
+    show AnimalCollapse, AnimalCollapseItem;
+export 'src/components/tabs/tabs.dart' show AnimalTabItem, AnimalTabs;
+export 'src/components/carousel/carousel.dart' show AnimalCarousel;
 
 // Category 3: Form Controls (Input, Switch, Checkbox, Radio, Select, DatePicker, TimePicker)
-export 'src/components/form_controls/input.dart';
-export 'src/components/form_controls/switch.dart';
-export 'src/components/form_controls/checkbox.dart';
-export 'src/components/form_controls/radio.dart';
-export 'src/components/form_controls/select.dart';
-export 'src/components/form_controls/date_picker.dart';
-export 'src/components/form_controls/time_picker.dart';
+export 'src/components/input/input.dart'
+    show AnimalInput, AnimalInputSize, AnimalInputStatus;
+export 'src/components/switch/switch.dart' show AnimalSwitch, AnimalSwitchSize;
+export 'src/components/checkbox/checkbox.dart'
+    show AnimalCheckbox, AnimalCheckboxSize;
+export 'src/components/checkbox/checkbox_group.dart' show AnimalCheckboxGroup;
+export 'src/components/radio/radio.dart' show AnimalRadio, AnimalRadioSize;
+export 'src/components/radio/radio_group.dart' show AnimalRadioGroup;
+export 'src/components/select/select.dart' show AnimalSelect;
+export 'src/components/date_picker/date_picker.dart'
+    show AnimalDatePicker, AnimalDatePickerMode;
+export 'src/components/time_picker/time_picker.dart' show AnimalTimePicker;
 
-// Category 4: Form Container (Form, FormItem)
-export 'src/components/form/form.dart';
+// Category 4: Form Container (Form, FormItem, Controller, Bindings, Validation)
+export 'src/components/form/form.dart' show AnimalForm;
+export 'src/components/form/form_controller.dart'
+    show AnimalFormController, AnimalSubmitResult, AnimalSubmitStatus;
+export 'src/components/form/form_item.dart' show AnimalFormItem;
+export 'src/components/form/field_key.dart' show AnimalFieldKey;
+export 'src/components/form/field_binding.dart' show AnimalFieldBinding;
+export 'src/components/form/validation.dart'
+    show AnimalRule, AnimalRuleType, AnimalValidationStatus;
 
 // Category 5: Overlays (Modal, Drawer, Tooltip)
-export 'src/components/overlays/modal.dart';
-export 'src/components/overlays/drawer.dart';
-export 'src/components/overlays/tooltip.dart';
+export 'src/components/modal/modal.dart' show AnimalModal;
+export 'src/components/drawer/drawer.dart'
+    show AnimalDrawer, AnimalDrawerPlacement;
+export 'src/components/tooltip/tooltip.dart'
+    show AnimalTooltip, AnimalTooltipVariant;
 
-// Category 6: Feedback (Progress, Loading, Skeleton, BackTop, Countdown, Time)
-export 'src/components/feedback/progress.dart';
-export 'src/components/feedback/loading.dart';
-export 'src/components/feedback/skeleton.dart';
-export 'src/components/feedback/back_top.dart';
-export 'src/components/feedback/countdown.dart';
-export 'src/components/feedback/time.dart';
+// Category 6: Feedback & Animation (Progress, Loading, Skeleton, BackTop, Countdown, Time)
+export 'src/components/progress/progress.dart'
+    show
+        AnimalProgress,
+        AnimalProgressInfoPosition,
+        AnimalProgressSize,
+        AnimalProgressStatus;
+export 'src/components/loading/loading.dart'
+    show AnimalLoading, AnimalLoadingHandle, AnimalLoadingType;
+export 'src/components/skeleton/skeleton.dart'
+    show AnimalSkeleton, AnimalSkeletonVariant;
+export 'src/components/back_top/back_top.dart' show AnimalBackTop;
+export 'src/components/countdown/countdown.dart'
+    show AnimalCountdown, AnimalCountdownSize, AnimalCountdownVariant;
+export 'src/components/time/time.dart' show AnimalTime;
 
 // Category 7: Notification (Notification Imperative API & Portal)
-export 'src/components/notification/notification.dart';
+export 'src/components/notification/notification.dart'
+    show
+        AnimalNotification,
+        AnimalNotificationPlacement,
+        AnimalNotificationType;
 
 // Category 8: Data Display (Table, Pagination, CodeBlock, Tag, Image)
-export 'src/components/data_display/table.dart';
-export 'src/components/data_display/pagination.dart';
-export 'src/components/data_display/code_block.dart';
-export 'src/components/data_display/tag.dart';
-export 'src/components/data_display/image.dart';
+export 'src/components/table/table.dart'
+    show AnimalTable, AnimalTableRowBuilder, AnimalTableRowKey;
+export 'src/components/table/table_column.dart' show AnimalTableColumn;
+export 'src/components/pagination/pagination.dart' show AnimalPagination;
+export 'src/components/code_block/code_block.dart' show AnimalCodeBlock;
+export 'src/components/tag/tag.dart'
+    show AnimalTag, AnimalTagSize, AnimalTagVariant;
+export 'src/components/image/image.dart' show AnimalImage, AnimalImageVariant;
 
 // Category 9: Decorative (Footer)
-export 'src/components/decorative/footer.dart';
+export 'src/components/footer/footer.dart' show AnimalFooter, AnimalFooterType;

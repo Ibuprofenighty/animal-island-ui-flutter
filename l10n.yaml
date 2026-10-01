@@ -1,0 +1,5 @@
+﻿arb-dir: lib/src/foundation/localization
+template-arb-file: animal_en.arb
+output-localization-file: animal_localizations.g.dart
+output-dir: lib/src/foundation/localization/generated
+output-class: AnimalLocalizations

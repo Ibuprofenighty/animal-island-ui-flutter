@@ -1,0 +1,90 @@
+name: Multi-Platform Build Verification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-web:
+    name: Build Web Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-toolchain
+      - name: Build Web
+        run: |
+          cd example
+          flutter pub get
+          flutter build web --release --base-href /animal-island-ui/
+
+  build-windows:
+    name: Build Windows Desktop
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-toolchain
+      - name: Build Windows
+        run: |
+          cd example
+          flutter pub get
+          flutter build windows --debug
+
+  build-linux:
+    name: Build Linux Desktop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-toolchain
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+      - name: Build Linux
+        run: |
+          cd example
+          flutter pub get
+          flutter build linux --debug
+
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-toolchain
+        with:
+          java: 'true'
+      - name: Build Android APK
+        run: |
+          cd example
+          flutter pub get
+          flutter build apk --debug
+
+  build-macos:
+    name: Build macOS Desktop
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-toolchain
+      - name: Build macOS
+        run: |
+          cd example
+          flutter pub get
+          flutter build macos --debug
+
+  build-ios:
+    name: Build iOS Runner
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-toolchain
+      - name: Build iOS (no code signing)
+        run: |
+          cd example
+          flutter pub get
+          flutter build ios --no-codesign --debug

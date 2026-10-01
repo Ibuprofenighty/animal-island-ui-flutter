@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "format": "animal_island_ui.sdk_lock.v1",
+  "verifiedDate": "2026-09-24",
+  "authority": {
+    "releaseMetadata": "https://storage.googleapis.com/flutter_infra_release/releases/releases_windows.json",
+    "channel": "stable",
+    "policy": "Only the recorded current SDK is certified; any SDK update requires a reviewed lock and new evidence."
+  },
+  "flutter": {
+    "frameworkVersion": "3.47.5",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+    "frameworkCommitDate": "2026-09-17 14:13:22 -0400",
+    "engineRevision": "af7e796e161ae0bb1ff0758c71a7105418bd9ded",
+    "engineCommitDate": "2026-09-16 18:35:09.000Z",
+    "engineContentHash": "ab598368592da0064197e2bc15c7f5b0a2c6bb1f",
+    "dartSdkVersion": "3.13.4",
+    "devToolsVersion": "2.60.0",
+    "archive": {
+      "url": "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.47.5-stable.zip",
+      "sha256": "0ccd71931f49c2fbe394b1eeb6d79af3d624058a043ea0d03d34160581624fb8",
+      "sizeBytes": 1933437428,
+      "platform": "windows-x64"
+    }
+  },
+  "constraints": {
+    "pubspecSdk": ">=3.13.4 <4.0.0",
+    "pubspecFlutter": ">=3.47.5"
+  },
+  "dependencyLocks": {
+    "root": {
+      "path": "pubspec.lock",
+      "sha256": "2518e8dcddc3a40f138e8b4332be840dba88d7e51c5f95ea94bc2b1e37f3c1e9"
+    },
+    "example": {
+      "path": "example/pubspec.lock",
+      "sha256": "f97ac1b0e449c6d258675b0cd54659d45af959aad31fa4f2f2c6b95fda8f9463"
+    },
+    "web": {
+      "path": "tool/web/package-lock.json",
+      "nodeMajor": 24,
+      "sha256": "0027ac66a3a7dd2fc9a507fbd38f6c5646bfefa6f397a8caf4e5bfb781e8f69c"
+    }
+  },
+  "ci": {
+    "javaVersion": "17",
+    "actions": {
+      "actions/checkout": "11bd71901bbe5b1630ceea73d27597364c9af683",
+      "actions/deploy-pages": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
+      "actions/setup-java": "8df1039502a15bceb9433410b1a100fbe190c53b",
+      "actions/setup-node": "60edb5dd545a775178f52524783378180af0d1f8",
+      "actions/upload-pages-artifact": "56afc609e74202658d3ffba0e8f6dda462b719fa",
+      "subosito/flutter-action": "44ac965b96f18d999802d4b807e3256d5a3f9fa1"
+    }
+  },
+  "host": {
+    "os": "Windows 11 (25H2)",
+    "architecture": "x64"
+  },
+  "securityExceptions": []
+}

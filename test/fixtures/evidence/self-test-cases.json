@@ -1,0 +1,15 @@
+{
+  "format": "animal_island_ui.evidence_test_cases.v1",
+  "cases": [
+    { "id": "deleted_log", "expected_rejection": "MISSING_ARTIFACT" },
+    { "id": "tampered_log_sha", "expected_rejection": "ARTIFACT_HASH_MISMATCH" },
+    { "id": "timeout", "expected_rejection": "COMMAND_TIMEOUT" },
+    { "id": "wrong_exit", "expected_rejection": "COMMAND_EXIT_MISMATCH" },
+    { "id": "unknown_schema", "expected_rejection": "UNKNOWN_SCHEMA" },
+    { "id": "cross_candidate", "expected_rejection": "CANDIDATE_MISMATCH" },
+    { "id": "path_traversal", "expected_rejection": "PATH_ESCAPE" },
+    { "id": "symlink", "expected_rejection": "SYMLINK_FORBIDDEN" },
+    { "id": "stale_source", "expected_rejection": "STALE_SOURCE" },
+    { "id": "ready_not_final", "expected_rejection": "READY_NOT_FINAL" }
+  ]
+}

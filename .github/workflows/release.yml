@@ -1,0 +1,17 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release packaging is not enabled
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refuse to publish
+        run: |
+          echo "Release packaging and publication are not enabled for this repository yet."
+          exit 1

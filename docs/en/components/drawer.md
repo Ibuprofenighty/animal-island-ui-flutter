@@ -1,0 +1,37 @@
+<!-- generated:api:start -->
+# AnimalDrawer
+
+## Import
+```dart
+import 'package:animal_island_ui/animal_island_ui.dart';
+```
+
+## Constructors
+- `AnimalDrawer`
+
+## Properties
+- `child`
+- `footer`
+- `height`
+- `onClose`
+- `placement`
+- `title`
+- `width`
+
+## Enums
+- `AnimalDrawerPlacement`
+
+<!-- generated:api:end -->
+
+## Locale behavior
+
+Default drawer and close semantics plus the route barrier label follow the active
+generated localization while the route remains open. The drawer title and child
+content are caller-owned.
+
+## Interaction and accessibility
+
+Each actionable part responds to pointer taps and, when focused, to Enter or Space, with matching accessibility semantics and focus handling. Where the component groups several items, keyboard navigation between them is handled by the component itself. Each action has a 48 logical-pixel hit target, adjacent actions do not overlap, and a pending activation is cancelled when the control loses focus, is disabled, is hidden, has its callback replaced, or is unmounted.
+
+## Example
+See [`drawer_story.dart`](../../../example/lib/stories/drawer_story.dart) in the example Gallery.

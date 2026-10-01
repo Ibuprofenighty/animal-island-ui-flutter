@@ -9,24 +9,33 @@
 .history
 .svn/
 migrate_working_dir/
+node_modules/
 
-# IntelliJ related
+# IntelliJ & IDE
 *.iml
 *.ipr
 *.iws
 .idea/
+.vscode/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-# Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
-/pubspec.lock
+# Flutter / Dart / Pub
+# pubspec.lock is tracked: catalog/sdk.lock.json pins its SHA-256.
 **/doc/api/
 .dart_tool/
 .flutter-plugins-dependencies
 build/
 /coverage/
 .codex/
+test-results/
+playwright-report/
+**/ephemeral/
+**/.last-run.json
+scratch/
+
+# Candidate evidence and per-candidate mirrors (never source; see AGENTS.md)
+/artifacts/
+/catalog/source.lock.json
+/evidence/static/
+
+# Local agent worktrees and settings
+/.claude/

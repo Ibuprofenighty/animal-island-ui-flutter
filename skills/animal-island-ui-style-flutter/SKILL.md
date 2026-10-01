@@ -1,55 +1,107 @@
 ---
 name: animal-island-ui-style-flutter
-description: >
-    Build Flutter UIs in the animal-island-ui style — a cozy island-style UI-inspired component
-    library (warm earth tones, 50px pill shapes, 3D game-button depth, soft motion).
-    Use when (1) building screens, widgets or pages with the animal_island_ui package in a Flutter
-    project; (2) creating standalone Flutter widgets in this style; (3) the user asks for
-    "a cozy island-style UI", "animal island style", or a cozy rounded game-like Flutter UI.
+description: Use the animal_island_ui Flutter package to compose cozy island-style interfaces, checking the package's actual public declarations before generating code.
 ---
 
-# animal-island-ui style (Flutter)
+# Animal Island UI consumer skill
 
-animal_island_ui is an enterprise-grade Flutter component library inspired by a cozy island-style UI design — 36 canonical components, 101 cute vector icons, zero 3rd-party UI dependencies.
+Build Flutter screens with `animal_island_ui`: 36 island-style components and
+101 vector icons. [中文镜像](SKILL.zh-CN.md) is a translation of this entry, not a
+separately installed skill.
 
-Canonical design system: https://github.com/guokaigdg/animal-island-ui
+## Read first
 
-## Pick your scenario first
+- [Package metadata](../../pubspec.yaml): SDK constraints and dependencies.
+- [Public root](../../lib/animal_island_ui.dart): the only import; check exported
+  symbols and required parameters here.
+- [Setup](references/setup.md), [theme and tokens](../../docs/en/tokens.md),
+  [Gallery workflows](../../docs/en/workflows.md).
+- License: CC BY-NC 4.0. Do not imply that it grants commercial use.
 
-| Scenario | Entry |
-| :--- | :--- |
-| Flutter project — `animal_island_ui` is in pubspec.yaml | [references/flutter-project.md](references/flutter-project.md) |
-| Standalone Dart / single-file Flutter widget prototyping | [references/standalone-dart.md](references/standalone-dart.md) |
+## Rules for using the package
 
-## The style in one paragraph
+1. Never invent parameters or enum values. Inspect the actual exported
+   constructor and make sure the code compiles against the package version in use.
+2. Import `package:animal_island_ui/animal_island_ui.dart`; do not import `src`
+   or reach into Gallery internals.
+3. Install the theme with `AnimalIslandTheme.light.toThemeData()`, the dark preset
+   or a custom theme's same conversion. Read its six token families (`colors`,
+   `typography`, `radii`, `spacing`, `shadows`, `motion`) through
+   `AnimalIslandTheme.of(context)`; a missing extension throws `StateError`. There
+   are no static token constants, and the theme is never inferred from host brightness.
+4. Keep one owner for each piece of state. Dispose only the controllers and
+   resources your code owns.
+5. `AnimalModal` and `AnimalDrawer` are shown as routes; `AnimalNotification` and
+   `AnimalLoading` are displayed in an overlay. Use each through its own API.
+6. Follow each component's own geometry and states; for example, the stacked depth
+   shadow belongs to filled primary and danger buttons, not to every widget.
+7. When customizing colors, keep readable foreground/background pairs and use the
+   semantic `*Text` roles for text on ordinary surfaces.
 
-Warm parchment backgrounds (`AnimalColors.bg` #F8F8F0), earth-brown text (`#794F27`, never pure black), mint-teal primary accent (`#19C8B9`), large-radius pill shapes (buttons and inputs are 50px pills; nothing interactive below 12px radius), 3D game button stacked shadow on primary buttons only (Offset(0, 5), blurRadius = 0), rounded Nunito + Noto Sans SC typography, soft spring curves over 150–350ms, and a mix of geometric shapes (swallowtail ribbon Title, digit-tile Countdown) with organic ones (SVG blob-clipped Modal).
+## Interaction
 
-## Component catalog
+Actionable components and interactive icons respond to pointer, Enter/Space and
+accessibility actions through one shared activation and focus behavior. Group
+controls (radio and checkbox groups, tabs) handle arrow/Home/End navigation.
+Hit targets are at least 48 logical pixels, and a pending activation is
+cancelled when focus is lost or the control is disabled, hidden or removed.
 
-Props and constructors are grouped by category under `references/components/`:
+## Localization and validation
 
-| Category | Components | Reference |
+`AnimalLocalizations` and `resolveAnimalLocale` are exported from the package root.
+Install the generated delegates and supported locales on the host `MaterialApp`;
+Chinese locales resolve to Chinese and missing or unsupported locales to English.
+`AnimalFormController.getFieldError` returns a locale-neutral `AnimalValidationIssue`
+for programmatic checks. Let `AnimalFormItem` display built-in issue text; do not
+add a second issue-to-message map. Caller-provided validation messages are shown
+as written.
+
+## Component references
+
+| Component | Slug | Reference |
 | :--- | :--- | :--- |
-| General | Button, Icon, Typewriter, Cursor | [general.md](references/components/general.md) |
-| Layout | Card, Title, Divider, Background, Collapse, Tabs, Carousel | [layout.md](references/components/layout.md) |
-| Form controls | Input, Switch, Checkbox, Radio, Select, DatePicker, TimePicker | [form-controls.md](references/components/form-controls.md) |
-| Form container | Form, FormItem | [Form.md](references/components/Form.md) |
-| Overlays | Modal, Drawer, Tooltip | [overlays.md](references/components/overlays.md) |
-| Feedback | Progress, Loading, Skeleton, BackTop, Countdown, Time | [feedback.md](references/components/feedback.md) |
-| Notification | Notification (imperative API) | [Notification.md](references/components/Notification.md) |
-| Data display | Table, Pagination, CodeBlock, Tag, Image | [data-display.md](references/components/data-display.md) |
-| Decorative | Footer | [decorative.md](references/components/decorative.md) |
+| `AnimalButton` | `button` | [button.md](references/components/button.md) |
+| `AnimalIcon` | `icon` | [icon.md](references/components/icon.md) |
+| `101 Icons Browser` | `icons` | [icons.md](references/components/icons.md) |
+| `AnimalTypewriter` | `typewriter` | [typewriter.md](references/components/typewriter.md) |
+| `AnimalCursor` | `cursor` | [cursor.md](references/components/cursor.md) |
+| `AnimalCard` | `card` | [card.md](references/components/card.md) |
+| `AnimalTitle` | `title` | [title.md](references/components/title.md) |
+| `AnimalDivider` | `divider` | [divider.md](references/components/divider.md) |
+| `AnimalBackground` | `background` | [background.md](references/components/background.md) |
+| `AnimalCollapse` | `collapse` | [collapse.md](references/components/collapse.md) |
+| `AnimalTabs` | `tabs` | [tabs.md](references/components/tabs.md) |
+| `AnimalCarousel` | `carousel` | [carousel.md](references/components/carousel.md) |
+| `AnimalInput` | `input` | [input.md](references/components/input.md) |
+| `AnimalSwitch` | `switch` | [switch.md](references/components/switch.md) |
+| `AnimalCheckbox` | `checkbox` | [checkbox.md](references/components/checkbox.md) |
+| `AnimalRadio` | `radio` | [radio.md](references/components/radio.md) |
+| `AnimalSelect` | `select` | [select.md](references/components/select.md) |
+| `AnimalDatePicker` | `date_picker` | [date_picker.md](references/components/date_picker.md) |
+| `AnimalTimePicker` | `time_picker` | [time_picker.md](references/components/time_picker.md) |
+| `AnimalForm` | `form` | [form.md](references/components/form.md) |
+| `AnimalFormItem` | `form_item` | [form_item.md](references/components/form_item.md) |
+| `AnimalModal` | `modal` | [modal.md](references/components/modal.md) |
+| `AnimalDrawer` | `drawer` | [drawer.md](references/components/drawer.md) |
+| `AnimalTooltip` | `tooltip` | [tooltip.md](references/components/tooltip.md) |
+| `AnimalProgress` | `progress` | [progress.md](references/components/progress.md) |
+| `AnimalLoading` | `loading` | [loading.md](references/components/loading.md) |
+| `AnimalSkeleton` | `skeleton` | [skeleton.md](references/components/skeleton.md) |
+| `AnimalBackTop` | `back_top` | [back_top.md](references/components/back_top.md) |
+| `AnimalCountdown` | `countdown` | [countdown.md](references/components/countdown.md) |
+| `AnimalTime` | `time` | [time.md](references/components/time.md) |
+| `AnimalNotification` | `notification` | [notification.md](references/components/notification.md) |
+| `AnimalTable` | `table` | [table.md](references/components/table.md) |
+| `AnimalPagination` | `pagination` | [pagination.md](references/components/pagination.md) |
+| `AnimalCodeBlock` | `code_block` | [code_block.md](references/components/code_block.md) |
+| `AnimalTag` | `tag` | [tag.md](references/components/tag.md) |
+| `AnimalImage` | `image` | [image.md](references/components/image.md) |
+| `AnimalFooter` | `footer` | [footer.md](references/components/footer.md) |
 
-## Hard rules (violations are bugs)
+## Workflows
 
-1. Never invent widget parameters. Every argument must exist on the Flutter class.
-2. Import only from package root: `import 'package:animal_island_ui/animal_island_ui.dart';`.
-3. Never use pure black text (`Colors.black`) or cold gray backgrounds. Use `AnimalColors.text` (or `AnimalIslandTheme.of(context).textPrimary`) and `AnimalColors.bg` (or `AnimalIslandTheme.of(context).bg`).
-4. Never use cold blue focus rings. Focus colors are warm yellow (`#FFCC00`) or mint primary.
-5. Never give an interactive element corners sharper than 12px radius; buttons and inputs are 50px pills.
-6. The 3D pixel-stack shadow (`Offset(0, 5)`) belongs to primary buttons only. Cards have no box-shadow. Switch has no outer blur shadow.
-7. Modal keeps its SVG blob clip-path (`AnimalBlobClipper`) — never a plain rectangle. Title is a swallowtail ribbon.
-8. Fonts are Nunito + Noto Sans SC; weight never below 400.
-9. Motion uses smooth spring curves over 150–350ms.
-10. Icons come from `AnimalIcon` or the 101 standalone icon widgets — never random raw emojis.
+Complete examples that combine several components:
+
+- [Form](references/recipes/form_workflow.md)
+- [Overlay](references/recipes/overlay_workflow.md)
+- [Data](references/recipes/data_workflow.md)

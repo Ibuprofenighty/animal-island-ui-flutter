@@ -1,0 +1,360 @@
+import 'package:flutter/material.dart';
+import 'package:animal_island_ui/animal_island_ui.dart';
+
+import '../gallery/story_card.dart';
+
+class FormWorkflowRecipe extends StatefulWidget {
+  const FormWorkflowRecipe({super.key});
+
+  @override
+  State<FormWorkflowRecipe> createState() => _FormWorkflowRecipeState();
+}
+
+class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
+  final _formController = AnimalFormController();
+  final _kUsername = const AnimalFieldKey<String>('username');
+  final _kEmail = const AnimalFieldKey<String>('email');
+  final _kRole = const AnimalFieldKey<String>('role');
+  final _kNotifications = const AnimalFieldKey<bool>('notifications');
+  final _kSkills = const AnimalFieldKey<List<String>>('skills');
+  final _kBirthDate = const AnimalFieldKey<AnimalDate>('birthDate');
+  final _kCheckInTime = const AnimalFieldKey<AnimalTimeValue>('checkInTime');
+
+  String? _submissionResult;
+  bool _isSubmitting = false;
+
+  @override
+  void dispose() {
+    _formController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSubmit() async {
+    setState(() {
+      _isSubmitting = true;
+      _submissionResult = null;
+    });
+
+    final isValid = await _formController.validate();
+    if (!isValid) {
+      setState(() {
+        _isSubmitting = false;
+        _submissionResult =
+            'Validation failed! Please review the highlighted errors above.';
+      });
+      return;
+    }
+
+    // Simulated network delay
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    final values = _formController.values;
+    setState(() {
+      _isSubmitting = false;
+      _submissionResult =
+          'Registration successful for: ${values[_kUsername.name]} (${values[_kEmail.name]})\n'
+          'Role: ${values[_kRole.name]}, BirthDate: ${values[_kBirthDate.name]}, CheckIn: ${values[_kCheckInTime.name]}';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AnimalIslandTheme.of(context);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AnimalTitle(
+            size: AnimalTitleSize.large,
+            child: const Text('Recipe 1: Form Lifecycle & Async Validation'),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'End-to-end interactive workflow verifying typed field bindings, asynchronous race defense, and autofocus error recovery',
+            style: theme.typography.body.copyWith(
+              color: theme.colors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 24),
+          StoryCard(
+            title: 'Island Resident Registration Form',
+            capabilityIds: const [
+              'C19-FOR',
+              'C20-FI',
+              'C12-INP',
+              'C13-SW',
+              'C14-CHK',
+              'C15-RAD',
+              'C17-DAT',
+              'C18-TIM',
+              'F06',
+            ],
+            description: 'Demonstrates real form validation with asynchronous server checks (e.g. username taken), atomic reset, and focus management.',
+            child: AnimalForm(
+              controller: _formController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Username Field with async uniqueness validator
+                  AnimalFormItem<String>(
+                    fieldKey: _kUsername,
+                    label: 'Resident Nickname',
+                    required: true,
+                    rules: [
+                      AnimalRule.required(message: 'Nickname is required'),
+                      AnimalRule.length(
+                        min: 3,
+                        message: 'Nickname must be at least 3 characters',
+                      ),
+                      AnimalRule.custom((val) async {
+                        await Future.delayed(const Duration(milliseconds: 200));
+                        if (val?.toLowerCase() == 'taken') {
+                          return 'Nickname "taken" is already occupied on this island';
+                        }
+                        return null;
+                      }),
+                    ],
+                    builder: (context, binding) {
+                      return AnimalInput(
+                        value: binding.value,
+                        placeholder: 'Enter nickname (try "taken" to trigger async error)',
+                        status: binding.error != null
+                            ? AnimalInputStatus.error
+                            : AnimalInputStatus.normal,
+                        focusNode: binding.focusNode,
+                        clearable: true,
+                        prefix: const AnimalIcon(
+                          data: AnimalIcons.user,
+                          size: 18,
+                        ),
+                        onChanged: binding.onChanged,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Email Field
+                  AnimalFormItem<String>(
+                    fieldKey: _kEmail,
+                    label: 'Contact Email',
+                    required: true,
+                    rules: [
+                      AnimalRule.required(message: 'Email address is required'),
+                      AnimalRule.pattern(
+                        RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$'),
+                        message: 'Please provide a valid email format',
+                      ),
+                    ],
+                    builder: (context, binding) {
+                      return AnimalInput(
+                        value: binding.value,
+                        placeholder: 'resident@island.com',
+                        status: binding.error != null
+                            ? AnimalInputStatus.error
+                            : AnimalInputStatus.normal,
+                        focusNode: binding.focusNode,
+                        clearable: true,
+                        prefix: const AnimalIcon(
+                          data: AnimalIcons.mail,
+                          size: 18,
+                        ),
+                        onChanged: binding.onChanged,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Role Selection (Radio)
+                  AnimalFormItem<String>(
+                    fieldKey: _kRole,
+                    label: 'Island Role',
+                    initialValue: 'farmer',
+                    builder: (context, binding) {
+                      return AnimalRadioGroup<String>(
+                        value: binding.value,
+                        options: const [
+                          AnimalOption(
+                            label: 'Gardener & Farmer',
+                            value: 'farmer',
+                          ),
+                          AnimalOption(
+                            label: 'Fish & Marine Explorer',
+                            value: 'angler',
+                          ),
+                          AnimalOption(
+                            label: 'Town Decorator',
+                            value: 'designer',
+                          ),
+                        ],
+                        onChanged: binding.onChanged,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Birth Date (DatePicker)
+                  AnimalFormItem<AnimalDate>(
+                    fieldKey: _kBirthDate,
+                    label: 'Island Arrival Date',
+                    required: true,
+                    rules: [
+                      AnimalRule.required(
+                        message: 'Please choose an arrival date',
+                      ),
+                    ],
+                    builder: (context, binding) {
+                      return AnimalDatePicker.popover(
+                        value: binding.value,
+                        placeholder: 'Pick arrival date',
+                        onChanged: binding.onChanged,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Daily Check-in Time (TimePicker)
+                  AnimalFormItem<AnimalTimeValue>(
+                    fieldKey: _kCheckInTime,
+                    label: 'Daily Gathering Time',
+                    builder: (context, binding) {
+                      return AnimalTimePicker.popover(
+                        value: binding.value,
+                        placeholder: 'Select gathering hour & minute',
+                        onChanged: binding.onChanged,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Skills Checkbox Group
+                  AnimalFormItem<List<String>>(
+                    fieldKey: _kSkills,
+                    label: 'Island Activities & Interests',
+                    initialValue: const ['crafting'],
+                    builder: (context, binding) {
+                      return AnimalCheckboxGroup<String>(
+                        value: binding.value ?? const [],
+                        options: const [
+                          AnimalOption(
+                            label: 'Fruit Harvesting',
+                            value: 'harvest',
+                          ),
+                          AnimalOption(
+                            label: 'Tool Crafting',
+                            value: 'crafting',
+                          ),
+                          AnimalOption(
+                            label: 'Fossil Hunting',
+                            value: 'fossils',
+                          ),
+                        ],
+                        onChanged: binding.onChanged,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Notification Switch
+                  AnimalFormItem<bool>(
+                    fieldKey: _kNotifications,
+                    label: 'Island Bulletin Notifications',
+                    initialValue: true,
+                    builder: (context, binding) {
+                      return Row(
+                        children: [
+                          AnimalSwitch(
+                            value: binding.value ?? false,
+                            onChanged: binding.onChanged,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            (binding.value ?? false)
+                                ? 'Receive morning announcements'
+                                : 'Muted',
+                            style: theme.typography.body,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  // Action Buttons
+                  Row(
+                    children: [
+                      AnimalButton(
+                        variant: AnimalButtonVariant.filled,
+                        tone: AnimalButtonTone.primary,
+                        icon: const AnimalIcon(
+                          data: AnimalIcons.check,
+                          size: 18,
+                        ),
+                        onPressed: _isSubmitting ? null : _handleSubmit,
+                        child: Text(
+                          _isSubmitting
+                              ? 'Registering...'
+                              : 'Submit Application',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      AnimalButton(
+                        variant: AnimalButtonVariant.outlined,
+                        tone: AnimalButtonTone.neutral,
+                        icon: const AnimalIcon(
+                          data: AnimalIcons.refresh,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          _formController.reset();
+                          setState(() => _submissionResult = null);
+                        },
+                        child: const Text('Reset Form'),
+                      ),
+                      const SizedBox(width: 12),
+                      AnimalButton(
+                        variant: AnimalButtonVariant.text,
+                        onPressed: () {
+                          _formController.clear();
+                          setState(() => _submissionResult = null);
+                        },
+                        child: const Text('Clear All'),
+                      ),
+                    ],
+                  ),
+                  if (_submissionResult != null) ...[
+                    const SizedBox(height: 20),
+                    AnimalCard(
+                      child: Row(
+                        children: [
+                          AnimalIcon(
+                            data: _submissionResult!.startsWith('Registration')
+                                ? AnimalIcons.check
+                                : AnimalIcons.close,
+                            size: 24,
+                            color: _submissionResult!.startsWith('Registration')
+                                ? theme.colors.success
+                                : theme.colors.error,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _submissionResult!,
+                              style: theme.typography.body.copyWith(
+                                color:
+                                    _submissionResult!.startsWith(
+                                      'Registration',
+                                    )
+                                    ? theme.colors.success
+                                    : theme.colors.error,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

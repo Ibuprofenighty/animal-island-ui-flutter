@@ -1,0 +1,2539 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "comment": "Locked asset provenance and rights ledger for animal_island_ui",
+  "lockedAt": "2026-09-25T09:27:51Z",
+  "icons": {
+    "count": 101,
+    "canonicalSource": "https://github.com/guokaigdg/animal-island-ui",
+    "license": "CC BY-NC 4.0",
+    "storageStrategy": "generated immutable descriptor (AnimalIconData in icons.g.dart)",
+    "noDuplicationRule": "Zero standalone widget wrappers; single AnimalIcon renderer",
+    "manifest": {
+      "airplane": {
+        "path": "assets/icons/source/airplane.svg",
+        "sha256": "91e4e980d72543a573e92d38c89e923e95d1c787a038d6033f28ae927105f93c",
+        "bytes": 329,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/airplane.svg",
+          "sha256": "b1cd47b57d834de173fdfed56a3daafddcedffd98b67ed0c72cbb6a9473b358d",
+          "bytes": 328,
+          "gitBlobSha1": "bdd8810de44cf06adeaa30db34968dc96b8aca9e",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "anchor": {
+        "path": "assets/icons/source/anchor.svg",
+        "sha256": "277ab3f90b762f3b312606a5d924cbd19d3e9cb707c5531fb3928e53ec016065",
+        "bytes": 518,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/anchor.svg",
+          "sha256": "f65c4719276b0475c96d3cf2f0eb4fbefec9af2dd0bb1f6850c2fbe97ce43f37",
+          "bytes": 517,
+          "gitBlobSha1": "0698dfad24c864855e9431c64714053b9d228fe6",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "apple": {
+        "path": "assets/icons/source/apple.svg",
+        "sha256": "ae00e54ee0b28ad0835a1b3520294f4d7ab6561247a6e9fbb22f8ce991d9acd5",
+        "bytes": 493,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/apple.svg",
+          "sha256": "92097e8b561293d4bf6163a3a98c2c4d43e0eecd26ed0cb1be98fc4ae2db16eb",
+          "bytes": 492,
+          "gitBlobSha1": "4b8798f4b384329595f9fb39496c4985bc9d5874",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "balloon": {
+        "path": "assets/icons/source/balloon.svg",
+        "sha256": "272dad82bb52094f3316dd09c6353223769dfc8145d44a9e8bb2d6d6a3a4151d",
+        "bytes": 641,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/balloon.svg",
+          "sha256": "400bb3d005aaaca70d20f2adbe5973a70fcaf9e4f5203f83dda8cca5aeab5465",
+          "bytes": 640,
+          "gitBlobSha1": "56ff4ca2a6021ebd2c9571baf9cb2f5a8f7182b4",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "bear": {
+        "path": "assets/icons/source/bear.svg",
+        "sha256": "3786ebc9023ce94225c4527dd2f97af6b1d37d70785de31b357c9cf4eed10ba0",
+        "bytes": 841,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/bear.svg",
+          "sha256": "3f6937474f049f6e61f3b165bf98a5d5893275182740ad3b4433711d557a35c2",
+          "bytes": 840,
+          "gitBlobSha1": "cc0ad7849d89499ead7e8e76d100477fe8be33fa",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "bee": {
+        "path": "assets/icons/source/bee.svg",
+        "sha256": "2b4749dcf8a5d7084d561e439e50ec9f925c9a41e77dbee53988b2ca58f4723b",
+        "bytes": 926,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/bee.svg",
+          "sha256": "176766b30ed502c7d597494454668dfa1f41737153fdc61fee17cf3aa5974ec8",
+          "bytes": 925,
+          "gitBlobSha1": "ff19968c6fad5d45ad5b2a65ed656610fabf8f00",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "bell": {
+        "path": "assets/icons/source/bell.svg",
+        "sha256": "1ec030a555dd8885550fd3f91ce393a93e886243a79a4749e68be7f478f48075",
+        "bytes": 430,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/bell.svg",
+          "sha256": "664a812bd962e94ac8919c378d6f1c0b2e24b1e3a7ea7a6c9c344b2154d8c555",
+          "bytes": 429,
+          "gitBlobSha1": "a5e377b06ccb75d749551987872e13695647bb55",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "bicycle": {
+        "path": "assets/icons/source/bicycle.svg",
+        "sha256": "e56f9da748711baed41eba129b5efaff32b2f531ac24a068a77e18aef6a1de26",
+        "bytes": 867,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/bicycle.svg",
+          "sha256": "2c05019d987a1e69136aa4ab8b4dfe708ec29a8b5cba779f9629d264cc47b231",
+          "bytes": 866,
+          "gitBlobSha1": "6c92f10e073006d1665e8f70b38f91f38a3160bf",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "bird": {
+        "path": "assets/icons/source/bird.svg",
+        "sha256": "570c876bef971d540e7553743b0c0eed810c8acc37440e8f4637f3cc30285cf6",
+        "bytes": 415,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/bird.svg",
+          "sha256": "ff25f5f4a388cf8600c8898a0717bc87c86edf239c0319c11927493823a94289",
+          "bytes": 414,
+          "gitBlobSha1": "7bf91e839ea55508260d3d381f54593f985697c2",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "book": {
+        "path": "assets/icons/source/book.svg",
+        "sha256": "790316c02c83a8fc726e28f553bcc657c16675bcdb52e6d7d0151f6430724961",
+        "bytes": 477,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/book.svg",
+          "sha256": "da0f7d50494169c74ce369ed79fe8340eb488e7dc34a8c510c4dacb855d6f658",
+          "bytes": 476,
+          "gitBlobSha1": "91313144e35b4ced24207287352d7e3c34d9dabe",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "bookmark": {
+        "path": "assets/icons/source/bookmark.svg",
+        "sha256": "fdb0c5148c8cd009581dcc60e33be8acc3bfb2833be5b5a78b4cbbe5e558b81d",
+        "bytes": 285,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/bookmark.svg",
+          "sha256": "08d6238929c2397f3923b4318c6903b2e28d5ae308eb2d9c226aa37ceffa89bb",
+          "bytes": 284,
+          "gitBlobSha1": "5a04af1ccbdde5174c6695ac7ce70b0026529914",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "bulb": {
+        "path": "assets/icons/source/bulb.svg",
+        "sha256": "2ed96a738dc558f452587adb17c639f550b67a323b88c729fed7063dc2aa3b5d",
+        "bytes": 472,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/bulb.svg",
+          "sha256": "6e4d24fa6b0685a45ba47c691e7dd866ad7cc88acfbe3bf8b6aaa5943acea787",
+          "bytes": 471,
+          "gitBlobSha1": "bfc4aafdb2ea42d85f77e52356f1e95113495052",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "butterfly": {
+        "path": "assets/icons/source/butterfly.svg",
+        "sha256": "35fc5ebb3010a3370615080e3b75669df193b3e0fa0896bf07bb69f6d9597eb8",
+        "bytes": 890,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/butterfly.svg",
+          "sha256": "da737e635099086875aaa3934d64036405caf4eb559d653215afc887a0e05516",
+          "bytes": 889,
+          "gitBlobSha1": "6a3ec30c06251bd8a1204f2a302f3c13578b7039",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "cactus": {
+        "path": "assets/icons/source/cactus.svg",
+        "sha256": "8e719b75a5137deca0aa58b83b8aef09d2c1579e31d8e5c465d78154a2549640",
+        "bytes": 866,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/cactus.svg",
+          "sha256": "94dfa2e2d81bd6f17a437d8a2806ddbe5648bbb89022b6560928d71e14b9af85",
+          "bytes": 865,
+          "gitBlobSha1": "3a97a60912dc8c6cc96cd2b9d158abef554b6fda",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "cake": {
+        "path": "assets/icons/source/cake.svg",
+        "sha256": "e8b75127d1066c21ecf7b7b980c7b4321b2ed96f5146d724061eeffbee4e1046",
+        "bytes": 623,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/cake.svg",
+          "sha256": "a304d3a73bd6abc86b5a77c1969bcc4690992ad4099937e45762c4038ebe4441",
+          "bytes": 622,
+          "gitBlobSha1": "dc0cd912bf43cb97cb0a29436f0bd2931f3f38b4",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "calendar": {
+        "path": "assets/icons/source/calendar.svg",
+        "sha256": "c3be2948047b6561b77aa80ded50ffc2806b313854c7a829db6a4ea7fdcd0c40",
+        "bytes": 611,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/calendar.svg",
+          "sha256": "cacf12b5a7a25fecc2fed67b52f09222f0460cf53d5df0dcd7d6473e6b11d318",
+          "bytes": 610,
+          "gitBlobSha1": "b417945c2e6eef4a583a2ffad9877e82161f8b35",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "camera": {
+        "path": "assets/icons/source/camera.svg",
+        "sha256": "f3a0cd71b800d4b58b036b2dbb4e40cdd92df5a0cc6400f55460369e63a9c781",
+        "bytes": 436,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/camera.svg",
+          "sha256": "81106647a3ad5e4d3c00e5c1b939d46a48f9965efaa952f04eb69eff90642a74",
+          "bytes": 435,
+          "gitBlobSha1": "1a45249d8d3c567cda7a5caee96037429453b4ce",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "candle": {
+        "path": "assets/icons/source/candle.svg",
+        "sha256": "3d9df90ab00e70d30858637a55671998b6ca9f5cd76b89437cfe55a08d195951",
+        "bytes": 616,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/candle.svg",
+          "sha256": "6e23801d7d87414827a9986372179d97c88c3ad5077c6fc6ed13fb1978b9ab95",
+          "bytes": 615,
+          "gitBlobSha1": "dcdd34f51c9fdbdda34b1e47f245e1a518b7b8e4",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "car": {
+        "path": "assets/icons/source/car.svg",
+        "sha256": "4e7c63a890ebc6063fab3152ab46967ddf101f7da6c9c9bf0a65d293d9287b4f",
+        "bytes": 381,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/car.svg",
+          "sha256": "a71718c3c6e72541d95af944d0c0da137f7c57adbe86d57401798a311d1a56dd",
+          "bytes": 380,
+          "gitBlobSha1": "ac12f9a2bb4d305861865d1e21227346445f6886",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "cart": {
+        "path": "assets/icons/source/cart.svg",
+        "sha256": "668727f81301fabf9aa91eaf3a956c3c4ad819d9b0fd88e8bd5891c5d8e37c0a",
+        "bytes": 323,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/cart.svg",
+          "sha256": "bbc82c2a2efa02a247b568e5ae858d4b36857ac847dcdd68b9687ebe584992a0",
+          "bytes": 322,
+          "gitBlobSha1": "64b4cb93e140abab65d3ed2ac567ebf1f59d45da",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "cat": {
+        "path": "assets/icons/source/cat.svg",
+        "sha256": "f153ed336301fcf5b3dbc41e6f0338fac2001e8718bf83cc8a2781959446f961",
+        "bytes": 616,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/cat.svg",
+          "sha256": "e366f2179a7de6a144993f6d2dfdf3f76f96e60e46027735ea93a7feec34a886",
+          "bytes": 615,
+          "gitBlobSha1": "f2a25a08688e85e62e5d1983ee734efd61dcfe7a",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "chat": {
+        "path": "assets/icons/source/chat.svg",
+        "sha256": "feb52f25657eca2ef07668aa9c574a3d597a1e5497307a0b6f2116c85f25c5fa",
+        "bytes": 386,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/chat.svg",
+          "sha256": "be73233ce9dcdef6ac05e6255edb170dbdcc59dac77484c3804535fc5defee3e",
+          "bytes": 385,
+          "gitBlobSha1": "611d7e254edfcd8a95f48274eb6b7ce8fbdabab8",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "check": {
+        "path": "assets/icons/source/check.svg",
+        "sha256": "20714e339fe189f8bec6c391a24ed7cc06b95815edd7ee426a4b417dedab1c9f",
+        "bytes": 296,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/check.svg",
+          "sha256": "16c4c7b27d82c13a528c56cf74dd10b07b5fc69f043d639435760d25838ec0fb",
+          "bytes": 295,
+          "gitBlobSha1": "b7e45704da1cdd7abc809732ef947d6bd4e72a1b",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "cherry": {
+        "path": "assets/icons/source/cherry.svg",
+        "sha256": "c84f3a4fa6a5a85b6212023ed55993577e4586127fc1401cf0ec0d2f56ca8774",
+        "bytes": 613,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/cherry.svg",
+          "sha256": "4d52e2feec216fab909f6734c02e2efd91952d102bd27a493dc90f596cced9eb",
+          "bytes": 612,
+          "gitBlobSha1": "da2c03a62a5d965503eefbb1b167caebd49e1628",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "clock": {
+        "path": "assets/icons/source/clock.svg",
+        "sha256": "1cad29926fdb7398371268b337b1e3711624913ad215354ea69bff68116b30bc",
+        "bytes": 378,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/clock.svg",
+          "sha256": "c36b984e3ee989f3dfb3a0c0d779d11a9f07c057ab8ac2df8198fbdd7463d5c7",
+          "bytes": 377,
+          "gitBlobSha1": "208bc8fbf9928f0921d745d30643baf44b948c49",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "close": {
+        "path": "assets/icons/source/close.svg",
+        "sha256": "e1c0544c3998ecb468209279ea7812bfefc971586d05b68233889f1ad142aa28",
+        "bytes": 337,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/close.svg",
+          "sha256": "4d23f21cff2b630d4c9aaf58603a10bf3bcf9af84d3e666f01d406113440fd1f",
+          "bytes": 336,
+          "gitBlobSha1": "883828c91cca18b84ecdba2f796bba499166db4c",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "cloud": {
+        "path": "assets/icons/source/cloud.svg",
+        "sha256": "9902da59c15fc1de55626051268d911c731dc0c5a8cba3ee8609f55392a9b8dd",
+        "bytes": 375,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/cloud.svg",
+          "sha256": "66528e35fea3099ec7666f047ac821e30d66a76fe3d1a3c38becae3c74dc72d5",
+          "bytes": 374,
+          "gitBlobSha1": "19f96f8d54f833ff0a41368e5820fb7f897927d4",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "code": {
+        "path": "assets/icons/source/code.svg",
+        "sha256": "438f760accfe453f0e8b96eb315b24ad9d6525c1877af9282282d705c6a70089",
+        "bytes": 386,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/code.svg",
+          "sha256": "ee5ded48ff2aa64b9c3317725e6f6bbb52db7dc40825e8349dacbc69b27d9c6d",
+          "bytes": 385,
+          "gitBlobSha1": "a8973b9e9ceed104833679fd3b3bf17d5e100e24",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "coffee": {
+        "path": "assets/icons/source/coffee.svg",
+        "sha256": "af606dcd403bfafc7ac6b3841707fff5fe62d7fc097fc8ee42f7c4721facb706",
+        "bytes": 533,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/coffee.svg",
+          "sha256": "ec04473d19625d13264249ddcc78ce22d2dc811843c3ac4ed3b382ef3f819b5d",
+          "bytes": 532,
+          "gitBlobSha1": "755145de0fe0920c59fc66f425e190cafd23d838",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "compass": {
+        "path": "assets/icons/source/compass.svg",
+        "sha256": "84d09ca04d67a5280aac7ae6dd754492c2eb516c765065a7d7255b7f56f2639a",
+        "bytes": 328,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/compass.svg",
+          "sha256": "97dce8dd8f1ea42b3ba44908f62db6028c79381d8133cfdc3de2fdacbb89f3e9",
+          "bytes": 327,
+          "gitBlobSha1": "77e93a05b2cc916f50385d0b6cb3384fdc148510",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "creditCard": {
+        "path": "assets/icons/source/creditCard.svg",
+        "sha256": "e939a912857efd4822f07466fd537b75b7ea70da24049ddd053a0645236e909d",
+        "bytes": 421,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/credit-card.svg",
+          "sha256": "ded9d248f5ae08e6601d1e764d81d91ec008fc2e66042f690ffb1b3f5cf3f7d5",
+          "bytes": 420,
+          "gitBlobSha1": "208da6068a210d2ddcce0a64fc623ac3a5647558",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "dog": {
+        "path": "assets/icons/source/dog.svg",
+        "sha256": "e3b7df7a9d32cf5bc1b76b2595803074e71dea0bfd7d118c29e4a8e5e41fc4af",
+        "bytes": 577,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/dog.svg",
+          "sha256": "41568904104f461c72852de33f1d32d9898a96c498f1c7be69de52437bd6f620",
+          "bytes": 576,
+          "gitBlobSha1": "e153792c26b8d8d3e30eec75b853b8a4aee73ae3",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "donut": {
+        "path": "assets/icons/source/donut.svg",
+        "sha256": "5114bb1b57f0a898ea8d53921e47ffea57a6ee45d837fc679476966c2147bd7f",
+        "bytes": 860,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/donut.svg",
+          "sha256": "4ff95ad47fb986af88ac017116d031eedbbe02694d88481b890e0fbd6b9603ad",
+          "bytes": 859,
+          "gitBlobSha1": "d95877c63f492a8cad28d7f0f905fa7359078ab9",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "download": {
+        "path": "assets/icons/source/download.svg",
+        "sha256": "03c2bc601b922fae456bff5bd89a12656b27b2d33ca2153168e1f36cb0db2dd0",
+        "bytes": 335,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/download.svg",
+          "sha256": "2447b33633800c3ad44196b85ff6bdf15f6ffaad8a1510ba135406d886b0d77e",
+          "bytes": 334,
+          "gitBlobSha1": "bc99fc646eadc8504c6a9d3f089fbe6a5ce4735b",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "edit": {
+        "path": "assets/icons/source/edit.svg",
+        "sha256": "79c6d7b6908be407857f6533850303a96549114541418864351c3eba3c555961",
+        "bytes": 345,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/edit.svg",
+          "sha256": "949155bb03404d6bc1c913ae45235327f1908ac36f086b5dbccfd40d57c75e5d",
+          "bytes": 344,
+          "gitBlobSha1": "bdf1c3b6e0cce0a2a2888a4d3e5c81ec3db40c09",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "eye": {
+        "path": "assets/icons/source/eye.svg",
+        "sha256": "295184fbf583688a91143087c30dba2c4b5349a827d1f1e2d14d5ad2b1ed07cb",
+        "bytes": 382,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/eye.svg",
+          "sha256": "ef150275f0effbfa66c8fd1fe5e5e5ab80b7b8a0cb81e0c23ed1631696981979",
+          "bytes": 381,
+          "gitBlobSha1": "1a61d631d4a93897bb5d9450ff961240ebef6ba1",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "file": {
+        "path": "assets/icons/source/file.svg",
+        "sha256": "46c6805ed91e2ff26ba769c97cd5daff52e3465bf44761b1c60571ce7ed894e1",
+        "bytes": 392,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/file.svg",
+          "sha256": "cc9dc9092e64f31b4bbbe1c5e82385b3cb7d0589fe5cffc9590fb72533e9873a",
+          "bytes": 391,
+          "gitBlobSha1": "758f1b1cea4588c9eb9e0a0fc52d365bbffef8ac",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "fish": {
+        "path": "assets/icons/source/fish.svg",
+        "sha256": "84ba671c7d601b9c86899be5f17c3f33a7b731a116dff7affd0da44a0d8c0e55",
+        "bytes": 399,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/fish.svg",
+          "sha256": "ae7dfe4a06a3e8bc654a6750cee95c99ac32f15d6cdb97dc45fc8299200537a0",
+          "bytes": 398,
+          "gitBlobSha1": "631c5d42a313f890f7b95ccfc95fd3c2834186d0",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "flag": {
+        "path": "assets/icons/source/flag.svg",
+        "sha256": "80e1c9c3ff599be3b43e66926b631153af5c3df2e1389143e99a378f215cfe5a",
+        "bytes": 354,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/flag.svg",
+          "sha256": "186014d3444eeee8e26159fba8243b5a8f6b66d907fa6ddbdacc8cf2a291ca12",
+          "bytes": 353,
+          "gitBlobSha1": "e71bb7d35e3015b2b79bf8ff0b182546749e16b7",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "flame": {
+        "path": "assets/icons/source/flame.svg",
+        "sha256": "51ada01eead4ff96dc27fd4af4ca03d4798d99ee0aba5c8ccb3232aeec280d86",
+        "bytes": 412,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/flame.svg",
+          "sha256": "b7b5ec6050e885baea45e00edb19b760c2cfe3d70855c0aa02aac274918bc97e",
+          "bytes": 411,
+          "gitBlobSha1": "6158a4180fb06a19f03252c211dee1d8b26cb21d",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "flower": {
+        "path": "assets/icons/source/flower.svg",
+        "sha256": "8965f19e28ad8e24d9ed75b4a2c7cf552481d87b343fbc926c58857acc86ae61",
+        "bytes": 445,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/flower.svg",
+          "sha256": "8dfb099988759dfde8d06b17d3972d3555e007324c2a0c6ae3626ed8acc7ac28",
+          "bytes": 444,
+          "gitBlobSha1": "abe5375196e539f6fd2c417e12d1d48827b3b5e7",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "folder": {
+        "path": "assets/icons/source/folder.svg",
+        "sha256": "c9b0b1acc32cd46b6023f567dfabd14db66ef039734b6bfd71c04b2f3846b656",
+        "bytes": 297,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/folder.svg",
+          "sha256": "9b43193e61c86c763ef354b81874a970ddddf099ea0851e3c2437655a214428f",
+          "bytes": 296,
+          "gitBlobSha1": "17d044c8d856974b0aa9fd5ce7b54996da3e5c3e",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "fox": {
+        "path": "assets/icons/source/fox.svg",
+        "sha256": "c6e072050940e309d5da0dc4a664f598419c9e25172985e71f04e41f686c4cb2",
+        "bytes": 712,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/fox.svg",
+          "sha256": "e702984897621ed7cffbb7179ab9fa20696d491ecb72f4e5a5cca47bf065a72d",
+          "bytes": 711,
+          "gitBlobSha1": "92b2b79f6591cca1d03f4d784bdfe75fb6c185da",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "frog": {
+        "path": "assets/icons/source/frog.svg",
+        "sha256": "8957c9c6b8bfbe8817cc41af23a6be8088e8b5a690d70b1c2e7061d4d8e69748",
+        "bytes": 690,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/frog.svg",
+          "sha256": "cdb5185fb4cc57a4876904fedb0f801edda6607c42abebc6d60ec63c6cb8b9a8",
+          "bytes": 689,
+          "gitBlobSha1": "e203dab1e879fd6e1eff2635f79dc1a9e65ae01a",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "gift": {
+        "path": "assets/icons/source/gift.svg",
+        "sha256": "188865c1088f285215920e3ba49bf4b80329178bdca9f23a31c158f49c8de275",
+        "bytes": 488,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/gift.svg",
+          "sha256": "444e4677e0c7fc0504dd2efb132be342be1d66914da39b51bd61325e7b08c016",
+          "bytes": 487,
+          "gitBlobSha1": "8957b3ef9ec506ae4554e4ec042c2aa7556022a3",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "globe": {
+        "path": "assets/icons/source/globe.svg",
+        "sha256": "b1ab672179842b30b17f2bee4ff3a16318fce21b82f55a4ca97770b69fdb934e",
+        "bytes": 636,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/globe.svg",
+          "sha256": "ece15978b65a84f11a255bf21d4fe2e38e7005fe0661bf35e0a20b165a0d395e",
+          "bytes": 635,
+          "gitBlobSha1": "a2d4bfacb30b4589c670c50eab065265aaaef37c",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "headphones": {
+        "path": "assets/icons/source/headphones.svg",
+        "sha256": "102bd6350f378784fd0483c2e23ddfd8e292943839c30de8734f6d3dba3da9f7",
+        "bytes": 399,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/headphones.svg",
+          "sha256": "a0c172f0ad06ec31d2506415d5c43c899730ed960453ffd044b3b25759845fa9",
+          "bytes": 398,
+          "gitBlobSha1": "8f2b9defafea5292b8214cda76f2eae5f743fe67",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "heart": {
+        "path": "assets/icons/source/heart.svg",
+        "sha256": "8d82082d146b71fda44dfa737649fc9d372cf32f60d51ed78cfdeb1c4c066bbf",
+        "bytes": 373,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/heart.svg",
+          "sha256": "6a494a46e21abe1d995cd97a50f2e0230e8d729b3c11ddfa3fd01d2957252d3f",
+          "bytes": 372,
+          "gitBlobSha1": "70dca888dee4b8fcbcbff807667c383bbd805533",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "home": {
+        "path": "assets/icons/source/home.svg",
+        "sha256": "1906def47c9ce584538dbf9cafd902fe7d9399cc1e2fb65bd5f6765723906dbd",
+        "bytes": 421,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/home.svg",
+          "sha256": "a99f049d83283b3aa8858d083f290ff5bdf64eaa2587e9b00ef9d1110ac503ef",
+          "bytes": 420,
+          "gitBlobSha1": "9ce267eca6d128299e66fe60b1a7b5f1072e1e07",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "icecream": {
+        "path": "assets/icons/source/icecream.svg",
+        "sha256": "482cea09e054c12f83dacfa4b23a61aaa43cbe37429577a73bc573f0ca47ec51",
+        "bytes": 579,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/icecream.svg",
+          "sha256": "d577a4dd5f4c848404f4fa70402db8b74f71565bc4a321b66d25aeb2169e5481",
+          "bytes": 578,
+          "gitBlobSha1": "662150e6deb9234d844cdfe0a5e9f1febdd4b314",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "image": {
+        "path": "assets/icons/source/image.svg",
+        "sha256": "fcd4f138fa7256f4bdecc8b382d618ab1c5481f5dac2ed8d3859c77868c36837",
+        "bytes": 383,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/image.svg",
+          "sha256": "99f1a1d5ad16a26c6d3032acb47972121f95aabdd153630c2ca24bd8588b9baf",
+          "bytes": 382,
+          "gitBlobSha1": "877d243f4f92a9d8e6b8f60cc8e3c64bb3177cad",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "key": {
+        "path": "assets/icons/source/key.svg",
+        "sha256": "eab659508e7d485d917f3e202b3869057e3b91a59cd0fdac9771be2b8a040a29",
+        "bytes": 438,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/key.svg",
+          "sha256": "f17acec1a8de0ec16f48c56600331c3951ca03103dc0161fccd02d4bd140e39c",
+          "bytes": 437,
+          "gitBlobSha1": "c59a0fea7d27672a8d48aa346be032c153c81b9e",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "ladybug": {
+        "path": "assets/icons/source/ladybug.svg",
+        "sha256": "3e010b69be7b9e9cdfaac8de2a2eda456c0dc87e3054ce04f82cd0ad307ec0a0",
+        "bytes": 687,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/ladybug.svg",
+          "sha256": "2ce24779040b123428885fe7b9a995587d35dfa5129e4e2c622074b84ccbd8d6",
+          "bytes": 686,
+          "gitBlobSha1": "63052f277b5bdcec409576ccc28c0cd7ff436ba7",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "lamp": {
+        "path": "assets/icons/source/lamp.svg",
+        "sha256": "10a4159ce54df0464d162bb44081cc9ec5d7aad8beea9742d6d3275e07dff4d4",
+        "bytes": 533,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/lamp.svg",
+          "sha256": "5688411d34a50ad10698d4616479f4557294954aa905fc99ef08b913f8a668e5",
+          "bytes": 532,
+          "gitBlobSha1": "d9157ab5a2af0151e4acae620e7d8af953c64a06",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "leaf": {
+        "path": "assets/icons/source/leaf.svg",
+        "sha256": "a5e79539c5e4b84bd8eced90b5854cec79ed9b1f3d73e2d08ccf26d865e8fdb3",
+        "bytes": 292,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/leaf.svg",
+          "sha256": "48b1f0399615527b8844eb1eafffc656e2dc652d647207b4b7b43400808d7732",
+          "bytes": 291,
+          "gitBlobSha1": "5f7411a1b23b2104f52173c2a6ffea18bc10c408",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "lemon": {
+        "path": "assets/icons/source/lemon.svg",
+        "sha256": "399a5ac5ded786752b3c57489213be451c00ceebff04d5a1be21e1eff5c0a2b8",
+        "bytes": 635,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/lemon.svg",
+          "sha256": "19996df8a175ed7e7d839307957cfd3f68ab71b0309e9e49b2ef4586422de7e5",
+          "bytes": 634,
+          "gitBlobSha1": "0100a94e46d2c0e98a23c1b48060bb9017adc12a",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "location": {
+        "path": "assets/icons/source/location.svg",
+        "sha256": "b7d03019e98bf2fa5487ac0e3e4053789f82656a5d875cb875ee01c12b5e21d9",
+        "bytes": 319,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/location.svg",
+          "sha256": "6e5340e45da4175d80fe75df16f4d5384a17ff6e3b4fc91dbad776764a75293a",
+          "bytes": 318,
+          "gitBlobSha1": "c4139ec1a7161db8954b3247a600dd40cb0c465a",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "lock": {
+        "path": "assets/icons/source/lock.svg",
+        "sha256": "694a104b32102b66a889573479f01f78ba350c1c01c57f45dbaae771d6c0dc0b",
+        "bytes": 432,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/lock.svg",
+          "sha256": "a22f46b3e5b4f292b2ad737a8342ca9915d7f61a14ef4f8a117413a9bf602928",
+          "bytes": 431,
+          "gitBlobSha1": "771e1ca073b9a5efe36d9715b42c10073daa55ab",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "magnet": {
+        "path": "assets/icons/source/magnet.svg",
+        "sha256": "5a4ff4404e7e51706360ecac3ec759510db660cbe2d840d604608b1a20b41ffd",
+        "bytes": 420,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/magnet.svg",
+          "sha256": "5f54d9cf7f61ee4111f1ef717013f8ec0316b46b33df459ae81e4540b4d1aacc",
+          "bytes": 419,
+          "gitBlobSha1": "7573fe64ca1f1d83527df6e43f740c33d99760f2",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "mail": {
+        "path": "assets/icons/source/mail.svg",
+        "sha256": "89e336b54307d73017eb820804daba970100734061e066d1fdfb49590b1fa829",
+        "bytes": 376,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/mail.svg",
+          "sha256": "7d5334aa7c553610e382f25e1eae140eded29b842939f67a97b12e8d5931325a",
+          "bytes": 375,
+          "gitBlobSha1": "ebdb47c3426a466b97d3824df91dc393fbbc80e8",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "map": {
+        "path": "assets/icons/source/map.svg",
+        "sha256": "2bee6b2d0c02cabc3b77e202fa370d89f9ae6aa873ca3041189ea28715fbdcbc",
+        "bytes": 532,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/map.svg",
+          "sha256": "a05e9db137252d20e78ec9fae7fa7ae39ed420ab2818910cfc1812b4d7800feb",
+          "bytes": 531,
+          "gitBlobSha1": "90939cdf79fa1d2d8208512def3a88ac7fd9d2d7",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "mic": {
+        "path": "assets/icons/source/mic.svg",
+        "sha256": "1987fdf748c5f19cd17879cc9eec63927bcf3dc7ade5fbe5eb169181b7a94ae6",
+        "bytes": 458,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/mic.svg",
+          "sha256": "ad4759547868ef1d49b32afcfe9dfd52827200a0f511fdf8ec70fa71b54f7e1c",
+          "bytes": 457,
+          "gitBlobSha1": "60ac3edcb9b3be37e99fa940e85554c1ce363661",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "moon": {
+        "path": "assets/icons/source/moon.svg",
+        "sha256": "af5395cff692491218ca40279a03c0d56309a0ff7564e3daca8ed32d4907bcb8",
+        "bytes": 374,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/moon.svg",
+          "sha256": "ce23d3606edbc99042b6d9f8d511aee0272dc7892285ca97d7100d833653b673",
+          "bytes": 373,
+          "gitBlobSha1": "f589519e9747a4e09cbaf13935c7f364d3088496",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "mushroom": {
+        "path": "assets/icons/source/mushroom.svg",
+        "sha256": "f75eea187ebc6ac6ab9350013f27dee5f1e007e36f8a3b4e5db807e000008a2f",
+        "bytes": 720,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/mushroom.svg",
+          "sha256": "ad6dcf94f1b1d271403256e5b07b9e81543cbda7e750666f1869580789af3f5f",
+          "bytes": 719,
+          "gitBlobSha1": "633f3631cde385167e1af95e11b2e1a50290dab1",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "music": {
+        "path": "assets/icons/source/music.svg",
+        "sha256": "9892edbda99b288695fddb60b40ca64aa68601b1add2779b413583b40cde5242",
+        "bytes": 402,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/music.svg",
+          "sha256": "5b51897e3012fa6ad87db6dbdc4abe079b06edda85698f21e18dcd84f77756ce",
+          "bytes": 401,
+          "gitBlobSha1": "8aa6773223a96613083e08122c973569188cfbd5",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "owl": {
+        "path": "assets/icons/source/owl.svg",
+        "sha256": "167085163f4ff73a2482a59d3a8a539c76a0ff24031cee47ff226333858fa3eb",
+        "bytes": 847,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/owl.svg",
+          "sha256": "5820a84062ddc6983bcb975185fac6dec779d964029d999d3a906548b9f0559a",
+          "bytes": 846,
+          "gitBlobSha1": "7fc9cd6a5f85a8e8f6babd6030246b899c0f2c27",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "paintbrush": {
+        "path": "assets/icons/source/paintbrush.svg",
+        "sha256": "d6ff05aabd2cbc7719aab615c83a895f62080a5affca483ee7b7e682e02128c4",
+        "bytes": 403,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/paintbrush.svg",
+          "sha256": "0f155d168617b7c41e5a52f3fa048f831901b2623903d96e1bae2c88d7a931dc",
+          "bytes": 402,
+          "gitBlobSha1": "a57782902e8d60aeac1c0f33db8e237cce62f6c6",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "pencil": {
+        "path": "assets/icons/source/pencil.svg",
+        "sha256": "cfb42ca1da6c9addbb12a08dce519b8a065822a15cfa573e1968959d6320b8ad",
+        "bytes": 452,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/pencil.svg",
+          "sha256": "d3a0ae64d16ab7993bb92a599b8ffdfa6d389a54b55a2e4cc12411c43e2461ff",
+          "bytes": 451,
+          "gitBlobSha1": "068e66c08bb8c34800dfcda76727d558138d98dc",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "penguin": {
+        "path": "assets/icons/source/penguin.svg",
+        "sha256": "f1ac17147d653c5d55998ecb62c90b87e16ddbabb8428080be4185a01a88868b",
+        "bytes": 778,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/penguin.svg",
+          "sha256": "2e9cbb5dfaa3c06e4bcd243aacc504d1f9fb736adedf6d79913bc725f214239f",
+          "bytes": 777,
+          "gitBlobSha1": "36b8c0ee9df43d9c057019cb3ec9ca43cf440598",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "phone": {
+        "path": "assets/icons/source/phone.svg",
+        "sha256": "6ec667b923489c0912c1565a4f68c4c2ecf104c65d83d211b4e73e7918e10e34",
+        "bytes": 313,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/phone.svg",
+          "sha256": "e96b9f157475bddf117c9d5cc6cd90aa0b9fdefde336af7dadf74ca2a70821d3",
+          "bytes": 312,
+          "gitBlobSha1": "0285db602f2494653bcf3391deeb78eec77c8da3",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "play": {
+        "path": "assets/icons/source/play.svg",
+        "sha256": "5c954ca7788372f2b754aec78b2e918c76f350bdb2f2c03a84bf0297a2f311a5",
+        "bytes": 261,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/play.svg",
+          "sha256": "0c90a9707c1fb2ef9c08bcd08345af17312eb95ec9022493e9655ff30d23eff5",
+          "bytes": 260,
+          "gitBlobSha1": "54fd125c7885034cec2a636296487bb894cda309",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "plus": {
+        "path": "assets/icons/source/plus.svg",
+        "sha256": "7291e9ef0e444949dcb5e1b3f042bba7793aea35b31ab87478e0c2a206ae6ed6",
+        "bytes": 337,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/plus.svg",
+          "sha256": "7705332cf7f998b355fb3ebf8eda0f2c48440ec94def35d0b2a3a56957073705",
+          "bytes": 336,
+          "gitBlobSha1": "dfa5fc1cb33da02fc757083b48f6d1127f73cde7",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "rabbit": {
+        "path": "assets/icons/source/rabbit.svg",
+        "sha256": "926a394f26475e44b0048fe1ba45c30df9163a009740e2646d498beeff4f8469",
+        "bytes": 986,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/rabbit.svg",
+          "sha256": "f2dae727f8d953d510f069b287b741a2c26d5b7cc6395bf7aa18f11431bb3bbd",
+          "bytes": 985,
+          "gitBlobSha1": "7e8def478e6f770bcf88ff3e0dbaef1c58614d89",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "rainbow": {
+        "path": "assets/icons/source/rainbow.svg",
+        "sha256": "57c0195d79a4bf7667893f0578d0555402edf8ecf92e547ca4bc5f712d052516",
+        "bytes": 624,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/rainbow.svg",
+          "sha256": "366c2fd0eb8a60f4b407fde244452acb740ac753b8b9b5950cf9f5bc59d34195",
+          "bytes": 623,
+          "gitBlobSha1": "c3b4819f43115af090a14cca72f43e2ea6750c99",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "refresh": {
+        "path": "assets/icons/source/refresh.svg",
+        "sha256": "d7b74ab7225ff409ce9851cae6855b6a74c397714f2932792e011e5c9b72a4ce",
+        "bytes": 308,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/refresh.svg",
+          "sha256": "963f5b94a3e42cb1b6cedf5c664c738b21fc4e642f6e350eb45ca2b9f2cb89e6",
+          "bytes": 307,
+          "gitBlobSha1": "d4ea571050804482e084b1410ccc3ff1e95e1278",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "rocket": {
+        "path": "assets/icons/source/rocket.svg",
+        "sha256": "ed5847eca521bdd96a49783ab68a953180223952da5b8e2f5f4e25e8fccdde1c",
+        "bytes": 459,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/rocket.svg",
+          "sha256": "2ec55c5171620226b7587bee9be79bba6abcb7901e3cc9ff3d190b87081eb5b1",
+          "bytes": 458,
+          "gitBlobSha1": "a9441552174133f7a27c9272bd2caef5d94684ed",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "sailboat": {
+        "path": "assets/icons/source/sailboat.svg",
+        "sha256": "53d7a94fb0c10d423c4e644529bf63e2ba7b855184f28c45396b57faf78cba76",
+        "bytes": 577,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/sailboat.svg",
+          "sha256": "bc5a0f037e341971c47c6fa072438e5fc70b03ec7003ae681f0ca895a7ed4c70",
+          "bytes": 576,
+          "gitBlobSha1": "c8f8c5718f1745866120078bd40c7b42a92373b2",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "save": {
+        "path": "assets/icons/source/save.svg",
+        "sha256": "3804257b261e97a6bfd35ea91c88d227301f853149fd1d27dda46e0e8a2f50f2",
+        "bytes": 489,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/save.svg",
+          "sha256": "f2affc1a723f115632d5499eca697c5e0d3bf14fed5580da13e00510082091d4",
+          "bytes": 488,
+          "gitBlobSha1": "920278b2b0e0e57c36ab7dc56fc91270572bc739",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "search": {
+        "path": "assets/icons/source/search.svg",
+        "sha256": "2ccfb7982854b8f7021735ac1431a2ae7bd85d5e914c0b8063a318467c0d5211",
+        "bytes": 320,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/search.svg",
+          "sha256": "71c801cf1eae8f85ca5cc2396851b49507ee5e9f37d3bbffe4d72ffdddbf7245",
+          "bytes": 319,
+          "gitBlobSha1": "f81e9181c3a1569187e7841466680baa553ee475",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "settings": {
+        "path": "assets/icons/source/settings.svg",
+        "sha256": "e44ea6c82e09e1fa00ebd8ef79f511b0554f540eb9e4fe71fcb0e015fb1a4cc9",
+        "bytes": 376,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/settings.svg",
+          "sha256": "75b3646f61ee6454444db2ed04e2411c8dc17a8beade4db6a980e8cf0e914e53",
+          "bytes": 375,
+          "gitBlobSha1": "4e36127d4250b59502af33ebc09fa923dac84fe2",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "share": {
+        "path": "assets/icons/source/share.svg",
+        "sha256": "91d055ab62ef54a08ebf5e53190f848bf5d3ae0594533b0192bcf52da4dc0e8d",
+        "bytes": 448,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/share.svg",
+          "sha256": "5eb00ed71df208ba6e14ae46bdca832aa959e296f8db19212b234880a29a8119",
+          "bytes": 447,
+          "gitBlobSha1": "e6658ea4d0fba8a9e02a0938a2ed29f66594b5c9",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "shoppingBag": {
+        "path": "assets/icons/source/shoppingBag.svg",
+        "sha256": "e3764ecafb0bb1e3e4caaa1f25ee5f301b7bbafa05526d28216c1c987257a839",
+        "bytes": 483,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/shopping-bag.svg",
+          "sha256": "ab6dc5fc77b07c178e0d08aec975053500a2f44fa037a31a4a24c8c1ddad483f",
+          "bytes": 482,
+          "gitBlobSha1": "077b8bdf42ec11c14c280e392f82be382f81084c",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "smile": {
+        "path": "assets/icons/source/smile.svg",
+        "sha256": "f099f48bf2613ffd08f8b8564a0574a22a82396a4b4e199cc30bb256039278c0",
+        "bytes": 486,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/smile.svg",
+          "sha256": "ce0bda2acc7ebe14ae55f28e988bf7aeeda2cf4c754887040e5e13e84ae02f39",
+          "bytes": 485,
+          "gitBlobSha1": "49764426ef2c2c9c891a6e13624aeb75fc268934",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "snail": {
+        "path": "assets/icons/source/snail.svg",
+        "sha256": "e0981bc704737024fac10a0cccfffc866f7a6a76548590545b2d98369891eac8",
+        "bytes": 786,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/snail.svg",
+          "sha256": "b82f63b8770eab6d5ad956cb73f884201d6440066279c6e1ed50831e1334614c",
+          "bytes": 785,
+          "gitBlobSha1": "60d5489b8b310b3d89b2c8fd9486eec7342f5c1a",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "snowflake": {
+        "path": "assets/icons/source/snowflake.svg",
+        "sha256": "69cd497000b954acb72aa57cb0c07556dae1598b47b7d87489a32ee6dfc02c48",
+        "bytes": 918,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/snowflake.svg",
+          "sha256": "1f03a3d97285a7824e9211322b67c3929fbafd5da77cfa316fd0d30dd3f83499",
+          "bytes": 917,
+          "gitBlobSha1": "62abcedc42af52026cab5d3e6f72c988faf2b40f",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "star": {
+        "path": "assets/icons/source/star.svg",
+        "sha256": "c83efa91a8d0a96b8515afbbcf604390ce32c8154f50ab8ded5ef9fb3ec61921",
+        "bytes": 358,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/star.svg",
+          "sha256": "ac3508dedb66b709121aba27e3c39b1344dae45ebef49a2c90bafe946d856549",
+          "bytes": 357,
+          "gitBlobSha1": "c4d33a179f2ae766f12e5f4316cddff53fce2bac",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "strawberry": {
+        "path": "assets/icons/source/strawberry.svg",
+        "sha256": "9d6f100288648fb90e820efb4be1dfc4c321499243264fa204298a0925436c2a",
+        "bytes": 653,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/strawberry.svg",
+          "sha256": "fbace9231420bbf92f6091e66666bc1f08af238270cf148b5c494eadca2ded4d",
+          "bytes": 652,
+          "gitBlobSha1": "cb7cee54f7842db3f3df1b96916bfb0b8cab5dbb",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "sun": {
+        "path": "assets/icons/source/sun.svg",
+        "sha256": "21d42fa00094566ecc138b77dceb64dabf4541fa59637acd7c8c5a6b607e5a41",
+        "bytes": 553,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/sun.svg",
+          "sha256": "1667c7fa2cda173874b6f9c9be5f4abdfa77e285f8882ae117f9f5aedf20a2fe",
+          "bytes": 552,
+          "gitBlobSha1": "6d3e4ef8d807b9d5f97269802fad516faae578a9",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "tag": {
+        "path": "assets/icons/source/tag.svg",
+        "sha256": "b22593043b9b0cc8e4430f838b20ce5ff49d119b4e09c792a024c9fd19ba3828",
+        "bytes": 272,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/tag.svg",
+          "sha256": "3f37f5face4f173bdf6d3ec1e92caa8c0bedc3786202837671a431ccaa2c4aaa",
+          "bytes": 271,
+          "gitBlobSha1": "9512fff696569b91eeee2784fca3b8b9608018e1",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "thermometer": {
+        "path": "assets/icons/source/thermometer.svg",
+        "sha256": "8d110d4825f3c5dd2c4d3eedeb01d87627ef1aa60ef5f35b8a477e327c756444",
+        "bytes": 395,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/thermometer.svg",
+          "sha256": "948b526a004f226160852c7e0a4ba9bb9ce745be079446af12d9fabc6a6455ff",
+          "bytes": 394,
+          "gitBlobSha1": "0a737ef6fa430cf8e3b65c1e2580e3a3341466a0",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "thumbsUp": {
+        "path": "assets/icons/source/thumbsUp.svg",
+        "sha256": "8bc277c6f8f27b5e2bcbef278349019e7330ab4474a4d181e1fc363c4b3f6036",
+        "bytes": 383,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/thumbs-up.svg",
+          "sha256": "5bba47b2031d84299f18e2c190130837d25eaef877c850f6540061f9e0afabd3",
+          "bytes": 382,
+          "gitBlobSha1": "0ca8ce81737a5c52bc3d8b4e821a5312ccf53eae",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "train": {
+        "path": "assets/icons/source/train.svg",
+        "sha256": "76e07a1da822ccf0da4180ec8642ac5b69062c49081f4a2ee927ca88bd77218b",
+        "bytes": 805,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/train.svg",
+          "sha256": "e536d4f51235f76a154f41dca1ab2b470024e80ed4e36c2e5a38b7311d2daa6c",
+          "bytes": 804,
+          "gitBlobSha1": "b18b1d4bca98e82e766ba507ef65042da762664b",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "trash": {
+        "path": "assets/icons/source/trash.svg",
+        "sha256": "9ae9781d44856cae661f947b56150883665048ffd7608836bcf274ff4458787c",
+        "bytes": 460,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/trash.svg",
+          "sha256": "e2f4999616b0b11138e076ef4f3693ef07ec87e858665b224d051f957d638205",
+          "bytes": 459,
+          "gitBlobSha1": "3f18bd236b1cab94491a40246020a5f60e6c72e3",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "tree": {
+        "path": "assets/icons/source/tree.svg",
+        "sha256": "311f35fc2f27ea4f428b2b418e036b1ac3ce14394df8fd3af8df2b9c2979281b",
+        "bytes": 368,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/tree.svg",
+          "sha256": "af5ff342d5c87c4c154ca7f3025b39cf0f29dc6b1ef35e46afde15c510e84350",
+          "bytes": 367,
+          "gitBlobSha1": "2f59d3eda5c0cf84ec432a20372299ccf23e3c35",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "trophy": {
+        "path": "assets/icons/source/trophy.svg",
+        "sha256": "ff318ed13488e7358c6fbbf3ea2166561d972dcf8c4a1fa0e94ea7f0e485d8f6",
+        "bytes": 678,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/trophy.svg",
+          "sha256": "566e5e9dd61b2eeeb8e5d8ef1ecb5e01edf7017adaca430fe24d6cf2c139a79c",
+          "bytes": 677,
+          "gitBlobSha1": "d169f02f37dd4b22d75d6464879e687b7fb8b1c7",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "umbrella": {
+        "path": "assets/icons/source/umbrella.svg",
+        "sha256": "6f86d64ea66da204309a4932861e71db28b4ee17d00c51ded21dd48574c30bd4",
+        "bytes": 495,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/umbrella.svg",
+          "sha256": "a69d15e3e16dbdce0a16d5c02f9bb7e3b3fec2c2d060c26fefcbd9cd286342b8",
+          "bytes": 494,
+          "gitBlobSha1": "c9b5ba1fff26898e502664200511eec5ca700e5b",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "upload": {
+        "path": "assets/icons/source/upload.svg",
+        "sha256": "fce0fd3736d82ce6569a93a823cc9d181c4b6f40d647500741f54032016cb1b7",
+        "bytes": 336,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/upload.svg",
+          "sha256": "3e131f70d28c62de08eb8a72da4f439ac08e24d1c169c1114a4aa6c86fb6b37f",
+          "bytes": 335,
+          "gitBlobSha1": "5575c69387d8f786deb51a17beaa80e64c3c532f",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "user": {
+        "path": "assets/icons/source/user.svg",
+        "sha256": "b8209f4a11b7488d9a0385ba2b3b70f6795d684f4859e65ad07e7adc58514c97",
+        "bytes": 442,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/user.svg",
+          "sha256": "46bc87999f9a135e1028ed6101d4744277d1618b7b152dd807861bad716f86a6",
+          "bytes": 441,
+          "gitBlobSha1": "070e763125498133d19bc9a7add9e6ec7be5a899",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "video": {
+        "path": "assets/icons/source/video.svg",
+        "sha256": "d1d330f293554aaf8d321ea653f823a8c3f79ef1869b3196d926ee13f4f9df3d",
+        "bytes": 341,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/video.svg",
+          "sha256": "3001f8a8573a867fb125e0eefd31226016d461880f865230b97bfe23bae97998",
+          "bytes": 340,
+          "gitBlobSha1": "384b027a81fba95dea046b79cbc40769e180dbcf",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "watermelon": {
+        "path": "assets/icons/source/watermelon.svg",
+        "sha256": "f86eb0eb6292d1be1363b645fa9c85ed1aaf060540b1bd1b3a1e56187f49fd53",
+        "bytes": 587,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/watermelon.svg",
+          "sha256": "9e0b8df5d705bd8f980f9181426ba28526af1242329a6ec7abacaa718baf5c84",
+          "bytes": 586,
+          "gitBlobSha1": "7b18ea9fc259658a7c6773ac120fb0d0557443a1",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      },
+      "wifi": {
+        "path": "assets/icons/source/wifi.svg",
+        "sha256": "11826d6a05a2f9e9411b4dc0a159d2d8043bd8273ee40e92ad111bded7485d85",
+        "bytes": 383,
+        "source": {
+          "repository": "https://github.com/guokaigdg/animal-island-ui",
+          "commit": "75d0a745ffd3847f909257aa4658617373611da7",
+          "path": "src/components/Icon/svg/wifi.svg",
+          "sha256": "8455805ed8dbbe807372a66c839df522034186eecf8a1c2f96adef00847beba2",
+          "bytes": 382,
+          "gitBlobSha1": "ac2410bb74992d278fd1de6dc958d4014c906fca",
+          "extraction": "xml_elements_attributes_and_non_whitespace_text_equal; serialized_whitespace_normalized"
+        },
+        "runtimeSerialization": "remove_one_terminal_lf"
+      }
+    }
+  },
+  "fonts": {
+    "status": "bundled",
+    "repository": "https://github.com/google/fonts",
+    "commit": "23e54b51ddffbc7713c583748e3bd86f62b1fa4a",
+    "sourceLicense": "SIL Open Font License 1.1",
+    "noRemoteFetch": true,
+    "chineseCoveragePolicy": "The Unicode cmap must contain every Han code point used by lib/src/foundation/localization/animal_zh.arb; this does not claim complete CJK coverage.",
+    "families": [
+      {
+        "family": "Nunito",
+        "consumerFamily": "packages/animal_island_ui/Nunito",
+        "assetPath": "assets/fonts/Nunito[wght].ttf",
+        "bytes": 276932,
+        "sha256": "bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207",
+        "source": {
+          "repository": "https://github.com/google/fonts",
+          "commit": "23e54b51ddffbc7713c583748e3bd86f62b1fa4a",
+          "path": "ofl/nunito/Nunito[wght].ttf",
+          "url": "https://github.com/google/fonts/blob/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/nunito/Nunito%5Bwght%5D.ttf",
+          "sha256": "bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207",
+          "bytes": 276932,
+          "gitBlobSha1": "2ec1f4b0676c83ef33049db87b311171699e9192"
+        },
+        "license": {
+          "identifier": "OFL-1.1",
+          "maintainedPath": "assets/licenses/OFL-Nunito.txt",
+          "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+          "bytes": 4385,
+          "sourcePath": "ofl/nunito/OFL.txt",
+          "sourceUrl": "https://github.com/google/fonts/blob/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/nunito/OFL.txt"
+        },
+        "sourceMetadata": {
+          "path": "ofl/nunito/METADATA.pb",
+          "sha256": "3e20743c7ddab54c6ac57d79a6be522d4bae795223855ce90a1b13c4132f0754",
+          "bytes": 1306,
+          "subsets": [
+            "cyrillic",
+            "cyrillic-ext",
+            "latin",
+            "latin-ext",
+            "menu",
+            "vietnamese"
+          ],
+          "languages": []
+        },
+        "variableAxis": {
+          "tag": "wght",
+          "min": 200.0,
+          "default": 200.0,
+          "max": 1000.0
+        },
+        "requestedWeights": [
+          400,
+          500,
+          600,
+          700,
+          900
+        ],
+        "pubspecRegistration": {
+          "assetCount": 1,
+          "explicitWeight": null,
+          "defaultWeight": 400,
+          "explanation": "One variable TTF is registered once. Flutter 3.41+ applies TextStyle.fontWeight to its wght axis."
+        }
+      },
+      {
+        "family": "Noto Sans SC",
+        "consumerFamily": "packages/animal_island_ui/Noto Sans SC",
+        "assetPath": "assets/fonts/NotoSansSC[wght].ttf",
+        "bytes": 17772300,
+        "sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+        "source": {
+          "repository": "https://github.com/google/fonts",
+          "commit": "23e54b51ddffbc7713c583748e3bd86f62b1fa4a",
+          "path": "ofl/notosanssc/NotoSansSC[wght].ttf",
+          "url": "https://github.com/google/fonts/blob/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf",
+          "sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+          "bytes": 17772300,
+          "gitBlobSha1": "fb0637bafbcd804fe32152370a1225990745b4bc"
+        },
+        "license": {
+          "identifier": "OFL-1.1",
+          "maintainedPath": "assets/licenses/OFL-NotoSansSC.txt",
+          "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+          "bytes": 4388,
+          "sourcePath": "ofl/notosanssc/OFL.txt",
+          "sourceUrl": "https://github.com/google/fonts/blob/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/notosanssc/OFL.txt"
+        },
+        "sourceMetadata": {
+          "path": "ofl/notosanssc/METADATA.pb",
+          "sha256": "c6c4bdb785793b2de1da177caeeffcd0c90d7680bdab2de8f88ab45007bc59bc",
+          "bytes": 1296,
+          "subsets": [
+            "chinese-simplified",
+            "cyrillic",
+            "latin",
+            "latin-ext",
+            "menu",
+            "vietnamese"
+          ],
+          "languages": [
+            "cjy_Hans",
+            "gan_Hans",
+            "hak_Hans",
+            "hsn_Hans",
+            "lzh_Hans",
+            "nan_Hans",
+            "wuu_Hans",
+            "yue_Hans",
+            "za_Hans",
+            "zh_Hans"
+          ]
+        },
+        "variableAxis": {
+          "tag": "wght",
+          "min": 100.0,
+          "default": 100.0,
+          "max": 900.0
+        },
+        "requestedWeights": [
+          400,
+          500,
+          600,
+          700,
+          900
+        ],
+        "pubspecRegistration": {
+          "assetCount": 1,
+          "explicitWeight": null,
+          "defaultWeight": 400,
+          "explanation": "One variable TTF is registered once. Flutter 3.41+ applies TextStyle.fontWeight to its wght axis."
+        }
+      }
+    ]
+  },
+  "gates": {
+    "R12_license_and_asset_provenance": "Exact source, license, and file facts are recorded per asset; candidate-bound N05 verification and independent decisions are tracked in north-star/refactor_execution_record_v2.md. The current CC BY-NC 4.0 publication does not grant commercial reuse, and additional commercial authorization is not this project's acceptance gate.",
+    "D-01_pages_deployment_authority": "BLOCKED (Target URL owner is guokaigdg; no push authority to upstream Pages)"
+  },
+  "exampleMedia": {
+    "owner": "example gallery",
+    "count": 36,
+    "sourceResolution": "For each file, the first exact Flutter SDK template match is selected when present; otherwise the exact flutter_template_images 5.0.0 archive member is used.",
+    "assets": [
+      {
+        "path": "example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+        "sha256": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef",
+        "bytes": 544,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+          "sha256": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef",
+          "bytes": 544,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+        "sha256": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81",
+        "bytes": 442,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+          "sha256": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81",
+          "bytes": 442,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+        "sha256": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa",
+        "bytes": 721,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+          "sha256": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa",
+          "bytes": 721,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+        "sha256": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540",
+        "bytes": 1031,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+          "sha256": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540",
+          "bytes": 1031,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+        "sha256": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180",
+        "bytes": 1443,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/app/android.tmpl/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+          "sha256": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180",
+          "bytes": 1443,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "sha256": "7770183009e914112de7d8ef1d235a6a30c5834424858e0d2f8253f6b8d31926",
+        "bytes": 10932,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/module/ios/host_app_ephemeral/Runner.tmpl/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/module/ios/host_app_ephemeral/Runner.tmpl/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+          "sha256": "7770183009e914112de7d8ef1d235a6a30c5834424858e0d2f8253f6b8d31926",
+          "bytes": 10932,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+        "sha256": "cab10a0d391ec5bc09ef50ce49e8ad401cee7ef03707ec0923a222c5c2b3d212",
+        "bytes": 295,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "cab10a0d391ec5bc09ef50ce49e8ad401cee7ef03707ec0923a222c5c2b3d212",
+          "bytes": 295,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+        "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+        "bytes": 406,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+          "bytes": 406,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+        "sha256": "c6e6d3b215ae744a9c391f4c4d44157eff5e739d6ad6c39f9bfa5df66dddd267",
+        "bytes": 450,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "c6e6d3b215ae744a9c391f4c4d44157eff5e739d6ad6c39f9bfa5df66dddd267",
+          "bytes": 450,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+        "sha256": "5dee24dc104ac76dc162e42ae0beb163d426bf365562ee28ba7b3ad368559a60",
+        "bytes": 282,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "5dee24dc104ac76dc162e42ae0beb163d426bf365562ee28ba7b3ad368559a60",
+          "bytes": 282,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+        "sha256": "a9b21eb6f4271385655a8771f76e29eef8c1107d7879cbcfc567e6619d1f716a",
+        "bytes": 462,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "a9b21eb6f4271385655a8771f76e29eef8c1107d7879cbcfc567e6619d1f716a",
+          "bytes": 462,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+        "sha256": "e677d701ffe4af7bc2935098d6b3984cc9ab7ace573e6900955a5535b12410cf",
+        "bytes": 704,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "e677d701ffe4af7bc2935098d6b3984cc9ab7ace573e6900955a5535b12410cf",
+          "bytes": 704,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+        "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+        "bytes": 406,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "b9ad02cf6576a04d1b6806ac02a2431481b448dd0c2e505ce25842d1f7c4730b",
+          "bytes": 406,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+        "sha256": "7c61c42fc7b657d9cf314d32a4ec458f0647c3aaf360be1b9377857266ec2499",
+        "bytes": 586,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "7c61c42fc7b657d9cf314d32a4ec458f0647c3aaf360be1b9377857266ec2499",
+          "bytes": 586,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+        "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+        "bytes": 862,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+          "bytes": 862,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+        "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+        "bytes": 862,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "19be171481dc71a0b2803ebcd01dd8b0c5fd5778dee34c0a3cabc948c225f24e",
+          "bytes": 862,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+        "sha256": "4209a49e44a92ec40a327d3455eb1b1c153ee83d75de1c2be0a12ab18b2ff9de",
+        "bytes": 1674,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "4209a49e44a92ec40a327d3455eb1b1c153ee83d75de1c2be0a12ab18b2ff9de",
+          "bytes": 1674,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+        "sha256": "836c918cb613249eba0483a6b02fa3df3c1c0a89a315ee4d3b88509b83c7ab73",
+        "bytes": 762,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "836c918cb613249eba0483a6b02fa3df3c1c0a89a315ee4d3b88509b83c7ab73",
+          "bytes": 762,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+        "sha256": "41c7d42f6e61f8fe7f30b1ffa2256aecbc9682be06d18c4a3062043e1a2e547c",
+        "bytes": 1226,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "41c7d42f6e61f8fe7f30b1ffa2256aecbc9682be06d18c4a3062043e1a2e547c",
+          "bytes": 1226,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+        "sha256": "5d7e5bdf01b93802bc973345b3a78c038907147625035952a08a115a563b7f81",
+        "bytes": 1418,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/ios.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "5d7e5bdf01b93802bc973345b3a78c038907147625035952a08a115a563b7f81",
+          "bytes": 1418,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+        "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+        "bytes": 68,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/module/ios/host_app_ephemeral/Runner.tmpl/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/module/ios/host_app_ephemeral/Runner.tmpl/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+          "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+          "bytes": 68,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+        "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+        "bytes": 68,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/module/ios/host_app_ephemeral/Runner.tmpl/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/module/ios/host_app_ephemeral/Runner.tmpl/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+          "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+          "bytes": 68,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+        "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+        "bytes": 68,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/module/ios/host_app_ephemeral/Runner.tmpl/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/module/ios/host_app_ephemeral/Runner.tmpl/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+          "sha256": "93ae7d494fad0fb30cbf3ae746a39c4bc7a0f8bbf87fbb587a3f3c01f3c5ce20",
+          "bytes": 68,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_1024.png",
+        "sha256": "6232e5815af17e25e0268b2fec7aea9e068cc92ec709e9605c2b31df4ff2a313",
+        "bytes": 102994,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/macos.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_1024.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "6232e5815af17e25e0268b2fec7aea9e068cc92ec709e9605c2b31df4ff2a313",
+          "bytes": 102994,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_128.png",
+        "sha256": "15591f03f31313af6fd644ed0512106cc04365130b8b73244f1cfa6dddfb4400",
+        "bytes": 5680,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/macos.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_128.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "15591f03f31313af6fd644ed0512106cc04365130b8b73244f1cfa6dddfb4400",
+          "bytes": 5680,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_16.png",
+        "sha256": "cc6928b5adfc00dbf526192e2705dd9af641cdf20ab4c6c7ca7cd4936dca59f0",
+        "bytes": 520,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/macos.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_16.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "cc6928b5adfc00dbf526192e2705dd9af641cdf20ab4c6c7ca7cd4936dca59f0",
+          "bytes": 520,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_256.png",
+        "sha256": "416efd77cde932d42ef34168da24dd428a495b1f4f34bbbd125a18d2add186a2",
+        "bytes": 14142,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/macos.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_256.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "416efd77cde932d42ef34168da24dd428a495b1f4f34bbbd125a18d2add186a2",
+          "bytes": 14142,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_32.png",
+        "sha256": "ae8c4458e41f1e28b1e851ed87d3268d4a0351ceea427fa2a84cc94ddfb6d4c5",
+        "bytes": 1066,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/macos.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_32.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "ae8c4458e41f1e28b1e851ed87d3268d4a0351ceea427fa2a84cc94ddfb6d4c5",
+          "bytes": 1066,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_512.png",
+        "sha256": "0a91c6c1bf242e54ee179e34629e9ef3e8a6d286c0fce01e302280a8be9277e6",
+        "bytes": 36406,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/macos.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_512.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "0a91c6c1bf242e54ee179e34629e9ef3e8a6d286c0fce01e302280a8be9277e6",
+          "bytes": 36406,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_64.png",
+        "sha256": "6ad229623498e5f1277800db3ab7cb11faf85eb2569e1213f7d8e55003c07b42",
+        "bytes": 2218,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/macos.tmpl/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_64.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "6ad229623498e5f1277800db3ab7cb11faf85eb2569e1213f7d8e55003c07b42",
+          "bytes": 2218,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/web/favicon.png",
+        "sha256": "7ab2525f4b86b65d3e4c70358a17e5a1aaf6f437f99cbcc046dad73d59bb9015",
+        "bytes": 917,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/app/web/favicon.png.copy.tmpl",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/app/web/favicon.png.copy.tmpl",
+          "sha256": "7ab2525f4b86b65d3e4c70358a17e5a1aaf6f437f99cbcc046dad73d59bb9015",
+          "bytes": 917,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/web/icons/Icon-192.png",
+        "sha256": "3dce99077602f70421c1c6b2a240bc9b83d64d86681d45f2154143310c980be3",
+        "bytes": 5292,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/app/web/icons/Icon-192.png.copy.tmpl",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/app/web/icons/Icon-192.png.copy.tmpl",
+          "sha256": "3dce99077602f70421c1c6b2a240bc9b83d64d86681d45f2154143310c980be3",
+          "bytes": 5292,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/web/icons/Icon-512.png",
+        "sha256": "baccb205ae45f0b421be1657259b4943ac40c95094ab877f3bcbe12cd544dcbe",
+        "bytes": 8252,
+        "source": {
+          "kind": "flutter-sdk",
+          "repository": "https://github.com/flutter/flutter",
+          "version": "3.47.5",
+          "commit": "6a19cca56475dbfba1478ee68d7bd0c2ef891da1",
+          "archiveUrl": null,
+          "archiveSha256": null,
+          "path": "packages/flutter_tools/templates/app/web/icons/Icon-512.png.copy.tmpl",
+          "sourceUrl": "https://github.com/flutter/flutter/blob/6a19cca56475dbfba1478ee68d7bd0c2ef891da1/packages/flutter_tools/templates/app/web/icons/Icon-512.png.copy.tmpl",
+          "sha256": "baccb205ae45f0b421be1657259b4943ac40c95094ab877f3bcbe12cd544dcbe",
+          "bytes": 8252,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-Flutter-SDK.txt",
+          "sha256": "a3a9fd82f800a47377f7d3f60c60a5c91cae0495be8f329031e1448ce0f5dab9",
+          "bytes": 1544
+        }
+      },
+      {
+        "path": "example/web/icons/Icon-maskable-192.png",
+        "sha256": "d2c842e22a9f4ec9d996b23373a905c88d9a203b220c5c151885ad621f974b5c",
+        "bytes": 5594,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/web/icons/Icon-maskable-192.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "d2c842e22a9f4ec9d996b23373a905c88d9a203b220c5c151885ad621f974b5c",
+          "bytes": 5594,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/web/icons/Icon-maskable-512.png",
+        "sha256": "6aee06cdcab6b2aef74b1734c4778f4421d2da100b0ff9e52b21b55240202929",
+        "bytes": 20998,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/web/icons/Icon-maskable-512.png",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "6aee06cdcab6b2aef74b1734c4778f4421d2da100b0ff9e52b21b55240202929",
+          "bytes": 20998,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      },
+      {
+        "path": "example/windows/runner/resources/app_icon.ico",
+        "sha256": "c098d3fc85cacff98b8e69811b48e9f0d852fcee278132d794411d978869cbf8",
+        "bytes": 33772,
+        "source": {
+          "kind": "flutter-template-images-package",
+          "repository": "https://github.com/flutter/packages/tree/main/packages/flutter_template_images",
+          "version": "5.0.0",
+          "commit": null,
+          "archiveUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "archiveSha256": "0120589a786dbae4e86af1f61748baccd8530abd56a60e7a13479647a75222fe",
+          "path": "templates/app/windows.tmpl/runner/resources/app_icon.ico",
+          "sourceUrl": "https://pub.dev/api/archives/flutter_template_images-5.0.0.tar.gz",
+          "sha256": "c098d3fc85cacff98b8e69811b48e9f0d852fcee278132d794411d978869cbf8",
+          "bytes": 33772,
+          "transformation": "The Flutter template copies this binary output byte-for-byte; zero-byte .img.tmpl placeholders are not the output source."
+        },
+        "license": {
+          "identifier": "BSD-3-Clause",
+          "maintainedPath": "example/licenses/BSD-3-Clause-flutter_template_images-5.0.0.txt",
+          "sha256": "89519eca6f7b9529b35bdddd623a58c3af06a88c458dbd6531ddb4675acf75a9",
+          "bytes": 1519
+        }
+      }
+    ]
+  }
+}

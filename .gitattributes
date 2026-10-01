@@ -1,0 +1,9 @@
+# Every maintained file must be stored byte-identical to its working copy: the
+# N00 candidate binds snapshot members to commit blobs. Text is stored as LF;
+# Windows batch files keep their CRLF bytes verbatim.
+* text=auto eol=lf
+*.bat -text
+*.cmd -text
+
+# Byte-exact input whose SHA-256 is pinned by catalog/assets.lock.json.
+example/licenses/BSD-3-Clause-Flutter-SDK.txt -text

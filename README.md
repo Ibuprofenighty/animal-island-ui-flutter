@@ -2,78 +2,86 @@
 
 <br/>
 <div align="center">
-  <h3>🏝️ A Cozy, Kawaii Island-Style UI Component Library for Flutter 🏝️</h3>
-  <p>Faithfully ported and re-architected from <a href="https://github.com/guokaigdg/animal-island-ui">animal-island-ui</a> for enterprise production Flutter applications.</p>
+  <h3>🏝️ A cozy, kawaii island-style UI component library for Flutter 🏝️</h3>
+  <p>A Flutter implementation of the <a href="https://github.com/guokaigdg/animal-island-ui">animal-island-ui</a> design language: warm colors, tactile buttons and hand-drawn island details.</p>
 </div>
 <br/>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Flutter-%3E%3D3.19-02569B?logo=flutter&style=flat-square" alt="Flutter">
-  <img src="https://img.shields.io/badge/Dart-%3E%3D3.3-0175C2?logo=dart&style=flat-square" alt="Dart">
-  <img src="https://img.shields.io/badge/components-36-blue?style=flat-square" alt="Components">
-  <img src="https://img.shields.io/badge/icons-101-orange?style=flat-square" alt="Icons">
-  <img src="https://img.shields.io/badge/license-CC--BY--NC--4.0-brightgreen.svg?style=flat-square" alt="License: CC BY-NC 4.0">
-  <img src="https://img.shields.io/badge/analysis-0%20issues-brightgreen?style=flat-square" alt="Analysis">
+  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FIbuprofenighty%2Fanimal-island-ui-flutter%2Fmain%2Fcatalog%2Fsdk.lock.json&query=%24.flutter.frameworkVersion&label=Flutter&logo=flutter&color=02569B&style=flat-square" alt="Flutter version">
+  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FIbuprofenighty%2Fanimal-island-ui-flutter%2Fmain%2Fcatalog%2Fsdk.lock.json&query=%24.flutter.dartSdkVersion&label=Dart&logo=dart&color=0175C2&style=flat-square" alt="Dart version">
+  <a href="https://github.com/Ibuprofenighty/animal-island-ui-flutter/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Ibuprofenighty/animal-island-ui-flutter/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"></a>
+  <img src="https://img.shields.io/badge/components-36-blue?style=flat-square" alt="Components: 36">
+  <img src="https://img.shields.io/badge/icons-101-orange?style=flat-square" alt="Icons: 101">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC%204.0%20(non--commercial)-lightgrey?style=flat-square" alt="License: CC BY-NC 4.0 (non-commercial)"></a>
 </div>
 <br/>
 
 <p align="center">
-  English | <a href="./docs/README.zh-CN.md">简体中文</a>
+  English | <a href="README.zh-CN.md">简体中文</a>
 </p>
 
-## Introduction
+## 📖 Introduction
 
-This project is a lightweight, healing island-style UI component library built for Flutter, faithfully ported from [guokaigdg/animal-island-ui](https://github.com/guokaigdg/animal-island-ui). It adheres strictly to the original warm life-sim game design language, while providing enterprise-grade production quality: zero third-party UI dependencies (relying solely on vector rendering), zero memory leaks, virtualized scrolling, and zero-GC frame performance.
+Animal Island UI is a Flutter component library inspired by cozy life-sim island
+aesthetics. It ports the visual language of
+[guokaigdg/animal-island-ui](https://github.com/guokaigdg/animal-island-ui) to
+Flutter widgets: earth-brown text on cream surfaces, pill-shaped controls,
+tactile button depth, ribbon titles, blob-shaped dialogs and a set of 101 island
+icons.
 
-## Key Highlights
+Everything is exported from a single import,
+`package:animal_island_ui/animal_island_ui.dart`, and styled through one theme
+extension that supports light and dark presets.
 
-- 🎮 **Tactile 3D Depth**: Native haptic feedback (`HapticFeedback.lightImpact()`) coupled with 4~5px solid stacked sinking shadows and smooth spring physics (`Curves.easeOutBack`), recreating the tactile response of a Nintendo Switch game console!
-- 🍃 **101 Native Vector Icons**: Full suite of iconic island symbols (leaf, apple, turnip, bell, fossil, star) rendered directly with vector paths, supporting tinting, scaling, and organic bounce animations.
-- 🫧 **Cubic-Bezier Organic Blob Modal**: Uses `AnimalBlobClipper` to create a natural water-droplet silhouette, rejecting rigid rectangular dialogue boxes.
-- 🎀 **Swallowtail Ribbon Title**: Dual-winged swallowtail cuts, folded shadow triangles, and three-dimensional perspective tilt.
-- 🎨 **13 Island App-Tile Palettes**: Earth-brown text, cream parchment backgrounds, mint-teal accents, and 13 vibrant fruit color cards out-of-the-box.
-- ⚡ **High-Performance Zero-GC Architecture**: Long data tables feature virtualized scrolling ($O(\text{visibleRows})$), typewriter text uses pre-cached Unicode graphemes for zero-GC frame ticks, and carousel timers automatically pause when inactive via `TickerMode`.
+## ✨ Key Highlights
 
-## Preview
+- 🎮 **Tactile buttons**: filled primary and danger buttons sit on a stacked depth
+  shadow and press down when activated; interactive controls give light haptic
+  feedback.
+- 🍃 **101 vector icons**: island symbols such as leaf, apple, bell and fossil,
+  rendered by one `AnimalIcon` widget from `AnimalIcons` descriptors, with
+  size, color and an optional bounce animation.
+- 🫧 **Organic shapes**: blob-shaped modal surfaces, swallowtail ribbon titles,
+  patterned backgrounds and wave or tree footers.
+- 🎨 **One theme, six token families**: `AnimalIslandTheme` is a Flutter
+  `ThemeExtension` with colors, typography, radii, spacing, shadows and motion,
+  shipped as light and dark presets with 13 tile color pairs.
+- 📋 **Forms and data**: `AnimalForm` with a controller and validation rules,
+  date and time pickers, and a lazily built `AnimalTable` (`rowCount` +
+  `rowBuilder`) with pagination.
+- 🌏 **English and Chinese built in**: package text is localized through the
+  exported `AnimalLocalizations`; Nunito and Noto Sans SC fonts are bundled, so
+  no fonts are fetched at runtime.
+- ♿ **Motion-aware**: animations follow the platform's reduce-motion setting.
 
-- **Interactive Gallery**: Run the comprehensive example app in the `example/` directory directly on Web, Windows, macOS, iOS, or Android.
-- **Cross-Platform Verified**: Pixel-perfect fidelity across desktop, mobile, and web runtimes.
+## 🖼️ Preview
 
-## 🚀 Use AI to Generate animal-island-ui Pages
+- **Live Gallery**: <https://ibuprofenighty.github.io/animal-island-ui-flutter/>
+  shows all 36 components, the 101-icon browser and three example workflows
+  (form, overlays, data table).
+- **Run it locally**: the Gallery source lives in [`example/`](example/README.md).
 
-Non-developer or want to prototype fast? Use the [one-click prompt](./docs/one-click-prompt.md) — no manual setup needed.
+## 📦 Installation
 
-**4 steps:**
-
-1. Copy the prompt block from [`docs/one-click-prompt.md`](./docs/one-click-prompt.md).
-2. Paste it into any URL-capable AI tool (Cursor / Claude / ChatGPT / Gemini / Windsurf).
-3. Specify what page you want (e.g. "villager journal", "island shop checkout", "inventory modal").
-4. Copy the complete, ready-to-run Flutter code.
-
-Using an AI coding agent (Claude Code / Cursor / Windsurf)? Install the official skill:
-- [`skills/animal-island-ui-style-flutter/`](./skills/animal-island-ui-style-flutter/SKILL.md)
-
-## Installation
-
-Add the dependency to your Flutter project's `pubspec.yaml`:
+The package is consumed from this Git repository. Add it to your app's
+`pubspec.yaml`:
 
 ```yaml
 dependencies:
   animal_island_ui:
-    path: ../animal_island_ui # or pub.dev version
+    git:
+      url: https://github.com/Ibuprofenighty/animal-island-ui-flutter.git
+      ref: main
 ```
 
-Or run:
+Then run `flutter pub get`. The supported Flutter and Dart versions are the ones
+shown in the badges above (recorded in [`catalog/sdk.lock.json`](catalog/sdk.lock.json));
+the minimum constraints are declared in [`pubspec.yaml`](pubspec.yaml).
 
-```bash
-flutter pub add animal_island_ui
-```
+## 🚀 Quick Start
 
-## Quick Start
-
-### 1. Configure Theme
-
-Wrap your root `MaterialApp` with `AnimalIslandTheme` or use the official `toThemeData()` export:
+### 1. Install the theme and localizations
 
 ```dart
 import 'package:flutter/material.dart';
@@ -89,93 +97,131 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: AnimalIslandTheme.light.toThemeData(),
       darkTheme: AnimalIslandTheme.dark.toThemeData(),
+      localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+      supportedLocales: AnimalLocalizations.supportedLocales,
+      localeResolutionCallback: (locale, _) => resolveAnimalLocale(locale),
       home: const IslandHomePage(),
     );
   }
 }
 ```
 
-### 2. Use Core Components
+Chinese locales (any region) resolve to Chinese; all other or missing locales
+resolve to English. Inside the tree, read the active theme with
+`AnimalIslandTheme.of(context)`.
+
+### 2. Use components
 
 ```dart
-// 3D Physical Sinking Button
-AnimalButton(
-  type: AnimalButtonType.primary,
-  size: AnimalButtonSize.middle,
-  icon: const LeafIcon(size: 18, color: Colors.white),
-  onPressed: () => print('Adventure started!'),
-  child: const Text('Explore Island'),
-)
+class IslandHomePage extends StatelessWidget {
+  const IslandHomePage({super.key});
 
-// 50px Pill Input
-AnimalInput(
-  placeholder: 'Search deserted island...',
-  prefix: const SearchIcon(size: 18, color: AnimalColors.primary),
-  shadow: true,
-  clearable: true,
-  onChanged: (text) => print(text),
-)
-
-// Organic Blob Modal
-AnimalModal.show(
-  context: context,
-  title: const Text('Island Broadcast'),
-  content: const Text('Fireworks show at the plaza tonight at 8 PM!'),
-  okText: 'Check it out',
-  onOk: () => print('Attending!'),
-);
-
-// 101 Vector Icons
-const LeafIcon(size: 28, color: AnimalColors.primary, bounce: true)
-const AppleIcon(size: 28)
-const BellIcon(size: 28, color: AnimalColors.bellGold)
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: AnimalCard(
+          header: const AnimalTitle(child: Text('Island Plaza')),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const AnimalIcon(data: AnimalIcons.leaf, size: 28, bounce: true),
+              const SizedBox(height: 12),
+              const AnimalInput(placeholder: 'Search the island...', clearable: true),
+              const SizedBox(height: 12),
+              AnimalButton(
+                icon: const AnimalIcon(data: AnimalIcons.apple, size: 18),
+                onPressed: () => AnimalModal.show<void>(
+                  context: context,
+                  title: const Text('Island Broadcast'),
+                  content: const Text('Fireworks at the plaza tonight!'),
+                ),
+                child: const Text('Explore'),
+              ),
+              AnimalButton(
+                variant: AnimalButtonVariant.outlined,
+                onPressed: () =>
+                    AnimalNotification.success(context, message: 'Saved!'),
+                child: const Text('Notify'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 ```
 
-## Components Catalog (36 Components)
+A complete runnable sample is in
+[`example/lib/quick_start.dart`](example/lib/quick_start.dart).
 
-| Category | Components | Highlights |
-| :--- | :--- | :--- |
-| **General** | `AnimalButton`, `AnimalTitle`, `AnimalDivider`, `AnimalBackground`, `AnimalCursor`, `AnimalIcon` | 3D sinking buttons, swallowtail ribbon banners, leaf dividers, polka-dot backgrounds, pointer cursor |
-| **Form Controls** | `AnimalInput`, `AnimalSwitch`, `AnimalCheckbox` (+Group), `AnimalRadio` (+Group), `AnimalSelect`, `AnimalDatePicker`, `AnimalTimePicker`, `AnimalForm`, `AnimalFormItem` | 50px pill inputs, warm focus glow switches, concentric radios, island calendar & time wheels |
-| **Data Display** | `AnimalCard`, `AnimalTag`, `AnimalCollapse`, `AnimalCarousel`, `AnimalTable`, `AnimalPagination`, `AnimalCountdown`, `AnimalTime`, `AnimalCodeBlock`, `AnimalImage` | 13-color fruit cards, sticky-header virtualized tables, odometer countdown tiles, typewriter cards |
-| **Feedback** | `AnimalModal`, `AnimalDrawer`, `AnimalTooltip`, `AnimalNotification`, `AnimalLoading`, `AnimalSkeleton`, `AnimalProgress` | Water-droplet modals, slide drawers, speech balloon tooltips, twirling leaf loaders, striped progress |
-| **Navigation** | `AnimalTabs`, `AnimalBackTop`, `AnimalFooter`, `AnimalTypewriter` | Pill slider tabs, blast-off rocket back-to-top, coastline ocean wave footer, dialogue stream typewriter |
+## 🧩 Components (36)
 
-## Documentation
+| Category | Components |
+| :--- | :--- |
+| **General** | `AnimalButton`, `AnimalIcon`, `AnimalTypewriter`, `AnimalCursor` |
+| **Layout & Navigation** | `AnimalCard`, `AnimalTitle`, `AnimalDivider`, `AnimalBackground`, `AnimalCollapse`, `AnimalTabs`, `AnimalCarousel` |
+| **Form Controls** | `AnimalInput`, `AnimalSwitch`, `AnimalCheckbox`, `AnimalRadio`, `AnimalSelect`, `AnimalDatePicker`, `AnimalTimePicker` |
+| **Forms** | `AnimalForm`, `AnimalFormItem` |
+| **Overlays** | `AnimalModal`, `AnimalDrawer`, `AnimalTooltip` |
+| **Feedback** | `AnimalProgress`, `AnimalLoading`, `AnimalSkeleton`, `AnimalBackTop`, `AnimalCountdown`, `AnimalTime`, `AnimalNotification` |
+| **Data Display** | `AnimalTable`, `AnimalPagination`, `AnimalCodeBlock`, `AnimalTag`, `AnimalImage` |
+| **Decorative** | `AnimalFooter` |
 
-Routed by audience and scenario (English primary; Chinese mirrors under [`docs/zh-CN/`](./docs/zh-CN/)):
+Checkbox and radio also come with `AnimalCheckboxGroup` and `AnimalRadioGroup`.
+Each component has a reference page under [`docs/en/components/`](docs/en/components/).
 
-| Document | Path | Purpose |
-| :--- | :--- | :--- |
-| 🎨 **Design System & Rules** | [`docs/design-system/`](./docs/design-system/README.md) | Canonical design definition — tokens, 7 design laws & 14 visual hard rules, per-component specs. |
-| 🤖 **AI Agent Skill** | [`skills/animal-island-ui-style-flutter/`](./skills/animal-island-ui-style-flutter/SKILL.md) | Official skill for Cursor / Claude Code / Windsurf coding agents with component API references. |
-| 🚀 **One-Click Prompt** | [`docs/one-click-prompt.md`](./docs/one-click-prompt.md) | Single bootstrap prompt for non-developers to generate complete island-style pages with AI. |
-| 💡 **Design Prompts** | [`docs/design-prompts.md`](./docs/design-prompts.md) | Prompts for design and image tools (v0, Figma AI, Midjourney, DALL-E). |
-| 🛠️ **Development Guide** | [`docs/development/`](./docs/development/README.md) | Repository architecture, component development, coding standards, testing & build contracts. |
-| 🏛️ **Architecture Decisions** | [`docs/adr/`](./docs/adr/README.md) | Architecture decision records (ADR-0001 through ADR-0005). |
-| 🤝 **Contributing** | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Guidelines for filing issues and submitting pull requests. |
+## 🍎 Icons (101)
 
-## Local Development
+All icons are constants on `AnimalIcons` and are drawn with the same widget:
+
+```dart
+const icon = AnimalIcon(data: AnimalIcons.bell, size: 28);
+```
+
+Browse the full set in the [Gallery](https://ibuprofenighty.github.io/animal-island-ui-flutter/)
+or in the [icon index](docs/en/components/icons.md).
+
+## 📚 Documentation
+
+| Document | Purpose |
+| :--- | :--- |
+| [Documentation home](docs/en/README.md) · [中文](docs/zh/README.md) | Index of all guides and component references |
+| [Theme and tokens](docs/en/tokens.md) | Theme families, customization, fonts and accessibility |
+| [Gallery workflows](docs/en/workflows.md) | The form, overlay and data examples |
+| [AI agent skill](skills/animal-island-ui-style-flutter/SKILL.md) | Skill for AI coding agents building with this package |
+| [Architecture decisions](docs/adr/README.md) | Key design decisions |
+| [Contributing](CONTRIBUTING.md) | How to set up, check and submit changes |
+| [Changelog](CHANGELOG.md) · [Security](SECURITY.md) | Release history and vulnerability reporting |
+
+## 🛠️ Local Development
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/Ibuprofenighty/animal-island-ui-flutter.git
 cd animal-island-ui-flutter
+flutter pub get
+flutter test
 
-# 2. Run the interactive gallery
+# Run the Gallery
 cd example
-flutter run -d chrome # Web preview
-# or
-flutter run -d windows # Native Windows 120fps
+flutter pub get
+flutter run -d chrome
 ```
 
-## Notes & Disclaimer
+## ⚠️ Notes & Disclaimer
 
-- This project is intended strictly for personal learning, research, and non-commercial demonstration. **Any form of commercial use, resale, or monetization is strictly prohibited**.
-- This is an independent open-source Flutter component library. It is not an official product of Nintendo or any game company and has no association, authorization, or partnership with them.
-- All visual assets (icons, illustrations, widgets) in this repository are independently drawn and coded.
+- This is an independent open-source project. It is not affiliated with,
+  authorized by or endorsed by Nintendo or any game company. Animal Crossing is a
+  trademark of Nintendo Co., Ltd.
+- The visual design follows the upstream
+  [animal-island-ui](https://github.com/guokaigdg/animal-island-ui) project; see
+  [NOTICE](NOTICE) and the [provenance page](docs/en/provenance.md) for attribution.
 
-## License
+## 📄 License
 
-Licensed under **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
-See the [LICENSE](LICENSE) file for the full text.
+Licensed under **Creative Commons Attribution-NonCommercial 4.0 International
+(CC BY-NC 4.0)**. You may use, share and adapt this project with attribution, but
+**not for commercial purposes**. See [LICENSE](LICENSE) for the full text and
+[NOTICE](NOTICE) for attribution. The bundled Nunito and Noto Sans SC fonts are
+licensed under the SIL Open Font License 1.1 (see `assets/licenses/`).
