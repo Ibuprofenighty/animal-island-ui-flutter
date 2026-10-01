@@ -192,7 +192,7 @@ or in the [icon index](docs/en/components/icons.md).
 | [Gallery workflows](docs/en/workflows.md) | The form, overlay and data examples |
 | [AI agent skill](skills/animal-island-ui-style-flutter/SKILL.md) | Skill for AI coding agents building with this package |
 | [Architecture decisions](docs/adr/README.md) | Key design decisions |
-| [Contributing](CONTRIBUTING.md) | How to set up, check and submit changes |
+| [Contributing](CONTRIBUTING.md) | Reporting issues and building from source (pull requests are not accepted) |
 | [Changelog](CHANGELOG.md) · [Security](SECURITY.md) | Release history and vulnerability reporting |
 
 ## 🛠️ Local Development

@@ -17,6 +17,27 @@ Future<void> main(List<String> args) async {
   exitCode = await _runBuildInfo(args);
 }
 
+/// The Flutter and Dart versions reported by `flutter --version --machine`,
+/// required to equal the `flutter` section of catalog/sdk.lock.json.
+({String flutterVersion, String dartVersion}) lockedSdkVersions({
+  required Map<String, dynamic> observed,
+  required Map<String, dynamic> locked,
+}) {
+  final String flutterVersion = observed['frameworkVersion'] as String;
+  final String dartVersion = (observed['dartSdkVersion'] as String)
+      .split(' ')
+      .first;
+  if (flutterVersion != locked['frameworkVersion'] ||
+      dartVersion != locked['dartSdkVersion']) {
+    throw StateError(
+      'running Flutter $flutterVersion / Dart $dartVersion is not the '
+      'locked ${locked['frameworkVersion']} / ${locked['dartSdkVersion']} '
+      'from $_sdkLockPath',
+    );
+  }
+  return (flutterVersion: flutterVersion, dartVersion: dartVersion);
+}
+
 Future<int> _runBuildInfo(List<String> args) async {
   if (args.length != 2 || args.first != '--out') {
     stderr.writeln('usage: dart run tool/build_info.dart --out <file>');
@@ -34,18 +55,10 @@ Future<int> _runBuildInfo(List<String> args) async {
         '--machine',
       ]),
     ) as Map<String, dynamic>;
-    final String flutterVersion = observed['frameworkVersion'] as String;
-    final String dartVersion = (observed['dartSdkVersion'] as String)
-        .split(' ')
-        .first;
-    if (flutterVersion != lockedFlutter['frameworkVersion'] ||
-        dartVersion != lockedFlutter['dartSdkVersion']) {
-      throw StateError(
-        'running Flutter $flutterVersion / Dart $dartVersion is not the '
-        'locked ${lockedFlutter['frameworkVersion']} / '
-        '${lockedFlutter['dartSdkVersion']} from $_sdkLockPath',
-      );
-    }
+    final (:String flutterVersion, :String dartVersion) = lockedSdkVersions(
+      observed: observed,
+      locked: lockedFlutter,
+    );
     if (!File('LICENSE').readAsStringSync().contains(_licenseMarker)) {
       throw StateError('LICENSE is not CC BY-NC 4.0');
     }

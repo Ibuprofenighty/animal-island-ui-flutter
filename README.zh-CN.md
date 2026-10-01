@@ -180,7 +180,7 @@ const icon = AnimalIcon(data: AnimalIcons.bell, size: 28);
 | [Gallery 工作流](docs/zh/workflows.md) | 表单、浮层与数据示例 |
 | [AI Agent Skill](skills/animal-island-ui-style-flutter/SKILL.zh-CN.md) | 供 AI 编程助手使用本包的 Skill |
 | [架构决策](docs/adr/README.md) | 关键设计决策 |
-| [贡献指南](CONTRIBUTING.md) | 环境准备、检查与提交流程 |
+| [贡献指南](CONTRIBUTING.md) | 反馈问题与从源码构建（不接受 Pull Request） |
 | [更新日志](CHANGELOG.md) · [安全策略](SECURITY.md) | 版本历史与漏洞报告 |
 
 ## 🛠️ 本地开发
