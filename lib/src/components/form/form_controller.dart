@@ -2,53 +2,43 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import '../../foundation/forms/animal_field_binding.dart';
+import '../../foundation/forms/animal_field_key.dart';
+import '../../foundation/forms/animal_form_values.dart';
 import '../../foundation/forms/animal_validation_issue.dart';
-import 'field_key.dart';
 import 'validation.dart';
 
 /// Result type returned by [AnimalFormController.submit].
 @immutable
 class AnimalSubmitResult {
-  /// Outcome status of the submission.
   final AnimalSubmitStatus status;
-
-  /// Error object if submission callback failed with an exception.
   final Object? error;
 
   const AnimalSubmitResult._(this.status, [this.error]);
 
-  /// Form validated and submission callback completed successfully.
   static const AnimalSubmitResult success = AnimalSubmitResult._(
     AnimalSubmitStatus.success,
   );
-
-  /// Validation failed on one or more fields.
   static const AnimalSubmitResult invalid = AnimalSubmitResult._(
     AnimalSubmitStatus.invalid,
   );
-
-  /// Another submission is currently in-flight.
   static const AnimalSubmitResult busy = AnimalSubmitResult._(
     AnimalSubmitStatus.busy,
   );
-
-  /// One or more form fields changed while submission validation was running.
   static const AnimalSubmitResult changedDuringValidation =
       AnimalSubmitResult._(AnimalSubmitStatus.changedDuringValidation);
 
-  /// The submission callback threw an unhandled exception.
   factory AnimalSubmitResult.error(Object error) =>
       AnimalSubmitResult._(AnimalSubmitStatus.error, error);
 
-  /// Whether the submission was successful.
   bool get isSuccess => status == AnimalSubmitStatus.success;
 
   @override
   String toString() =>
-      'AnimalSubmitResult($status${error != null ? ', error: $error' : ''})';
+      'AnimalSubmitResult($status${error == null ? '' : ', error: $error'})';
 }
 
-/// Status enum for [AnimalSubmitResult].
+/// Outcome of validating and submitting a form.
 enum AnimalSubmitStatus {
   success,
   invalid,
@@ -57,13 +47,53 @@ enum AnimalSubmitStatus {
   error,
 }
 
-/// Internal mutable record holding field metadata, latest values, and revision counters.
+/// Unique capability for one registration of a field with one controller.
+///
+/// The generation advances on every registration, including registrations that
+/// reuse an earlier key after it has been unregistered. The token also listens
+/// only to its own field record.
+class AnimalFieldRegistration<T> implements Listenable {
+  final AnimalFieldKey<T> key;
+  final int generation;
+  final AnimalFormController _owner;
+  final _FieldRecord _record;
+
+  AnimalFieldRegistration._(
+    this._owner,
+    this.key,
+    this.generation,
+    this._record,
+  );
+
+  @override
+  void addListener(VoidCallback listener) {
+    _owner._assertCurrentRegistration(this);
+    _record.addListener(listener);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    _record.removeListener(listener);
+  }
+
+  /// Marks this token's field inactive while its owning element is deactivated.
+  /// The controller retains the value and baseline in case the same State is
+  /// reinserted with a GlobalKey later in the frame.
+  void deactivate() => _owner._deactivateRegistration<T>(this);
+
+  /// Reactivates this exact token after the same State is reinserted.
+  /// Returns false if a different registration has already replaced it.
+  bool activate() => _owner._activateRegistration<T>(this);
+}
+
 class _FieldRecord extends ChangeNotifier {
-  final String name;
-  dynamic value;
-  dynamic initialBaseline;
+  final AnimalFieldKey<dynamic> key;
+  final int generation;
+  Object? value;
+  Object? baseline;
   int valueRevision = 0;
   int validationRequestId = 0;
+  bool registrationActive = true;
   bool dirty = false;
   bool touched = false;
   AnimalValidationStatus status = AnimalValidationStatus.idle;
@@ -72,232 +102,300 @@ class _FieldRecord extends ChangeNotifier {
   FocusNode? focusNode;
 
   _FieldRecord({
-    required this.name,
-    this.value,
-    this.initialBaseline,
-    this.rules = const [],
-    this.focusNode,
+    required this.key,
+    required this.generation,
+    required this.value,
+    required this.baseline,
+    required this.rules,
+    required this.focusNode,
   });
-
-  void notifyBinding() {
-    notifyListeners();
-  }
 }
 
-/// State-machine driven, type-safe form controller (C19).
-///
-/// Features:
-/// - **Defect F06 Resolved**: Monotonic `valueRevision`, `epoch`, and `validationRequestId`
-///   prevent stale, delayed asynchronous validation results from overwriting newer user inputs (latest-wins).
-/// - **Atomic Concurrency Protection**: Rejects overlapping concurrent submissions with [AnimalSubmitResult.busy],
-///   and aborts submissions if fields are modified during async validation ([AnimalSubmitResult.changedDuringValidation]).
-/// - **Fine-Grained Reactivity**: Field updates only trigger localized rebuilding of the affected [AnimalFormItem].
-/// - **Initial Baseline Protection**: Rebuilding widgets never overwrites or re-seeds the initial baseline.
-/// - **Accessible Focus Navigation**: Automatically shifts keyboard focus to the first invalid field upon validation failure.
+/// The sole owner of registered field values, validation state and submission.
 class AnimalFormController extends ChangeNotifier {
-  final Map<String, _FieldRecord> _fields = {};
+  final Map<AnimalFieldKey<dynamic>, _FieldRecord> _fields = {};
   int _epoch = 0;
+  int _nextGeneration = 0;
   bool _isSubmitting = false;
   bool _isDisposed = false;
 
-  /// Optional default submission handler registered by [AnimalForm].
-  FutureOr<void> Function(Map<String, dynamic> values)? defaultSubmitHandler;
+  /// Optional submission handler supplied by the surrounding [AnimalForm].
+  FutureOr<void> Function(AnimalFormValues values)? defaultSubmitHandler;
 
-  /// Current代数 (epoch) of this form controller, incremented on reset/clear.
   int get epoch => _epoch;
-
-  /// Whether a form submission is currently in-flight.
   bool get isSubmitting => _isSubmitting;
-
-  /// Whether this controller has been disposed.
   bool get isDisposed => _isDisposed;
 
-  /// Map snapshot of all current form values keyed by field name.
-  Map<String, dynamic> get values {
-    return {for (final entry in _fields.entries) entry.key: entry.value.value};
+  /// Immutable snapshot with typed reads through each field's identity.
+  AnimalFormValues get values => AnimalFormValues.fromEntries(
+    _fields.values.map(
+      (record) => AnimalFieldValue<dynamic>(record.key, record.value),
+    ),
+  );
+
+  bool get isDirty => _fields.values.any((record) => record.dirty);
+
+  bool get isValid => _fields.values.every((record) => record.error == null);
+
+  /// Returns the current value for [key], or null when it is not registered.
+  T? valueFor<T>(AnimalFieldKey<T> key) {
+    key.requireRequestedType(T);
+    final record = _recordForKey(key, required: false);
+    return record?.value as T?;
   }
 
-  /// Whether any field in the form has been modified from its initial baseline.
-  bool get isDirty => _fields.values.any((f) => f.dirty);
+  AnimalValidationIssue? getFieldError<T>(AnimalFieldKey<T> key) =>
+      _recordForKey(key, required: false)?.error;
 
-  /// Whether all fields that have executed validation are currently valid.
-  bool get isValid => _fields.values.every((f) => f.error == null);
+  AnimalValidationStatus getFieldStatus<T>(AnimalFieldKey<T> key) =>
+      _recordForKey(key, required: false)?.status ??
+      AnimalValidationStatus.idle;
 
-  /// Retrieves the current typed value of a field via its [AnimalFieldKey] or string field name.
-  T? getFieldValue<T>(dynamic keyOrName) {
-    final String name = keyOrName is AnimalFieldKey
-        ? keyOrName.name
-        : keyOrName.toString();
-    return getValue<T>(name);
-  }
-
-  /// Retrieves the current value of a field by name.
-  T? getValue<T>(String name) {
-    final record = _fields[name];
-    if (record == null) return null;
-    return record.value as T?;
-  }
-
-  /// Retrieves the current locale-neutral validation issue for a field.
-  AnimalValidationIssue? getFieldError(String name) => _fields[name]?.error;
-
-  /// Retrieves the current validation status for a field.
-  AnimalValidationStatus getFieldStatus(String name) =>
-      _fields[name]?.status ?? AnimalValidationStatus.idle;
-
-  /// Registers a field with the controller.
-  ///
-  /// Defends against duplicate key registration within the same form (FI01).
-  void registerField<T>({
-    required String name,
+  /// Registers one field and returns the unique token for this occurrence.
+  AnimalFieldRegistration<T> registerField<T>({
+    required AnimalFieldKey<T> key,
     T? initialValue,
     List<AnimalRule<T>>? rules,
     FocusNode? focusNode,
   }) {
-    if (_isDisposed) return;
-    if (_fields.containsKey(name)) {
-      final existing = _fields[name]!;
-      // Update rules and focusNode if re-mounted with same identity
-      existing.rules = (rules ?? const []).cast<AnimalRule<dynamic>>();
-      existing.focusNode = focusNode ?? existing.focusNode;
-      return;
+    _throwIfDisposed('register a field');
+
+    final existing = _fields[key];
+    if (existing != null) {
+      if (existing.key.runtimeType != key.runtimeType) {
+        throw StateError(
+          'A registered field identity was reused with a different value type.',
+        );
+      }
+      if (existing.registrationActive) {
+        throw StateError('The field identity is already registered.');
+      }
     }
 
+    _assertValueType<T>(key, initialValue);
+    final frozenInitialValue = key.snapshotValue(initialValue);
+    final generation = ++_nextGeneration;
     final record = _FieldRecord(
-      name: name,
-      value: initialValue,
-      initialBaseline: initialValue,
-      rules: (rules ?? const []).cast<AnimalRule<dynamic>>(),
+      key: key,
+      generation: generation,
+      value: frozenInitialValue,
+      baseline: frozenInitialValue,
+      rules: _freezeRules(rules),
       focusNode: focusNode,
     );
-    _fields[name] = record;
+    final registration = AnimalFieldRegistration<T>._(
+      this,
+      key,
+      generation,
+      record,
+    );
+    _fields[key] = record;
+    existing?.dispose();
+    return registration;
   }
 
-  /// Unregisters a field from the controller.
-  void unregisterField(String name) {
+  void _deactivateRegistration<T>(AnimalFieldRegistration<T> registration) {
     if (_isDisposed) return;
-    final removed = _fields.remove(name);
-    removed?.dispose();
+    registration.key.requireRequestedType(T);
+    final current = _fields[registration.key];
+    if (identical(current, registration._record) &&
+        current?.generation == registration.generation) {
+      current!.registrationActive = false;
+    }
   }
 
-  /// Returns the internal listenable field record for fine-grained binding in [AnimalFormItem].
-  Listenable? getFieldListenable(String name) => _fields[name];
-
-  /// Updates a field value using an [AnimalFieldKey] or string field name.
-  void setFieldValue<T>(dynamic keyOrName, T? value, {bool validate = true}) {
-    final String name = keyOrName is AnimalFieldKey
-        ? keyOrName.name
-        : keyOrName.toString();
-    setValue<T>(name, value, validate: validate);
+  bool _activateRegistration<T>(AnimalFieldRegistration<T> registration) {
+    if (_isDisposed) return false;
+    registration.key.requireRequestedType(T);
+    final current = _fields[registration.key];
+    if (!identical(current, registration._record) ||
+        current?.generation != registration.generation) {
+      return false;
+    }
+    current!.registrationActive = true;
+    return true;
   }
 
-  /// Updates a field value by name.
+  /// Removes only the record created by [registration].
   ///
-  /// Increments the field's monotonic [valueRevision] and validates asynchronously if requested.
-  void setValue<T>(String name, T? value, {bool validate = true}) {
+  /// A stale token is harmless after a later registration reused its key.
+  void unregisterField<T>(AnimalFieldRegistration<T> registration) {
     if (_isDisposed) return;
-    final record = _fields[name];
-    if (record == null) return;
-
-    if (record.value == value && record.dirty) {
+    registration.key.requireRequestedType(T);
+    if (!identical(registration._owner, this)) {
+      throw StateError('The field registration belongs to another controller.');
+    }
+    final current = _fields[registration.key];
+    if (!identical(current, registration._record) ||
+        current?.generation != registration.generation) {
       return;
     }
+    _fields.remove(registration.key);
+    current!.dispose();
+    notifyListeners();
+  }
 
-    record.value = value;
-    record.dirty = true;
+  /// Updates rules and borrowed focus for the same registration.
+  ///
+  /// Updating configuration never changes the field's value or baseline.
+  void updateFieldRegistration<T>(
+    AnimalFieldRegistration<T> registration, {
+    required List<AnimalRule<T>> rules,
+    required FocusNode focusNode,
+  }) {
+    final record = _recordForRegistration(registration);
+    record.rules = _freezeRules(rules);
+    record.focusNode = focusNode;
+  }
+
+  /// Updates a registered value through its typed identity.
+  void setValue<T>(AnimalFieldKey<T> key, T? value, {bool validate = true}) {
+    final record = _recordForKey(key)!;
+    _setRecordValue(record, key, value, validate: validate);
+  }
+
+  /// Updates a value through its registration, preserving generation ownership.
+  void setRegistrationValue<T>(
+    AnimalFieldRegistration<T> registration,
+    T? value, {
+    bool validate = true,
+  }) {
+    final record = _recordForRegistration(registration);
+    _setRecordValue(record, registration.key, value, validate: validate);
+  }
+
+  void _setRecordValue<T>(
+    _FieldRecord record,
+    AnimalFieldKey<T> key,
+    T? value, {
+    required bool validate,
+  }) {
+    _assertValueType<T>(key, value);
+    final frozenValue = key.snapshotValue(value);
+    if (_formValuesEqual(record.value, frozenValue)) return;
+
+    record.value = frozenValue;
+    record.dirty = !_formValuesEqual(frozenValue, record.baseline);
     record.valueRevision++;
-
-    record.notifyBinding();
+    record.notifyListeners();
 
     if (validate) {
-      validateField(name);
+      unawaited(_validateRecord(record));
     } else {
       notifyListeners();
     }
   }
 
-  /// Marks a field as touched (e.g. on blur).
-  void touchField(String name, {bool validate = true}) {
-    if (_isDisposed) return;
-    final record = _fields[name];
-    if (record == null) return;
-
-    if (!record.touched) {
-      record.touched = true;
-      record.notifyBinding();
-    }
-
-    if (validate) {
-      validateField(name);
-    }
+  /// Marks [key] as touched, normally after its field loses focus.
+  void touchField<T>(AnimalFieldKey<T> key, {bool validate = true}) {
+    final record = _recordForKey(key)!;
+    _touchRecord(record, validate: validate);
   }
 
-  /// Asynchronously validates a single field using the latest-wins concurrency algorithm (F06).
-  Future<bool> validateField(String name) async {
-    if (_isDisposed) return false;
-    final record = _fields[name];
-    if (record == null) return true;
+  /// Marks one specific registration as touched.
+  void touchRegistration<T>(
+    AnimalFieldRegistration<T> registration, {
+    bool validate = true,
+  }) {
+    final record = _recordForRegistration(registration);
+    _touchRecord(record, validate: validate);
+  }
 
+  void _touchRecord(_FieldRecord record, {required bool validate}) {
+    if (!record.touched) {
+      record.touched = true;
+      record.notifyListeners();
+      notifyListeners();
+    }
+    if (validate) unawaited(_validateRecord(record));
+  }
+
+  /// Creates the immutable binding snapshot for one live registration.
+  AnimalFieldBinding<T> bindingFor<T>(AnimalFieldRegistration<T> registration) {
+    final record = _recordForRegistration(registration);
+    final focusNode = record.focusNode;
+    if (focusNode == null) {
+      throw StateError('A bound field requires a focus node.');
+    }
+    return AnimalFieldBinding<T>(
+      key: registration.key,
+      generation: registration.generation,
+      value: record.value as T?,
+      error: record.error,
+      status: record.status,
+      dirty: record.dirty,
+      touched: record.touched,
+      onChanged: (value) => setRegistrationValue<T>(registration, value),
+      onBlur: () => touchRegistration<T>(registration),
+      focusNode: focusNode,
+    );
+  }
+
+  /// Asynchronously validates one typed field using the latest-wins behavior.
+  Future<bool> validateField<T>(AnimalFieldKey<T> key) async {
+    if (_isDisposed) return false;
+    final record = _recordForKey(key, required: false);
+    if (record == null) return true;
+    return _validateRecord(record);
+  }
+
+  /// Validates all registered fields or the supplied typed subset.
+  Future<bool> validate([
+    Iterable<AnimalFieldKey<dynamic>>? fieldKeys,
+    bool autoFocus = true,
+  ]) async {
+    if (_isDisposed) return false;
+    final records = fieldKeys == null
+        ? _fields.values.toList(growable: false)
+        : fieldKeys
+              .map((key) => _recordForErasedKey(key, required: false))
+              .whereType<_FieldRecord>()
+              .toList(growable: false);
+    final results = await Future.wait(records.map(_validateRecord));
+    final allValid = results.every((result) => result);
+    if (!allValid && autoFocus) focusFirstError();
+    return allValid;
+  }
+
+  Future<bool> _validateRecord(_FieldRecord record) async {
+    if (_isDisposed) return false;
     final capturedEpoch = _epoch;
     final capturedRevision = record.valueRevision;
-    final capturedReqId = ++record.validationRequestId;
+    final capturedRequestId = ++record.validationRequestId;
     final capturedValue = record.value;
 
     record.status = AnimalValidationStatus.validating;
-    record.notifyBinding();
+    record.notifyListeners();
 
     AnimalValidationIssue? foundError;
     for (final rule in record.rules) {
-      final res = await rule.evaluate(capturedValue);
-      if (res != null) {
-        foundError = res;
+      final result = await rule.evaluate(capturedValue);
+      if (result != null) {
+        foundError = result;
         break;
       }
     }
 
-    // Latest-wins check (F06): If the value changed, reset occurred, or field was unregistered,
-    // discard this result silently.
     if (_isDisposed ||
-        !_fields.containsKey(name) ||
+        !identical(_fields[record.key], record) ||
         _epoch != capturedEpoch ||
         record.valueRevision != capturedRevision ||
-        record.validationRequestId != capturedReqId) {
+        record.validationRequestId != capturedRequestId) {
       return record.error == null;
     }
 
     record.error = foundError;
-    record.status = foundError != null
-        ? AnimalValidationStatus.invalid
-        : AnimalValidationStatus.valid;
-
-    record.notifyBinding();
+    record.status = foundError == null
+        ? AnimalValidationStatus.valid
+        : AnimalValidationStatus.invalid;
+    record.notifyListeners();
     notifyListeners();
-
     return foundError == null;
   }
 
-  /// Validates all registered fields (or a subset specified by [fieldNames]).
-  ///
-  /// If [autoFocus] is true (default), shifts keyboard focus to the first invalid field.
-  Future<bool> validate([
-    List<String>? fieldNames,
-    bool autoFocus = true,
-  ]) async {
-    if (_isDisposed) return false;
-    final targetNames = fieldNames ?? _fields.keys.toList();
-    final results = await Future.wait(
-      targetNames.map((name) => validateField(name)),
-    );
-    final allValid = results.every((r) => r);
-    if (!allValid && autoFocus) {
-      focusFirstError();
-    }
-    return allValid;
-  }
-
-  /// Submits the form with comprehensive concurrency locks and snapshot validation.
+  /// Submits one immutable value snapshot after validation succeeds.
   Future<AnimalSubmitResult> submit({
-    FutureOr<void> Function(Map<String, dynamic> values)? onSubmit,
+    FutureOr<void> Function(AnimalFormValues values)? onSubmit,
   }) async {
     if (_isDisposed) return AnimalSubmitResult.invalid;
     if (_isSubmitting) return AnimalSubmitResult.busy;
@@ -310,11 +408,9 @@ class AnimalFormController extends ChangeNotifier {
         for (final entry in _fields.entries)
           entry.key: entry.value.valueRevision,
       };
-      final initialSnapshot = Map<String, dynamic>.from(values);
+      final initialSnapshot = values;
+      final allValid = await validate();
 
-      final isValid = await validate();
-
-      // Check if values were modified during asynchronous validation
       for (final entry in initialRevisions.entries) {
         if (_fields[entry.key]?.valueRevision != entry.value) {
           _isSubmitting = false;
@@ -323,7 +419,7 @@ class AnimalFormController extends ChangeNotifier {
         }
       }
 
-      if (!isValid) {
+      if (!allValid) {
         _isSubmitting = false;
         focusFirstError();
         notifyListeners();
@@ -331,11 +427,8 @@ class AnimalFormController extends ChangeNotifier {
       }
 
       final handler = onSubmit ?? defaultSubmitHandler;
-      if (handler != null) {
-        await handler(initialSnapshot);
-      }
+      if (handler != null) await handler(initialSnapshot);
 
-      // Verify no changes happened during the async onSubmit callback
       if (!_isDisposed) {
         for (final entry in initialRevisions.entries) {
           if (_fields[entry.key]?.valueRevision != entry.value) {
@@ -349,14 +442,14 @@ class AnimalFormController extends ChangeNotifier {
       _isSubmitting = false;
       notifyListeners();
       return AnimalSubmitResult.success;
-    } catch (e) {
+    } catch (error) {
       _isSubmitting = false;
       notifyListeners();
-      return AnimalSubmitResult.error(e);
+      return AnimalSubmitResult.error(error);
     }
   }
 
-  /// Focuses the first field in visual registration order that failed validation.
+  /// Focuses the first invalid field in registration order.
   bool focusFirstError() {
     for (final record in _fields.values) {
       if (record.status == AnimalValidationStatus.invalid &&
@@ -368,49 +461,149 @@ class AnimalFormController extends ChangeNotifier {
     return false;
   }
 
-  /// Resets all fields to their frozen initial baseline snapshot (FOR02).
-  ///
-  /// Increments the global [epoch], instantly invalidating all pending asynchronous validations.
+  /// Restores each registration's frozen initial value and pristine state.
   void reset() {
     if (_isDisposed) return;
     _epoch++;
-
     for (final record in _fields.values) {
-      record.value = record.initialBaseline;
+      record.value = record.baseline;
       record.dirty = false;
       record.touched = false;
       record.status = AnimalValidationStatus.idle;
       record.error = null;
       record.valueRevision++;
       record.validationRequestId++;
-      record.notifyBinding();
+      record.notifyListeners();
     }
-
     notifyListeners();
   }
 
-  /// Clears all field values to null/empty without altering the initial baseline snapshot (FOR02).
-  ///
-  /// Increments the global [epoch], instantly invalidating all pending asynchronous validations.
+  /// Sets every registered value to null while retaining its original baseline.
   void clear() {
     if (_isDisposed) return;
     _epoch++;
-
     for (final record in _fields.values) {
       record.value = null;
-      record.dirty = true;
+      record.dirty = !_formValuesEqual(null, record.baseline);
       record.status = AnimalValidationStatus.idle;
       record.error = null;
       record.valueRevision++;
       record.validationRequestId++;
-      record.notifyBinding();
+      record.notifyListeners();
     }
-
     notifyListeners();
+  }
+
+  _FieldRecord? _recordForKey<T>(
+    AnimalFieldKey<T> key, {
+    bool required = true,
+  }) {
+    key.requireRequestedType(T);
+    if (_isDisposed && required) _throwIfDisposed('access a field');
+    final record = _fields[key];
+    if (record == null) {
+      if (required) throw StateError('The field is not registered.');
+      return null;
+    }
+    if (record.key.runtimeType != key.runtimeType) {
+      throw StateError(
+        'A registered field identity was accessed with a different value type.',
+      );
+    }
+    return record;
+  }
+
+  _FieldRecord? _recordForErasedKey(
+    AnimalFieldKey<dynamic> key, {
+    bool required = true,
+  }) {
+    if (_isDisposed && required) _throwIfDisposed('access a field');
+    final record = _fields[key];
+    if (record == null) {
+      if (required) throw StateError('The field is not registered.');
+      return null;
+    }
+    if (record.key.valueType != key.valueType) {
+      throw StateError(
+        'A registered field identity was accessed with a different value type.',
+      );
+    }
+    return record;
+  }
+
+  _FieldRecord _recordForRegistration<T>(
+    AnimalFieldRegistration<T> registration,
+  ) {
+    _throwIfDisposed('use a field registration');
+    registration.key.requireRequestedType(T);
+    if (!identical(registration._owner, this)) {
+      throw StateError('The field registration belongs to another controller.');
+    }
+    final current = _fields[registration.key];
+    if (!identical(current, registration._record) ||
+        current?.generation != registration.generation) {
+      throw StateError('The field registration is no longer active.');
+    }
+    if (!current!.registrationActive) {
+      throw StateError('The field registration is inactive.');
+    }
+    if (current.key.runtimeType != registration.key.runtimeType) {
+      throw StateError('The field registration has an invalid value type.');
+    }
+    return current;
+  }
+
+  void _assertCurrentRegistration<T>(AnimalFieldRegistration<T> registration) {
+    _recordForRegistration(registration);
+  }
+
+  void _assertValueType<T>(AnimalFieldKey<T> key, Object? value) {
+    key.requireRequestedType(T);
+    key.requireValueType(value);
+  }
+
+  List<AnimalRule<dynamic>> _freezeRules<T>(List<AnimalRule<T>>? rules) =>
+      List<AnimalRule<dynamic>>.unmodifiable(
+        (rules ?? <AnimalRule<T>>[]).cast<AnimalRule<dynamic>>(),
+      );
+
+  bool _formValuesEqual(Object? left, Object? right) {
+    if (identical(left, right)) return true;
+    if (left is List && right is List) {
+      if (left.length != right.length) return false;
+      for (var index = 0; index < left.length; index++) {
+        if (!_formValuesEqual(left[index], right[index])) return false;
+      }
+      return true;
+    }
+    if (left is Set && right is Set) {
+      if (left.length != right.length) return false;
+      return left.every(right.contains);
+    }
+    if (left is Map && right is Map) {
+      if (left.length != right.length) return false;
+      for (final entry in left.entries) {
+        if (!right.containsKey(entry.key) ||
+            !_formValuesEqual(entry.value, right[entry.key])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return left == right;
+  }
+
+  void _throwIfDisposed(String operation) {
+    if (_isDisposed) {
+      throw StateError(
+        'Cannot $operation after the form controller is disposed.',
+      );
+    }
   }
 
   @override
   void dispose() {
+    if (_isDisposed) return;
     _isDisposed = true;
     for (final record in _fields.values) {
       record.dispose();

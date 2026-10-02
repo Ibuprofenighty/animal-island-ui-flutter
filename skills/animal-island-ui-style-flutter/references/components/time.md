@@ -12,11 +12,14 @@
 - `live`
 - `liveRegion`
 - `time`
+- `visible`
 
 <!-- generated:api:end -->
 
 `AnimalClock` and its default `SystemClock` are public root types. `FakeClock`
 is test support only; it is not part of the package API.
+
+Live time uses one functional readout registration and continues under reduced-motion preferences. It pauses while the app is in the background, its `TickerMode` is disabled, or the owner sets `visible: false`; this input controls updates only and does not hide layout. It refreshes from `clock.now()` when active again. `liveRegion` remains the only control for announcing those updates.
 
 ## Localization
 The clock display uses `intl`'s locale-specific `Hms` pattern. Its accessible

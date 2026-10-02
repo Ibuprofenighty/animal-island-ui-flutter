@@ -9,6 +9,7 @@ void main() {
   testWidgets('C19 AnimalForm renders its field with the third theme', (
     tester,
   ) async {
+    final nicknameKey = AnimalFieldKey<String>(debugLabel: 'nickname');
     for (final theme in animalIslandThemeVariants()) {
       await tester.pumpWidget(
         MaterialApp(
@@ -20,9 +21,9 @@ void main() {
           home: Scaffold(
             body: AnimalForm(
               child: AnimalFormItem<String>(
-                name: 'nickname',
+                fieldKey: nicknameKey,
                 label: 'Island name',
-                child: const SizedBox(width: 48, height: 24),
+                builder: (_, _) => const SizedBox(width: 48, height: 24),
               ),
             ),
           ),

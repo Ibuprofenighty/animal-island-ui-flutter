@@ -9,6 +9,7 @@ void main() {
   testWidgets(
     'C20 AnimalFormItem renders themed margin, label and validation feedback',
     (tester) async {
+      final emailKey = AnimalFieldKey<String>(debugLabel: 'email');
       for (final theme in animalIslandThemeVariants()) {
         final controller = AnimalFormController();
         await tester.pumpWidget(
@@ -22,7 +23,7 @@ void main() {
               body: AnimalForm(
                 controller: controller,
                 child: AnimalFormItem<String>(
-                  name: 'email',
+                  fieldKey: emailKey,
                   label: 'Email address',
                   help: 'Use an island email format',
                   required: true,

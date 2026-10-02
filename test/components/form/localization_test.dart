@@ -12,6 +12,7 @@ void main() {
     final localeController = LocalizationTestController(
       initialLocale: const Locale('en'),
     );
+    final key = AnimalFieldKey<String>(debugLabel: 'required-value');
     var customRuleRuns = 0;
 
     await tester.pumpWidget(
@@ -21,7 +22,7 @@ void main() {
           body: AnimalForm(
             controller: controller,
             child: AnimalFormItem<String>(
-              name: 'required-value',
+              fieldKey: key,
               label: 'Caller-owned label',
               rules: [
                 AnimalRule<String>.custom((_) {
@@ -39,7 +40,7 @@ void main() {
 
     expect(await controller.validate(null, false), isFalse);
     expect(customRuleRuns, 1);
-    final issueBeforeLocaleChange = controller.getFieldError('required-value');
+    final issueBeforeLocaleChange = controller.getFieldError(key);
     expect(
       issueBeforeLocaleChange?.kind,
       AnimalValidationIssueKind.requiredField,
@@ -48,10 +49,7 @@ void main() {
     localeController.locale = const Locale('zh', 'TW');
     await tester.pumpAndSettle();
 
-    expect(
-      controller.getFieldError('required-value'),
-      same(issueBeforeLocaleChange),
-    );
+    expect(controller.getFieldError(key), same(issueBeforeLocaleChange));
     expect(customRuleRuns, 1);
 
     await tester.pumpWidget(const SizedBox.shrink());
@@ -66,6 +64,7 @@ void main() {
       final localeController = LocalizationTestController(
         initialLocale: const Locale('en'),
       );
+      final key = AnimalFieldKey<String>(debugLabel: 'required-value');
       var customRuleRuns = 0;
 
       await tester.pumpWidget(
@@ -75,7 +74,7 @@ void main() {
             body: AnimalForm(
               controller: controller,
               child: AnimalFormItem<String>(
-                name: 'required-value',
+                fieldKey: key,
                 label: 'Caller-owned label',
                 rules: [
                   AnimalRule<String>.custom((_) {
@@ -104,7 +103,7 @@ void main() {
       expect(find.text('Caller-owned label'), findsOneWidget);
       expect(customRuleRuns, 1);
       expect(
-        controller.getFieldError('required-value')?.kind,
+        controller.getFieldError(key)?.kind,
         AnimalValidationIssueKind.requiredField,
       );
 
@@ -122,14 +121,35 @@ void main() {
         initialLocale: const Locale('en'),
       );
       var asyncValidatorRuns = 0;
+      final requiredKey = AnimalFieldKey<String>(debugLabel: 'required');
+      final emailKey = AnimalFieldKey<String>(debugLabel: 'email');
+      final urlKey = AnimalFieldKey<String>(debugLabel: 'url');
+      final patternKey = AnimalFieldKey<String>(debugLabel: 'pattern');
+      final minimumKey = AnimalFieldKey<num>(debugLabel: 'minimum');
+      final maximumKey = AnimalFieldKey<num>(debugLabel: 'maximum');
+      final minimumLengthKey = AnimalFieldKey<String>(
+        debugLabel: 'minimum-length',
+      );
+      final maximumLengthKey = AnimalFieldKey<String>(
+        debugLabel: 'maximum-length',
+      );
+      final lengthRangeKey = AnimalFieldKey<String>(debugLabel: 'length-range');
+      final exceptionKey = AnimalFieldKey<String>(debugLabel: 'exception');
+      final callerMessageKey = AnimalFieldKey<String>(
+        debugLabel: 'caller-message',
+      );
+      final asyncCallerMessageKey = AnimalFieldKey<String>(
+        debugLabel: 'async-caller-message',
+      );
 
       AnimalFormItem<T> field<T>({
-        required String name,
+        required String label,
+        required AnimalFieldKey<T> fieldKey,
         required T initialValue,
         required List<AnimalRule<T>> rules,
       }) => AnimalFormItem<T>(
-        name: name,
-        label: name,
+        fieldKey: fieldKey,
+        label: label,
         initialValue: initialValue,
         rules: rules,
         builder: (_, _) => const SizedBox(height: 1),
@@ -146,52 +166,62 @@ void main() {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     field<String>(
-                      name: 'required',
+                      label: 'required',
+                      fieldKey: requiredKey,
                       initialValue: '',
                       rules: [AnimalRule<String>.required()],
                     ),
                     field<String>(
-                      name: 'email',
+                      label: 'email',
+                      fieldKey: emailKey,
                       initialValue: 'invalid',
                       rules: [AnimalRule<String>.email()],
                     ),
                     field<String>(
-                      name: 'url',
+                      label: 'url',
+                      fieldKey: urlKey,
                       initialValue: 'invalid',
                       rules: [AnimalRule<String>.url()],
                     ),
                     field<String>(
-                      name: 'pattern',
+                      label: 'pattern',
+                      fieldKey: patternKey,
                       initialValue: 'no',
                       rules: [AnimalRule<String>.pattern(RegExp(r'^yes$'))],
                     ),
                     field<num>(
-                      name: 'minimum',
+                      label: 'minimum',
+                      fieldKey: minimumKey,
                       initialValue: 5,
                       rules: [AnimalRule<num>.min(10)],
                     ),
                     field<num>(
-                      name: 'maximum',
+                      label: 'maximum',
+                      fieldKey: maximumKey,
                       initialValue: 11,
                       rules: [AnimalRule<num>.max(10)],
                     ),
                     field<String>(
-                      name: 'minimum-length',
+                      label: 'minimum-length',
+                      fieldKey: minimumLengthKey,
                       initialValue: 'a',
                       rules: [AnimalRule<String>.length(min: 3)],
                     ),
                     field<String>(
-                      name: 'maximum-length',
+                      label: 'maximum-length',
+                      fieldKey: maximumLengthKey,
                       initialValue: 'abcd',
                       rules: [AnimalRule<String>.length(max: 3)],
                     ),
                     field<String>(
-                      name: 'length-range',
+                      label: 'length-range',
+                      fieldKey: lengthRangeKey,
                       initialValue: 'a',
                       rules: [AnimalRule<String>.length(min: 3, max: 5)],
                     ),
                     field<String>(
-                      name: 'exception',
+                      label: 'exception',
+                      fieldKey: exceptionKey,
                       initialValue: 'value',
                       rules: [
                         AnimalRule<String>.custom((_) {
@@ -200,14 +230,16 @@ void main() {
                       ],
                     ),
                     field<String>(
-                      name: 'caller-message',
+                      label: 'caller-message',
+                      fieldKey: callerMessageKey,
                       initialValue: '',
                       rules: [
                         AnimalRule<String>.required(message: 'Caller message'),
                       ],
                     ),
                     field<String>(
-                      name: 'async-caller-message',
+                      label: 'async-caller-message',
+                      fieldKey: asyncCallerMessageKey,
                       initialValue: 'value',
                       rules: [
                         AnimalRule<String>.custom((_) async {

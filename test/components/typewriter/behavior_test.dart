@@ -2,6 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import '../../support/fake_clock.dart';
+
+Future<void> _pumpElapsed(
+  WidgetTester tester,
+  FakeClock clock,
+  Duration elapsed,
+) async {
+  clock.advanceMonotonic(elapsed);
+  await tester.pump(elapsed);
+}
+
 void main() {
   group(
     'AnimalTypewriter Behavior & Linear Layout Tests (C03 / TYP01-TYP03)',
@@ -11,6 +22,7 @@ void main() {
         (tester) async {
           int completeCount = 0;
           const testString = 'Welcome to Animal Island! 🏝️✨';
+          final clock = FakeClock();
 
           await tester.pumpWidget(
             MaterialApp(
@@ -24,6 +36,7 @@ void main() {
                   text: testString,
                   speed: const Duration(milliseconds: 50),
                   showCursor: true,
+                  clock: clock,
                   onComplete: () => completeCount++,
                 ),
               ),
@@ -35,12 +48,12 @@ void main() {
           // Step through typing duration
           final graphemeCount = testString.characters.length;
           for (int i = 0; i < graphemeCount + 2; i++) {
-            await tester.pump(const Duration(milliseconds: 50));
+            await _pumpElapsed(tester, clock, const Duration(milliseconds: 50));
           }
 
           expect(completeCount, 1);
           // Further pump does NOT call onComplete again
-          await tester.pump(const Duration(milliseconds: 100));
+          await _pumpElapsed(tester, clock, const Duration(milliseconds: 100));
           expect(completeCount, 1);
         },
       );
@@ -50,6 +63,7 @@ void main() {
         (tester) async {
           int completeCount = 0;
           final textNotifier = ValueNotifier<String>('First');
+          final clock = FakeClock();
 
           await tester.pumpWidget(
             MaterialApp(
@@ -65,6 +79,7 @@ void main() {
                     return AnimalTypewriter(
                       text: text,
                       speed: const Duration(milliseconds: 50),
+                      clock: clock,
                       onComplete: () => completeCount++,
                     );
                   },
@@ -74,7 +89,7 @@ void main() {
           );
 
           for (int i = 0; i < 7; i++) {
-            await tester.pump(const Duration(milliseconds: 50));
+            await _pumpElapsed(tester, clock, const Duration(milliseconds: 50));
           }
           expect(completeCount, 1);
 
@@ -83,7 +98,7 @@ void main() {
           await tester.pump();
 
           for (int i = 0; i < 15; i++) {
-            await tester.pump(const Duration(milliseconds: 50));
+            await _pumpElapsed(tester, clock, const Duration(milliseconds: 50));
           }
           expect(completeCount, 2);
         },
@@ -93,6 +108,7 @@ void main() {
         'TYP03: TickerMode disabled pauses typing and resumes on re-enable',
         (tester) async {
           final tickerNotifier = ValueNotifier<bool>(true);
+          final clock = FakeClock();
           int completeCount = 0;
 
           await tester.pumpWidget(
@@ -111,6 +127,7 @@ void main() {
                       child: AnimalTypewriter(
                         text: 'Long dialogue text to type out smoothly.',
                         speed: const Duration(milliseconds: 50),
+                        clock: clock,
                         onComplete: () => completeCount++,
                       ),
                     );
@@ -121,9 +138,9 @@ void main() {
           );
 
           // Type 3 characters
-          await tester.pump(const Duration(milliseconds: 50));
-          await tester.pump(const Duration(milliseconds: 50));
-          await tester.pump(const Duration(milliseconds: 50));
+          await _pumpElapsed(tester, clock, const Duration(milliseconds: 50));
+          await _pumpElapsed(tester, clock, const Duration(milliseconds: 50));
+          await _pumpElapsed(tester, clock, const Duration(milliseconds: 50));
           expect(completeCount, 0);
 
           // Disable TickerMode
@@ -131,7 +148,7 @@ void main() {
           await tester.pump();
 
           // Advancing time should not complete while disabled
-          await tester.pump(const Duration(milliseconds: 500));
+          await _pumpElapsed(tester, clock, const Duration(milliseconds: 500));
           expect(completeCount, 0);
 
           // Re-enable TickerMode
@@ -139,7 +156,7 @@ void main() {
           await tester.pump();
 
           for (int i = 0; i < 50; i++) {
-            await tester.pump(const Duration(milliseconds: 50));
+            await _pumpElapsed(tester, clock, const Duration(milliseconds: 50));
           }
           expect(completeCount, 1);
         },

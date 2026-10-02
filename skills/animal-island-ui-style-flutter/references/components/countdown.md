@@ -18,6 +18,7 @@
 - `size`
 - `targetTime`
 - `variant`
+- `visible`
 
 ## Enums
 - `AnimalCountdownSize`
@@ -27,6 +28,8 @@
 
 `AnimalClock` and its default `SystemClock` are public root types. `FakeClock`
 is test support only; it is not part of the package API.
+
+`targetTime` is a wall-clock deadline; `remaining` is converted to one wall-clock deadline when the widget is created or its time input changes. The functional readout is not disabled by reduced-motion settings. Its scheduler registration pauses in the background, under a disabled `TickerMode`, or when the owner sets `visible: false`; that input controls periodic updates only and does not hide layout. When active again, the readout recalculates from `clock.now()` instead of subtracting missed ticks.
 
 ## Localization
 Unit tiles use the generated `countdownUnitDays`, `countdownUnitHours`,

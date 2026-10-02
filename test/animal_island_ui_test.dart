@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
+
 import 'package:animal_island_ui/src/components/date_picker/date_picker_panel.dart';
 import 'package:animal_island_ui/src/components/time_picker/time_picker_panel.dart';
 import 'package:animal_island_ui/src/internal/interaction/interactive_region.dart';
 import 'package:animal_island_ui/src/internal/painting/blob_path.dart';
+
+import 'support/fake_clock.dart';
 
 void main() {
   group('Animal Island UI Design Tokens Tests', () {
@@ -215,8 +218,9 @@ void main() {
 
     test('AnimalFormController and AnimalRule validation engine', () async {
       final controller = AnimalFormController();
-      controller.registerField(
-        name: 'email',
+      final emailKey = AnimalFieldKey<String>(debugLabel: 'email');
+      controller.registerField<String>(
+        key: emailKey,
         rules: [
           AnimalRule.required(message: 'Email required'),
           AnimalRule.email(message: 'Invalid email'),
@@ -225,28 +229,28 @@ void main() {
 
       expect(await controller.validate(), isFalse);
       expect(
-        controller.getFieldError('email'),
+        controller.getFieldError(emailKey),
         const AnimalValidationIssue.literal('Email required'),
       );
 
-      controller.setFieldValue('email', 'not-an-email', validate: false);
+      controller.setValue(emailKey, 'not-an-email', validate: false);
       expect(await controller.validate(), isFalse);
       expect(
-        controller.getFieldError('email'),
+        controller.getFieldError(emailKey),
         const AnimalValidationIssue.literal('Invalid email'),
       );
 
-      controller.setFieldValue(
-        'email',
+      controller.setValue(
+        emailKey,
         'islander@animalisland.ui',
         validate: false,
       );
       expect(await controller.validate(), isTrue);
-      expect(controller.getFieldError('email'), isNull);
+      expect(controller.getFieldError(emailKey), isNull);
 
       controller.reset();
-      expect(controller.getFieldValue('email'), isNull);
-      expect(controller.getFieldError('email'), isNull);
+      expect(controller.valueFor(emailKey), isNull);
+      expect(controller.getFieldError(emailKey), isNull);
     });
 
     testWidgets(
@@ -915,6 +919,7 @@ void main() {
     testWidgets(
       'AnimalCountdown remaining mode decrements monotonically when pumped (CD-01)',
       (tester) async {
+        final fakeClock = FakeClock(DateTime(2026, 9, 13, 12, 0, 0));
         await tester.pumpWidget(
           MaterialApp(
             localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -922,14 +927,19 @@ void main() {
 
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
-              body: AnimalCountdown(remaining: Duration(seconds: 5)),
+              body: AnimalCountdown(
+                remaining: Duration(seconds: 5),
+                clock: fakeClock,
+              ),
             ),
           ),
         );
 
         expect(find.text('05'), findsOneWidget);
+        fakeClock.advance(const Duration(seconds: 2));
         await tester.pump(const Duration(seconds: 2));
         expect(find.text('03'), findsOneWidget);
+        fakeClock.advance(const Duration(seconds: 2));
         await tester.pump(const Duration(seconds: 2));
         expect(find.text('01'), findsOneWidget);
       },
@@ -939,6 +949,7 @@ void main() {
       'AnimalForm onSubmit and blur validation integrate seamlessly (FORM-01, FORM-02, FORM-03)',
       (tester) async {
         final controller = AnimalFormController();
+        final usernameKey = AnimalFieldKey<String>(debugLabel: 'username');
         bool submitted = false;
 
         await tester.pumpWidget(
@@ -955,12 +966,16 @@ void main() {
                 },
                 child: Column(
                   children: [
-                    AnimalFormItem(
-                      name: 'username',
+                    AnimalFormItem<String>(
+                      fieldKey: usernameKey,
                       label: 'Username',
                       required: true,
                       rules: [AnimalRule.required(message: 'Required field')],
-                      child: const AnimalInput(placeholder: 'Enter name'),
+                      builder: (context, binding) => AnimalInput(
+                        placeholder: 'Enter name',
+                        value: binding.value,
+                        onChanged: binding.onChanged,
+                      ),
                     ),
                   ],
                 ),
@@ -973,10 +988,10 @@ void main() {
         final initialValid = await controller.validate();
         expect(initialValid, isFalse);
 
-        controller.setFieldValue('username', 'Nook');
+        controller.setValue(usernameKey, 'Nook');
         await controller.submit();
         expect(submitted, isTrue);
-        expect(controller.getFieldValue('username'), 'Nook');
+        expect(controller.valueFor(usernameKey), 'Nook');
       },
     );
 
@@ -1391,6 +1406,8 @@ void main() {
       final controller = AnimalFormController();
       final focusNode1 = FocusNode();
       final focusNode2 = FocusNode();
+      final firstFieldKey = AnimalFieldKey<String>(debugLabel: 'firstField');
+      final secondFieldKey = AnimalFieldKey<String>(debugLabel: 'secondField');
 
       await tester.pumpWidget(
         MaterialApp(
@@ -1403,16 +1420,16 @@ void main() {
               controller: controller,
               child: Column(
                 children: [
-                  AnimalFormItem(
-                    name: 'firstField',
+                  AnimalFormItem<String>(
+                    fieldKey: firstFieldKey,
                     label: 'First',
                     focusNode: focusNode1,
                     rules: [AnimalRule.required(message: 'First is required')],
                     builder: (context, binding) =>
                         AnimalInput(focusNode: binding.focusNode),
                   ),
-                  AnimalFormItem(
-                    name: 'secondField',
+                  AnimalFormItem<String>(
+                    fieldKey: secondFieldKey,
                     label: 'Second',
                     focusNode: focusNode2,
                     rules: [AnimalRule.required(message: 'Second is required')],
@@ -1444,6 +1461,8 @@ void main() {
       'AnimalCheckboxGroup and AnimalRadioGroup do not pollute form state (FORM-02, FORM-03)',
       (tester) async {
         final controller = AnimalFormController();
+        final hobbiesKey = AnimalFieldKey.list<String>(debugLabel: 'hobbies');
+        final roleKey = AnimalFieldKey<String>(debugLabel: 'role');
 
         await tester.pumpWidget(
           MaterialApp(
@@ -1456,35 +1475,34 @@ void main() {
                 controller: controller,
                 child: Column(
                   children: [
-                    AnimalFormItem(
-                      name: 'hobbies',
+                    AnimalFormItem<List<String>>(
+                      fieldKey: hobbiesKey,
                       label: 'Hobbies',
                       initialValue: const <String>[],
-                      child: AnimalCheckboxGroup<String>(
-                        value: const [],
-                        options: const [
-                          AnimalOption(value: 'fishing', label: 'Fishing'),
-                          AnimalOption(
-                            value: 'bugCatching',
-                            label: 'Bug Catching',
+                      builder: (context, binding) =>
+                          AnimalCheckboxGroup<String>(
+                            value: binding.value ?? const [],
+                            options: const [
+                              AnimalOption(value: 'fishing', label: 'Fishing'),
+                              AnimalOption(
+                                value: 'bugCatching',
+                                label: 'Bug Catching',
+                              ),
+                            ],
+                            onChanged: binding.onChanged,
                           ),
-                        ],
-                        onChanged: (vals) =>
-                            controller.setFieldValue('hobbies', vals),
-                      ),
                     ),
-                    AnimalFormItem(
-                      name: 'role',
+                    AnimalFormItem<String>(
+                      fieldKey: roleKey,
                       label: 'Role',
                       initialValue: 'resident',
-                      child: AnimalRadioGroup<String>(
-                        value: 'resident',
+                      builder: (context, binding) => AnimalRadioGroup<String>(
+                        value: binding.value,
                         options: const [
                           AnimalOption(value: 'resident', label: 'Resident'),
                           AnimalOption(value: 'mayor', label: 'Mayor'),
                         ],
-                        onChanged: (val) =>
-                            controller.setFieldValue('role', val),
+                        onChanged: binding.onChanged,
                       ),
                     ),
                   ],
@@ -1499,7 +1517,7 @@ void main() {
         await tester.pump();
 
         // Form state MUST be List<String>, NOT a boolean true/false!
-        final hobbies = controller.getFieldValue('hobbies');
+        final hobbies = controller.valueFor(hobbiesKey);
         expect(hobbies, isA<List<String>>());
         expect(hobbies, contains('fishing'));
 
@@ -1507,15 +1525,16 @@ void main() {
         await tester.tap(find.text('Mayor'));
         await tester.pump();
 
-        final role = controller.getFieldValue('role');
+        final role = controller.valueFor(roleKey);
         expect(role, equals('mayor'));
       },
     );
 
     testWidgets(
-      'AnimalFormController resetFields and setFieldValue dynamically sync AnimalInput (FORM-04)',
+      'AnimalFormController reset and setValue dynamically sync AnimalInput (FORM-04)',
       (tester) async {
         final controller = AnimalFormController();
+        final islandKey = AnimalFieldKey<String>(debugLabel: 'island');
 
         await tester.pumpWidget(
           MaterialApp(
@@ -1527,7 +1546,7 @@ void main() {
               body: AnimalForm(
                 controller: controller,
                 child: AnimalFormItem<String>(
-                  name: 'island',
+                  fieldKey: islandKey,
                   label: 'Island',
                   initialValue: 'Peach Isle',
                   builder: (context, binding) => AnimalInput(
@@ -1543,7 +1562,7 @@ void main() {
         expect(find.text('Peach Isle'), findsOneWidget);
 
         // Dynamically set value
-        controller.setFieldValue('island', 'Cherry Isle');
+        controller.setValue(islandKey, 'Cherry Isle');
         await tester.pump();
         expect(find.text('Cherry Isle'), findsOneWidget);
 
@@ -1684,6 +1703,8 @@ void main() {
       (tester) async {
         final controller = AnimalFormController();
         final groupFocusNode = FocusNode();
+        final hobbiesKey = AnimalFieldKey.list<String>(debugLabel: 'hobbies');
+        final genderKey = AnimalFieldKey<String>(debugLabel: 'gender');
 
         await tester.pumpWidget(
           MaterialApp(
@@ -1696,23 +1717,25 @@ void main() {
                 controller: controller,
                 child: Column(
                   children: [
-                    AnimalFormItem(
-                      name: 'hobbies',
+                    AnimalFormItem<List<String>>(
+                      fieldKey: hobbiesKey,
                       focusNode: groupFocusNode,
-                      child: AnimalCheckboxGroup<String>(
-                        value: const [],
-                        onChanged: (_) {},
-                        options: const [
-                          AnimalOption(value: 'fishing', label: 'Fishing'),
-                          AnimalOption(value: 'bug', label: 'Bug Catching'),
-                        ],
-                      ),
+                      builder: (context, binding) =>
+                          AnimalCheckboxGroup<String>(
+                            value: binding.value ?? const [],
+                            onChanged: binding.onChanged,
+                            options: const [
+                              AnimalOption(value: 'fishing', label: 'Fishing'),
+                              AnimalOption(value: 'bug', label: 'Bug Catching'),
+                            ],
+                          ),
                     ),
-                    AnimalFormItem(
-                      name: 'gender',
-                      child: AnimalRadioGroup<String>(
-                        value: 'm',
-                        onChanged: (_) {},
+                    AnimalFormItem<String>(
+                      fieldKey: genderKey,
+                      initialValue: 'm',
+                      builder: (context, binding) => AnimalRadioGroup<String>(
+                        value: binding.value,
+                        onChanged: binding.onChanged,
                         options: const [
                           AnimalOption(value: 'm', label: 'Male'),
                           AnimalOption(value: 'f', label: 'Female'),
@@ -1734,9 +1757,14 @@ void main() {
     );
 
     testWidgets(
-      'Form controls reactively update visual state on setFieldValue and resetFields (D-05)',
+      'Form controls reactively update visual state on setValue and reset (D-05)',
       (tester) async {
         final controller = AnimalFormController();
+        final selectKey = AnimalFieldKey<String>(debugLabel: 'select');
+        final switchKey = AnimalFieldKey<bool>(debugLabel: 'switch');
+        final radioGroupKey = AnimalFieldKey<String>(debugLabel: 'radio_group');
+        final dateKey = AnimalFieldKey<AnimalDate>(debugLabel: 'date');
+        final timeKey = AnimalFieldKey<AnimalTimeValue>(debugLabel: 'time');
 
         await tester.pumpWidget(
           MaterialApp(
@@ -1751,7 +1779,7 @@ void main() {
                   child: Column(
                     children: [
                       AnimalFormItem<String>(
-                        name: 'select',
+                        fieldKey: selectKey,
                         initialValue: 'apple',
                         builder: (context, binding) => AnimalSelect<String>(
                           value: binding.value,
@@ -1763,7 +1791,7 @@ void main() {
                         ),
                       ),
                       AnimalFormItem<bool>(
-                        name: 'switch',
+                        fieldKey: switchKey,
                         initialValue: false,
                         builder: (context, binding) => AnimalSwitch(
                           value: binding.value ?? false,
@@ -1771,7 +1799,7 @@ void main() {
                         ),
                       ),
                       AnimalFormItem<String>(
-                        name: 'radio_group',
+                        fieldKey: radioGroupKey,
                         initialValue: 'x',
                         builder: (context, binding) => AnimalRadioGroup<String>(
                           value: binding.value ?? 'x',
@@ -1783,14 +1811,14 @@ void main() {
                         ),
                       ),
                       AnimalFormItem<AnimalDate>(
-                        name: 'date',
+                        fieldKey: dateKey,
                         builder: (context, binding) => AnimalDatePicker.popover(
                           value: binding.value,
                           onChanged: binding.onChanged,
                         ),
                       ),
                       AnimalFormItem<AnimalTimeValue>(
-                        name: 'time',
+                        fieldKey: timeKey,
                         builder: (context, binding) => AnimalTimePicker.popover(
                           value: binding.value,
                           onChanged: binding.onChanged,
@@ -1808,19 +1836,19 @@ void main() {
         expect(find.text('Apple'), findsOneWidget);
 
         // 1. Update Select
-        controller.setFieldValue('select', 'pear');
+        controller.setValue(selectKey, 'pear');
         await tester.pump();
         expect(find.text('Pear'), findsOneWidget);
 
         // 2. Update Switch
-        controller.setFieldValue('switch', true);
+        controller.setValue(switchKey, true);
         await tester.pump();
         final switchFinder = find.byType(AnimalSwitch);
         expect(tester.widget<AnimalSwitch>(switchFinder).value, isTrue);
 
         // 3. Update Date & Time
-        controller.setFieldValue('date', AnimalDate(2026, 9, 10));
-        controller.setFieldValue('time', AnimalTimeValue(hour: 15, minute: 45));
+        controller.setValue(dateKey, AnimalDate(2026, 9, 10));
+        controller.setValue(timeKey, AnimalTimeValue(hour: 15, minute: 45));
         await tester.pump();
         final expectedDate = MaterialLocalizations.of(
           tester.element(find.byType(AnimalForm)),
@@ -2169,6 +2197,9 @@ void main() {
       (tester) async {
         final formController = AnimalFormController();
         final focusNode = FocusNode();
+        final departureTimeKey = AnimalFieldKey<AnimalTimeValue>(
+          debugLabel: 'departureTime',
+        );
         final initialTime = AnimalTimeValue(hour: 14, minute: 30);
 
         await tester.pumpWidget(
@@ -2181,7 +2212,7 @@ void main() {
               body: AnimalForm(
                 controller: formController,
                 child: AnimalFormItem<AnimalTimeValue>(
-                  name: 'departureTime',
+                  fieldKey: departureTimeKey,
                   initialValue: initialTime,
                   focusNode: focusNode,
                   builder: (context, binding) {
@@ -2213,7 +2244,7 @@ void main() {
         await tester.tap(clearButton);
         await tester.pumpAndSettle();
 
-        expect(formController.values['departureTime'], isNull);
+        expect(formController.values.valueFor(departureTimeKey), isNull);
       },
     );
 
@@ -2222,6 +2253,9 @@ void main() {
       (tester) async {
         final formController = AnimalFormController();
         final focusNode = FocusNode();
+        final flightDateKey = AnimalFieldKey<AnimalDate>(
+          debugLabel: 'flightDate',
+        );
         final initialDate = AnimalDate(2026, 5, 10);
 
         await tester.pumpWidget(
@@ -2234,7 +2268,7 @@ void main() {
               body: AnimalForm(
                 controller: formController,
                 child: AnimalFormItem<AnimalDate>(
-                  name: 'flightDate',
+                  fieldKey: flightDateKey,
                   initialValue: initialDate,
                   focusNode: focusNode,
                   builder: (context, binding) {
@@ -2264,14 +2298,14 @@ void main() {
         expect(clearButton, findsOneWidget);
         await tester.tap(clearButton);
         await tester.pumpAndSettle();
-        expect(formController.values['flightDate'], isNull);
+        expect(formController.values.valueFor(flightDateKey), isNull);
 
         // Today in standalone panel updates formItem
         final todayButton = find.text('Today');
         expect(todayButton, findsOneWidget);
         await tester.tap(todayButton);
         await tester.pumpAndSettle();
-        final todayVal = formController.values['flightDate'] as AnimalDate?;
+        final todayVal = formController.values.valueFor(flightDateKey);
         expect(todayVal, isNotNull);
         final now = AnimalDate.today();
         expect(todayVal!.year, now.year);
@@ -2894,6 +2928,7 @@ void main() {
       'O03: AnimalTypewriter pre-caches graphemes and executes typing without GC thrashing',
       (tester) async {
         bool completed = false;
+        final clock = FakeClock();
 
         await tester.pumpWidget(
           MaterialApp(
@@ -2906,6 +2941,7 @@ void main() {
                 text: '🍃 Animal Island 🌸',
                 speed: const Duration(milliseconds: 20),
                 showCursor: true,
+                clock: clock,
                 onComplete: () => completed = true,
               ),
             ),
@@ -2913,7 +2949,9 @@ void main() {
         );
 
         expect(find.byType(AnimalTypewriter), findsOneWidget);
+        clock.advanceMonotonic(const Duration(milliseconds: 100));
         await tester.pump(const Duration(milliseconds: 100));
+        clock.advanceMonotonic(const Duration(milliseconds: 400));
         await tester.pump(const Duration(milliseconds: 400));
         await tester.pumpAndSettle();
 

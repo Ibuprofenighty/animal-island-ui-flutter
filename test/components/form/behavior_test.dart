@@ -8,6 +8,7 @@ void main() {
       'slow outdated async validation must not overwrite newer fast validation (latest-wins)',
       (tester) async {
         final controller = AnimalFormController();
+        final usernameKey = AnimalFieldKey<String>(debugLabel: 'username');
 
         await tester.pumpWidget(
           MaterialApp(
@@ -18,8 +19,8 @@ void main() {
             home: Scaffold(
               body: AnimalForm(
                 controller: controller,
-                child: AnimalFormItem(
-                  name: 'username',
+                child: AnimalFormItem<String>(
+                  fieldKey: usernameKey,
                   rules: [
                     AnimalRule.custom((value) async {
                       if (value == 'slow_invalid') {
@@ -37,7 +38,10 @@ void main() {
                       return null;
                     }),
                   ],
-                  child: const AnimalInput(),
+                  builder: (context, binding) => AnimalInput(
+                    value: binding.value,
+                    onChanged: binding.onChanged,
+                  ),
                 ),
               ),
             ),
@@ -45,17 +49,17 @@ void main() {
         );
 
         // Step 1: Input "slow_invalid" -> triggers slow async validation (200ms)
-        controller.setFieldValue('username', 'slow_invalid');
+        controller.setValue(usernameKey, 'slow_invalid');
         await tester.pump(const Duration(milliseconds: 10));
 
         // Step 2: Quickly change to "fast_valid" -> triggers fast async validation (50ms)
-        controller.setFieldValue('username', 'fast_valid');
+        controller.setValue(usernameKey, 'fast_valid');
         await tester.pump(const Duration(milliseconds: 10));
 
         // Step 3: Advance 70ms (fast_valid finishes and sets error to null)
         await tester.pump(const Duration(milliseconds: 70));
         expect(
-          controller.getFieldError('username'),
+          controller.getFieldError(usernameKey),
           isNull,
           reason: 'fast_valid should be valid',
         );
@@ -65,7 +69,7 @@ void main() {
 
         // Contract: Stale validation from previous value must NOT overwrite current valid state!
         expect(
-          controller.getFieldError('username'),
+          controller.getFieldError(usernameKey),
           isNull,
           reason: 'Stale slow validation result must be discarded and never overwrite current valid state',
         );

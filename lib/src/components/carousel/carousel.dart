@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
+import '../../foundation/models/clock.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../../internal/timing/motion_policy.dart';
@@ -28,6 +27,12 @@ class AnimalCarousel extends StatefulWidget {
   final bool pauseOnHover;
   final bool loop;
 
+  /// Owner-provided visibility for autoplay; it does not hide layout.
+  final bool visible;
+
+  /// Clock used to measure autoplay elapsed time. Defaults to [SystemClock].
+  final AnimalClock clock;
+
   const AnimalCarousel({
     super.key,
     required this.items,
@@ -41,6 +46,8 @@ class AnimalCarousel extends StatefulWidget {
     this.showDots = true,
     this.pauseOnHover = true,
     this.loop = true,
+    this.visible = true,
+    this.clock = const SystemClock(),
   });
 
   @override
@@ -50,9 +57,10 @@ class AnimalCarousel extends StatefulWidget {
 class _AnimalCarouselState extends State<AnimalCarousel> {
   late PageController _pageController;
   late int _currentIndex;
-  Timer? _timer;
+  late AnimalMotionScheduler _motionScheduler;
+  late AnimalMotionRegistration _autoplay;
   bool _isHovered = false;
-  bool _tickerModeEnabled = true;
+  bool _isFocused = false;
 
   bool get _isControlled => widget.activeIndex != null;
 
@@ -66,27 +74,27 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
       _currentIndex = 0;
     }
     _pageController = PageController(initialPage: _currentIndex);
+    _motionScheduler = AnimalMotionScheduler(clock: widget.clock);
+    _autoplay = _motionScheduler.schedulePeriodic(
+      interval: widget.autoPlayInterval,
+      work: AnimalScheduledWork.decorative,
+      eligible: false,
+      onTick: (_, _) => _next(),
+    );
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final enabled = AnimalMotionPolicy.shouldAnimate(context);
-    if (_tickerModeEnabled != enabled) {
-      _tickerModeEnabled = enabled;
-      if (_tickerModeEnabled) {
-        _restartTimer();
-      } else {
-        _stopTimer();
-      }
-    } else if (_timer == null && _tickerModeEnabled) {
-      _restartTimer();
-    }
+    _syncAutoplayEligibility();
   }
 
   @override
   void didUpdateWidget(AnimalCarousel oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.clock != widget.clock) {
+      _motionScheduler.updateClock(widget.clock);
+    }
     if (widget.items.isNotEmpty && _currentIndex >= widget.items.length) {
       _currentIndex = widget.items.length - 1;
     }
@@ -107,39 +115,29 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
     if (oldWidget.autoPlay != widget.autoPlay ||
         oldWidget.autoPlayInterval != widget.autoPlayInterval ||
         oldWidget.items.length != widget.items.length) {
-      _restartTimer();
+      _autoplay.updateInterval(widget.autoPlayInterval);
     }
+    _syncAutoplayEligibility();
   }
 
   @override
   void dispose() {
-    _stopTimer();
+    _motionScheduler.dispose();
     _pageController.dispose();
     super.dispose();
   }
 
-  void _stopTimer() {
-    _timer?.cancel();
-    _timer = null;
-  }
-
-  void _restartTimer() {
-    _stopTimer();
-    if (!widget.autoPlay ||
-        widget.items.length <= 1 ||
-        !_tickerModeEnabled ||
-        (_isHovered && widget.pauseOnHover)) {
-      return;
-    }
-    _timer = Timer.periodic(widget.autoPlayInterval, (_) {
-      if (!mounted ||
-          !_tickerModeEnabled ||
-          (_isHovered && widget.pauseOnHover) ||
-          widget.items.length <= 1) {
-        return;
-      }
-      _next();
-    });
+  void _syncAutoplayEligibility() {
+    _autoplay.setEligible(
+      widget.autoPlay &&
+          widget.items.length > 1 &&
+          AnimalMotionPolicy.decorativeContextEligible(
+            context,
+            focused: _isFocused,
+            hovered: _isHovered && widget.pauseOnHover,
+            visible: widget.visible,
+          ),
+    );
   }
 
   void _onPageChanged(int index) {
@@ -202,100 +200,107 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
       );
     }
 
-    return MouseRegion(
-      onEnter: (_) {
-        if (!_isHovered) {
+    return Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onFocusChange: (bool focused) {
+        if (_isFocused == focused) return;
+        _isFocused = focused;
+        _syncAutoplayEligibility();
+      },
+      child: MouseRegion(
+        onEnter: (_) {
+          if (_isHovered) return;
           _isHovered = true;
-          if (widget.pauseOnHover) _stopTimer();
-        }
-      },
-      onExit: (_) {
-        if (_isHovered) {
+          _syncAutoplayEligibility();
+        },
+        onExit: (_) {
+          if (!_isHovered) return;
           _isHovered = false;
-          if (widget.pauseOnHover) _restartTimer();
-        }
-      },
-      child: SizedBox(
-        height: widget.height,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            PageView.builder(
-              controller: _pageController,
-              itemCount: widget.items.length,
-              onPageChanged: _onPageChanged,
-              itemBuilder: (context, index) {
-                return ClipRRect(
-                  borderRadius: theme.radii.cardBorder,
-                  child: widget.items[index],
-                );
-              },
-            ),
-            if (widget.showArrows && widget.items.length > 1) ...[
-              Positioned(
-                left: theme.spacing.md,
-                child: InteractiveRegion(
-                  depth: 2.0,
-                  surfaceColor: theme.colors.bgContent,
-                  borderRadius: theme.radii.pillBorder,
-                  padding: EdgeInsets.all(theme.spacing.sm),
-                  semanticLabel: localizations.carouselPreviousSlide,
-                  onPressed: _prev,
-                  child: Icon(
-                    Icons.chevron_left_rounded,
-                    size: 20.0,
-                    color: theme.colors.text,
-                  ),
-                ),
+          _syncAutoplayEligibility();
+        },
+        child: SizedBox(
+          height: widget.height,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              PageView.builder(
+                controller: _pageController,
+                itemCount: widget.items.length,
+                onPageChanged: _onPageChanged,
+                itemBuilder: (context, index) {
+                  return ClipRRect(
+                    borderRadius: theme.radii.cardBorder,
+                    child: widget.items[index],
+                  );
+                },
               ),
-              Positioned(
-                right: theme.spacing.md,
-                child: InteractiveRegion(
-                  depth: 2.0,
-                  surfaceColor: theme.colors.bgContent,
-                  borderRadius: theme.radii.pillBorder,
-                  padding: EdgeInsets.all(theme.spacing.sm),
-                  semanticLabel: localizations.carouselNextSlide,
-                  onPressed: _next,
-                  child: Icon(
-                    Icons.chevron_right_rounded,
-                    size: 20.0,
-                    color: theme.colors.text,
-                  ),
-                ),
-              ),
-            ],
-            if (widget.showDots && widget.items.length > 1)
-              Positioned(
-                bottom: theme.spacing.md,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: theme.spacing.sm,
-                    vertical: theme.spacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: theme.colors.bgContent.withValues(alpha: 0.75),
+              if (widget.showArrows && widget.items.length > 1) ...[
+                Positioned(
+                  left: theme.spacing.md,
+                  child: InteractiveRegion(
+                    depth: 2.0,
+                    surfaceColor: theme.colors.bgContent,
                     borderRadius: theme.radii.pillBorder,
-                    boxShadow: [theme.shadows.softElevation],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (int i = 0; i < widget.items.length; i++) ...[
-                        if (i > 0) SizedBox(width: theme.spacing.xs),
-                        _DotIndicator(
-                          index: i,
-                          total: widget.items.length,
-                          isSelected: i == _currentIndex,
-                          theme: theme,
-                          onTap: () => _goTo(i),
-                        ),
-                      ],
-                    ],
+                    padding: EdgeInsets.all(theme.spacing.sm),
+                    semanticLabel: localizations.carouselPreviousSlide,
+                    onPressed: _prev,
+                    child: Icon(
+                      Icons.chevron_left_rounded,
+                      size: 20.0,
+                      color: theme.colors.text,
+                    ),
                   ),
                 ),
-              ),
-          ],
+                Positioned(
+                  right: theme.spacing.md,
+                  child: InteractiveRegion(
+                    depth: 2.0,
+                    surfaceColor: theme.colors.bgContent,
+                    borderRadius: theme.radii.pillBorder,
+                    padding: EdgeInsets.all(theme.spacing.sm),
+                    semanticLabel: localizations.carouselNextSlide,
+                    onPressed: _next,
+                    child: Icon(
+                      Icons.chevron_right_rounded,
+                      size: 20.0,
+                      color: theme.colors.text,
+                    ),
+                  ),
+                ),
+              ],
+              if (widget.showDots && widget.items.length > 1)
+                Positioned(
+                  bottom: theme.spacing.md,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: theme.spacing.sm,
+                      vertical: theme.spacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colors.bgContent.withValues(alpha: 0.75),
+                      borderRadius: theme.radii.pillBorder,
+                      boxShadow: [theme.shadows.softElevation],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (int i = 0; i < widget.items.length; i++) ...[
+                          if (i > 0) SizedBox(width: theme.spacing.xs),
+                          _DotIndicator(
+                            index: i,
+                            total: widget.items.length,
+                            isSelected: i == _currentIndex,
+                            theme: theme,
+                            onTap: () => _goTo(i),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -4,9 +4,27 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 void main() {
   group('AnimalFormItem Tests (C20 / FIT01-FIT04)', () {
+    testWidgets('a field without a typed form owner fails during composition', (
+      tester,
+    ) async {
+      final key = AnimalFieldKey<String>(debugLabel: 'missing-owner');
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AnimalFormItem<String>(
+              fieldKey: key,
+              builder: (_, _) => const SizedBox.shrink(),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isA<StateError>());
+    });
+
     testWidgets('FIT01: displays label, required indicator, and help text', (
       tester,
     ) async {
+      final nicknameKey = AnimalFieldKey<String>(debugLabel: 'nickname');
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -16,11 +34,11 @@ void main() {
           home: Scaffold(
             body: AnimalForm(
               child: AnimalFormItem<String>(
-                name: 'nickname',
+                fieldKey: nicknameKey,
                 label: 'Nickname',
                 required: true,
                 help: 'Enter your friendly islander nickname',
-                child: AnimalInput(),
+                builder: (_, _) => AnimalInput(),
               ),
             ),
           ),
@@ -39,6 +57,7 @@ void main() {
       'FIT02: error message replaces help text and renders with error style',
       (tester) async {
         final controller = AnimalFormController();
+        final emailKey = AnimalFieldKey<String>(debugLabel: 'email');
 
         await tester.pumpWidget(
           MaterialApp(
@@ -50,7 +69,7 @@ void main() {
               body: AnimalForm(
                 controller: controller,
                 child: AnimalFormItem<String>(
-                  name: 'email',
+                  fieldKey: emailKey,
                   label: 'Email',
                   help: 'We never share your email',
                   rules: [AnimalRule.required(message: 'Email is required')],
@@ -88,6 +107,7 @@ void main() {
       (tester) async {
         final controller = AnimalFormController();
         final focusNode = FocusNode();
+        final usernameKey = AnimalFieldKey<String>(debugLabel: 'username');
 
         await tester.pumpWidget(
           MaterialApp(
@@ -99,7 +119,7 @@ void main() {
               body: AnimalForm(
                 controller: controller,
                 child: AnimalFormItem<String>(
-                  name: 'username',
+                  fieldKey: usernameKey,
                   label: 'Username',
                   focusNode: focusNode,
                   rules: [AnimalRule.required(message: 'Username is required')],
@@ -132,6 +152,7 @@ void main() {
     testWidgets('FIT04: custom labelWidget overrides text label', (
       tester,
     ) async {
+      final customKey = AnimalFieldKey<String>(debugLabel: 'custom');
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -141,10 +162,10 @@ void main() {
           home: Scaffold(
             body: AnimalForm(
               child: AnimalFormItem<String>(
-                name: 'custom',
+                fieldKey: customKey,
                 label: 'Default Label',
                 labelWidget: Text('Custom Rich Label'),
-                child: AnimalInput(),
+                builder: (_, _) => AnimalInput(),
               ),
             ),
           ),

@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
+import '../../foundation/models/clock.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/timing/motion_policy.dart';
 
@@ -35,6 +34,12 @@ class AnimalTypewriter extends StatefulWidget {
   /// Optional callback fired once typing is complete.
   final VoidCallback? onComplete;
 
+  /// Clock used to measure typing elapsed time. Defaults to [SystemClock].
+  final AnimalClock clock;
+
+  /// Owner-provided visibility for periodic work; it does not hide layout.
+  final bool visible;
+
   const AnimalTypewriter({
     super.key,
     required this.text,
@@ -43,6 +48,8 @@ class AnimalTypewriter extends StatefulWidget {
     this.textAlign,
     this.showCursor = false,
     this.onComplete,
+    this.clock = const SystemClock(),
+    this.visible = true,
   });
 
   @override
@@ -51,11 +58,14 @@ class AnimalTypewriter extends StatefulWidget {
 
 class _AnimalTypewriterState extends State<AnimalTypewriter> {
   int _charIndex = 0;
-  Timer? _typingTimer;
-  Timer? _cursorTimer;
+  late AnimalMotionScheduler _motionScheduler;
+  late AnimalMotionRegistration _typing;
+  late AnimalMotionRegistration _cursor;
+  Duration _typingElapsed = Duration.zero;
   bool _cursorVisible = true;
   bool _completed = false;
-  bool _tickerModeEnabled = true;
+  bool _isFocused = false;
+  bool _isHovered = false;
 
   late List<String> _graphemes;
 
@@ -63,8 +73,20 @@ class _AnimalTypewriterState extends State<AnimalTypewriter> {
   void initState() {
     super.initState();
     _initGraphemes();
-    _startTyping();
-    _initCursor();
+    _motionScheduler = AnimalMotionScheduler(clock: widget.clock);
+    _typing = _motionScheduler.schedulePeriodic(
+      interval: widget.speed,
+      work: AnimalScheduledWork.decorative,
+      eligible: false,
+      onTick: _handleTypingTick,
+    );
+    _cursor = _motionScheduler.schedulePeriodic(
+      interval: const Duration(milliseconds: 500),
+      work: AnimalScheduledWork.decorative,
+      eligible: false,
+      onTick: _toggleCursor,
+    );
+    if (_graphemes.isEmpty) widget.onComplete?.call();
   }
 
   void _initGraphemes() {
@@ -72,74 +94,52 @@ class _AnimalTypewriterState extends State<AnimalTypewriter> {
     _completed = _graphemes.isEmpty;
   }
 
-  void _initCursor() {
-    _cursorTimer?.cancel();
-    _cursorTimer = null;
-    if (widget.showCursor) {
-      _cursorTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
-        if (!mounted) return;
-        setState(() => _cursorVisible = !_cursorVisible);
-      });
+  void _toggleCursor(DateTime _, Duration _) {
+    if (!mounted) return;
+    setState(() => _cursorVisible = !_cursorVisible);
+  }
+
+  void _handleTypingTick(DateTime _, Duration elapsed) {
+    if (!mounted || _completed || _graphemes.isEmpty) return;
+    if (widget.speed <= Duration.zero) {
+      _revealThrough(_charIndex + 1);
+      return;
+    }
+    _typingElapsed += elapsed;
+    final int due =
+        _typingElapsed.inMicroseconds ~/ widget.speed.inMicroseconds;
+    if (due == 0) return;
+    _typingElapsed -= widget.speed * due;
+    _revealThrough(_charIndex + due);
+  }
+
+  void _revealThrough(int requestedIndex) {
+    final int nextIndex = requestedIndex.clamp(0, _graphemes.length);
+    if (nextIndex <= _charIndex) return;
+    setState(() => _charIndex = nextIndex);
+    if (_charIndex == _graphemes.length && !_completed) {
+      _completed = true;
+      _typing.setEligible(false);
+      _cursor.setEligible(false);
+      widget.onComplete?.call();
     }
   }
 
-  void _startTyping() {
-    _typingTimer?.cancel();
-    _typingTimer = null;
-
-    if (_graphemes.isEmpty) {
-      _completed = true;
-      widget.onComplete?.call();
-      return;
-    }
-
-    if (_charIndex >= _graphemes.length) {
-      _completed = true;
-      return;
-    }
-
-    if (!_tickerModeEnabled) return;
-
-    _typingTimer = Timer.periodic(widget.speed, (timer) {
-      if (!mounted) {
-        timer.cancel();
-        return;
-      }
-
-      if (!_tickerModeEnabled) {
-        timer.cancel();
-        _typingTimer = null;
-        return;
-      }
-
-      if (_charIndex < _graphemes.length) {
-        setState(() => _charIndex++);
-        if (_charIndex >= _graphemes.length && !_completed) {
-          _completed = true;
-          timer.cancel();
-          _typingTimer = null;
-          widget.onComplete?.call();
-        }
-      } else {
-        timer.cancel();
-        _typingTimer = null;
-      }
-    });
+  void _syncEligibility() {
+    final bool eligible = AnimalMotionPolicy.decorativeContextEligible(
+      context,
+      focused: _isFocused,
+      hovered: _isHovered,
+      visible: widget.visible,
+    );
+    _typing.setEligible(eligible && !_completed && _graphemes.isNotEmpty);
+    _cursor.setEligible(eligible && widget.showCursor && !_completed);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final enabled = AnimalMotionPolicy.shouldAnimate(context);
-    if (_tickerModeEnabled != enabled) {
-      _tickerModeEnabled = enabled;
-      if (_tickerModeEnabled) {
-        if (!_completed) _startTyping();
-      } else {
-        _typingTimer?.cancel();
-        _typingTimer = null;
-      }
-    }
+    _syncEligibility();
   }
 
   @override
@@ -147,26 +147,26 @@ class _AnimalTypewriterState extends State<AnimalTypewriter> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.showCursor != widget.showCursor) {
-      _initCursor();
+      _cursorVisible = true;
     }
 
     if (oldWidget.text != widget.text) {
-      _typingTimer?.cancel();
       _charIndex = 0;
       _completed = false;
+      _typingElapsed = Duration.zero;
       _initGraphemes();
-      _startTyping();
-    } else if (oldWidget.speed != widget.speed) {
-      if (!_completed) {
-        _startTyping();
-      }
+      if (_graphemes.isEmpty) widget.onComplete?.call();
     }
+    if (oldWidget.clock != widget.clock) {
+      _motionScheduler.updateClock(widget.clock);
+    }
+    if (oldWidget.speed != widget.speed) _typing.updateInterval(widget.speed);
+    _syncEligibility();
   }
 
   @override
   void dispose() {
-    _typingTimer?.cancel();
-    _cursorTimer?.cancel();
+    _motionScheduler.dispose();
     super.dispose();
   }
 
@@ -191,37 +191,58 @@ class _AnimalTypewriterState extends State<AnimalTypewriter> {
         ? 1.0
         : 0.0;
 
-    return Semantics(
-      label: widget.text,
-      child: ExcludeSemantics(
-        child: Text.rich(
-          TextSpan(
-            style: effectiveStyle,
-            children: [
-              TextSpan(text: revealed),
-              if (widget.showCursor && !isDone)
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.baseline,
-                  baseline: TextBaseline.alphabetic,
-                  child: Opacity(
-                    opacity: cursorOpacity,
-                    child: Container(
-                      width: 2.0,
-                      height: (effectiveStyle.fontSize ?? 16.0) * 1.1,
-                      margin: const EdgeInsets.symmetric(horizontal: 1.0),
-                      decoration: BoxDecoration(
-                        color: theme.colors.primary,
-                        borderRadius: BorderRadius.circular(1.0),
+    return Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onFocusChange: (bool focused) {
+        if (_isFocused == focused) return;
+        _isFocused = focused;
+        _syncEligibility();
+      },
+      child: MouseRegion(
+        onEnter: (_) {
+          if (_isHovered) return;
+          _isHovered = true;
+          _syncEligibility();
+        },
+        onExit: (_) {
+          if (!_isHovered) return;
+          _isHovered = false;
+          _syncEligibility();
+        },
+        child: Semantics(
+          label: widget.text,
+          child: ExcludeSemantics(
+            child: Text.rich(
+              TextSpan(
+                style: effectiveStyle,
+                children: [
+                  TextSpan(text: revealed),
+                  if (widget.showCursor && !isDone)
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.baseline,
+                      baseline: TextBaseline.alphabetic,
+                      child: Opacity(
+                        opacity: cursorOpacity,
+                        child: Container(
+                          width: 2.0,
+                          height: (effectiveStyle.fontSize ?? 16.0) * 1.1,
+                          margin: const EdgeInsets.symmetric(horizontal: 1.0),
+                          decoration: BoxDecoration(
+                            color: theme.colors.primary,
+                            borderRadius: BorderRadius.circular(1.0),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              // Invisible reservation maintains constant bounding box and wrapping
-              if (unrevealed.isNotEmpty)
-                TextSpan(text: unrevealed, style: transparentStyle),
-            ],
+                  // Invisible reservation maintains constant bounding box and wrapping
+                  if (unrevealed.isNotEmpty)
+                    TextSpan(text: unrevealed, style: transparentStyle),
+                ],
+              ),
+              textAlign: widget.textAlign ?? TextAlign.start,
+            ),
           ),
-          textAlign: widget.textAlign ?? TextAlign.start,
         ),
       ),
     );

@@ -22,6 +22,11 @@ export 'src/foundation/theme/motion.dart' show AnimalThemeMotion;
 export 'src/foundation/theme/theme.dart' show AnimalIslandTheme;
 export 'src/foundation/forms/animal_validation_issue.dart'
     show AnimalValidationIssue, AnimalValidationIssueKind;
+export 'src/foundation/forms/animal_field_key.dart' show AnimalFieldKey;
+export 'src/foundation/forms/animal_field_binding.dart'
+    show AnimalFieldBinding, AnimalValidationStatus;
+export 'src/foundation/forms/animal_form_values.dart'
+    show AnimalFieldValue, AnimalFormValues;
 export 'src/foundation/localization/animal_locale_resolution.dart'
     show resolveAnimalLocale;
 export 'src/foundation/localization/generated/animal_localizations.g.dart'
@@ -88,12 +93,13 @@ export 'src/components/time_picker/time_picker.dart' show AnimalTimePicker;
 // Category 4: Form Container (Form, FormItem, Controller, Bindings, Validation)
 export 'src/components/form/form.dart' show AnimalForm;
 export 'src/components/form/form_controller.dart'
-    show AnimalFormController, AnimalSubmitResult, AnimalSubmitStatus;
+    show
+        AnimalFormController,
+        AnimalFieldRegistration,
+        AnimalSubmitResult,
+        AnimalSubmitStatus;
 export 'src/components/form/form_item.dart' show AnimalFormItem;
-export 'src/components/form/field_key.dart' show AnimalFieldKey;
-export 'src/components/form/field_binding.dart' show AnimalFieldBinding;
-export 'src/components/form/validation.dart'
-    show AnimalRule, AnimalRuleType, AnimalValidationStatus;
+export 'src/components/form/validation.dart' show AnimalRule, AnimalRuleType;
 
 // Category 5: Overlays (Modal, Drawer, Tooltip)
 export 'src/components/modal/modal.dart' show AnimalModal;

@@ -4,21 +4,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../foundation/forms/animal_validation_issue.dart';
 
-/// Lifecycle and evaluation status for a form field.
-enum AnimalValidationStatus {
-  /// Initial state or state following a reset/clear. No validation has been executed.
-  idle,
-
-  /// Asynchronous validation rule(s) are currently in flight.
-  validating,
-
-  /// Validation executed and all rules passed successfully.
-  valid,
-
-  /// Validation executed and one or more rules failed.
-  invalid,
-}
-
 /// Category of validation rule for [AnimalRule].
 enum AnimalRuleType {
   /// Checks that the field has a non-null, non-empty value.

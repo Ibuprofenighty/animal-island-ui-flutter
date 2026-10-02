@@ -9,6 +9,13 @@ Build Flutter screens with `animal_island_ui`: 36 island-style components and
 101 vector icons. [中文镜像](SKILL.zh-CN.md) is a translation of this entry, not a
 separately installed skill.
 
+Use `AnimalIcons` for canonical vectors. For custom `AnimalIconData.svg` input,
+follow the restricted SVG vocabulary and size limits in the [icon reference](references/components/icon.md);
+empty or unsupported SVG input throws `ArgumentError` when rendered.
+Tint alpha uses three-decimal canonical precision; affected `stroke-opacity` is
+updated while ordinary group `opacity` is preserved. Positive custom stroke
+widths use two decimal places; zero and negative widths canonicalize to `0`.
+
 ## Read first
 
 - [Package metadata](../../pubspec.yaml): SDK constraints and dependencies.
@@ -51,10 +58,16 @@ cancelled when focus is lost or the control is disabled, hidden or removed.
 `AnimalLocalizations` and `resolveAnimalLocale` are exported from the package root.
 Install the generated delegates and supported locales on the host `MaterialApp`;
 Chinese locales resolve to Chinese and missing or unsupported locales to English.
-`AnimalFormController.getFieldError` returns a locale-neutral `AnimalValidationIssue`
-for programmatic checks. Let `AnimalFormItem` display built-in issue text; do not
-add a second issue-to-message map. Caller-provided validation messages are shown
-as written.
+`AnimalFormController.getFieldError(key)` returns a locale-neutral
+`AnimalValidationIssue` for programmatic checks. Form fields use stable
+`AnimalFieldKey<T>` instances identify fields by object identity. The key class
+is final, so external libraries cannot extend or implement it; labels do not
+identify fields. Read change and submit snapshots with
+`AnimalFormValues.valueFor(key)` to retain the key's value type. Use the typed
+collection snapshot factories in the [form reference](references/components/form.md).
+Let `AnimalFormItem` display built-in issue text; do not add a
+second issue-to-message map. Caller-provided validation messages are shown as
+written.
 
 ## Component references
 

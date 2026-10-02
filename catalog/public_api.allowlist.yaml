@@ -34,11 +34,14 @@ symbols:
   - AnimalDrawerPlacement
   - AnimalFieldBinding
   - AnimalFieldKey
+  - AnimalFieldRegistration
+  - AnimalFieldValue
   - AnimalFooter
   - AnimalFooterType
   - AnimalForm
   - AnimalFormController
   - AnimalFormItem
+  - AnimalFormValues
   - AnimalIcon
   - AnimalIconData
   - AnimalIcons

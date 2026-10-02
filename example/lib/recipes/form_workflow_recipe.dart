@@ -12,13 +12,15 @@ class FormWorkflowRecipe extends StatefulWidget {
 
 class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
   final _formController = AnimalFormController();
-  final _kUsername = const AnimalFieldKey<String>('username');
-  final _kEmail = const AnimalFieldKey<String>('email');
-  final _kRole = const AnimalFieldKey<String>('role');
-  final _kNotifications = const AnimalFieldKey<bool>('notifications');
-  final _kSkills = const AnimalFieldKey<List<String>>('skills');
-  final _kBirthDate = const AnimalFieldKey<AnimalDate>('birthDate');
-  final _kCheckInTime = const AnimalFieldKey<AnimalTimeValue>('checkInTime');
+  final _kUsername = AnimalFieldKey<String>(debugLabel: 'username');
+  final _kEmail = AnimalFieldKey<String>(debugLabel: 'email');
+  final _kRole = AnimalFieldKey<String>(debugLabel: 'role');
+  final _kNotifications = AnimalFieldKey<bool>(debugLabel: 'notifications');
+  final _kSkills = AnimalFieldKey.list<String>(debugLabel: 'skills');
+  final _kBirthDate = AnimalFieldKey<AnimalDate>(debugLabel: 'birthDate');
+  final _kCheckInTime = AnimalFieldKey<AnimalTimeValue>(
+    debugLabel: 'checkInTime',
+  );
 
   String? _submissionResult;
   bool _isSubmitting = false;
@@ -52,8 +54,8 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
     setState(() {
       _isSubmitting = false;
       _submissionResult =
-          'Registration successful for: ${values[_kUsername.name]} (${values[_kEmail.name]})\n'
-          'Role: ${values[_kRole.name]}, BirthDate: ${values[_kBirthDate.name]}, CheckIn: ${values[_kCheckInTime.name]}';
+          'Registration successful for: ${values.valueFor(_kUsername)} (${values.valueFor(_kEmail)})\n'
+          'Role: ${values.valueFor(_kRole)}, BirthDate: ${values.valueFor(_kBirthDate)}, CheckIn: ${values.valueFor(_kCheckInTime)}';
     });
   }
 

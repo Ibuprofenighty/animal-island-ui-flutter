@@ -12,6 +12,7 @@ void main() {
       'CHALLENGE 1: High-concurrency epoch race with out-of-order async validations',
       (tester) async {
         final controller = AnimalFormController();
+        final usernameKey = AnimalFieldKey<String>(debugLabel: 'username');
         final completers = <String, Completer<String?>>{};
 
         await tester.pumpWidget(
@@ -23,8 +24,8 @@ void main() {
             home: Scaffold(
               body: AnimalForm(
                 controller: controller,
-                child: AnimalFormItem(
-                  name: 'username',
+                child: AnimalFormItem<String>(
+                  fieldKey: usernameKey,
                   rules: [
                     AnimalRule.custom((value) {
                       final key = value?.toString() ?? '';
@@ -33,7 +34,10 @@ void main() {
                       return c.future;
                     }),
                   ],
-                  child: const AnimalInput(),
+                  builder: (context, binding) => AnimalInput(
+                    value: binding.value,
+                    onChanged: binding.onChanged,
+                  ),
                 ),
               ),
             ),
@@ -42,7 +46,7 @@ void main() {
 
         // Trigger 20 rapid sequential updates
         for (var i = 1; i <= 20; i++) {
-          controller.setFieldValue('username', 'val_$i');
+          controller.setValue(usernameKey, 'val_$i');
           await tester.pump(const Duration(milliseconds: 5));
         }
 
@@ -60,7 +64,7 @@ void main() {
         await tester.pump(const Duration(milliseconds: 50));
 
         // Monotonic epoch invariant: only the latest validation (val_20, which resolved to null) is accepted!
-        expect(controller.getFieldError('username'), isNull);
+        expect(controller.getFieldError(usernameKey), isNull);
 
         controller.dispose();
       },

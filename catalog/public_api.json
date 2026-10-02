@@ -140,6 +140,7 @@
             "activeIndex",
             "autoPlay",
             "autoPlayInterval",
+            "clock",
             "defaultActiveIndex",
             "height",
             "items",
@@ -147,7 +148,8 @@
             "onChange",
             "pauseOnHover",
             "showArrows",
-            "showDots"
+            "showDots",
+            "visible"
           ]
         }
       },
@@ -268,7 +270,8 @@
             "remaining",
             "size",
             "targetTime",
-            "variant"
+            "variant",
+            "visible"
           ]
         }
       },
@@ -427,49 +430,6 @@
       "topLevelVariables": {},
       "functions": {}
     },
-    "lib/src/components/form/field_binding.dart": {
-      "classes": {
-        "AnimalFieldBinding": {
-          "constructors": [
-            "AnimalFieldBinding"
-          ],
-          "fields": [
-            "dirty",
-            "error",
-            "focusNode",
-            "hasError",
-            "hashCode",
-            "isValid",
-            "isValidating",
-            "name",
-            "onBlur",
-            "onChanged",
-            "status",
-            "touched",
-            "value"
-          ]
-        }
-      },
-      "enums": {},
-      "topLevelVariables": {},
-      "functions": {}
-    },
-    "lib/src/components/form/field_key.dart": {
-      "classes": {
-        "AnimalFieldKey": {
-          "constructors": [
-            "AnimalFieldKey"
-          ],
-          "fields": [
-            "hashCode",
-            "name"
-          ]
-        }
-      },
-      "enums": {},
-      "topLevelVariables": {},
-      "functions": {}
-    },
     "lib/src/components/form/form.dart": {
       "classes": {
         "AnimalForm": {
@@ -491,6 +451,13 @@
     },
     "lib/src/components/form/form_controller.dart": {
       "classes": {
+        "AnimalFieldRegistration": {
+          "constructors": [],
+          "fields": [
+            "generation",
+            "key"
+          ]
+        },
         "AnimalFormController": {
           "constructors": [
             "AnimalFormController"
@@ -540,7 +507,6 @@
           ],
           "fields": [
             "builder",
-            "child",
             "fieldKey",
             "focusNode",
             "help",
@@ -548,7 +514,6 @@
             "label",
             "labelWidget",
             "margin",
-            "name",
             "required",
             "rules"
           ]
@@ -593,12 +558,6 @@
           "pattern",
           "required",
           "url"
-        ],
-        "AnimalValidationStatus": [
-          "idle",
-          "invalid",
-          "valid",
-          "validating"
         ]
       },
       "topLevelVariables": {},
@@ -1129,7 +1088,8 @@
             "clock",
             "live",
             "liveRegion",
-            "time"
+            "time",
+            "visible"
           ]
         }
       },
@@ -1221,12 +1181,93 @@
             "AnimalTypewriter"
           ],
           "fields": [
+            "clock",
             "onComplete",
             "showCursor",
             "speed",
             "style",
             "text",
-            "textAlign"
+            "textAlign",
+            "visible"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/forms/animal_field_binding.dart": {
+      "classes": {
+        "AnimalFieldBinding": {
+          "constructors": [
+            "AnimalFieldBinding"
+          ],
+          "fields": [
+            "dirty",
+            "error",
+            "focusNode",
+            "generation",
+            "hasError",
+            "isValid",
+            "isValidating",
+            "key",
+            "onBlur",
+            "onChanged",
+            "status",
+            "touched",
+            "value"
+          ]
+        }
+      },
+      "enums": {
+        "AnimalValidationStatus": [
+          "idle",
+          "invalid",
+          "valid",
+          "validating"
+        ]
+      },
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/forms/animal_field_key.dart": {
+      "classes": {
+        "AnimalFieldKey": {
+          "constructors": [
+            "AnimalFieldKey"
+          ],
+          "fields": [
+            "debugLabel",
+            "hashCode",
+            "valueType"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/forms/animal_form_values.dart": {
+      "classes": {
+        "AnimalFieldValue": {
+          "constructors": [
+            "AnimalFieldValue"
+          ],
+          "fields": [
+            "key",
+            "value"
+          ]
+        },
+        "AnimalFormValues": {
+          "constructors": [
+            "AnimalFormValues.empty",
+            "AnimalFormValues.fromEntries"
+          ],
+          "fields": [
+            "isEmpty",
+            "isNotEmpty",
+            "keys",
+            "length"
           ]
         }
       },
@@ -1485,13 +1526,17 @@
           "constructors": [
             "AnimalClock"
           ],
-          "fields": []
+          "fields": [
+            "monotonicNow"
+          ]
         },
         "SystemClock": {
           "constructors": [
             "SystemClock"
           ],
-          "fields": []
+          "fields": [
+            "monotonicNow"
+          ]
         }
       },
       "enums": {},
@@ -1951,5 +1996,5 @@
       "functions": {}
     }
   },
-  "sha256": "f9977f1933f4fc76a18f43fbc6ffcc42929dd9786331e051126b7d6549b0d2b9"
+  "sha256": "84bf571ac1b5417d295cfc924b028bd7aa76b6fc238329e10113366b3089ab62"
 }

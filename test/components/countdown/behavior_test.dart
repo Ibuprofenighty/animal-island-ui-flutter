@@ -9,6 +9,7 @@ void main() {
     testWidgets(
       'CTD01: remaining mode decrements and calls onFinish exactly once',
       (tester) async {
+        final fakeClock = FakeClock(DateTime(2026, 9, 13, 12, 0, 0));
         int finishCount = 0;
         Duration? lastChange;
 
@@ -21,6 +22,7 @@ void main() {
             home: Scaffold(
               body: AnimalCountdown(
                 remaining: const Duration(seconds: 3),
+                clock: fakeClock,
                 onChange: (d) => lastChange = d,
                 onFinish: () => finishCount++,
               ),
@@ -31,20 +33,24 @@ void main() {
         expect(finishCount, 0);
 
         // Tick 1
+        fakeClock.advance(const Duration(seconds: 1));
         await tester.pump(const Duration(seconds: 1));
         expect(lastChange?.inSeconds, 2);
         expect(finishCount, 0);
 
         // Tick 2
+        fakeClock.advance(const Duration(seconds: 1));
         await tester.pump(const Duration(seconds: 1));
         expect(lastChange?.inSeconds, 1);
         expect(finishCount, 0);
 
         // Tick 3 (completion)
+        fakeClock.advance(const Duration(seconds: 1));
         await tester.pump(const Duration(seconds: 1));
         expect(finishCount, 1);
 
         // Extra ticks do not fire onFinish again
+        fakeClock.advance(const Duration(seconds: 2));
         await tester.pump(const Duration(seconds: 2));
         expect(finishCount, 1);
       },
@@ -83,6 +89,52 @@ void main() {
         // Advance clock past target
         fakeClock.advance(const Duration(seconds: 3));
         await tester.pump(const Duration(seconds: 1));
+        expect(finishCount, 1);
+      },
+    );
+
+    testWidgets(
+      'Countdown recomputes its wall deadline after a background pause',
+      (tester) async {
+        final FakeClock clock = FakeClock(DateTime(2026, 9, 13, 12));
+        int finishCount = 0;
+        Duration? lastChange;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+            supportedLocales: AnimalLocalizations.supportedLocales,
+            theme: AnimalIslandTheme.light.toThemeData(),
+            home: Scaffold(
+              body: AnimalCountdown(
+                remaining: const Duration(seconds: 3),
+                format: 'ss',
+                clock: clock,
+                onChange: (Duration value) => lastChange = value,
+                onFinish: () => finishCount++,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('03'), findsOneWidget);
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+        clock.advance(const Duration(seconds: 2));
+        await tester.pump(const Duration(seconds: 5));
+        expect(find.text('03'), findsOneWidget);
+        expect(finishCount, 0);
+
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        await tester.pump();
+        expect(find.text('01'), findsOneWidget);
+        expect(lastChange, const Duration(seconds: 1));
+        expect(finishCount, 0);
+
+        clock.advance(const Duration(seconds: 1));
+        await tester.pump(const Duration(seconds: 1));
+        expect(find.text('00'), findsOneWidget);
         expect(finishCount, 1);
       },
     );

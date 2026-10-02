@@ -3,6 +3,8 @@
 使用 `animal_island_ui` 构建 Flutter 界面：36 个海岛风格组件和 101 个矢量图标。
 这是 [SKILL.md](SKILL.md) 的中文镜像，不是独立安装的第二个 Skill。
 
+标准图形使用 `AnimalIcons`。自定义 `AnimalIconData.svg` 须遵守[图标引用](references/components/icon.md)中的 SVG 白名单与大小限制；渲染时空输入或不支持的 SVG 会抛出 `ArgumentError`。tint alpha 使用三位小数精度；受影响的 `stroke-opacity` 会更新，普通 group `opacity` 会保留。正数自定义描边宽度使用两位小数；零和负数规范化为 `0`。
+
 ## 先读
 
 - [包元数据](../../pubspec.yaml)：SDK 约束与依赖。
@@ -35,7 +37,10 @@
 
 `AnimalLocalizations` 和 `resolveAnimalLocale` 从包根导出。宿主 `MaterialApp` 应配置生成的
 delegates 和 supported locales；中文 locale 使用中文，缺省或不支持的 locale 使用英文。
-`AnimalFormController.getFieldError` 返回供程序判断的 locale-neutral `AnimalValidationIssue`。
+`AnimalFormController.getFieldError(key)` 返回供程序判断的 locale-neutral
+`AnimalValidationIssue`。表单字段由 `AnimalFieldKey<T>` 对象身份标识。该类为 final，包外库
+不能继承或实现它；标签不会标识字段。通过 `AnimalFormValues.valueFor(key)` 读取 change 和
+submit 快照，以保留 key 对应的值类型。集合值使用[表单引用](references/components/form.md)中的类型化快照工厂。
 内建问题文案由 `AnimalFormItem` 展示，不要再维护第二份 issue 到 message 的映射。调用者
 提供的验证文案按原文显示。
 

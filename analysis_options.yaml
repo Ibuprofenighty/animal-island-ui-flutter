@@ -4,6 +4,7 @@ analyzer:
   exclude:
     - build/**
     - artifacts/**
+    - scratch/**
     - android/**
     - ios/**
     - web/**

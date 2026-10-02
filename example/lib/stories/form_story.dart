@@ -12,7 +12,7 @@ class FormStory extends StatefulWidget {
 
 class _FormStoryState extends State<FormStory> {
   final _controller = AnimalFormController();
-  final _keyName = const AnimalFieldKey<String>('islandName');
+  final _keyName = AnimalFieldKey<String>(debugLabel: 'islandName');
 
   @override
   void dispose() {

@@ -11,7 +11,6 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 ## 属性
 - `builder`
-- `child`
 - `fieldKey`
 - `focusNode`
 - `help`
@@ -19,7 +18,6 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 - `label`
 - `labelWidget`
 - `margin`
-- `name`
 - `required`
 - `rules`
 
@@ -29,6 +27,18 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 `AnimalFormItem` 负责显示内建验证问题，并使用当前生成的本地化文案。
 locale 改变只重绘同一 issue，不会再次调用 validator；调用者提供的自定义文案保持原文。
+
+每个 item 都必须提供类型化 `fieldKey` 与 `builder`。builder 从外层 `AnimalForm`
+接收实时 `AnimalFieldBinding<T>`，其中包含当前值、`dirty`、`touched`、验证状态与问题、
+焦点节点，以及类型化的 change/blur 回调。没有对应 owner 或注册无效时，item 会抛出
+`StateError`，不会伪造占位 binding。
+
+只有当表单的类型化 `initialValues` 中没有该 key 时，才使用 item 的 `initialValue`。
+Controller 在注册时冻结该值作为 baseline。key 以对象实例作为身份，标签不会建立字符串查找路径。
+
+请把 key 保存在所属 State 或其他稳定 owner 中，不要在 `build` 中创建。
+普通重建和通过 `GlobalKey` 移动同一个 State 都会保留 registration generation、当前值和 baseline。
+重新挂载的新 item 会取得新 generation，并以当前类型化初始值捕获 baseline。
 
 ## 示例
 参见示例 Gallery 中的 [`form_item_story.dart`](../../../example/lib/stories/form_item_story.dart)。

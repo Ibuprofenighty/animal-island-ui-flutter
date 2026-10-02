@@ -3,8 +3,15 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../gallery/story_card.dart';
 
-class FormItemStory extends StatelessWidget {
+class FormItemStory extends StatefulWidget {
   const FormItemStory({super.key});
+
+  @override
+  State<FormItemStory> createState() => _FormItemStoryState();
+}
+
+class _FormItemStoryState extends State<FormItemStory> {
+  final _demoKey = AnimalFieldKey<String>(debugLabel: 'demo');
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class FormItemStory extends StatelessWidget {
             capabilityIds: const ['C20-FI', 'FI01'],
             child: AnimalForm(
               child: AnimalFormItem<String>(
-                fieldKey: const AnimalFieldKey<String>('demo'),
+                fieldKey: _demoKey,
                 label: 'Sample Label',
                 help: 'Helpful hint explaining requirements',
                 required: true,

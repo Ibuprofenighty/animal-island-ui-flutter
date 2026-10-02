@@ -43,6 +43,58 @@ void main() {
     });
 
     testWidgets(
+      'Live time refreshes from wall clock after background and TickerMode pause',
+      (tester) async {
+        final clock = FakeClock(DateTime(2026, 9, 13, 10, 15, 30));
+        final tickerNotifier = ValueNotifier<bool>(true);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+            supportedLocales: AnimalLocalizations.supportedLocales,
+            theme: AnimalIslandTheme.light.toThemeData(),
+            home: Scaffold(
+              body: ValueListenableBuilder<bool>(
+                valueListenable: tickerNotifier,
+                builder: (context, enabled, child) => TickerMode(
+                  enabled: enabled,
+                  child: AnimalTime(live: true, clock: clock),
+                ),
+              ),
+            ),
+          ),
+        );
+        expect(find.text('10:15:30'), findsOneWidget);
+
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+        clock.advanceWall(const Duration(seconds: 3));
+        clock.advanceMonotonic(const Duration(seconds: 3));
+        await tester.pump(const Duration(seconds: 3));
+        expect(find.text('10:15:30'), findsOneWidget);
+
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        await tester.pump();
+        expect(find.text('10:15:33'), findsOneWidget);
+
+        tickerNotifier.value = false;
+        await tester.pump();
+        clock.advanceWall(const Duration(seconds: 2));
+        clock.advanceMonotonic(const Duration(seconds: 2));
+        await tester.pump(const Duration(seconds: 2));
+        expect(find.text('10:15:33'), findsOneWidget);
+
+        tickerNotifier.value = true;
+        await tester.pump();
+        expect(find.text('10:15:35'), findsOneWidget);
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+      },
+    );
+
+    testWidgets(
       'TIM03: liveRegion defaults to false to prevent a11y flooding',
       (tester) async {
         await tester.pumpWidget(

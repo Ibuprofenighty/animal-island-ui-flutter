@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
-import '../../foundation/theme/theme.dart';
 import '../../foundation/models/clock.dart';
+import '../../foundation/theme/theme.dart';
+import '../../internal/timing/motion_policy.dart';
 
 /// Size presets for [AnimalCountdown] (C28).
 enum AnimalCountdownSize {
@@ -30,7 +29,7 @@ enum AnimalCountdownVariant {
 /// SOTA Animal Island 900-weight digit tile countdown (C28).
 ///
 /// Features:
-/// - Unified deadline and duration scheduling with monotonic decrement.
+/// - One wall-clock deadline for both absolute and relative countdown inputs.
 /// - Deterministic [AnimalClock] integration (defaults to [SystemClock], injectable with [FakeClock]).
 /// - Exactly-once [onFinish] execution guarantee across initial zero, deadline expiration, and widget updates.
 /// - Flexible format templating ('DD:HH:mm:ss', 'HH:mm:ss', 'mm:ss', 'ss').
@@ -59,6 +58,9 @@ class AnimalCountdown extends StatefulWidget {
   /// Optional clock source for deterministic scheduling and testing.
   final AnimalClock clock;
 
+  /// Owner-provided visibility for periodic updates; it does not hide layout.
+  final bool visible;
+
   /// Callback triggered on each second tick with remaining duration.
   final ValueChanged<Duration>? onChange;
 
@@ -75,6 +77,7 @@ class AnimalCountdown extends StatefulWidget {
     this.variant = AnimalCountdownVariant.standard,
     this.bordered = true,
     this.clock = const SystemClock(),
+    this.visible = true,
     this.onChange,
     this.onFinish,
   }) : assert(
@@ -87,17 +90,26 @@ class AnimalCountdown extends StatefulWidget {
 }
 
 class _AnimalCountdownState extends State<AnimalCountdown> {
-  Timer? _timer;
+  late AnimalMotionScheduler _motionScheduler;
+  late AnimalMotionRegistration _readout;
+  DateTime? _deadline;
   late Duration _remaining;
   bool _finished = false;
 
   @override
   void initState() {
     super.initState();
+    _setDeadlineFromInputs();
     _remaining = _calculateRemaining();
-    if (_remaining.inSeconds > 0) {
-      _startTimer();
-    } else {
+    _motionScheduler = AnimalMotionScheduler(clock: widget.clock);
+    _readout = _motionScheduler.schedulePeriodic(
+      interval: const Duration(seconds: 1),
+      work: AnimalScheduledWork.functionalTime,
+      eligible: false,
+      onTick: _handleTick,
+      onResume: _refreshFromDeadline,
+    );
+    if (_remaining.inSeconds <= 0) {
       _finished = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) widget.onFinish?.call();
@@ -111,8 +123,11 @@ class _AnimalCountdownState extends State<AnimalCountdown> {
     if (oldWidget.targetTime != widget.targetTime ||
         oldWidget.remaining != widget.remaining ||
         oldWidget.clock != widget.clock) {
-      _timer?.cancel();
+      _setDeadlineFromInputs();
       _remaining = _calculateRemaining();
+      if (oldWidget.clock != widget.clock) {
+        _motionScheduler.updateClock(widget.clock);
+      }
       if (_remaining.inSeconds <= 0) {
         if (!_finished) {
           _finished = true;
@@ -120,72 +135,78 @@ class _AnimalCountdownState extends State<AnimalCountdown> {
         }
       } else {
         _finished = false;
-        _startTimer();
       }
     }
+    _syncReadoutEligibility();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncReadoutEligibility();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _motionScheduler.dispose();
     super.dispose();
   }
 
+  void _setDeadlineFromInputs() {
+    _deadline =
+        widget.targetTime ??
+        (widget.remaining == null
+            ? null
+            : widget.clock.now().add(widget.remaining!));
+  }
+
   Duration _calculateRemaining() {
-    if (widget.targetTime != null) {
+    if (_deadline != null) {
       final now = widget.clock.now();
-      final diff = widget.targetTime!.difference(now);
+      final diff = _deadline!.difference(now);
       if (diff.inMilliseconds <= 0) return Duration.zero;
       final roundedSec = ((diff.inMilliseconds + 500) ~/ 1000);
       return Duration(seconds: roundedSec);
     }
-    if (widget.remaining != null) {
-      return widget.remaining!;
-    }
     return Duration.zero;
   }
 
-  void _startTimer() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
+  void _syncReadoutEligibility() {
+    _readout.setEligible(
+      _remaining.inSeconds > 0 &&
+          AnimalMotionPolicy.functionalTimeContextEligible(
+            context,
+            visible: widget.visible,
+          ),
+    );
+  }
 
-      if (widget.targetTime != null) {
-        final current = _calculateRemaining();
-        if (current.inSeconds <= 0) {
-          _timer?.cancel();
-          setState(() {
-            _remaining = Duration.zero;
-          });
-          if (!_finished) {
-            _finished = true;
-            widget.onFinish?.call();
-          }
-        } else {
-          setState(() {
-            _remaining = current;
-          });
-          widget.onChange?.call(_remaining);
-        }
-      } else {
-        // Remaining mode: monotonically decrement by 1 second
-        if (_remaining.inSeconds <= 1) {
-          _timer?.cancel();
-          setState(() {
-            _remaining = Duration.zero;
-          });
-          if (!_finished) {
-            _finished = true;
-            widget.onFinish?.call();
-          }
-        } else {
-          setState(() {
-            _remaining = _remaining - const Duration(seconds: 1);
-          });
-          widget.onChange?.call(_remaining);
-        }
+  void _handleTick(DateTime _, Duration _) {
+    if (!mounted) return;
+    final current = _calculateRemaining();
+    _applyRemaining(current, notifyWhenChanged: true);
+  }
+
+  void _refreshFromDeadline() {
+    if (!mounted) return;
+    _applyRemaining(_calculateRemaining(), notifyWhenChanged: true);
+  }
+
+  void _applyRemaining(Duration current, {required bool notifyWhenChanged}) {
+    if (current.inSeconds <= 0) {
+      if (_remaining != Duration.zero) {
+        setState(() => _remaining = Duration.zero);
       }
-    });
+      _readout.setEligible(false);
+      if (!_finished) {
+        _finished = true;
+        widget.onFinish?.call();
+      }
+      return;
+    }
+    final bool changed = current != _remaining;
+    if (changed) setState(() => _remaining = current);
+    if (notifyWhenChanged && changed) widget.onChange?.call(current);
   }
 
   (double width, double height, double fontSize, double labelSize)

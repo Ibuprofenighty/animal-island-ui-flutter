@@ -100,7 +100,7 @@ void main() {
       );
       expect(svgOriginal.contains('stroke-width="2"'), isTrue);
 
-      // 2. strokeWidth = 0 sets stroke-width="0"
+      // 2. strokeWidth = 0 sets the canonical zero width.
       final svgZero = transformSvg(
         rawSvg: AnimalIcons.leaf.svg,
         strokeWidth: 0,

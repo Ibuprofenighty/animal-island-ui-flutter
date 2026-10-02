@@ -1,13 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
+import '../../foundation/models/clock.dart';
 import '../../foundation/theme/theme.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
-import '../../foundation/models/clock.dart';
+import '../../internal/timing/motion_policy.dart';
 
 /// Cozy Animal Island clock card (C29).
 ///
@@ -30,12 +29,16 @@ class AnimalTime extends StatefulWidget {
   /// Defaults to false to prevent accessibility spam.
   final bool liveRegion;
 
+  /// Owner-provided visibility for periodic updates; it does not hide layout.
+  final bool visible;
+
   const AnimalTime({
     super.key,
     this.time,
     this.live = false,
     this.clock = const SystemClock(),
     this.liveRegion = false,
+    this.visible = true,
   });
 
   @override
@@ -44,24 +47,42 @@ class AnimalTime extends StatefulWidget {
 
 class _AnimalTimeState extends State<AnimalTime> {
   late DateTime _currentTime;
-  Timer? _timer;
+  late AnimalMotionScheduler _motionScheduler;
+  late AnimalMotionRegistration _readout;
 
   @override
   void initState() {
     super.initState();
     _currentTime = widget.time ?? widget.clock.now();
-    _syncTimer();
+    _motionScheduler = AnimalMotionScheduler(clock: widget.clock);
+    _readout = _motionScheduler.schedulePeriodic(
+      interval: const Duration(seconds: 1),
+      work: AnimalScheduledWork.functionalTime,
+      eligible: false,
+      onTick: (_, _) => _refreshFromWallClock(),
+      onResume: _refreshFromWallClock,
+    );
   }
 
-  void _syncTimer() {
-    _timer?.cancel();
-    _timer = null;
-    if (widget.live) {
-      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        if (!mounted) return;
-        setState(() => _currentTime = widget.clock.now());
-      });
-    }
+  void _refreshFromWallClock() {
+    if (!mounted) return;
+    setState(() => _currentTime = widget.clock.now());
+  }
+
+  void _syncEligibility() {
+    _readout.setEligible(
+      widget.live &&
+          AnimalMotionPolicy.functionalTimeContextEligible(
+            context,
+            visible: widget.visible,
+          ),
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncEligibility();
   }
 
   @override
@@ -70,14 +91,17 @@ class _AnimalTimeState extends State<AnimalTime> {
     if (oldWidget.live != widget.live ||
         oldWidget.time != widget.time ||
         oldWidget.clock != widget.clock) {
+      if (oldWidget.clock != widget.clock) {
+        _motionScheduler.updateClock(widget.clock);
+      }
       _currentTime = widget.time ?? widget.clock.now();
-      _syncTimer();
     }
+    _syncEligibility();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _motionScheduler.dispose();
     super.dispose();
   }
 
