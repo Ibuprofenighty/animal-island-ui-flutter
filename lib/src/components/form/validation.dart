@@ -72,6 +72,58 @@ class AnimalRule<T> {
     this.customValidator,
   });
 
+  /// Rules compare by immutable configuration; custom validators compare by
+  /// callback identity because their behavior cannot be inspected safely.
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AnimalRule<T> || runtimeType != other.runtimeType) {
+      return false;
+    }
+    final otherPattern = other.pattern;
+    final thisPattern = pattern;
+    return type == other.type &&
+        message == other.message &&
+        min == other.min &&
+        max == other.max &&
+        minLength == other.minLength &&
+        maxLength == other.maxLength &&
+        _samePattern(thisPattern, otherPattern) &&
+        identical(customValidator, other.customValidator);
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    type,
+    message,
+    min,
+    max,
+    minLength,
+    maxLength,
+    _patternHash(pattern),
+    customValidator == null ? 0 : identityHashCode(customValidator),
+  );
+
+  static bool _samePattern(RegExp? left, RegExp? right) {
+    if (left == null || right == null) return left == right;
+    return left.pattern == right.pattern &&
+        left.isCaseSensitive == right.isCaseSensitive &&
+        left.isMultiLine == right.isMultiLine &&
+        left.isUnicode == right.isUnicode &&
+        left.isDotAll == right.isDotAll;
+  }
+
+  static int _patternHash(RegExp? value) => value == null
+      ? 0
+      : Object.hash(
+          value.pattern,
+          value.isCaseSensitive,
+          value.isMultiLine,
+          value.isUnicode,
+          value.isDotAll,
+        );
+
   /// Creates a rule requiring a non-null, non-empty value.
   factory AnimalRule.required({String? message}) =>
       AnimalRule._(type: AnimalRuleType.required, message: message);

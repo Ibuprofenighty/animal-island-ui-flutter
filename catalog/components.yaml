@@ -118,7 +118,7 @@
     targetPath: lib/src/components/radio/radio.dart
     requirements: [R02, R03, R04]
     tests: [RAD01, RAD02, RAD03, RAD04]
-    decision: "Restore rounded square with SVG check visual; true radio group mutual exclusion"
+    decision: "Controlled radio with SVG check, current 12/14/16 corner radii, and group mutual exclusion"
   - id: C16
     name: AnimalSelect
     stage: S07

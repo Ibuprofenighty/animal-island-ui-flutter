@@ -2,83 +2,67 @@ import 'package:flutter/widgets.dart';
 
 import '../../foundation/models/option.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/option_group_focus.dart';
 import 'radio.dart';
 
-/// Group wrapper for mutually exclusive [AnimalRadio] controls (C15).
+/// Controlled, mutually exclusive radio options with one group tab stop.
 class AnimalRadioGroup<T> extends StatelessWidget {
   final T? value;
   final List<AnimalOption<T>> options;
   final ValueChanged<T>? onChanged;
   final bool disabled;
+  final bool readOnly;
   final AnimalRadioSize size;
   final Axis direction;
   final FocusNode? focusNode;
   final Color? activeColor;
 
-  const AnimalRadioGroup({
+  AnimalRadioGroup({
     super.key,
     required this.value,
-    required this.options,
+    required List<AnimalOption<T>> options,
     required this.onChanged,
     this.disabled = false,
+    this.readOnly = false,
     this.size = AnimalRadioSize.middle,
     this.direction = Axis.horizontal,
     this.focusNode,
     this.activeColor,
-  });
+  }) : options = snapshotUniqueOptions<T>(options, owner: 'AnimalRadioGroup');
+
+  void _proposeNavigation(T target) {
+    if (!disabled && !readOnly && onChanged != null) onChanged!(target);
+  }
 
   @override
   Widget build(BuildContext context) {
     final spacing = AnimalIslandTheme.of(context).spacing;
-    final children = <Widget>[];
-
-    for (int i = 0; i < options.length; i++) {
-      final opt = options[i];
-      final isOptionDisabled = disabled || opt.disabled;
-
-      children.add(
-        AnimalRadio<T>(
-          value: opt.value,
+    return OptionGroupFocus<T>(
+      options: options,
+      direction: direction,
+      roving: true,
+      selectedValue: value,
+      disabled: disabled || (onChanged == null && !readOnly),
+      spacing: direction == Axis.horizontal ? spacing.lg : spacing.sm,
+      runSpacing: spacing.sm,
+      focusNode: focusNode,
+      onNavigate: readOnly || onChanged == null ? null : _proposeNavigation,
+      itemBuilder: (context, option, node) {
+        final bool optionDisabled = disabled || option.disabled;
+        return AnimalRadio<T>(
+          value: option.value,
           groupValue: value,
-          disabled: isOptionDisabled,
+          disabled: optionDisabled,
+          readOnly: readOnly,
           size: size,
           activeColor: activeColor,
-          label: Text(opt.label),
-          onChanged: isOptionDisabled ? null : onChanged,
-        ),
-      );
-
-      if (i < options.length - 1) {
-        children.add(
-          direction == Axis.horizontal
-              ? SizedBox(width: spacing.lg)
-              : SizedBox(height: spacing.sm),
+          focusNode: node,
+          label: Text(option.label),
+          onChanged: optionDisabled || onChanged == null
+              ? null
+              : (T selected) => onChanged?.call(selected),
         );
-      }
-    }
-
-    Widget content = direction == Axis.horizontal
-        ? Wrap(spacing: spacing.lg, runSpacing: spacing.sm, children: children)
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: children,
-          );
-
-    if (focusNode != null) {
-      return Focus(
-        focusNode: focusNode,
-        skipTraversal: true,
-        canRequestFocus: true,
-        onFocusChange: (hasFocus) {
-          if (hasFocus) {
-            focusNode!.nextFocus();
-          }
-        },
-        child: content,
-      );
-    }
-
-    return content;
+      },
+    );
   }
 }

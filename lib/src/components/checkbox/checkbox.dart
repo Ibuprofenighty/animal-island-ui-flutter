@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
+import '../../internal/interaction/option_group_focus.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
 
@@ -30,6 +31,7 @@ class AnimalCheckbox extends StatefulWidget {
   final ValueChanged<bool>? onChanged;
   final Widget? label;
   final bool disabled;
+  final bool readOnly;
   final bool indeterminate;
   final AnimalCheckboxSize size;
   final FocusNode? focusNode;
@@ -40,6 +42,7 @@ class AnimalCheckbox extends StatefulWidget {
     required this.onChanged,
     this.label,
     this.disabled = false,
+    this.readOnly = false,
     this.indeterminate = false,
     this.size = AnimalCheckboxSize.middle,
     this.focusNode,
@@ -56,7 +59,10 @@ class _AnimalCheckboxState extends State<AnimalCheckbox> {
   FocusNode get _effectiveFocusNode =>
       widget.focusNode ?? (_internalFocusNode ??= FocusNode());
 
-  bool get _canInteract => !widget.disabled && widget.onChanged != null;
+  bool get _isDisabled =>
+      widget.disabled || (widget.onChanged == null && !widget.readOnly);
+
+  bool get _canInteract => !_isDisabled && !widget.readOnly;
 
   @override
   void dispose() {
@@ -76,7 +82,7 @@ class _AnimalCheckboxState extends State<AnimalCheckbox> {
     final isChecked = widget.value;
     final isIndeterminate = widget.indeterminate && !isChecked;
 
-    final Color bgColor = widget.disabled
+    final Color bgColor = _isDisabled
         ? ((theme.colors.brightness == Brightness.dark)
               ? theme.colors.surfaceAlt
               : theme.colors.bgDisabled)
@@ -86,7 +92,7 @@ class _AnimalCheckboxState extends State<AnimalCheckbox> {
                     ? theme.colors.surfaceHeader
                     : theme.colors.bgInput));
 
-    final Color borderColor = widget.disabled
+    final Color borderColor = _isDisabled
         ? ((theme.colors.brightness == Brightness.dark)
               ? theme.colors.border.withValues(alpha: 0.3)
               : theme.colors.borderLight)
@@ -96,8 +102,11 @@ class _AnimalCheckboxState extends State<AnimalCheckbox> {
 
     return InteractiveRegion(
       onPressed: _handleToggle,
-      disabled: !_canInteract,
+      disabled: _isDisabled,
+      readOnly: widget.readOnly,
       focusNode: _effectiveFocusNode,
+      onKeyEvent: (FocusNode node, KeyEvent event) =>
+          optionGroupKeyEvent(node, event),
       onFocusChanged: (focused) => setState(() => _isFocused = focused),
       semanticButton: false,
       checked: isChecked,
@@ -118,7 +127,7 @@ class _AnimalCheckboxState extends State<AnimalCheckbox> {
                 width: 1.8,
               ),
               boxShadow: [
-                if (!widget.disabled) theme.shadows.softElevation,
+                if (!_isDisabled) theme.shadows.softElevation,
                 if (_isFocused)
                   BoxShadow(
                     color: theme.colors.focusYellow.withValues(alpha: 0.45),
@@ -147,14 +156,16 @@ class _AnimalCheckboxState extends State<AnimalCheckbox> {
           ),
           if (widget.label != null) ...[
             SizedBox(width: theme.spacing.sm),
-            DefaultTextStyle(
-              style: theme.typography.body.copyWith(
-                fontSize: size.fontSize,
-                color: widget.disabled
-                    ? theme.colors.textDisabled
-                    : theme.colors.text,
+            Flexible(
+              child: DefaultTextStyle(
+                style: theme.typography.body.copyWith(
+                  fontSize: size.fontSize,
+                  color: _isDisabled
+                      ? theme.colors.textDisabled
+                      : theme.colors.text,
+                ),
+                child: widget.label!,
               ),
-              child: widget.label!,
             ),
           ],
         ],

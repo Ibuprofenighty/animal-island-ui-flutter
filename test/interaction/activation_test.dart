@@ -1,8 +1,11 @@
+import 'dart:ui' show Tristate;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:animal_island_ui/src/internal/interaction/focus_ring.dart';
 import 'package:animal_island_ui/src/internal/interaction/interactive_region.dart';
 
 Widget _app(Widget child) => MaterialApp(
@@ -13,6 +16,45 @@ Widget _app(Widget child) => MaterialApp(
 );
 
 void main() {
+  testWidgets(
+    'N09 readOnly targets stay focusable while pointer, key, and semantics activation stay unavailable',
+    (tester) async {
+      final FocusNode focusNode = FocusNode();
+      addTearDown(focusNode.dispose);
+      final SemanticsHandle semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(
+          _app(
+            InteractiveRegion(
+              focusNode: focusNode,
+              readOnly: true,
+              onPressed: null,
+              semanticLabel: 'Read only target',
+              enableHaptics: false,
+              child: const Text('Read only'),
+            ),
+          ),
+        );
+
+        focusNode.requestFocus();
+        await tester.pump();
+        expect(focusNode.hasFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pump();
+        await tester.tap(find.text('Read only'));
+        await tester.pump();
+        final SemanticsData data = tester
+            .getSemantics(find.text('Read only'))
+            .getSemanticsData();
+        expect(data.flagsCollection.isEnabled, Tristate.isTrue);
+        expect(data.hasAction(SemanticsAction.tap), isFalse);
+        expect(data.flagsCollection.isReadOnly, isTrue);
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
+
   testWidgets(
     'N09 shared pointer, keyboard, and semantics activation each fire once',
     (tester) async {
@@ -403,59 +445,154 @@ void main() {
       int changes = 0;
       late StateSetter updateHarness;
       final SemanticsHandle semantics = tester.ensureSemantics();
-      await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: AnimalLocalizations.localizationsDelegates,
-          supportedLocales: AnimalLocalizations.supportedLocales,
-          theme: AnimalIslandTheme.light.toThemeData(),
-          home: Scaffold(
-            body: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                updateHarness = setState;
-                return AnimalSelect<String>(
-                  value: value,
-                  allowClear: true,
-                  options: const <AnimalOption<String>>[
-                    AnimalOption<String>(value: 'one', label: 'One'),
-                    AnimalOption<String>(value: 'two', label: 'Two'),
-                  ],
-                  onChanged: (String? next) {
-                    changes++;
-                    setState(() => value = next);
-                  },
-                );
-              },
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+            supportedLocales: AnimalLocalizations.supportedLocales,
+            theme: AnimalIslandTheme.light.toThemeData(),
+            home: Scaffold(
+              body: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  updateHarness = setState;
+                  return AnimalSelect<String>(
+                    value: value,
+                    allowClear: true,
+                    options: const <AnimalOption<String>>[
+                      AnimalOption<String>(value: 'one', label: 'One'),
+                      AnimalOption<String>(value: 'two', label: 'Two'),
+                    ],
+                    onChanged: (String? next) {
+                      changes++;
+                      setState(() => value = next);
+                    },
+                  );
+                },
+              ),
             ),
+          ),
+        );
+
+        final Finder clear = find.byType(InteractiveRegion).at(1);
+        expect(
+          find.semantics.byLabel(RegExp('Clear selection')),
+          findsOneWidget,
+        );
+        final Rect clearRect = tester.getRect(clear);
+        expect(clearRect.width, greaterThanOrEqualTo(48));
+        expect(clearRect.height, greaterThanOrEqualTo(48));
+        await tester.tap(clear);
+        await tester.pumpAndSettle();
+        expect(value, isNull);
+        expect(changes, 1);
+
+        updateHarness(() => value = 'one');
+        await tester.pump();
+        await tester.tap(find.text('One'));
+        await tester.pumpAndSettle();
+        expect(find.text('Two'), findsOneWidget);
+        expect(
+          FocusManager.instance.primaryFocus?.debugLabel,
+          'AnimalSelect(one)',
+        );
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pumpAndSettle();
+        expect(
+          FocusManager.instance.primaryFocus?.debugLabel,
+          'AnimalSelect(two)',
+        );
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(value, 'two');
+        expect(changes, 2);
+        expect(find.text('Two'), findsOneWidget);
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
+
+  testWidgets(
+    'N09 InteractiveRegion borrowed focus replacement reports the active node after RTL rebuilds',
+    (tester) async {
+      final FocusNode originalNode = FocusNode();
+      final FocusNode replacementNode = FocusNode();
+      final FocusNode reusedNode = FocusNode();
+      addTearDown(originalNode.dispose);
+      addTearDown(replacementNode.dispose);
+      addTearDown(reusedNode.dispose);
+      FocusNode activeNode = originalNode;
+      TextDirection direction = TextDirection.ltr;
+      late StateSetter updateHost;
+      final List<bool> focusChanges = <bool>[];
+      await tester.pumpWidget(
+        _app(
+          StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              updateHost = setState;
+              return Directionality(
+                textDirection: direction,
+                child: InteractiveRegion(
+                  enableHaptics: false,
+                  onPressed: () {},
+                  focusNode: activeNode,
+                  onFocusChanged: focusChanges.add,
+                  child: const SizedBox(width: 24, height: 24),
+                ),
+              );
+            },
           ),
         ),
       );
 
-      final Finder clear = find.byType(InteractiveRegion).at(1);
-      expect(find.semantics.byLabel(RegExp('Clear selection')), findsOneWidget);
-      final Rect clearRect = tester.getRect(clear);
-      expect(clearRect.width, greaterThanOrEqualTo(48));
-      expect(clearRect.height, greaterThanOrEqualTo(48));
-      await tester.tap(clear);
+      originalNode.requestFocus();
       await tester.pumpAndSettle();
-      expect(value, isNull);
-      expect(changes, 1);
+      expect(originalNode.hasFocus, isTrue);
+      expect(focusChanges, <bool>[true]);
+      final Finder focusRing = find.byType(AnimalFocusRing);
+      expect(tester.widget<AnimalFocusRing>(focusRing).focused, isTrue);
 
-      updateHarness(() => value = 'one');
+      bool replacementFocusedBeforeDeferredNotice = false;
+      tester.binding.addPostFrameCallback((Duration _) {
+        replacementNode.requestFocus();
+        FocusManager.instance.applyFocusChangesIfNeeded();
+        replacementFocusedBeforeDeferredNotice = replacementNode.hasFocus;
+      });
+      updateHost(() {
+        activeNode = replacementNode;
+        direction = TextDirection.rtl;
+      });
       await tester.pump();
-      await tester.tap(find.text('One'));
+      expect(tester.takeException(), isNull);
       await tester.pumpAndSettle();
-      expect(find.text('Two'), findsOneWidget);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pump();
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      expect(replacementFocusedBeforeDeferredNotice, isTrue);
+      expect(replacementNode.hasFocus, isTrue);
+      expect(focusChanges, <bool>[true, true]);
+      expect(tester.takeException(), isNull);
+
+      originalNode.requestFocus();
       await tester.pumpAndSettle();
-      expect(value, 'two');
-      expect(changes, 2);
-      expect(find.text('Two'), findsOneWidget);
-      semantics.dispose();
+      expect(replacementNode.hasFocus, isTrue);
+      expect(focusChanges, <bool>[true, true]);
+      replacementNode.requestFocus();
+      await tester.pumpAndSettle();
+      expect(replacementNode.hasFocus, isTrue);
+      expect(focusChanges, <bool>[true, true]);
+      expect(tester.widget<AnimalFocusRing>(focusRing).focused, isTrue);
+
+      updateHost(() {
+        activeNode = reusedNode;
+        direction = TextDirection.ltr;
+      });
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      reusedNode.requestFocus();
+      await tester.pumpAndSettle();
+      expect(reusedNode.hasFocus, isTrue);
+      expect(focusChanges, <bool>[true, true, false, true]);
+      expect(tester.widget<AnimalFocusRing>(focusRing).focused, isTrue);
     },
   );
-
   testWidgets(
     'N09 interactive AnimalIcon keeps its label, borrowed focus, and one activation',
     (tester) async {

@@ -12,6 +12,8 @@ void main() {
     addTearDown(controller.dispose);
     final textController = TextEditingController(text: 'value');
     addTearDown(textController.dispose);
+    final emptyController = TextEditingController();
+    addTearDown(emptyController.dispose);
 
     await tester.pumpWidget(
       AnimalLocalizationTestApp(
@@ -31,7 +33,10 @@ void main() {
                     clearable: true,
                     placeholder: placeholder,
                   ),
-                  AnimalInput(placeholder: placeholder),
+                  AnimalInput(
+                    controller: emptyController,
+                    placeholder: placeholder,
+                  ),
                 ],
               ),
             );

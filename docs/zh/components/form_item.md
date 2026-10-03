@@ -20,6 +20,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 - `margin`
 - `required`
 - `rules`
+- `textController`
 
 <!-- generated:api:end -->
 
@@ -33,8 +34,12 @@ locale 改变只重绘同一 issue，不会再次调用 validator；调用者提
 焦点节点，以及类型化的 change/blur 回调。没有对应 owner 或注册无效时，item 会抛出
 `StateError`，不会伪造占位 binding。
 
-只有当表单的类型化 `initialValues` 中没有该 key 时，才使用 item 的 `initialValue`。
-Controller 在注册时冻结该值作为 baseline。key 以对象实例作为身份，标签不会建立字符串查找路径。
+文本 binding 的当前值直接读取借用的 `TextEditingController`，不会再保存第二份当前文本。
+标量字段仅当表单类型化 `initialValues` 中没有该 key 时，才使用 item 的 `initialValue`；
+Controller 在注册时冻结该值作为 baseline。文本字段必须显式传 `textController`，其完整初始
+`TextEditingValue` 提供唯一文本与编辑状态。不要同时设置 `initialValue` 或在
+`AnimalForm.initialValues` 中包含该 key。即使 `T` 为 `String`，也只有显式 opt-in 才是文本字段，
+非文本 String 选项值仍保持标量语义。key 以对象实例作为身份，标签不会建立字符串查找路径。
 
 请把 key 保存在所属 State 或其他稳定 owner 中，不要在 `build` 中创建。
 普通重建和通过 `GlobalKey` 移动同一个 State 都会保留 registration generation、当前值和 baseline。

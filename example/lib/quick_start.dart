@@ -88,9 +88,12 @@ class _QuickStartHomePageState extends State<QuickStartHomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('Island Ambient Music'),
-                      AnimalSwitch(
-                        value: _switchActive,
-                        onChanged: (val) => setState(() => _switchActive = val),
+                      Flexible(
+                        child: AnimalSwitch(
+                          value: _switchActive,
+                          onChanged: (val) =>
+                              setState(() => _switchActive = val),
+                        ),
                       ),
                     ],
                   ),

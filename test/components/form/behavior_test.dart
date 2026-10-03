@@ -9,6 +9,9 @@ void main() {
       (tester) async {
         final controller = AnimalFormController();
         final usernameKey = AnimalFieldKey<String>(debugLabel: 'username');
+        final usernameBuffer = TextEditingController();
+        addTearDown(usernameBuffer.dispose);
+        addTearDown(controller.dispose);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -21,6 +24,7 @@ void main() {
                 controller: controller,
                 child: AnimalFormItem<String>(
                   fieldKey: usernameKey,
+                  textController: usernameBuffer,
                   rules: [
                     AnimalRule.custom((value) async {
                       if (value == 'slow_invalid') {
@@ -39,8 +43,8 @@ void main() {
                     }),
                   ],
                   builder: (context, binding) => AnimalInput(
-                    value: binding.value,
-                    onChanged: binding.onChanged,
+                    controller: usernameBuffer,
+                    focusNode: binding.focusNode,
                   ),
                 ),
               ),

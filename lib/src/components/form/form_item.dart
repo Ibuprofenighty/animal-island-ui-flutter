@@ -19,6 +19,9 @@ class AnimalFormItem<T> extends StatefulWidget {
   final bool required;
   final List<AnimalRule<T>>? rules;
   final T? initialValue;
+
+  /// Explicit text-field opt-in. The caller retains ownership of this buffer.
+  final TextEditingController? textController;
   final FocusNode? focusNode;
   final Widget Function(BuildContext context, AnimalFieldBinding<T> binding)
   builder;
@@ -33,6 +36,7 @@ class AnimalFormItem<T> extends StatefulWidget {
     this.required = false,
     this.rules,
     this.initialValue,
+    this.textController,
     this.focusNode,
     required this.builder,
     this.margin,
@@ -59,6 +63,7 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
         'AnimalFormItem requires an enclosing AnimalForm owner.',
       );
     }
+    _validateTextConfiguration(scope);
     final owner = scope.owner;
     if (!identical(_controller, owner) || _registration == null) {
       _unregister();
@@ -70,10 +75,16 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
   @override
   void didUpdateWidget(AnimalFormItem<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final scope = AnimalFormScope.maybeOf<AnimalFormController>(context);
+    if (scope != null) _validateTextConfiguration(scope);
     final keyChanged =
         oldWidget.fieldKey != widget.fieldKey ||
         oldWidget.fieldKey.runtimeType != widget.fieldKey.runtimeType;
-    if (keyChanged) {
+    final textControllerChanged = !identical(
+      oldWidget.textController,
+      widget.textController,
+    );
+    if (keyChanged || textControllerChanged) {
       _unregister();
       final scope = AnimalFormScope.maybeOf<AnimalFormController>(context);
       final controller = _controller;
@@ -106,6 +117,18 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
     AnimalFormScope<AnimalFormController> scope,
   ) {
     widget.fieldKey.requireRequestedType(T);
+    final textController = widget.textController;
+    if (textController != null) {
+      _validateTextConfiguration(scope);
+      _registration = controller.registerTextField(
+        key: widget.fieldKey as AnimalFieldKey<String>,
+        textController: textController,
+        rules: widget.rules?.cast<AnimalRule<String>>(),
+        focusNode: _effectiveFocusNode,
+      ) as AnimalFieldRegistration<T>;
+      return;
+    }
+
     final initialValue = scope.initialValues.containsKey(widget.fieldKey)
         ? scope.initialValues.valueFor(widget.fieldKey)
         : widget.initialValue;
@@ -115,6 +138,25 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
       rules: widget.rules,
       focusNode: _effectiveFocusNode,
     );
+  }
+
+  void _validateTextConfiguration(AnimalFormScope<AnimalFormController> scope) {
+    if (widget.textController == null) return;
+    if (T != String) {
+      throw ArgumentError(
+        'AnimalFormItem.textController requires AnimalFormItem<String>.',
+      );
+    }
+    if (widget.initialValue != null) {
+      throw ArgumentError(
+        'Text fields take their initial value from textController.',
+      );
+    }
+    if (scope.initialValues.containsKey(widget.fieldKey)) {
+      throw ArgumentError(
+        'Form.initialValues cannot initialize a textController field.',
+      );
+    }
   }
 
   void _unregister() {

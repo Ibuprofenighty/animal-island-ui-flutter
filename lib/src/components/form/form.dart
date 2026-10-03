@@ -12,7 +12,7 @@ class AnimalForm extends StatefulWidget {
   final Widget child;
   final AnimalFormValues? initialValues;
   final ValueChanged<AnimalFormValues>? onChanged;
-  final FutureOr<void> Function(AnimalFormValues values)? onSubmit;
+  final FutureOr<bool> Function(AnimalFormValues values)? onSubmit;
 
   const AnimalForm({
     super.key,

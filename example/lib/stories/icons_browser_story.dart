@@ -11,16 +11,23 @@ class IconsBrowserStory extends StatefulWidget {
 }
 
 class _IconsBrowserStoryState extends State<IconsBrowserStory> {
-  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
   AnimalIconData? _selectedIcon = AnimalIcons.apple;
   double _iconSize = 32.0;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
     final allIcons = AnimalIcons.all;
+    final searchQuery = _searchController.text;
     final filteredIcons = allIcons.where((icon) {
-      return icon.name.toLowerCase().contains(_searchQuery.toLowerCase());
+      return icon.name.toLowerCase().contains(searchQuery.toLowerCase());
     }).toList();
 
     return SingleChildScrollView(
@@ -55,16 +62,14 @@ class _IconsBrowserStoryState extends State<IconsBrowserStory> {
                   children: [
                     Expanded(
                       child: AnimalInput(
-                        initialValue: _searchQuery,
+                        controller: _searchController,
                         placeholder: 'Search 101 icons by name...',
                         prefix: const AnimalIcon(
                           data: AnimalIcons.compass,
                           size: 20,
                         ),
                         clearable: true,
-                        onChanged: (val) {
-                          setState(() => _searchQuery = val);
-                        },
+                        onChanged: (_) => setState(() {}),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -114,7 +119,7 @@ class _IconsBrowserStoryState extends State<IconsBrowserStory> {
                   child: filteredIcons.isEmpty
                       ? Center(
                           child: Text(
-                            'No icons match "$_searchQuery"',
+                            'No icons match "$searchQuery"',
                             style: theme.typography.body.copyWith(
                               color: theme.colors.textMuted,
                             ),

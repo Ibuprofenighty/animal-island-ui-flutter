@@ -12,6 +12,13 @@ class FormItemStory extends StatefulWidget {
 
 class _FormItemStoryState extends State<FormItemStory> {
   final _demoKey = AnimalFieldKey<String>(debugLabel: 'demo');
+  final _textController = TextEditingController();
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +47,15 @@ class _FormItemStoryState extends State<FormItemStory> {
             child: AnimalForm(
               child: AnimalFormItem<String>(
                 fieldKey: _demoKey,
+                textController: _textController,
                 label: 'Sample Label',
                 help: 'Helpful hint explaining requirements',
                 required: true,
                 builder: (context, binding) {
                   return AnimalInput(
+                    controller: _textController,
                     placeholder: 'Enter content...',
-                    onChanged: binding.onChanged,
+                    focusNode: binding.focusNode,
                   );
                 },
               ),

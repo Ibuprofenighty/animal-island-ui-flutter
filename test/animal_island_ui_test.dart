@@ -58,6 +58,8 @@ void main() {
       tester,
     ) async {
       String changedText = '';
+      final inputController = TextEditingController();
+      addTearDown(inputController.dispose);
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -66,6 +68,7 @@ void main() {
           theme: AnimalIslandTheme.light.toThemeData(),
           home: Scaffold(
             body: AnimalInput(
+              controller: inputController,
               placeholder: 'Type island name...',
               onChanged: (val) => changedText = val,
             ),
@@ -773,11 +776,13 @@ void main() {
     });
 
     testWidgets(
-      'AnimalInput disposes external focusNode and updates dynamically',
+      'AnimalInput borrows external focusNode and follows replacement controllers',
       (tester) async {
         final node = FocusNode();
         final controller1 = TextEditingController(text: 'Initial');
         final controller2 = TextEditingController(text: 'Updated');
+        addTearDown(controller1.dispose);
+        addTearDown(controller2.dispose);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -950,6 +955,9 @@ void main() {
       (tester) async {
         final controller = AnimalFormController();
         final usernameKey = AnimalFieldKey<String>(debugLabel: 'username');
+        final usernameBuffer = TextEditingController();
+        addTearDown(usernameBuffer.dispose);
+        addTearDown(controller.dispose);
         bool submitted = false;
 
         await tester.pumpWidget(
@@ -963,18 +971,20 @@ void main() {
                 controller: controller,
                 onSubmit: (values) {
                   submitted = true;
+                  return true;
                 },
                 child: Column(
                   children: [
                     AnimalFormItem<String>(
                       fieldKey: usernameKey,
+                      textController: usernameBuffer,
                       label: 'Username',
                       required: true,
                       rules: [AnimalRule.required(message: 'Required field')],
                       builder: (context, binding) => AnimalInput(
+                        controller: usernameBuffer,
+                        focusNode: binding.focusNode,
                         placeholder: 'Enter name',
-                        value: binding.value,
-                        onChanged: binding.onChanged,
                       ),
                     ),
                   ],
@@ -1406,6 +1416,11 @@ void main() {
       final controller = AnimalFormController();
       final focusNode1 = FocusNode();
       final focusNode2 = FocusNode();
+      final firstTextController = TextEditingController();
+      final secondTextController = TextEditingController();
+      addTearDown(firstTextController.dispose);
+      addTearDown(secondTextController.dispose);
+      addTearDown(controller.dispose);
       final firstFieldKey = AnimalFieldKey<String>(debugLabel: 'firstField');
       final secondFieldKey = AnimalFieldKey<String>(debugLabel: 'secondField');
 
@@ -1422,19 +1437,25 @@ void main() {
                 children: [
                   AnimalFormItem<String>(
                     fieldKey: firstFieldKey,
+                    textController: firstTextController,
                     label: 'First',
                     focusNode: focusNode1,
                     rules: [AnimalRule.required(message: 'First is required')],
-                    builder: (context, binding) =>
-                        AnimalInput(focusNode: binding.focusNode),
+                    builder: (context, binding) => AnimalInput(
+                      controller: firstTextController,
+                      focusNode: binding.focusNode,
+                    ),
                   ),
                   AnimalFormItem<String>(
                     fieldKey: secondFieldKey,
+                    textController: secondTextController,
                     label: 'Second',
                     focusNode: focusNode2,
                     rules: [AnimalRule.required(message: 'Second is required')],
-                    builder: (context, binding) =>
-                        AnimalInput(focusNode: binding.focusNode),
+                    builder: (context, binding) => AnimalInput(
+                      controller: secondTextController,
+                      focusNode: binding.focusNode,
+                    ),
                   ),
                 ],
               ),
@@ -1535,6 +1556,9 @@ void main() {
       (tester) async {
         final controller = AnimalFormController();
         final islandKey = AnimalFieldKey<String>(debugLabel: 'island');
+        final islandBuffer = TextEditingController(text: 'Peach Isle');
+        addTearDown(islandBuffer.dispose);
+        addTearDown(controller.dispose);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -1547,11 +1571,11 @@ void main() {
                 controller: controller,
                 child: AnimalFormItem<String>(
                   fieldKey: islandKey,
+                  textController: islandBuffer,
                   label: 'Island',
-                  initialValue: 'Peach Isle',
                   builder: (context, binding) => AnimalInput(
-                    value: binding.value,
-                    onChanged: binding.onChanged,
+                    controller: islandBuffer,
+                    focusNode: binding.focusNode,
                   ),
                 ),
               ),

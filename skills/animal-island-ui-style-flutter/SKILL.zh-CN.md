@@ -29,9 +29,22 @@
 
 ## 交互
 
-可交互组件和交互图标通过统一的激活与焦点行为响应指针、Enter/Space 和无障碍操作。
-分组控件（单选/复选组、标签页）处理箭头/Home/End 导航。命中区域至少 48 逻辑像素；
-失去焦点、被禁用、隐藏或移除时，未完成的激活会被取消。
+可交互组件和交互图标共用一个激活与焦点 owner。只读控件仍可聚焦，但不暴露激活操作；
+未设置 `readOnly` 的 null callback 表现为禁用。Radio 组只有一个 roving Tab stop，方向键/Home/End
+在可用选项间导航；Checkbox 各项保留独立 Tab stop，其导航只移动焦点。命中区域至少 48 逻辑像素；
+失去焦点、被禁用、隐藏或移除时，未完成的激活会被取消。Switch、Checkbox、Radio 和 Select 的值均由调用方持有，
+回调只提议更新。选项列表是不可变快照，`option.value` 必须唯一。
+N15 对 `AnimalSwitch` 的布局目标是：46×26 与 58×32 为药丸轨道最小尺寸。药丸轨道必须使用内阴影且没有外阴影；带边框的 thumb 保持平面。内置 `size` 预设规定 thumb 直径为 18/24 逻辑像素、轨道边框为 1.5 逻辑像素、thumb 边框为 1.2 逻辑像素、标签/thumb 间距为 4 逻辑像素；公开 API 不提供任意轨道几何样式。ON/OFF 子控件各挂载一次，并在 thumb 旁的轨道空余区域
+共用稳定尺寸的标签区域；两种标签使用相同的受限布局，其实际内容尺寸共同确定可容纳任一状态的区域，轨道再按
+标签、thumb、内边距和间隔所需空间扩展。过渡时旧标签先淡出，thumb 移动期间标签区域保持空白，抵达后新标签再淡入。
+标签文本默认字号由预设提供：`small`/`defaultSize` 分别为 11/13 逻辑像素，并使用预设粗体；主题提供标签实际使用的字体族、回退字体、行高和字距，当前 switch 状态提供文字颜色。系统当前 `TextScaler` 仍生效，调用方可用 `Text.style` 显式覆盖这些默认值。文字自然换行，
+包括 200% 缩放时也可使轨道增高，不会缩小或省略。thumb 保持原尺寸，并在扩展轨道两端的内边距之间移动；RTL 遵循
+文本方向。外层焦点轮廓跟随扩大的轨道，命中区域至少为 48×48 逻辑像素。Switch 轨道与 thumb 是由用户操作触发的
+有限时长过渡；N10 动效政策尊重系统减少动画偏好、`TickerMode` 和应用前后台，关闭动效时持续时间为零。焦点只控制
+轮廓，不会禁用这些过渡。
+`AnimalSwitch` 必须收到有限的 `maxWidth`。在有界 `Row` 中使用 `Flexible` 或有限 `ConstrainedBox`；用于横向滚动时，在滚动容器之前放置 `LayoutBuilder` 读取实际有限 viewport 宽度，再用包住 Switch 的 `ConstrainedBox` 传入该上限。无界宽度会被拒绝。
+`AnimalSelect` 的所有选项行共用一个自适应 extent，根据主题正文样式、当前 `TextScaler` 和垂直间距计算。每行最多两行文字并在溢出时省略，命中区域至少为 48×48 逻辑像素。主题 token 控制菜单及选项状态样式；菜单宽度和列表视口高度上限固定为 320 逻辑像素，宽度还受可用视口宽度减 24 逻辑像素约束。触发器标签沿用主题 body style 的其他排版属性，字号固定为 15 逻辑像素，颜色随状态变化且系统 `TextScaler` 仍生效。公开 API 不提供菜单几何尺寸覆盖，列表保持 lazy 构建。
+Checkbox 字段错误由外层 `AnimalFormItem` 格式化并播报；Checkbox 只负责选中与 mixed 状态。
 
 ## 本地化与验证
 
@@ -43,6 +56,18 @@ delegates 和 supported locales；中文 locale 使用中文，缺省或不支�
 submit 快照，以保留 key 对应的值类型。集合值使用[表单引用](references/components/form.md)中的类型化快照工厂。
 内建问题文案由 `AnimalFormItem` 展示，不要再维护第二份 issue 到 message 的映射。调用者
 提供的验证文案按原文显示。
+`AnimalForm.onSubmit` 使用唯一 `FutureOr<bool>` 合同：true 接受快照，false 返回 typed
+rejected 结果，抛出的异常交由调用者处理。没有 handler 时，合法表单完成 validation-only
+submit。详情见[表单引用](references/components/form.md)。
+文本字段应在调用方 `State` 中创建一个唯一的 `TextEditingController`，并同时传给
+`AnimalFormItem.textController` 与 `AnimalInput.controller`。Form 从该缓冲区读取当前文本；
+空文本为 null，该 key 不得同时出现在 `initialValues` 或 item 的 `initialValue` 中。
+`AnimalInput.onChanged` 只通知调用方，不是第二次表单值写入。非文本 String 字段仍是标量值。
+大字号缩放时，`AnimalInput` 会限制并换行前后缀内容；组件高度可超过所选尺寸的最小值，同时保持文字可读并为编辑区域留出空间。
+值、规则、registration、reset 或默认 handler 变化会取消活跃的本地 submit，即使 handler
+仍在等待；晚到的 handler 完成不能影响替代 operation。
+`AnimalRule` 的内建配置按值比较，自定义 validator callback 按对象身份比较；重建自定义规则时
+复用 callback 可保留该规则配置。
 
 ## 组件引用
 

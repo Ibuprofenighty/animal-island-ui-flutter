@@ -47,11 +47,58 @@ widths use two decimal places; zero and negative widths canonicalize to `0`.
 
 ## Interaction
 
-Actionable components and interactive icons respond to pointer, Enter/Space and
-accessibility actions through one shared activation and focus behavior. Group
-controls (radio and checkbox groups, tabs) handle arrow/Home/End navigation.
-Hit targets are at least 48 logical pixels, and a pending activation is
+Actionable components and interactive icons use one shared activation and focus
+owner. A read-only control remains focusable and exposes no activation action;
+a null callback without `readOnly` behaves as disabled. Radio groups use one
+roving Tab stop and move through enabled options with arrow/Home/End keys;
+checkbox options keep independent Tab stops, and their navigation only moves
+focus. Hit targets are at least 48 logical pixels. Pending activation is
 cancelled when focus is lost or the control is disabled, hidden or removed.
+Switch, checkbox, radio and select values remain caller-owned; callbacks propose
+updates. Option lists are immutable snapshots with unique `option.value` values.
+The N15 layout target for `AnimalSwitch` sets the built-in `small` and
+`defaultSize` track minima to 46×26 and 58×32 logical pixels. Their thumb
+diameters are 18/24 logical pixels, the track border is 1.5 logical pixels,
+the thumb border is 1.2 logical pixels, and the label/thumb gap is 4 logical
+pixels.
+The track requires an inset shadow and has
+no outer shadow; the bordered thumb remains flat. The public `size` enum selects
+these presets; there is no arbitrary track-geometry style parameter. ON/OFF
+children mount once and share a stable label area beside the thumb. Both labels
+use the same constrained layout, and their actual content dimensions determine
+an area that fits either state alongside the thumb and padding. During a
+transition, the outgoing label fades before thumb travel, the label area stays
+clear while the thumb moves, and the incoming label fades in after arrival.
+Label text defaults to 11/13 logical pixels with preset bold weight for
+`small`/`defaultSize`. The theme supplies the label's font family, fallbacks,
+line height, and letter spacing; the current switch state supplies its color. The
+active `TextScaler` is honored, and caller-provided `Text.style` can override
+these defaults. Text wraps and can grow the track rather than shrinking or
+being ellipsized, including at
+200% scale.
+
+`AnimalSwitch` requires a finite `maxWidth`. In a bounded `Row`, use `Flexible`
+or a finite `ConstrainedBox`. For horizontal scrolling, place a `LayoutBuilder`
+before the scrollable to capture its actual finite viewport width, then pass
+that bound through a `ConstrainedBox` around the switch. Unbounded width is
+rejected. The thumb travels between the expanded track's padded logical ends;
+RTL follows text direction. The outer focus outline follows the expanded track
+and the hit target is at least 48×48 logical pixels. Switch track and thumb are
+finite, user-triggered transitions. Their N10 motion policy respects the system
+reduced-motion preference, `TickerMode`, and app foreground state; when it
+disables animation, duration is zero. Focus controls the outline and does not
+suppress these transitions.
+`AnimalSelect` uses one adaptive option-row extent based on the theme body style,
+active `TextScaler`, and vertical spacing. Rows show up to two lines with
+ellipsis and keep a minimum 48×48 logical-pixel hit target. Theme tokens supply
+menu colors, body typography, radii, and spacing. Menu width and list viewport
+height cap at 320 logical pixels; width also fits the available viewport minus
+24 logical pixels. The trigger label uses other theme body attributes at a
+fixed 15 logical-pixel font size, with state-dependent color and active
+`TextScaler`. The public API does not expose menu geometry overrides, and the
+list remains lazy.
+Checkbox field errors are formatted and announced by the surrounding
+`AnimalFormItem`; the checkbox owns only its checked and mixed state.
 
 ## Localization and validation
 
@@ -67,7 +114,24 @@ identify fields. Read change and submit snapshots with
 collection snapshot factories in the [form reference](references/components/form.md).
 Let `AnimalFormItem` display built-in issue text; do not add a
 second issue-to-message map. Caller-provided validation messages are shown as
-written.
+written. `AnimalForm.onSubmit` uses one `FutureOr<bool>` contract: true accepts
+the snapshot, false returns the typed rejected result, and thrown exceptions are
+returned to the caller. Without a handler, a valid form completes validation-only
+submission. See the [form reference](references/components/form.md) for details.
+For a text field, create one caller-owned `TextEditingController` in `State` and
+pass it to both `AnimalFormItem.textController` and `AnimalInput.controller`.
+The form reads current text from that buffer; empty text is null, and the key
+must not also appear in `initialValues` or `initialValue`. `AnimalInput.onChanged`
+is a caller notification, not a second form value write. A non-text String field
+remains a scalar value.
+For large text scales, `AnimalInput` bounds and wraps prefix/suffix content and
+grows beyond the selected size's minimum height while keeping text readable and
+the editing area clear.
+Value, rule, registration, reset, or default-handler changes cancel an active
+local submit even while its handler is pending; late handler completion cannot
+affect a replacement operation.
+`AnimalRule` compares built-in configuration by value and custom validator
+callbacks by identity; reuse the callback to preserve a custom rule across rebuilds.
 
 ## Component references
 

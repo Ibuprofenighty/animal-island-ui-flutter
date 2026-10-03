@@ -102,8 +102,21 @@ class MyApp extends StatelessWidget {
 ### 2. 使用组件
 
 ```dart
-class IslandHomePage extends StatelessWidget {
+class IslandHomePage extends StatefulWidget {
   const IslandHomePage({super.key});
+
+  @override
+  State<IslandHomePage> createState() => _IslandHomePageState();
+}
+
+class _IslandHomePageState extends State<IslandHomePage> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +129,11 @@ class IslandHomePage extends StatelessWidget {
             children: [
               const AnimalIcon(data: AnimalIcons.leaf, size: 28, bounce: true),
               const SizedBox(height: 12),
-              const AnimalInput(placeholder: '搜索海岛...', clearable: true),
+              AnimalInput(
+                controller: _searchController,
+                placeholder: '搜索海岛...',
+                clearable: true,
+              ),
               const SizedBox(height: 12),
               AnimalButton(
                 icon: const AnimalIcon(data: AnimalIcons.apple, size: 18),
@@ -157,8 +174,9 @@ class IslandHomePage extends StatelessWidget {
 | **数据展示** | `AnimalTable`、`AnimalPagination`、`AnimalCodeBlock`、`AnimalTag`、`AnimalImage` |
 | **装饰** | `AnimalFooter` |
 
-复选框和单选框另有 `AnimalCheckboxGroup` 与 `AnimalRadioGroup`。每个组件在
-[`docs/zh/components/`](docs/zh/components/) 下都有参考页面。
+复选框和单选框另有 `AnimalCheckboxGroup` 与 `AnimalRadioGroup`。Switch、Checkbox、Radio 和 Select 的当前值由调用方持有，
+回调只提议更新。只读控件仍可聚焦但不激活。Checkbox 各项保留独立 Tab stop；Radio 组使用一个
+roving Tab stop。每个组件在 [`docs/zh/components/`](docs/zh/components/) 下都有参考页面。
 
 ## 🍎 图标（101 个）
 

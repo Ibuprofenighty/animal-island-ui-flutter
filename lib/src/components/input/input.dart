@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
@@ -34,17 +37,14 @@ enum AnimalInputSize {
 /// Features:
 /// - 50px pill shape (`BorderRadius.circular(50)`)
 /// - Warm focus ring (`theme.colors.focusYellow`)
-/// - Single controller ownership with mutual exclusion between [controller] and [initialValue]
+/// - One caller-owned editing buffer borrowed for this input's lifetime
 /// - 3D tactile depth shadow when [shadow] is enabled
 /// - Accessible clear button with keyboard Enter / Space activation
 class AnimalInput extends StatefulWidget {
-  final TextEditingController? controller;
-
-  /// The controlled text value for this input.
-  final String? value;
-
-  /// The initial text value for uncontrolled usage.
-  final String? initialValue;
+  /// The caller-owned text and editing state shown by this input.
+  ///
+  /// The input listens to but never disposes this controller.
+  final TextEditingController controller;
 
   /// The placeholder hint text displayed when empty.
   final String? placeholder;
@@ -105,9 +105,7 @@ class AnimalInput extends StatefulWidget {
 
   const AnimalInput({
     super.key,
-    this.controller,
-    this.value,
-    this.initialValue,
+    required this.controller,
     this.placeholder,
     this.size = AnimalInputSize.middle,
     this.prefix,
@@ -127,26 +125,17 @@ class AnimalInput extends StatefulWidget {
     this.maxLines = 1,
     this.minLines,
     this.inputFormatters,
-  }) : assert(
-         controller == null || (value == null && initialValue == null),
-         'Cannot provide both a controller and value/initialValue to AnimalInput.',
-       );
+  });
 
   @override
   State<AnimalInput> createState() => _AnimalInputState();
 }
 
 class _AnimalInputState extends State<AnimalInput> {
-  TextEditingController? _internalController;
   FocusNode? _internalFocusNode;
+  TextEditingController? _listenedController;
   FocusNode? _listenedFocusNode;
   bool _isFocused = false;
-
-  TextEditingController get _effectiveController =>
-      widget.controller ??
-      (_internalController ??= TextEditingController(
-        text: widget.value ?? widget.initialValue,
-      ));
 
   FocusNode get _effectiveFocusNode =>
       widget.focusNode ?? (_internalFocusNode ??= FocusNode());
@@ -155,6 +144,7 @@ class _AnimalInputState extends State<AnimalInput> {
   void initState() {
     super.initState();
     _listenToFocusNode(_effectiveFocusNode);
+    _listenToController(widget.controller);
   }
 
   @override
@@ -166,12 +156,19 @@ class _AnimalInputState extends State<AnimalInput> {
       _listenToFocusNode(nextFocusNode);
       _isFocused = nextFocusNode.hasFocus;
     }
-    if (widget.controller == null &&
-        widget.value != null &&
-        widget.value != oldWidget.value &&
-        widget.value != _effectiveController.text) {
-      _effectiveController.text = widget.value!;
+    if (!identical(widget.controller, _listenedController)) {
+      _listenedController?.removeListener(_handleControllerChange);
+      _listenToController(widget.controller);
     }
+  }
+
+  void _listenToController(TextEditingController controller) {
+    _listenedController = controller;
+    controller.addListener(_handleControllerChange);
+  }
+
+  void _handleControllerChange() {
+    if (mounted) setState(() {});
   }
 
   void _listenToFocusNode(FocusNode focusNode) {
@@ -191,8 +188,9 @@ class _AnimalInputState extends State<AnimalInput> {
   void dispose() {
     _listenedFocusNode?.removeListener(_handleFocusChange);
     _listenedFocusNode = null;
+    _listenedController?.removeListener(_handleControllerChange);
+    _listenedController = null;
     _internalFocusNode?.dispose();
-    _internalController?.dispose();
     super.dispose();
   }
 
@@ -238,10 +236,16 @@ class _AnimalInputState extends State<AnimalInput> {
               : theme.colors.bgInputDisabled)
         : theme.colors.bgInput;
 
+    final bool showClearAction =
+        widget.clearable &&
+        widget.controller.text.isNotEmpty &&
+        !widget.disabled &&
+        !widget.readOnly;
+
     return AnimatedContainer(
       duration: theme.motion.fast,
       curve: theme.motion.ease,
-      height: widget.maxLines == 1 ? widget.size.height : null,
+      constraints: BoxConstraints(minHeight: widget.size.height),
       decoration: BoxDecoration(
         color: inputBg,
         borderRadius: widget.maxLines == 1
@@ -254,71 +258,103 @@ class _AnimalInputState extends State<AnimalInput> {
         horizontal: widget.size.padding,
         vertical: widget.maxLines == 1 ? 0 : theme.spacing.sm,
       ),
-      alignment: Alignment.center,
-      child: Row(
-        children: [
-          if (widget.prefix != null) ...[
-            widget.prefix!,
-            SizedBox(width: theme.spacing.sm),
-          ],
-          Expanded(
-            child: TextField(
-              controller: _effectiveController,
-              focusNode: _effectiveFocusNode,
-              enabled: !widget.disabled,
-              readOnly: widget.readOnly,
-              obscureText: widget.obscureText,
-              keyboardType: widget.keyboardType,
-              textInputAction: widget.textInputAction,
-              autofocus: widget.autofocus,
-              maxLines: widget.maxLines,
-              minLines: widget.minLines,
-              inputFormatters: widget.inputFormatters,
-              onChanged: (text) {
-                widget.onChanged?.call(text);
-                setState(() {});
-              },
-              onSubmitted: (text) {
-                widget.onSubmitted?.call(text);
-              },
-              style: theme.typography.body.copyWith(
-                color: widget.disabled
-                    ? theme.colors.textDisabled
-                    : theme.colors.text,
-                fontSize: widget.size.fontSize,
-              ),
-              cursorColor: theme.colors.text,
-              decoration: InputDecoration(
-                isCollapsed: true,
-                border: InputBorder.none,
-                hintText: widget.placeholder,
-                hintStyle: theme.typography.body.copyWith(
-                  color: widget.disabled
-                      ? theme.colors.textDisabled
-                      : theme.colors.textSecondary,
-                  fontWeight: FontWeight.w400,
-                  fontSize: widget.size.fontSize - 1.0,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final int boundedAdornmentCount =
+              (widget.prefix == null ? 0 : 1) + (widget.suffix == null ? 0 : 1);
+          final int gapCount =
+              boundedAdornmentCount + (showClearAction ? 1 : 0);
+          final double clearWidth = showClearAction ? 48.0 : 0.0;
+          final double minimumEditorWidth = widget.size.fontSize * 4;
+          final double maxAdornmentWidth = boundedAdornmentCount == 0
+              ? 0
+              : math.min(
+                  constraints.maxWidth * 0.25,
+                  math.max(
+                    0,
+                    (constraints.maxWidth -
+                            minimumEditorWidth -
+                            clearWidth -
+                            theme.spacing.sm * gapCount) /
+                        boundedAdornmentCount,
+                  ),
+                );
+
+          Widget boundedAdornment(Widget child) => ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: maxAdornmentWidth),
+            child: child,
+          );
+
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (widget.prefix != null) ...[
+                boundedAdornment(widget.prefix!),
+                SizedBox(width: theme.spacing.sm),
+              ],
+              Expanded(
+                child: Semantics(
+                  validationResult: effectiveStatus == AnimalInputStatus.error
+                      ? SemanticsValidationResult.invalid
+                      : SemanticsValidationResult.none,
+                  child: TextField(
+                    controller: widget.controller,
+                    focusNode: _effectiveFocusNode,
+                    enabled: !widget.disabled,
+                    readOnly: widget.readOnly,
+                    obscureText: widget.obscureText,
+                    keyboardType: widget.keyboardType,
+                    textInputAction: widget.textInputAction,
+                    autofocus: widget.autofocus,
+                    maxLines: widget.maxLines,
+                    minLines: widget.minLines,
+                    inputFormatters: widget.inputFormatters,
+                    onChanged: (text) {
+                      widget.onChanged?.call(text);
+                    },
+                    onSubmitted: (text) {
+                      widget.onSubmitted?.call(text);
+                    },
+                    style: theme.typography.body.copyWith(
+                      color: widget.disabled
+                          ? theme.colors.textDisabled
+                          : theme.colors.text,
+                      fontSize: widget.size.fontSize,
+                    ),
+                    cursorColor: theme.colors.text,
+                    decoration: InputDecoration(
+                      isCollapsed: true,
+                      border: InputBorder.none,
+                      hintText: widget.placeholder,
+                      hintStyle: theme.typography.body.copyWith(
+                        color: widget.disabled
+                            ? theme.colors.textDisabled
+                            : theme.colors.textSecondary,
+                        fontWeight: FontWeight.w400,
+                        fontSize: widget.size.fontSize - 1.0,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          if (widget.clearable &&
-              _effectiveController.text.isNotEmpty &&
-              !widget.disabled)
-            _InputClearButton(
-              iconSize: widget.size.iconSize,
-              iconColor: theme.colors.textSecondary,
-              onClear: () {
-                _effectiveController.clear();
-                widget.onChanged?.call('');
-                setState(() {});
-              },
-            ),
-          if (widget.suffix != null) ...[
-            SizedBox(width: theme.spacing.sm),
-            widget.suffix!,
-          ],
-        ],
+              if (showClearAction) ...[
+                SizedBox(width: theme.spacing.sm),
+                _InputClearButton(
+                  iconSize: widget.size.iconSize,
+                  iconColor: theme.colors.textSecondary,
+                  onClear: () {
+                    widget.controller.clear();
+                    widget.onChanged?.call('');
+                  },
+                ),
+              ],
+              if (widget.suffix != null) ...[
+                SizedBox(width: theme.spacing.sm),
+                boundedAdornment(widget.suffix!),
+              ],
+            ],
+          );
+        },
       ),
     );
   }

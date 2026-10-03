@@ -13,10 +13,12 @@ class FormStory extends StatefulWidget {
 class _FormStoryState extends State<FormStory> {
   final _controller = AnimalFormController();
   final _keyName = AnimalFieldKey<String>(debugLabel: 'islandName');
+  final _nameTextController = TextEditingController();
 
   @override
   void dispose() {
     _controller.dispose();
+    _nameTextController.dispose();
     super.dispose();
   }
 
@@ -51,6 +53,7 @@ class _FormStoryState extends State<FormStory> {
                 children: [
                   AnimalFormItem<String>(
                     fieldKey: _keyName,
+                    textController: _nameTextController,
                     label: 'Island Name',
                     required: true,
                     rules: [
@@ -60,11 +63,11 @@ class _FormStoryState extends State<FormStory> {
                     ],
                     builder: (context, binding) {
                       return AnimalInput(
-                        value: binding.value,
+                        controller: _nameTextController,
+                        focusNode: binding.focusNode,
                         status: binding.error != null
                             ? AnimalInputStatus.error
                             : AnimalInputStatus.normal,
-                        onChanged: binding.onChanged,
                       );
                     },
                   ),

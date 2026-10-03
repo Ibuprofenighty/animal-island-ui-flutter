@@ -2,95 +2,74 @@ import 'package:flutter/widgets.dart';
 
 import '../../foundation/models/option.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/option_group_focus.dart';
 import 'checkbox.dart';
 
-/// Group wrapper for multiple [AnimalCheckbox] controls sharing a single multi-value list (C14).
+/// Controlled group of independently focusable checkboxes.
 class AnimalCheckboxGroup<T> extends StatelessWidget {
   final List<T> value;
   final List<AnimalOption<T>> options;
   final ValueChanged<List<T>>? onChanged;
   final bool disabled;
+  final bool readOnly;
   final AnimalCheckboxSize size;
   final Axis direction;
   final FocusNode? focusNode;
 
-  const AnimalCheckboxGroup({
+  AnimalCheckboxGroup({
     super.key,
-    required this.value,
-    required this.options,
+    required List<T> value,
+    required List<AnimalOption<T>> options,
     required this.onChanged,
     this.disabled = false,
+    this.readOnly = false,
     this.size = AnimalCheckboxSize.middle,
     this.direction = Axis.horizontal,
     this.focusNode,
-  });
+  }) : value = List<T>.unmodifiable(value),
+       options = snapshotUniqueOptions<T>(
+         options,
+         owner: 'AnimalCheckboxGroup',
+       );
 
-  void _handleOptionToggled(T optionVal, bool isChecked) {
-    if (disabled || onChanged == null) return;
-    final nextList = List<T>.from(value);
+  void _handleOptionToggled(T optionValue, bool isChecked) {
+    if (disabled || readOnly || onChanged == null) return;
+    final List<T> next = List<T>.of(value);
     if (isChecked) {
-      if (!nextList.contains(optionVal)) {
-        nextList.add(optionVal);
-      }
+      if (!next.contains(optionValue)) next.add(optionValue);
     } else {
-      nextList.remove(optionVal);
+      next.removeWhere((T value) => value == optionValue);
     }
-    onChanged!(nextList);
+    onChanged!(List<T>.unmodifiable(next));
   }
 
   @override
   Widget build(BuildContext context) {
     final spacing = AnimalIslandTheme.of(context).spacing;
-    final children = <Widget>[];
-
-    for (int i = 0; i < options.length; i++) {
-      final opt = options[i];
-      final isSelected = value.contains(opt.value);
-      final isOptionDisabled = disabled || opt.disabled;
-
-      children.add(
-        AnimalCheckbox(
-          value: isSelected,
-          disabled: isOptionDisabled,
+    return OptionGroupFocus<T>(
+      options: options,
+      direction: direction,
+      roving: false,
+      selectedValue: null,
+      disabled: disabled || (onChanged == null && !readOnly),
+      spacing: direction == Axis.horizontal ? spacing.lg : spacing.sm,
+      runSpacing: spacing.sm,
+      focusNode: focusNode,
+      itemBuilder: (context, option, node) {
+        final bool optionDisabled = disabled || option.disabled;
+        return AnimalCheckbox(
+          key: ValueKey<T>(option.value),
+          value: value.contains(option.value),
+          disabled: optionDisabled,
+          readOnly: readOnly,
           size: size,
-          label: Text(opt.label),
-          onChanged: isOptionDisabled
+          focusNode: node,
+          label: Text(option.label),
+          onChanged: optionDisabled || onChanged == null
               ? null
-              : (checked) => _handleOptionToggled(opt.value, checked),
-        ),
-      );
-
-      if (i < options.length - 1) {
-        children.add(
-          direction == Axis.horizontal
-              ? SizedBox(width: spacing.lg)
-              : SizedBox(height: spacing.sm),
+              : (bool checked) => _handleOptionToggled(option.value, checked),
         );
-      }
-    }
-
-    Widget content = direction == Axis.horizontal
-        ? Wrap(spacing: spacing.lg, runSpacing: spacing.sm, children: children)
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: children,
-          );
-
-    if (focusNode != null) {
-      return Focus(
-        focusNode: focusNode,
-        skipTraversal: true,
-        canRequestFocus: true,
-        onFocusChange: (hasFocus) {
-          if (hasFocus) {
-            focusNode!.nextFocus();
-          }
-        },
-        child: content,
-      );
-    }
-
-    return content;
+      },
+    );
   }
 }

@@ -113,8 +113,21 @@ resolve to English. Inside the tree, read the active theme with
 ### 2. Use components
 
 ```dart
-class IslandHomePage extends StatelessWidget {
+class IslandHomePage extends StatefulWidget {
   const IslandHomePage({super.key});
+
+  @override
+  State<IslandHomePage> createState() => _IslandHomePageState();
+}
+
+class _IslandHomePageState extends State<IslandHomePage> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +140,11 @@ class IslandHomePage extends StatelessWidget {
             children: [
               const AnimalIcon(data: AnimalIcons.leaf, size: 28, bounce: true),
               const SizedBox(height: 12),
-              const AnimalInput(placeholder: 'Search the island...', clearable: true),
+              AnimalInput(
+                controller: _searchController,
+                placeholder: 'Search the island...',
+                clearable: true,
+              ),
               const SizedBox(height: 12),
               AnimalButton(
                 icon: const AnimalIcon(data: AnimalIcons.apple, size: 18),
@@ -170,7 +187,10 @@ A complete runnable sample is in
 | **Decorative** | `AnimalFooter` |
 
 Checkbox and radio also come with `AnimalCheckboxGroup` and `AnimalRadioGroup`.
-Each component has a reference page under [`docs/en/components/`](docs/en/components/).
+Switch, checkbox, radio and select values stay with the caller; callbacks propose updates.
+Read-only controls remain focusable without activation. Checkbox items keep
+independent Tab stops, while a radio group uses one roving Tab stop. Each component
+has a reference page under [`docs/en/components/`](docs/en/components/).
 
 ## 🍎 Icons (101)
 

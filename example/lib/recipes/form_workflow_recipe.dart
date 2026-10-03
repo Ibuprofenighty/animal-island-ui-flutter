@@ -12,6 +12,8 @@ class FormWorkflowRecipe extends StatefulWidget {
 
 class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
   final _formController = AnimalFormController();
+  final _usernameTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
   final _kUsername = AnimalFieldKey<String>(debugLabel: 'username');
   final _kEmail = AnimalFieldKey<String>(debugLabel: 'email');
   final _kRole = AnimalFieldKey<String>(debugLabel: 'role');
@@ -28,6 +30,8 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
   @override
   void dispose() {
     _formController.dispose();
+    _usernameTextController.dispose();
+    _emailTextController.dispose();
     super.dispose();
   }
 
@@ -37,25 +41,32 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
       _submissionResult = null;
     });
 
-    final isValid = await _formController.validate();
-    if (!isValid) {
-      setState(() {
-        _isSubmitting = false;
-        _submissionResult =
-            'Validation failed! Please review the highlighted errors above.';
-      });
-      return;
-    }
+    late AnimalFormValues submittedValues;
+    final result = await _formController.submit(
+      onSubmit: (values) async {
+        submittedValues = values;
+        // Simulated network request and server-side rejection.
+        await Future.delayed(const Duration(milliseconds: 600));
+        return values.valueFor(_kUsername)?.toLowerCase() != 'island-reject';
+      },
+    );
+    if (!mounted) return;
 
-    // Simulated network delay
-    await Future.delayed(const Duration(milliseconds: 600));
-
-    final values = _formController.values;
+    final message = switch (result.status) {
+      AnimalSubmitStatus.success =>
+        'Registration successful for: ${submittedValues.valueFor(_kUsername)} (${submittedValues.valueFor(_kEmail)})\n'
+            'Role: ${submittedValues.valueFor(_kRole)}, BirthDate: ${submittedValues.valueFor(_kBirthDate)}, CheckIn: ${submittedValues.valueFor(_kCheckInTime)}',
+      AnimalSubmitStatus.invalid =>
+        'Validation failed! Please review the highlighted errors above.',
+      AnimalSubmitStatus.rejected =>
+        'The server rejected this registration. Choose another nickname.',
+      AnimalSubmitStatus.changedDuringValidation => 'Form state changed or was cancelled while submitting. Please try again.',
+      AnimalSubmitStatus.busy => 'A registration is already in progress.',
+      AnimalSubmitStatus.error => 'Submission failed: ${result.error}',
+    };
     setState(() {
       _isSubmitting = false;
-      _submissionResult =
-          'Registration successful for: ${values.valueFor(_kUsername)} (${values.valueFor(_kEmail)})\n'
-          'Role: ${values.valueFor(_kRole)}, BirthDate: ${values.valueFor(_kBirthDate)}, CheckIn: ${values.valueFor(_kCheckInTime)}';
+      _submissionResult = message;
     });
   }
 
@@ -102,6 +113,7 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                   // Username Field with async uniqueness validator
                   AnimalFormItem<String>(
                     fieldKey: _kUsername,
+                    textController: _usernameTextController,
                     label: 'Resident Nickname',
                     required: true,
                     rules: [
@@ -120,8 +132,8 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                     ],
                     builder: (context, binding) {
                       return AnimalInput(
-                        value: binding.value,
-                        placeholder: 'Enter nickname (try "taken" to trigger async error)',
+                        controller: _usernameTextController,
+                        placeholder: 'Try "taken" for validation or "island-reject" for server rejection',
                         status: binding.error != null
                             ? AnimalInputStatus.error
                             : AnimalInputStatus.normal,
@@ -131,7 +143,6 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                           data: AnimalIcons.user,
                           size: 18,
                         ),
-                        onChanged: binding.onChanged,
                       );
                     },
                   ),
@@ -139,6 +150,7 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                   // Email Field
                   AnimalFormItem<String>(
                     fieldKey: _kEmail,
+                    textController: _emailTextController,
                     label: 'Contact Email',
                     required: true,
                     rules: [
@@ -150,7 +162,7 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                     ],
                     builder: (context, binding) {
                       return AnimalInput(
-                        value: binding.value,
+                        controller: _emailTextController,
                         placeholder: 'resident@island.com',
                         status: binding.error != null
                             ? AnimalInputStatus.error
@@ -161,7 +173,6 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                           data: AnimalIcons.mail,
                           size: 18,
                         ),
-                        onChanged: binding.onChanged,
                       );
                     },
                   ),
@@ -260,9 +271,14 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                     builder: (context, binding) {
                       return Row(
                         children: [
-                          AnimalSwitch(
-                            value: binding.value ?? false,
-                            onChanged: binding.onChanged,
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: AnimalSwitchSize.defaultSize.width,
+                            ),
+                            child: AnimalSwitch(
+                              value: binding.value ?? false,
+                              onChanged: binding.onChanged,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Text(

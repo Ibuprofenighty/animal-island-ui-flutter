@@ -39,9 +39,14 @@ class _SwitchStoryState extends State<SwitchStory> {
             capabilityIds: const ['C13-SW', 'SW01'],
             child: Row(
               children: [
-                AnimalSwitch(
-                  value: _enabled,
-                  onChanged: (v) => setState(() => _enabled = v),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: AnimalSwitchSize.defaultSize.width,
+                  ),
+                  child: AnimalSwitch(
+                    value: _enabled,
+                    onChanged: (v) => setState(() => _enabled = v),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Text(

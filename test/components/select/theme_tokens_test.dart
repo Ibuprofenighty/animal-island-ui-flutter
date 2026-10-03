@@ -43,7 +43,7 @@ void main() {
                   status: AnimalInputStatus.error,
                 ),
                 const SizedBox(height: 8),
-                const AnimalSelect<String>(
+                AnimalSelect<String>(
                   key: ValueKey('disabled'),
                   value: 'locked',
                   options: [AnimalOption(value: 'locked', label: 'Disabled')],
@@ -152,6 +152,12 @@ void main() {
           ? theme.colors.surfaceHeader
           : theme.colors.bgInputDisabled;
       expect(disabledDecoration.color, disabledSurface);
+      expect(
+        disabledDecoration.border!.top.color,
+        theme.colors.brightness == Brightness.dark
+            ? theme.colors.border.withValues(alpha: 0.3)
+            : theme.colors.borderLight,
+      );
       final disabledText = triggerText('disabled', 'Disabled');
       expect(disabledText.style!.color, theme.colors.textDisabled);
       expect(
@@ -171,7 +177,7 @@ void main() {
         ),
       );
       expect(disabledTriggerOwner.disabled, isTrue);
-      expect(disabledTriggerOwner.onPressed, isNull);
+      expect(disabledTriggerOwner.onPressed, isNotNull);
       final disabledArrow = tester.widget<Icon>(
         find.descendant(
           of: find.byKey(const ValueKey<String>('disabled')),

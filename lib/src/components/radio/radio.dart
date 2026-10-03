@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
+import '../../internal/interaction/option_group_focus.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
 
 /// Radio sizing scale matching animal-island-ui.
 enum AnimalRadioSize {
-  small(boxSize: 18.0, iconSize: 12.0, fontSize: 13.0, borderRadius: 5.0),
-  middle(boxSize: 22.0, iconSize: 14.0, fontSize: 14.0, borderRadius: 6.0),
-  large(boxSize: 26.0, iconSize: 18.0, fontSize: 16.0, borderRadius: 7.0);
+  small(boxSize: 18.0, iconSize: 12.0, fontSize: 13.0, borderRadius: 12.0),
+  middle(boxSize: 22.0, iconSize: 14.0, fontSize: 14.0, borderRadius: 14.0),
+  large(boxSize: 26.0, iconSize: 18.0, fontSize: 16.0, borderRadius: 16.0);
 
   final double boxSize;
   final double iconSize;
@@ -26,15 +27,14 @@ enum AnimalRadioSize {
 
 /// Animal Island Kawaii Radio component (C15).
 ///
-/// Distinctive Design Law:
-/// Features cozy rounded square radio styling with SVG check mark,
-/// avoiding generic circular radio aesthetic while preserving mutual exclusion.
+/// Uses the current compact 12/14/16 corner-radius contract and a check glyph.
 class AnimalRadio<T> extends StatefulWidget {
   final T value;
   final T? groupValue;
   final ValueChanged<T>? onChanged;
   final Widget? label;
   final bool disabled;
+  final bool readOnly;
   final AnimalRadioSize size;
   final FocusNode? focusNode;
   final Color? activeColor;
@@ -46,6 +46,7 @@ class AnimalRadio<T> extends StatefulWidget {
     required this.onChanged,
     this.label,
     this.disabled = false,
+    this.readOnly = false,
     this.size = AnimalRadioSize.middle,
     this.focusNode,
     this.activeColor,
@@ -64,7 +65,10 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
 
   bool get _isSelected => widget.value == widget.groupValue;
 
-  bool get _canInteract => !widget.disabled && widget.onChanged != null;
+  bool get _isDisabled =>
+      widget.disabled || (widget.onChanged == null && !widget.readOnly);
+
+  bool get _canInteract => !_isDisabled && !widget.readOnly;
 
   @override
   void dispose() {
@@ -85,7 +89,7 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
 
     final activeTone = widget.activeColor ?? theme.colors.primary;
 
-    final Color bgColor = widget.disabled
+    final Color bgColor = _isDisabled
         ? ((theme.colors.brightness == Brightness.dark)
               ? theme.colors.surfaceAlt
               : theme.colors.bgDisabled)
@@ -95,7 +99,7 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
                     ? theme.colors.surfaceHeader
                     : theme.colors.bgInput));
 
-    final Color borderColor = widget.disabled
+    final Color borderColor = _isDisabled
         ? ((theme.colors.brightness == Brightness.dark)
               ? theme.colors.border.withValues(alpha: 0.3)
               : theme.colors.borderLight)
@@ -103,8 +107,11 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
 
     return InteractiveRegion(
       onPressed: _handleSelect,
-      disabled: !_canInteract,
+      disabled: _isDisabled,
+      readOnly: widget.readOnly,
       focusNode: _effectiveFocusNode,
+      onKeyEvent: (FocusNode node, KeyEvent event) =>
+          optionGroupKeyEvent(node, event),
       onFocusChanged: (focused) => setState(() => _isFocused = focused),
       semanticButton: false,
       checked: isSelected,
@@ -125,7 +132,7 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
                 width: 1.8,
               ),
               boxShadow: [
-                if (!widget.disabled) theme.shadows.softElevation,
+                if (!_isDisabled) theme.shadows.softElevation,
                 if (_isFocused)
                   BoxShadow(
                     color: theme.colors.focusYellow.withValues(alpha: 0.45),
@@ -150,7 +157,7 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
             DefaultTextStyle(
               style: theme.typography.body.copyWith(
                 fontSize: size.fontSize,
-                color: widget.disabled
+                color: _isDisabled
                     ? theme.colors.textDisabled
                     : theme.colors.text,
               ),

@@ -12,6 +12,11 @@ void main() {
   ) async {
     for (final theme in animalIslandThemeVariants()) {
       final focusNode = FocusNode();
+      final normalController = TextEditingController(text: 'value');
+      final placeholderController = TextEditingController();
+      final warningController = TextEditingController(text: 'warning');
+      final errorController = TextEditingController(text: 'error');
+      final disabledController = TextEditingController(text: 'disabled');
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -24,33 +29,34 @@ void main() {
               child: Column(
                 children: [
                   AnimalInput(
+                    controller: normalController,
                     key: const ValueKey('normal'),
-                    initialValue: 'value',
                     prefix: const Icon(Icons.search),
                     shadow: true,
                     focusNode: focusNode,
                   ),
                   const SizedBox(height: 8),
-                  const AnimalInput(
+                  AnimalInput(
+                    controller: placeholderController,
                     key: ValueKey('placeholder'),
                     placeholder: 'Input hint',
                   ),
                   const SizedBox(height: 8),
-                  const AnimalInput(
+                  AnimalInput(
+                    controller: warningController,
                     key: ValueKey('warning'),
-                    initialValue: 'warning',
                     status: AnimalInputStatus.warning,
                   ),
                   const SizedBox(height: 8),
-                  const AnimalInput(
+                  AnimalInput(
+                    controller: errorController,
                     key: ValueKey('error'),
-                    initialValue: 'error',
                     status: AnimalInputStatus.error,
                   ),
                   const SizedBox(height: 8),
-                  const AnimalInput(
+                  AnimalInput(
+                    controller: disabledController,
                     key: ValueKey('disabled'),
-                    initialValue: 'disabled',
                     disabled: true,
                   ),
                 ],
@@ -182,6 +188,11 @@ void main() {
 
       await tester.pumpWidget(const SizedBox.shrink());
       focusNode.dispose();
+      normalController.dispose();
+      placeholderController.dispose();
+      warningController.dispose();
+      errorController.dispose();
+      disabledController.dispose();
     }
   });
 }

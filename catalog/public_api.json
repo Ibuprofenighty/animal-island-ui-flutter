@@ -169,6 +169,7 @@
             "indeterminate",
             "label",
             "onChanged",
+            "readOnly",
             "size",
             "value"
           ]
@@ -196,6 +197,7 @@
             "focusNode",
             "onChanged",
             "options",
+            "readOnly",
             "size",
             "value"
           ]
@@ -482,6 +484,7 @@
             "error",
             "invalid",
             "isSuccess",
+            "rejected",
             "status",
             "success"
           ]
@@ -493,6 +496,7 @@
           "changedDuringValidation",
           "error",
           "invalid",
+          "rejected",
           "success"
         ]
       },
@@ -515,7 +519,8 @@
             "labelWidget",
             "margin",
             "required",
-            "rules"
+            "rules",
+            "textController"
           ]
         }
       },
@@ -538,6 +543,7 @@
           ],
           "fields": [
             "customValidator",
+            "hashCode",
             "max",
             "maxLength",
             "message",
@@ -605,7 +611,6 @@
             "controller",
             "disabled",
             "focusNode",
-            "initialValue",
             "inputFormatters",
             "keyboardType",
             "maxLines",
@@ -620,8 +625,7 @@
             "size",
             "status",
             "suffix",
-            "textInputAction",
-            "value"
+            "textInputAction"
           ]
         }
       },
@@ -851,6 +855,7 @@
             "groupValue",
             "label",
             "onChanged",
+            "readOnly",
             "size",
             "value"
           ]
@@ -879,6 +884,7 @@
             "focusNode",
             "onChanged",
             "options",
+            "readOnly",
             "size",
             "value"
           ]
@@ -901,6 +907,7 @@
             "onChanged",
             "options",
             "placeholder",
+            "readOnly",
             "status",
             "value"
           ]
@@ -956,6 +963,7 @@
             "focusNode",
             "loading",
             "onChanged",
+            "readOnly",
             "size",
             "unCheckedChildren",
             "value"
@@ -1996,5 +2004,5 @@
       "functions": {}
     }
   },
-  "sha256": "84bf571ac1b5417d295cfc924b028bd7aa76b6fc238329e10113366b3089ab62"
+  "sha256": "aae554666595bc164130242e0d8f034f3a4d4da26c04e743633592c6d2df7421"
 }

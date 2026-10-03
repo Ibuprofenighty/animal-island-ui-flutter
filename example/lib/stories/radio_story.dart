@@ -28,7 +28,7 @@ class _RadioStoryState extends State<RadioStory> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Classic upstream rounded square with checkmark icon visual (F28 Root Fix) and mutual exclusion',
+            'Controlled mutual-exclusion choices with compact 12/14/16 corner radii and keyboard focus',
             style: theme.typography.body.copyWith(
               color: theme.colors.textSecondary,
             ),
@@ -36,7 +36,7 @@ class _RadioStoryState extends State<RadioStory> {
           const SizedBox(height: 24),
           StoryCard(
             title: 'Weather Preference Selection',
-            capabilityIds: const ['C15-RAD', 'RAD01', 'F28'],
+            capabilityIds: const ['C15-RAD', 'RAD01'],
             child: AnimalRadioGroup<String>(
               value: _selected,
               options: const [

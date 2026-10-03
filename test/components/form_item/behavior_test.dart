@@ -25,6 +25,8 @@ void main() {
       tester,
     ) async {
       final nicknameKey = AnimalFieldKey<String>(debugLabel: 'nickname');
+      final nicknameBuffer = TextEditingController();
+      addTearDown(nicknameBuffer.dispose);
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -35,10 +37,11 @@ void main() {
             body: AnimalForm(
               child: AnimalFormItem<String>(
                 fieldKey: nicknameKey,
+                textController: nicknameBuffer,
                 label: 'Nickname',
                 required: true,
                 help: 'Enter your friendly islander nickname',
-                builder: (_, _) => AnimalInput(),
+                builder: (_, _) => AnimalInput(controller: nicknameBuffer),
               ),
             ),
           ),
@@ -58,6 +61,11 @@ void main() {
       (tester) async {
         final controller = AnimalFormController();
         final emailKey = AnimalFieldKey<String>(debugLabel: 'email');
+        final emailBuffer = TextEditingController();
+        addTearDown(() {
+          controller.dispose();
+          emailBuffer.dispose();
+        });
 
         await tester.pumpWidget(
           MaterialApp(
@@ -70,15 +78,16 @@ void main() {
                 controller: controller,
                 child: AnimalFormItem<String>(
                   fieldKey: emailKey,
+                  textController: emailBuffer,
                   label: 'Email',
                   help: 'We never share your email',
                   rules: [AnimalRule.required(message: 'Email is required')],
                   builder: (context, binding) {
                     return AnimalInput(
+                      controller: emailBuffer,
                       status: binding.error != null
                           ? AnimalInputStatus.error
                           : AnimalInputStatus.normal,
-                      onChanged: binding.onChanged,
                     );
                   },
                 ),
@@ -108,6 +117,12 @@ void main() {
         final controller = AnimalFormController();
         final focusNode = FocusNode();
         final usernameKey = AnimalFieldKey<String>(debugLabel: 'username');
+        final usernameBuffer = TextEditingController();
+        addTearDown(() {
+          controller.dispose();
+          focusNode.dispose();
+          usernameBuffer.dispose();
+        });
 
         await tester.pumpWidget(
           MaterialApp(
@@ -120,13 +135,14 @@ void main() {
                 controller: controller,
                 child: AnimalFormItem<String>(
                   fieldKey: usernameKey,
+                  textController: usernameBuffer,
                   label: 'Username',
                   focusNode: focusNode,
                   rules: [AnimalRule.required(message: 'Username is required')],
                   builder: (context, binding) {
                     return AnimalInput(
+                      controller: usernameBuffer,
                       focusNode: binding.focusNode,
-                      onChanged: binding.onChanged,
                     );
                   },
                 ),
@@ -144,8 +160,6 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(focusNode.hasFocus, isTrue);
-
-        focusNode.dispose();
       },
     );
 
@@ -153,6 +167,8 @@ void main() {
       tester,
     ) async {
       final customKey = AnimalFieldKey<String>(debugLabel: 'custom');
+      final customBuffer = TextEditingController();
+      addTearDown(customBuffer.dispose);
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -163,9 +179,10 @@ void main() {
             body: AnimalForm(
               child: AnimalFormItem<String>(
                 fieldKey: customKey,
+                textController: customBuffer,
                 label: 'Default Label',
                 labelWidget: Text('Custom Rich Label'),
-                builder: (_, _) => AnimalInput(),
+                builder: (_, _) => AnimalInput(controller: customBuffer),
               ),
             ),
           ),

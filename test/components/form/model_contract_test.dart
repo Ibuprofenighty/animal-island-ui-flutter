@@ -4,6 +4,29 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 void main() {
   group('Typed form model', () {
+    test(
+      'validation rules compare immutable configuration and callback identity',
+      () {
+        String? validator(String? value) =>
+            value?.isEmpty == true ? 'empty' : null;
+        String? otherValidator(String? value) =>
+            value == null ? 'missing' : null;
+        final firstCustom = AnimalRule<String>.custom(validator);
+        final sameCustom = AnimalRule<String>.custom(validator);
+        final differentCustom = AnimalRule<String>.custom(otherValidator);
+
+        expect(AnimalRule<String>.required(), AnimalRule<String>.required());
+        expect(
+          AnimalRule<String>.pattern(RegExp('a+', caseSensitive: false)),
+          AnimalRule<String>.pattern(RegExp('a+', caseSensitive: false)),
+        );
+        expect(firstCustom, sameCustom);
+        expect(firstCustom.hashCode, sameCustom.hashCode);
+        expect(firstCustom, isNot(differentCustom));
+        expect(AnimalRule<String>.min(2), isNot(AnimalRule<String>.min(3)));
+      },
+    );
+
     test('opaque key identity is object-owned and generations reject stale removal', () {
       final firstKey = AnimalFieldKey<String>(debugLabel: 'same-label');
       final otherKey = AnimalFieldKey<String>(debugLabel: 'same-label');
@@ -315,6 +338,7 @@ void main() {
                 initialValues: initialValues,
                 onSubmit: (values) {
                   submittedValue = values.valueFor(key);
+                  return true;
                 },
                 child: AnimalFormItem<String>(
                   fieldKey: key,

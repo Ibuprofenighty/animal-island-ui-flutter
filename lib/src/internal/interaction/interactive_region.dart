@@ -28,6 +28,7 @@ class InteractiveRegion extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
   final bool enableHaptics;
   final bool disabled;
+  final bool readOnly;
   final bool busy;
   final bool visible;
   final bool focusOnHover;
@@ -35,6 +36,7 @@ class InteractiveRegion extends StatefulWidget {
   final String? semanticLabel;
   final bool semanticButton;
   final bool semanticContainer;
+  final bool invalid;
   final bool? selected;
   final bool? checked;
   final bool? mixed;
@@ -60,6 +62,7 @@ class InteractiveRegion extends StatefulWidget {
     this.padding,
     this.enableHaptics = true,
     this.disabled = false,
+    this.readOnly = false,
     this.busy = false,
     this.visible = true,
     this.focusOnHover = false,
@@ -67,6 +70,7 @@ class InteractiveRegion extends StatefulWidget {
     this.semanticLabel,
     this.semanticButton = true,
     this.semanticContainer = false,
+    this.invalid = false,
     this.selected,
     this.checked,
     this.mixed,
@@ -102,8 +106,15 @@ class _InteractiveRegionState extends State<InteractiveRegion> {
   bool get _canActivate =>
       widget.visible &&
       !widget.disabled &&
+      !widget.readOnly &&
       !widget.busy &&
       widget.onPressed != null;
+
+  bool get _canFocus =>
+      widget.visible &&
+      !widget.disabled &&
+      !widget.busy &&
+      (widget.onPressed != null || widget.readOnly);
 
   static const List<LogicalKeyboardKey> _activationKeys = <LogicalKeyboardKey>[
     LogicalKeyboardKey.enter,
@@ -128,11 +139,20 @@ class _InteractiveRegionState extends State<InteractiveRegion> {
       _isFocused = newFocusNode.hasFocus;
       _cancelPendingActivation();
       if (oldHasFocus != _isFocused) {
-        widget.onFocusChanged?.call(_isFocused);
+        final bool newHasFocus = _isFocused;
+        WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+          if (!mounted ||
+              !identical(_effectiveFocusNode, newFocusNode) ||
+              newFocusNode.hasFocus != newHasFocus) {
+            return;
+          }
+          widget.onFocusChanged?.call(newHasFocus);
+        });
       }
     }
     if (widget.onPressed != oldWidget.onPressed ||
         widget.disabled != oldWidget.disabled ||
+        widget.readOnly != oldWidget.readOnly ||
         widget.busy != oldWidget.busy ||
         widget.visible != oldWidget.visible) {
       _cancelPendingActivation();
@@ -308,15 +328,15 @@ class _InteractiveRegionState extends State<InteractiveRegion> {
 
     final onActivate = _canActivate ? _handleSemanticsTap : null;
     final properties =
-        widget.semanticsBuilder?.call(
-          _canActivate,
-          widget.visible,
-          onActivate,
-        ) ??
+        widget.semanticsBuilder?.call(_canFocus, widget.visible, onActivate) ??
         SemanticsProperties(
           button: widget.semanticButton,
-          enabled: _canActivate,
+          enabled: _canFocus,
           hidden: !widget.visible,
+          readOnly: widget.readOnly,
+          validationResult: widget.invalid
+              ? SemanticsValidationResult.invalid
+              : SemanticsValidationResult.none,
           label: widget.semanticLabel,
           selected: widget.selected,
           checked: widget.checked,
@@ -360,8 +380,8 @@ class _InteractiveRegionState extends State<InteractiveRegion> {
         ignoring: !widget.visible,
         child: Focus(
           focusNode: _effectiveFocusNode,
-          canRequestFocus: _canActivate,
-          skipTraversal: !_canActivate,
+          canRequestFocus: _canFocus,
+          skipTraversal: widget.focusNode?.skipTraversal ?? !_canFocus,
           onKeyEvent: _handleKeyEvent,
           child: MouseRegion(
             cursor: _canActivate

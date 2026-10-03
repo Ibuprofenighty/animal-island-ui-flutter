@@ -11,7 +11,13 @@ class InputStory extends StatefulWidget {
 }
 
 class _InputStoryState extends State<InputStory> {
-  String _value = '';
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +46,15 @@ class _InputStoryState extends State<InputStory> {
             child: Column(
               children: [
                 AnimalInput(
-                  value: _value,
+                  controller: _controller,
                   placeholder: 'Type island notes...',
                   prefix: const AnimalIcon(data: AnimalIcons.edit, size: 18),
                   clearable: true,
-                  onChanged: (v) => setState(() => _value = v),
+                  onChanged: (_) => setState(() {}),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Current input value: "$_value"',
+                  'Current input value: "${_controller.text}"',
                   style: theme.typography.caption,
                 ),
               ],

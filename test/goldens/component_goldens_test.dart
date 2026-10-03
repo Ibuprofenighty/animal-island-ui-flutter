@@ -23,7 +23,7 @@ void main() {
       );
     }
 
-    Widget buildShowcaseGrid() {
+    Widget buildShowcaseGrid(TextEditingController inputController) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,15 +89,21 @@ void main() {
             ),
           ),
           const SizedBox(height: 16),
-          const AnimalInput(
-            value: 'Input sample text',
+          AnimalInput(
+            controller: inputController,
+            key: const ValueKey('golden-input'),
             placeholder: 'Enter details...',
             prefix: AnimalIcon(data: AnimalIcons.search),
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              AnimalSwitch(value: true, onChanged: (_) {}),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: AnimalSwitchSize.defaultSize.width,
+                ),
+                child: AnimalSwitch(value: true, onChanged: (_) {}),
+              ),
               const SizedBox(width: 16),
               AnimalCheckbox(value: true, onChanged: (_) {}),
               const SizedBox(width: 16),
@@ -115,6 +121,8 @@ void main() {
     testWidgets('Light theme showcase renders stably without overflow', (
       tester,
     ) async {
+      final inputController = TextEditingController(text: 'Input sample text');
+      addTearDown(inputController.dispose);
       tester.view.physicalSize = const Size(1280, 1024);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() {
@@ -125,7 +133,7 @@ void main() {
       await tester.pumpWidget(
         buildTestHarness(
           theme: AnimalIslandTheme.light,
-          child: buildShowcaseGrid(),
+          child: buildShowcaseGrid(inputController),
         ),
       );
       await tester.pumpAndSettle();
@@ -140,6 +148,8 @@ void main() {
     testWidgets('Dark theme showcase renders stably without overflow', (
       tester,
     ) async {
+      final inputController = TextEditingController(text: 'Input sample text');
+      addTearDown(inputController.dispose);
       tester.view.physicalSize = const Size(1280, 1024);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() {
@@ -150,7 +160,7 @@ void main() {
       await tester.pumpWidget(
         buildTestHarness(
           theme: AnimalIslandTheme.dark,
-          child: buildShowcaseGrid(),
+          child: buildShowcaseGrid(inputController),
         ),
       );
       await tester.pumpAndSettle();
@@ -165,10 +175,12 @@ void main() {
     testWidgets('Accessibility contrast and touch target dimensions check', (
       tester,
     ) async {
+      final inputController = TextEditingController(text: 'Input sample text');
+      addTearDown(inputController.dispose);
       await tester.pumpWidget(
         buildTestHarness(
           theme: AnimalIslandTheme.light,
-          child: buildShowcaseGrid(),
+          child: buildShowcaseGrid(inputController),
         ),
       );
       await tester.pumpAndSettle();

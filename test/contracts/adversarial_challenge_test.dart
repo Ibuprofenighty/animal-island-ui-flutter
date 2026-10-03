@@ -12,8 +12,13 @@ void main() {
       'CHALLENGE 1: High-concurrency epoch race with out-of-order async validations',
       (tester) async {
         final controller = AnimalFormController();
+        final usernameBuffer = TextEditingController();
         final usernameKey = AnimalFieldKey<String>(debugLabel: 'username');
         final completers = <String, Completer<String?>>{};
+        addTearDown(() {
+          controller.dispose();
+          usernameBuffer.dispose();
+        });
 
         await tester.pumpWidget(
           MaterialApp(
@@ -26,6 +31,7 @@ void main() {
                 controller: controller,
                 child: AnimalFormItem<String>(
                   fieldKey: usernameKey,
+                  textController: usernameBuffer,
                   rules: [
                     AnimalRule.custom((value) {
                       final key = value?.toString() ?? '';
@@ -34,10 +40,7 @@ void main() {
                       return c.future;
                     }),
                   ],
-                  builder: (context, binding) => AnimalInput(
-                    value: binding.value,
-                    onChanged: binding.onChanged,
-                  ),
+                  builder: (_, _) => AnimalInput(controller: usernameBuffer),
                 ),
               ),
             ),
@@ -65,8 +68,6 @@ void main() {
 
         // Monotonic epoch invariant: only the latest validation (val_20, which resolved to null) is accepted!
         expect(controller.getFieldError(usernameKey), isNull);
-
-        controller.dispose();
       },
     );
 
