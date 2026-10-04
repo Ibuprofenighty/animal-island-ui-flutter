@@ -92,8 +92,7 @@ export 'src/components/checkbox/checkbox_group.dart' show AnimalCheckboxGroup;
 export 'src/components/radio/radio.dart' show AnimalRadio, AnimalRadioSize;
 export 'src/components/radio/radio_group.dart' show AnimalRadioGroup;
 export 'src/components/select/select.dart' show AnimalSelect;
-export 'src/components/date_picker/date_picker.dart'
-    show AnimalDatePicker;
+export 'src/components/date_picker/date_picker.dart' show AnimalDatePicker;
 export 'src/components/time_picker/time_picker.dart' show AnimalTimePicker;
 
 // Category 4: Form Container (Form, FormItem, Controller, Bindings, Validation)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
+import '../../foundation/models/clock.dart';
 import '../../foundation/models/time.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
@@ -31,6 +32,9 @@ class AnimalTimePicker extends StatelessWidget {
   final bool disabled;
   final FocusNode? focusNode;
 
+  /// Canonical clock for Now.
+  final AnimalClock clock;
+
   AnimalTimePicker({
     super.key,
     this.value,
@@ -43,6 +47,7 @@ class AnimalTimePicker extends StatelessWidget {
     this.allowClear = true,
     this.disabled = false,
     this.focusNode,
+    this.clock = const SystemClock(),
   }) {
     TimeWheelModel.validateStep(hourStep, 'hourStep');
     TimeWheelModel.validateStep(minuteStep, 'minuteStep');
@@ -64,6 +69,7 @@ class AnimalTimePicker extends StatelessWidget {
     bool disabled = false,
     AnimalInputStatus status = AnimalInputStatus.normal,
     FocusNode? focusNode,
+    AnimalClock clock = const SystemClock(),
   }) {
     return _AnimalTimePickerPopover(
       key: key,
@@ -79,6 +85,7 @@ class AnimalTimePicker extends StatelessWidget {
       disabled: disabled,
       status: status,
       focusNode: focusNode,
+      clock: clock,
     );
   }
 
@@ -95,6 +102,7 @@ class AnimalTimePicker extends StatelessWidget {
       allowClear: allowClear,
       disabled: disabled,
       focusNode: focusNode,
+      clock: clock,
     );
   }
 }
@@ -112,6 +120,7 @@ class _AnimalTimePickerPopover extends StatefulWidget {
   final bool disabled;
   final AnimalInputStatus status;
   final FocusNode? focusNode;
+  final AnimalClock clock;
 
   _AnimalTimePickerPopover({
     super.key,
@@ -127,6 +136,7 @@ class _AnimalTimePickerPopover extends StatefulWidget {
     this.disabled = false,
     this.status = AnimalInputStatus.normal,
     this.focusNode,
+    this.clock = const SystemClock(),
   }) {
     TimeWheelModel.validateStep(hourStep, 'hourStep');
     TimeWheelModel.validateStep(minuteStep, 'minuteStep');
@@ -218,9 +228,8 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
           showNow: widget.showNow,
           allowClear: widget.allowClear,
           disabled: widget.disabled,
-          onChanged: (t) {
-            widget.onChanged?.call(t);
-          },
+          clock: widget.clock,
+          onChanged: widget.onChanged,
         ),
       ],
       builder: (context, controller, child) {

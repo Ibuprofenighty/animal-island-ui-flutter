@@ -1106,6 +1106,7 @@
           ],
           "fields": [
             "allowClear",
+            "clock",
             "disabled",
             "focusNode",
             "format",
@@ -2023,5 +2024,5 @@
       "functions": {}
     }
   },
-  "sha256": "222fbf5ae2cfc77c0c9710348be6f1e2157f44244f410e497e875002794f9c2e"
+  "sha256": "07a07461a90ba42a4c71aee21b0f2997a46b7b758adec246e2c835c802933c6a"
 }

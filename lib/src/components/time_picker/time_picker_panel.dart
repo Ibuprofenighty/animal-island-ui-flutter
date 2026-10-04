@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
+import '../../foundation/models/clock.dart';
 import '../../foundation/models/time.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
@@ -9,6 +10,12 @@ import '../../icons/icons.g.dart';
 import 'wheel_model.dart';
 
 /// Standalone visual wheel panel for AnimalTimePicker.
+///
+/// The panel is controlled: [value] is the only committed time and every user
+/// change is proposed through [onChanged]. Programmatic wheel moves (an
+/// external value, Now, Clear or a reset) run as one batch that never reports
+/// its intermediate items; a newer batch or a user drag supersedes an older
+/// one, and a value the parent does not accept is not kept on the wheels.
 class AnimalTimePickerPanel extends StatefulWidget {
   final AnimalTimeValue? value;
   final ValueChanged<AnimalTimeValue?>? onChanged;
@@ -20,6 +27,9 @@ class AnimalTimePickerPanel extends StatefulWidget {
   final bool allowClear;
   final bool disabled;
   final FocusNode? focusNode;
+
+  /// Canonical clock for Now; tests and hosts inject a deterministic clock.
+  final AnimalClock clock;
 
   AnimalTimePickerPanel({
     super.key,
@@ -33,6 +43,7 @@ class AnimalTimePickerPanel extends StatefulWidget {
     this.allowClear = true,
     this.disabled = false,
     this.focusNode,
+    this.clock = const SystemClock(),
   }) {
     TimeWheelModel.validateStep(hourStep, 'hourStep');
     TimeWheelModel.validateStep(minuteStep, 'minuteStep');
@@ -43,16 +54,28 @@ class AnimalTimePickerPanel extends StatefulWidget {
   State<AnimalTimePickerPanel> createState() => _AnimalTimePickerPanelState();
 }
 
+enum _TimeColumn { hour, minute, second }
+
 class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
   late int _selectedHour;
   late int _selectedMinute;
   late int _selectedSecond;
 
+  /// Whether the wheels show a selection; false shows the first items for a
+  /// null value.
+  late bool _hasSelection;
+
   late FixedExtentScrollController _hourController;
   late FixedExtentScrollController _minuteController;
   late FixedExtentScrollController _secondController;
 
+  /// True while a programmatic batch moves the wheels. Wheel notifications in
+  /// a batch are not user input and never reach [AnimalTimePickerPanel.onChanged].
   bool _isProgrammaticScroll = false;
+
+  /// The newest programmatic batch. A batch releases [_isProgrammaticScroll]
+  /// only when all of its animations finished and it is still the newest.
+  int _batch = 0;
 
   bool get _hasSeconds => widget.format.contains('ss');
 
@@ -64,93 +87,176 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
   FocusNode get _effectiveFocusNode =>
       widget.focusNode ?? (_internalFocusNode ??= FocusNode());
 
+  /// The time the wheels currently show, or null for no selection.
+  AnimalTimeValue? get _shownValue => _hasSelection
+      ? AnimalTimeValue(
+          hour: _selectedHour,
+          minute: _selectedMinute,
+          second: _selectedSecond,
+        )
+      : null;
+
   @override
   void initState() {
     super.initState();
-    _initFromValue(widget.value);
+    _select(widget.value);
     _hourController = FixedExtentScrollController(
-      initialItem: _hours.indexOf(_selectedHour).clamp(0, _hours.length - 1),
+      initialItem: _hours.indexOf(_selectedHour),
     );
     _minuteController = FixedExtentScrollController(
-      initialItem: _minutes
-          .indexOf(_selectedMinute)
-          .clamp(0, _minutes.length - 1),
+      initialItem: _minutes.indexOf(_selectedMinute),
     );
     _secondController = FixedExtentScrollController(
-      initialItem: _seconds
-          .indexOf(_selectedSecond)
-          .clamp(0, _seconds.length - 1),
+      initialItem: _seconds.indexOf(_selectedSecond),
     );
   }
 
-  void _initFromValue(AnimalTimeValue? val) {
-    if (val != null) {
-      _selectedHour = TimeWheelModel.snapToStep(val.hour, _hours);
-      _selectedMinute = TimeWheelModel.snapToStep(val.minute, _minutes);
-      _selectedSecond = TimeWheelModel.snapToStep(val.second, _seconds);
-    } else {
-      _selectedHour = _hours.first;
-      _selectedMinute = _minutes.first;
-      _selectedSecond = _seconds.first;
-    }
+  /// Shows [value] on the configured steps (an off-step value snaps to the
+  /// nearest item), or the first items for null.
+  void _select(AnimalTimeValue? value) {
+    _hasSelection = value != null;
+    _selectedHour = value == null
+        ? _hours.first
+        : TimeWheelModel.snapToStep(value.hour, _hours);
+    _selectedMinute = value == null
+        ? _minutes.first
+        : TimeWheelModel.snapToStep(value.minute, _minutes);
+    _selectedSecond = value == null
+        ? _seconds.first
+        : TimeWheelModel.snapToStep(value.second, _seconds);
   }
 
   @override
   void didUpdateWidget(covariant AnimalTimePickerPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.format != widget.format) {
+      // A newly shown seconds wheel attaches after this build.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _moveWheels(widget.value, animate: false);
+      });
+    }
     if (oldWidget.hourStep != widget.hourStep ||
         oldWidget.minuteStep != widget.minuteStep ||
         oldWidget.secondStep != widget.secondStep ||
         oldWidget.value != widget.value) {
-      _syncExternalValue(widget.value);
+      _moveWheels(widget.value, animate: false);
     }
   }
 
-  void _syncExternalValue(AnimalTimeValue? val) {
-    if (val == null) {
-      _isProgrammaticScroll = true;
-      _selectedHour = _hours.first;
-      _selectedMinute = _minutes.first;
-      _selectedSecond = _seconds.first;
-      if (_hourController.hasClients) _hourController.jumpToItem(0);
-      if (_minuteController.hasClients) _minuteController.jumpToItem(0);
-      if (_secondController.hasClients) _secondController.jumpToItem(0);
-      _isProgrammaticScroll = false;
-      return;
-    }
-
-    final snappedH = TimeWheelModel.snapToStep(val.hour, _hours);
-    final snappedM = TimeWheelModel.snapToStep(val.minute, _minutes);
-    final snappedS = TimeWheelModel.snapToStep(val.second, _seconds);
-
+  /// Starts one programmatic batch that shows [target] (first items for null)
+  /// and supersedes any older batch. Jumps finish synchronously; animations
+  /// keep the batch open until every one of them completes.
+  void _moveWheels(AnimalTimeValue? target, {required bool animate}) {
+    final bool interrupting = _isProgrammaticScroll;
+    final int batch = ++_batch;
     _isProgrammaticScroll = true;
-    _selectedHour = snappedH;
-    _selectedMinute = snappedM;
-    _selectedSecond = snappedS;
+    _select(target);
+    final motion = animate ? AnimalIslandTheme.of(context).motion : null;
+    final List<Future<void>> animations = <Future<void>>[];
+    for (final (FixedExtentScrollController controller, int index)
+        in <(FixedExtentScrollController, int)>[
+          (_hourController, _hours.indexOf(_selectedHour)),
+          (_minuteController, _minutes.indexOf(_selectedMinute)),
+          if (_hasSeconds)
+            (_secondController, _seconds.indexOf(_selectedSecond)),
+        ]) {
+      if (!controller.hasClients) continue;
+      if (motion != null) {
+        animations.add(
+          controller.animateToItem(
+            index,
+            duration: motion.fast,
+            curve: motion.ease,
+          ),
+        );
+      } else if (interrupting || controller.selectedItem != index) {
+        // A jump also stops an older batch's animation on this wheel.
+        controller.jumpToItem(index);
+      }
+    }
+    if (animations.isEmpty) {
+      _endBatch(batch);
+    } else {
+      Future.wait(animations).whenComplete(() => _endBatch(batch));
+    }
+  }
 
-    final hIdx = _hours.indexOf(snappedH);
-    if (hIdx >= 0 &&
-        _hourController.hasClients &&
-        _hourController.selectedItem != hIdx) {
-      _hourController.jumpToItem(hIdx);
-    }
-    final mIdx = _minutes.indexOf(snappedM);
-    if (mIdx >= 0 &&
-        _minuteController.hasClients &&
-        _minuteController.selectedItem != mIdx) {
-      _minuteController.jumpToItem(mIdx);
-    }
-    final sIdx = _seconds.indexOf(snappedS);
-    if (sIdx >= 0 &&
-        _secondController.hasClients &&
-        _secondController.selectedItem != sIdx) {
-      _secondController.jumpToItem(sIdx);
+  /// Releases suppression only for the newest batch; the wheels then return to
+  /// [AnimalTimePickerPanel.value] if the parent did not accept what the batch
+  /// proposed (for example a rejected Now).
+  void _endBatch(int batch) {
+    if (batch != _batch) return;
+    _isProgrammaticScroll = false;
+    if (mounted) _reconcileAfterFrame();
+  }
+
+  /// A user drag on [column] supersedes the running batch: the other wheels
+  /// finish at their targets without reporting, then the user owns input.
+  void _handleDragStart(_TimeColumn column) {
+    if (!_isProgrammaticScroll) return;
+    _batch++;
+    for (final (
+          _TimeColumn wheel,
+          FixedExtentScrollController controller,
+          int index,
+        )
+        in <(_TimeColumn, FixedExtentScrollController, int)>[
+          (_TimeColumn.hour, _hourController, _hours.indexOf(_selectedHour)),
+          (
+            _TimeColumn.minute,
+            _minuteController,
+            _minutes.indexOf(_selectedMinute),
+          ),
+          (
+            _TimeColumn.second,
+            _secondController,
+            _seconds.indexOf(_selectedSecond),
+          ),
+        ]) {
+      if (wheel != column && controller.hasClients) {
+        controller.jumpToItem(index);
+      }
     }
     _isProgrammaticScroll = false;
   }
 
+  void _onWheelChanged(_TimeColumn column, int idx) {
+    if (_isProgrammaticScroll) return;
+    switch (column) {
+      case _TimeColumn.hour:
+        setState(() => _selectedHour = _hours[idx]);
+      case _TimeColumn.minute:
+        setState(() => _selectedMinute = _minutes[idx]);
+      case _TimeColumn.second:
+        setState(() => _selectedSecond = _seconds[idx]);
+    }
+    _hasSelection = true;
+    widget.onChanged?.call(_shownValue);
+  }
+
+  /// After a proposal, the wheels return to [AnimalTimePickerPanel.value] when
+  /// the parent did not accept it.
+  void _reconcileAfterFrame() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _isProgrammaticScroll) return;
+      final AnimalTimeValue? value = widget.value;
+      final AnimalTimeValue? onSteps = value == null
+          ? null
+          : TimeWheelModel.snapTimeToSteps(
+              time: value,
+              hourStep: widget.hourStep,
+              minuteStep: widget.minuteStep,
+              secondStep: widget.secondStep,
+            );
+      if (_shownValue != onSteps) {
+        setState(() => _moveWheels(widget.value, animate: false));
+      }
+    });
+  }
+
   @override
   void dispose() {
+    _batch++;
     _internalFocusNode?.dispose();
     _hourController.dispose();
     _minuteController.dispose();
@@ -158,82 +264,24 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
     super.dispose();
   }
 
-  void _notifyChange() {
-    if (_isProgrammaticScroll) return;
-    final time = AnimalTimeValue(
-      hour: _selectedHour,
-      minute: _selectedMinute,
-      second: _selectedSecond,
-    );
-    widget.onChanged?.call(time);
-  }
-
   void _handleNow() {
     if (widget.disabled) return;
-    final motion = AnimalIslandTheme.of(context).motion;
-    final now = AnimalTimeValue.now();
-    final snapped = TimeWheelModel.snapTimeToSteps(
-      time: now,
+    final AnimalTimeValue now = TimeWheelModel.snapTimeToSteps(
+      time: AnimalTimeValue.now(clock: widget.clock),
       hourStep: widget.hourStep,
       minuteStep: widget.minuteStep,
       secondStep: widget.secondStep,
     );
-
-    _isProgrammaticScroll = true;
-    _selectedHour = snapped.hour;
-    _selectedMinute = snapped.minute;
-    _selectedSecond = snapped.second;
-
-    final hIdx = _hours.indexOf(snapped.hour);
-    final mIdx = _minutes.indexOf(snapped.minute);
-    final sIdx = _seconds.indexOf(snapped.second);
-
-    if (hIdx >= 0 && _hourController.hasClients) {
-      _hourController.animateToItem(
-        hIdx,
-        duration: motion.fast,
-        curve: motion.ease,
-      );
-    }
-    if (mIdx >= 0 && _minuteController.hasClients) {
-      _minuteController.animateToItem(
-        mIdx,
-        duration: motion.fast,
-        curve: motion.ease,
-      );
-    }
-    if (sIdx >= 0 && _hasSeconds && _secondController.hasClients) {
-      _secondController.animateToItem(
-        sIdx,
-        duration: motion.fast,
-        curve: motion.ease,
-      );
-    }
-    _isProgrammaticScroll = false;
-
-    setState(() {});
-    widget.onChanged?.call(snapped);
+    setState(() => _moveWheels(now, animate: true));
+    widget.onChanged?.call(now);
+    _reconcileAfterFrame();
   }
 
   void _handleClear() {
     if (widget.disabled) return;
-    _isProgrammaticScroll = true;
-    _selectedHour = _hours.first;
-    _selectedMinute = _minutes.first;
-    _selectedSecond = _seconds.first;
-    if (_hourController.hasClients) {
-      _hourController.jumpToItem(0);
-    }
-    if (_minuteController.hasClients) {
-      _minuteController.jumpToItem(0);
-    }
-    if (_secondController.hasClients && _hasSeconds) {
-      _secondController.jumpToItem(0);
-    }
-    _isProgrammaticScroll = false;
-
-    setState(() {});
+    setState(() => _moveWheels(null, animate: false));
     widget.onChanged?.call(null);
+    _reconcileAfterFrame();
   }
 
   @override
@@ -317,12 +365,7 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
                           items: _hours,
                           selectedVal: _selectedHour,
                           unitLabel: 'hours',
-                          onSelectedItemChanged: (idx) {
-                            if (_selectedHour != _hours[idx]) {
-                              setState(() => _selectedHour = _hours[idx]);
-                              _notifyChange();
-                            }
-                          },
+                          column: _TimeColumn.hour,
                           localizations: localizations,
                           theme: theme,
                         ),
@@ -340,12 +383,7 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
                           items: _minutes,
                           selectedVal: _selectedMinute,
                           unitLabel: 'minutes',
-                          onSelectedItemChanged: (idx) {
-                            if (_selectedMinute != _minutes[idx]) {
-                              setState(() => _selectedMinute = _minutes[idx]);
-                              _notifyChange();
-                            }
-                          },
+                          column: _TimeColumn.minute,
                           localizations: localizations,
                           theme: theme,
                         ),
@@ -364,12 +402,7 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
                             items: _seconds,
                             selectedVal: _selectedSecond,
                             unitLabel: 'seconds',
-                            onSelectedItemChanged: (idx) {
-                              if (_selectedSecond != _seconds[idx]) {
-                                setState(() => _selectedSecond = _seconds[idx]);
-                                _notifyChange();
-                              }
-                            },
+                            column: _TimeColumn.second,
                             localizations: localizations,
                             theme: theme,
                           ),
@@ -440,14 +473,14 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
 
   Widget _buildWheel({
     required FixedExtentScrollController controller,
+    required _TimeColumn column,
     required List<int> items,
     required int selectedVal,
     required String unitLabel,
-    required ValueChanged<int> onSelectedItemChanged,
     required AnimalLocalizations localizations,
     required AnimalIslandTheme theme,
   }) {
-    return ListWheelScrollView.useDelegate(
+    final Widget wheel = ListWheelScrollView.useDelegate(
       controller: controller,
       itemExtent: 36.0,
       physics: widget.disabled
@@ -455,7 +488,9 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
           : const FixedExtentScrollPhysics(),
       perspective: 0.003,
       diameterRatio: 1.2,
-      onSelectedItemChanged: widget.disabled ? null : onSelectedItemChanged,
+      onSelectedItemChanged: widget.disabled
+          ? null
+          : (int idx) => _onWheelChanged(column, idx),
       childDelegate: ListWheelChildBuilderDelegate(
         childCount: items.length,
         builder: (context, index) {
@@ -486,6 +521,19 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
           );
         },
       ),
+    );
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification notification) {
+        if (notification is ScrollStartNotification &&
+            notification.dragDetails != null) {
+          _handleDragStart(column);
+        } else if (notification is ScrollEndNotification &&
+            !_isProgrammaticScroll) {
+          _reconcileAfterFrame();
+        }
+        return false;
+      },
+      child: wheel,
     );
   }
 }

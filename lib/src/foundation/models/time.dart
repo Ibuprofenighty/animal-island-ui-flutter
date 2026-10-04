@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'clock.dart';
+
 /// An immutable representation of a wall clock time (hour, minute, second).
 @immutable
 class AnimalTimeValue implements Comparable<AnimalTimeValue> {
@@ -36,9 +38,9 @@ class AnimalTimeValue implements Comparable<AnimalTimeValue> {
     );
   }
 
-  /// Creates an [AnimalTimeValue] from the current local time.
-  factory AnimalTimeValue.now() {
-    final now = DateTime.now();
+  /// The current wall-clock time of day according to [clock].
+  factory AnimalTimeValue.now({AnimalClock clock = const SystemClock()}) {
+    final now = clock.now();
     return AnimalTimeValue(
       hour: now.hour,
       minute: now.minute,

@@ -9,6 +9,7 @@
 
 ## Properties
 - `allowClear`
+- `clock`
 - `disabled`
 - `focusNode`
 - `format`
@@ -20,6 +21,18 @@
 - `value`
 
 <!-- generated:api:end -->
+
+## Time values and selection
+
+`AnimalTimeValue` is an immutable time of day with hour 0–23, minute 0–59 and second 0–59; an out-of-range field throws `ArgumentError.value`. The picker keeps all three fields: a hidden seconds wheel (`format: 'HH:mm'`) still carries the value's seconds, so changing the hour or minute, Now, Clear, a reset and form submission never drop them. `AnimalTimeValue.now()` reads the canonical `AnimalClock` (`SystemClock` by default), and both presentations take the same `clock`.
+
+`value` is the only committed time and `onChanged` proposes a new one. The parent accepts a proposal by passing it back; a value it does not accept is not kept on the wheels, which return to `value` once the scroll settles. A value off the configured steps is shown on the nearest step. `hourStep`, `minuteStep` and `secondStep` must be at least 1 (`ArgumentError` otherwise). Inline and popover presentations use one panel.
+
+Programmatic wheel moves (a new `value`, Now, Clear or a reset to null) run as one batch that never reports its intermediate items: Now proposes its final time once and Clear proposes null once, while an external change proposes nothing. A newer value or a user drag supersedes a running batch, so an earlier Now animation can never land after a later value. User scrolling still proposes each item it settles on.
+
+## Defaults
+
+`AnimalTimePicker` defaults to `format: 'HH:mm'`, steps of 1, `showNow: true`, `allowClear: true`, `disabled: false` and `clock: const SystemClock()`. `AnimalTimePicker.popover(...)` uses the same defaults and adds an optional `placeholder` and `status` (`AnimalInputStatus.normal`). A disabled picker locks its wheels and its Now and Clear actions and proposes nothing.
 
 ## Localization
 Default prompts, panel actions, and wheel-value semantics use generated AnimalLocalizations and refresh when the locale changes. A supplied placeholder remains caller-owned.
