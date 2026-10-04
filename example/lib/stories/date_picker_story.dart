@@ -11,7 +11,8 @@ class DatePickerStory extends StatefulWidget {
 }
 
 class _DatePickerStoryState extends State<DatePickerStory> {
-  AnimalDate? _selectedDate = AnimalDate(2026, 9, 13);
+  AnimalDateSelection? _selection =
+      AnimalDateSelection.date(AnimalDate(2026, 9, 13));
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +39,9 @@ class _DatePickerStoryState extends State<DatePickerStory> {
             title: 'Popover Date Selection',
             capabilityIds: const ['C17-DAT', 'DAT01'],
             child: AnimalDatePicker.popover(
-              value: _selectedDate,
-              onChanged: (d) => setState(() => _selectedDate = d),
+              selection: _selection,
+              onChanged: (selection) =>
+                  setState(() => _selection = selection),
             ),
           ),
         ],

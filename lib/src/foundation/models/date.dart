@@ -1,95 +1,168 @@
 import 'package:flutter/foundation.dart';
 
-/// An immutable, timezone-independent representation of a calendar date (year, month, day).
+import 'clock.dart';
+
+/// An immutable Gregorian civil date, independent of any time zone.
 ///
-/// Prevents daylight saving time glitches and UTC/local conversion shifts.
+/// Supported dates are from 0001-01-01 through 9999-12-31. Arithmetic uses
+/// civil-day ordinals, so crossing a daylight-saving transition cannot change
+/// the number of calendar days moved.
 @immutable
-class AnimalDate implements Comparable<AnimalDate> {
+final class AnimalDate implements Comparable<AnimalDate> {
+  static const int minimumYear = 1;
+  static const int maximumYear = 9999;
+
+  static const List<int> _daysBeforeMonth = <int>[
+    0,
+    31,
+    59,
+    90,
+    120,
+    151,
+    181,
+    212,
+    243,
+    273,
+    304,
+    334,
+  ];
+
   final int year;
   final int month;
   final int day;
 
   AnimalDate(this.year, this.month, this.day) {
-    if (year <= 0) {
-      throw ArgumentError.value(year, 'year', 'Year must be positive');
-    }
+    _validateYear(year);
     if (month < 1 || month > 12) {
-      throw ArgumentError.value(
-        month,
-        'month',
-        'Month must be between 1 and 12',
-      );
+      throw ArgumentError.value(month, 'month', 'Expected a month in 1..12');
     }
-    final maxDays = daysInMonth(year, month);
-    if (day < 1 || day > maxDays) {
+    final maximumDay = daysInMonth(year, month);
+    if (day < 1 || day > maximumDay) {
       throw ArgumentError.value(
         day,
         'day',
-        'Invalid day $day for month $month in year $year (expected 1..$maxDays)',
+        'Expected a day in 1..$maximumDay for $year-${month.toString().padLeft(2, '0')}',
       );
     }
   }
 
-  /// Returns true if [year] is a leap year in the Gregorian calendar.
+  /// Returns whether [year] is a leap year in the Gregorian calendar.
   static bool isLeapYear(int year) {
-    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    _validateYear(year);
+    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
   }
 
-  /// Returns the number of days in [month] for [year].
+  /// Returns the number of days in [month] of [year].
   static int daysInMonth(int year, int month) {
-    switch (month) {
-      case 1:
-      case 3:
-      case 5:
-      case 7:
-      case 8:
-      case 10:
-      case 12:
-        return 31;
-      case 4:
-      case 6:
-      case 9:
-      case 11:
-        return 30;
-      case 2:
-        return isLeapYear(year) ? 29 : 28;
-      default:
-        throw ArgumentError.value(
-          month,
-          'month',
-          'Month must be between 1 and 12',
-        );
+    _validateYear(year);
+    if (month < 1 || month > 12) {
+      throw ArgumentError.value(month, 'month', 'Expected a month in 1..12');
     }
+    return switch (month) {
+      2 => isLeapYear(year) ? 29 : 28,
+      4 || 6 || 9 || 11 => 30,
+      _ => 31,
+    };
   }
 
-  /// Creates an [AnimalDate] representing today in local time.
-  factory AnimalDate.today() {
-    final now = DateTime.now();
+  /// The current civil date according to [clock].
+  factory AnimalDate.today({AnimalClock clock = const SystemClock()}) {
+    final now = clock.now();
     return AnimalDate(now.year, now.month, now.day);
   }
 
-  /// Creates an [AnimalDate] from a standard [DateTime].
-  factory AnimalDate.fromDateTime(DateTime dt) =>
-      AnimalDate(dt.year, dt.month, dt.day);
+  /// Copies the year, month, and day fields as represented by [date].
+  ///
+  /// A UTC input keeps its UTC fields and a local input keeps its local fields;
+  /// this method does not convert the instant to another time zone.
+  factory AnimalDate.fromDateTime(DateTime date) =>
+      AnimalDate(date.year, date.month, date.day);
 
-  /// Converts this date to a local [DateTime] at midnight (00:00:00).
-  DateTime toDateTime() => DateTime(year, month, day);
+  /// Converts to the same civil date at UTC midnight.
+  DateTime toDateTime() => DateTime.utc(year, month, day);
 
-  /// Formats this date as `YYYY-MM-DD`.
-  String toIso8601String() {
-    final m = month.toString().padLeft(2, '0');
-    final d = day.toString().padLeft(2, '0');
-    return '$year-$m-$d';
+  /// ISO-8601 weekday number: Monday is 1 and Sunday is 7.
+  int get weekday => (_ordinal % 7) + 1;
+
+  /// Adds [days] in the Gregorian civil calendar.
+  ///
+  /// Throws [RangeError] if the result would leave years 1 through 9999.
+  AnimalDate addDays(int days) => _shiftDays(BigInt.from(days));
+
+  /// Subtracts [days] in the Gregorian civil calendar.
+  ///
+  /// Throws [RangeError] if the result would leave years 1 through 9999.
+  AnimalDate subtractDays(int days) => _shiftDays(-BigInt.from(days));
+
+  AnimalDate _shiftDays(BigInt delta) {
+    final target = BigInt.from(_ordinal) + delta;
+    if (target < BigInt.zero || target > BigInt.from(_maximumOrdinal)) {
+      throw RangeError('Date arithmetic must stay within years 1 through 9999');
+    }
+    return _fromOrdinal(target.toInt());
   }
 
-  /// Adds [days] to this date and returns a new [AnimalDate].
-  AnimalDate addDays(int days) {
-    final dt = toDateTime().add(Duration(days: days));
-    return AnimalDate.fromDateTime(dt);
+  int get _ordinal {
+    final leapAdjustment = month > 2 && isLeapYear(year) ? 1 : 0;
+    return _daysBeforeYear(year) +
+        _daysBeforeMonth[month - 1] +
+        leapAdjustment +
+        day -
+        1;
   }
 
-  /// Subtracts [days] from this date and returns a new [AnimalDate].
-  AnimalDate subtractDays(int days) => addDays(-days);
+  static int get _maximumOrdinal => _daysBeforeYear(maximumYear + 1) - 1;
+
+  static AnimalDate _fromOrdinal(int ordinal) {
+    var low = minimumYear;
+    var high = maximumYear;
+    var year = minimumYear;
+    while (low <= high) {
+      final candidate = (low + high) ~/ 2;
+      final candidateStart = _daysBeforeYear(candidate);
+      final nextYearStart = _daysBeforeYear(candidate + 1);
+      if (ordinal < candidateStart) {
+        high = candidate - 1;
+      } else if (ordinal >= nextYearStart) {
+        low = candidate + 1;
+      } else {
+        year = candidate;
+        break;
+      }
+    }
+
+    var dayOfYear = ordinal - _daysBeforeYear(year);
+    for (var month = 1; month <= 12; month++) {
+      final monthLength = daysInMonth(year, month);
+      if (dayOfYear < monthLength) {
+        return AnimalDate(year, month, dayOfYear + 1);
+      }
+      dayOfYear -= monthLength;
+    }
+    throw StateError('Civil ordinal could not be converted to a date');
+  }
+
+  static int _daysBeforeYear(int year) {
+    final previousYear = year - 1;
+    return previousYear * 365 +
+        previousYear ~/ 4 -
+        previousYear ~/ 100 +
+        previousYear ~/ 400;
+  }
+
+  static void _validateYear(int year) {
+    if (year < minimumYear || year > maximumYear) {
+      throw ArgumentError.value(
+        year,
+        'year',
+        'Expected a year in $minimumYear..$maximumYear',
+      );
+    }
+  }
+
+  /// Formats this date as a four-digit-year `YYYY-MM-DD` string.
+  String toIso8601String() =>
+      '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
 
   bool isBefore(AnimalDate other) => compareTo(other) < 0;
 
@@ -108,7 +181,6 @@ class AnimalDate implements Comparable<AnimalDate> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AnimalDate &&
-          runtimeType == other.runtimeType &&
           year == other.year &&
           month == other.month &&
           day == other.day;
@@ -120,30 +192,79 @@ class AnimalDate implements Comparable<AnimalDate> {
   String toString() => toIso8601String();
 }
 
-/// An immutable representation of a date range between [start] and [end].
+/// The only selection modes supported by `AnimalDatePicker`.
+enum AnimalDatePickerMode { date, range, month }
+
+/// A controlled, discriminated date-picker selection.
+///
+/// A range selection with a null end is the controlled first-endpoint draft.
+/// Month mode uses a single-date selection whose date is the first day of its
+/// month.
 @immutable
-class AnimalDateRange {
-  final AnimalDate start;
-  final AnimalDate end;
+sealed class AnimalDateSelection {
+  const AnimalDateSelection();
 
-  AnimalDateRange({required this.start, required this.end}) {
-    if (start.isAfter(end)) {
-      throw ArgumentError('start must not be after end: $start > $end');
-    }
-  }
+  const factory AnimalDateSelection.date(AnimalDate date) =
+      AnimalDateSingleSelection;
 
-  /// Formats the range as `YYYY-MM-DD to YYYY-MM-DD`.
+  factory AnimalDateSelection.range({
+    required AnimalDate start,
+    AnimalDate? end,
+  }) = AnimalDateRangeSelection;
+
+  /// Whether this variant is valid for [mode].
+  bool isCompatibleWith(AnimalDatePickerMode mode);
+}
+
+/// A single selected civil date, also used for a first-of-month selection.
+@immutable
+final class AnimalDateSingleSelection extends AnimalDateSelection {
+  const AnimalDateSingleSelection(this.date);
+
+  final AnimalDate date;
+
   @override
-  String toString() => '${start.toIso8601String()} to ${end.toIso8601String()}';
+  bool isCompatibleWith(AnimalDatePickerMode mode) =>
+      mode != AnimalDatePickerMode.range &&
+      (mode != AnimalDatePickerMode.month || date.day == 1);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AnimalDateRange &&
-          runtimeType == other.runtimeType &&
+      other is AnimalDateSingleSelection && date == other.date;
+
+  @override
+  int get hashCode => Object.hash(AnimalDateSingleSelection, date);
+}
+
+/// A controlled range selection. [end] is null until the second endpoint is
+/// proposed and accepted by the parent.
+@immutable
+final class AnimalDateRangeSelection extends AnimalDateSelection {
+  AnimalDateRangeSelection({required this.start, this.end}) {
+    if (end != null && start.isAfter(end!)) {
+      throw ArgumentError.value(
+        end,
+        'end',
+        'Range end must be on or after start ($start)',
+      );
+    }
+  }
+
+  final AnimalDate start;
+  final AnimalDate? end;
+
+  @override
+  bool isCompatibleWith(AnimalDatePickerMode mode) =>
+      mode == AnimalDatePickerMode.range;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AnimalDateRangeSelection &&
           start == other.start &&
           end == other.end;
 
   @override
-  int get hashCode => Object.hash(start, end);
+  int get hashCode => Object.hash(AnimalDateRangeSelection, start, end);
 }

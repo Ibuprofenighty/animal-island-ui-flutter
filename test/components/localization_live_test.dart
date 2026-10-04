@@ -104,7 +104,7 @@ void main() {
                     Text(localizations.countdownRemaining(2)),
                     AnimalDatePicker.popover(
                       key: dateKey,
-                      value: selectedDate,
+                      selection: AnimalDateSelection.date(selectedDate),
                       showToday: false,
                       allowClear: false,
                     ),

@@ -32,7 +32,13 @@ export 'src/foundation/localization/animal_locale_resolution.dart'
 export 'src/foundation/localization/generated/animal_localizations.g.dart'
     show AnimalLocalizations, lookupAnimalLocalizations;
 export 'src/foundation/models/option.dart' show AnimalOption;
-export 'src/foundation/models/date.dart' show AnimalDate, AnimalDateRange;
+export 'src/foundation/models/date.dart'
+    show
+        AnimalDate,
+        AnimalDatePickerMode,
+        AnimalDateRangeSelection,
+        AnimalDateSelection,
+        AnimalDateSingleSelection;
 export 'src/foundation/models/time.dart' show AnimalTimeValue;
 export 'src/foundation/models/clock.dart' show AnimalClock, SystemClock;
 
@@ -87,7 +93,7 @@ export 'src/components/radio/radio.dart' show AnimalRadio, AnimalRadioSize;
 export 'src/components/radio/radio_group.dart' show AnimalRadioGroup;
 export 'src/components/select/select.dart' show AnimalSelect;
 export 'src/components/date_picker/date_picker.dart'
-    show AnimalDatePicker, AnimalDatePickerMode;
+    show AnimalDatePicker;
 export 'src/components/time_picker/time_picker.dart' show AnimalTimePicker;
 
 // Category 4: Form Container (Form, FormItem, Controller, Bindings, Validation)

@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:path/path.dart' as p;
 
 import '../support/locked_dart_process.dart';
 
@@ -21,6 +24,8 @@ class _NotificationGuardController extends AnimalFormController {
 }
 
 enum _LateHandlerCompletion { accepted, rejected, failed }
+
+const Duration _voidCallbackResolutionWatchdog = Duration(seconds: 90);
 
 Future<void> _expectHandlerPhaseInvalidation({
   required void Function(
@@ -738,13 +743,18 @@ void main() {
     test(
       'an old void callback is rejected by the public consumer API',
       () async {
-        final scratch = Directory('scratch')..createSync(recursive: true);
+        final Directory packageRoot = Directory.current;
+        final Directory scratch = Directory(p.join(packageRoot.path, 'scratch'))
+          ..createSync(recursive: true);
         final consumerDirectory = scratch.createTempSync(
           'form-submit-boundary-',
         );
         try {
-          final consumer = File('${consumerDirectory.path}/void_submit.dart')
-            ..writeAsStringSync('''
+          File(p.join(consumerDirectory.path, 'analysis_options.yaml'))
+              .writeAsStringSync('analyzer:\n  exclude: []\n');
+          final File consumer =
+              File(p.join(consumerDirectory.path, 'void_submit.dart'))
+                ..writeAsStringSync('''
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:flutter/widgets.dart';
 
@@ -754,18 +764,55 @@ void main() {
   AnimalForm(onSubmit: oldSubmitHandler, child: const SizedBox.shrink());
 }
 ''');
-          final analysis = await runBoundedDartProcess(
-            lockedDartExecutable(),
-            <String>['analyze', '--format=machine', consumer.path],
-            packageRoot: Directory.current,
-            watchdogDuration: const Duration(seconds: 90),
+          final String consumerPath = p.normalize(p.absolute(consumer.path));
+          final String dartExecutable = lockedDartExecutable();
+          expect(File(dartExecutable).existsSync(), isTrue);
+          final AnalysisContextCollection contexts = AnalysisContextCollection(
+            includedPaths: <String>[consumerPath],
+            sdkPath: p.dirname(p.dirname(dartExecutable)),
           );
-          final output = '${analysis.stdout}\n${analysis.stderr}';
-          expect(analysis.timedOut, isFalse, reason: output);
-          expect(analysis.exitCode, isNot(0), reason: output);
-          expect(output, contains('ARGUMENT_TYPE_NOT_ASSIGNABLE'));
+          try {
+            final result = await contexts
+                .contextFor(consumerPath)
+                .currentSession
+                .getResolvedUnit(consumerPath)
+                .timeout(
+                  _voidCallbackResolutionWatchdog,
+                  onTimeout: () => throw TimeoutException(
+                    'Resolving the external void-callback consumer exceeded '
+                    'the 90-second in-process analyzer bound.',
+                  ),
+                );
+            expect(
+              result,
+              isA<ResolvedUnitResult>(),
+              reason: 'The external void-callback consumer must resolve.',
+            );
+            final ResolvedUnitResult resolved = result as ResolvedUnitResult;
+            expect(resolved.diagnostics, hasLength(1));
+            final diagnostic = resolved.diagnostics.single;
+            expect(
+              diagnostic.diagnosticCode.lowerCaseName,
+              'argument_type_not_assignable',
+            );
+            expect(p.equals(diagnostic.source.fullName, consumerPath), isTrue);
+            final String source = consumer.readAsStringSync();
+            expect(
+              source.substring(
+                diagnostic.offset,
+                diagnostic.offset + diagnostic.length,
+              ),
+              'oldSubmitHandler',
+              reason:
+                  'Only the incompatible public onSubmit argument may trigger '
+                  'the callback type diagnostic.',
+            );
+          } finally {
+            await contexts.dispose();
+          }
         } finally {
           consumerDirectory.deleteSync(recursive: true);
+          expect(consumerDirectory.existsSync(), isFalse);
         }
       },
       timeout: const Timeout(Duration(minutes: 2)),

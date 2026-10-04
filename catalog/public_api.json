@@ -325,27 +325,20 @@
           ],
           "fields": [
             "allowClear",
+            "clock",
             "disabled",
             "disabledDate",
             "firstDate",
             "focusNode",
             "lastDate",
+            "mode",
             "onChanged",
-            "onRangeChanged",
-            "picker",
-            "range",
-            "rangeValue",
-            "showToday",
-            "value"
+            "selection",
+            "showToday"
           ]
         }
       },
-      "enums": {
-        "AnimalDatePickerMode": [
-          "date",
-          "month"
-        ]
-      },
+      "enums": {},
       "topLevelVariables": {},
       "functions": {}
     },
@@ -1562,22 +1555,48 @@
           "fields": [
             "day",
             "hashCode",
+            "maximumYear",
+            "minimumYear",
             "month",
+            "weekday",
             "year"
           ]
         },
-        "AnimalDateRange": {
+        "AnimalDateRangeSelection": {
           "constructors": [
-            "AnimalDateRange"
+            "AnimalDateRangeSelection"
           ],
           "fields": [
             "end",
             "hashCode",
             "start"
           ]
+        },
+        "AnimalDateSelection": {
+          "constructors": [
+            "AnimalDateSelection",
+            "AnimalDateSelection.date",
+            "AnimalDateSelection.range"
+          ],
+          "fields": []
+        },
+        "AnimalDateSingleSelection": {
+          "constructors": [
+            "AnimalDateSingleSelection"
+          ],
+          "fields": [
+            "date",
+            "hashCode"
+          ]
         }
       },
-      "enums": {},
+      "enums": {
+        "AnimalDatePickerMode": [
+          "date",
+          "month",
+          "range"
+        ]
+      },
       "topLevelVariables": {},
       "functions": {}
     },
@@ -2004,5 +2023,5 @@
       "functions": {}
     }
   },
-  "sha256": "aae554666595bc164130242e0d8f034f3a4d4da26c04e743633592c6d2df7421"
+  "sha256": "222fbf5ae2cfc77c0c9710348be6f1e2157f44244f410e497e875002794f9c2e"
 }

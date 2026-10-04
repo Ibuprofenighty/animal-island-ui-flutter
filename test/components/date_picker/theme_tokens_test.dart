@@ -1,12 +1,33 @@
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:animal_island_ui/src/components/date_picker/date_picker_panel.dart';
+import 'package:animal_island_ui/src/internal/interaction/interactive_region.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/theme_contrast.dart';
 import '../theme_fixtures.dart';
 
 void main() {
+  setUpAll(() async {
+    final FontLoader nunito = FontLoader('packages/animal_island_ui/Nunito')
+      ..addFont(
+        rootBundle.load(
+          'packages/animal_island_ui/assets/fonts/Nunito[wght].ttf',
+        ),
+      );
+    await nunito.load();
+
+    final FontLoader notoSansSc =
+        FontLoader('packages/animal_island_ui/Noto Sans SC')..addFont(
+          rootBundle.load(
+            'packages/animal_island_ui/assets/fonts/NotoSansSC[wght].ttf',
+          ),
+        );
+    await notoSansSc.load();
+  });
+
   testWidgets('date panel uses theme card, spacing, typography and tone pairs', (
     tester,
   ) async {
@@ -20,7 +41,7 @@ void main() {
           theme: theme.toThemeData(),
           home: Scaffold(
             body: AnimalDatePickerPanel(
-              value: AnimalDate(2024, 5, 10),
+              selection: AnimalDateSelection.date(AnimalDate(2024, 5, 10)),
               disabledDate: (date) =>
                   date.year == 2024 && date.month == 5 && date.day == 11,
               showToday: true,
@@ -57,7 +78,7 @@ void main() {
       );
 
       final monthTitle = tester.widget<Text>(
-        find.text(materialLocalizations.formatMonthYear(DateTime(2024, 5))),
+        find.text(materialLocalizations.formatMonthYear(DateTime.utc(2024, 5))),
       );
       expect(monthTitle.style!.fontSize, 15.0);
       expect(
@@ -121,7 +142,7 @@ void main() {
           );
 
       final selectedSemantics = daySemantics(
-        materialLocalizations.formatFullDate(DateTime(2024, 5, 10)),
+        materialLocalizations.formatFullDate(DateTime.utc(2024, 5, 10)),
       );
       expect(selectedSemantics.properties.selected, isTrue);
       expect(selectedSemantics.properties.enabled, isTrue);
@@ -147,7 +168,7 @@ void main() {
       );
 
       final disabledSemantics = daySemantics(
-        materialLocalizations.formatFullDate(DateTime(2024, 5, 11)),
+        materialLocalizations.formatFullDate(DateTime.utc(2024, 5, 11)),
       );
       expect(disabledSemantics.properties.selected, isFalse);
       expect(disabledSemantics.properties.enabled, isFalse);
@@ -161,7 +182,7 @@ void main() {
       );
 
       final adjacentSemantics = daySemantics(
-        materialLocalizations.formatFullDate(DateTime(2024, 4, 28)),
+        materialLocalizations.formatFullDate(DateTime.utc(2024, 4, 28)),
       );
       expect(adjacentSemantics.properties.enabled, isTrue);
       final adjacentDay = dayText(adjacentSemantics, '28');
@@ -195,8 +216,8 @@ void main() {
           theme: theme.toThemeData(),
           home: Scaffold(
             body: AnimalDatePickerPanel(
-              value: AnimalDate(2024, 5, 10),
-              picker: AnimalDatePickerMode.month,
+              selection: AnimalDateSelection.date(AnimalDate(2024, 5, 1)),
+              mode: AnimalDatePickerMode.month,
               showToday: false,
               allowClear: false,
             ),
@@ -212,7 +233,9 @@ void main() {
           .singleWhere(
             (semantics) =>
                 semantics.properties.label ==
-                monthMaterialLocalizations.formatMonthYear(DateTime(2024, 5)),
+                monthMaterialLocalizations.formatMonthYear(
+                  DateTime.utc(2024, 5),
+                ),
           );
       expect(selectedMonthSemantics.properties.selected, isTrue);
       expect(selectedMonthSemantics.properties.enabled, isTrue);
@@ -259,8 +282,8 @@ void main() {
             theme: theme.toThemeData(),
             home: Scaffold(
               body: AnimalDatePickerPanel(
-                range: true,
-                rangeValue: AnimalDateRange(
+                mode: AnimalDatePickerMode.range,
+                selection: AnimalDateSelection.range(
                   start: AnimalDate(2024, 5, 10),
                   end: AnimalDate(2024, 5, 15),
                 ),
@@ -306,8 +329,8 @@ void main() {
             );
 
         for (final date in <(DateTime, String)>[
-          (DateTime(2024, 5, 10), '10'),
-          (DateTime(2024, 5, 15), '15'),
+          (DateTime.utc(2024, 5, 10), '10'),
+          (DateTime.utc(2024, 5, 15), '15'),
         ]) {
           final semantics = dateSemantics(date.$1);
           expect(semantics.properties.selected, isTrue);
@@ -325,7 +348,7 @@ void main() {
           );
         }
 
-        final inRangeSemantics = dateSemantics(DateTime(2024, 5, 12));
+        final inRangeSemantics = dateSemantics(DateTime.utc(2024, 5, 12));
         expect(inRangeSemantics.properties.selected, isFalse);
         expect(inRangeSemantics.properties.enabled, isTrue);
         final inRangeText = dateText(inRangeSemantics, '12');
@@ -345,4 +368,338 @@ void main() {
       }
     },
   );
+
+  testWidgets(
+    'DAT04: 2x localized date and month text fits legal theme line boxes',
+    (tester) async {
+      final AnimalThemeTypography standard = AnimalThemeTypography.standard;
+      final AnimalIslandTheme largeLineTheme = AnimalIslandTheme.light.copyWith(
+        typography: standard.copyWith(
+          body: standard.body.copyWith(
+            fontSize: 15,
+            height: 2.1,
+            letterSpacing: 0.75,
+          ),
+          caption: standard.caption.copyWith(
+            fontSize: 13,
+            height: 1.8,
+            letterSpacing: 0.6,
+          ),
+        ),
+      );
+      final variants = <({Locale locale, AnimalIslandTheme theme})>[
+        (locale: const Locale('en'), theme: AnimalIslandTheme.light),
+        (locale: const Locale('zh'), theme: AnimalIslandTheme.dark),
+        (locale: const Locale('en'), theme: largeLineTheme),
+      ];
+
+      Future<void> pumpPicker({
+        required Locale locale,
+        required AnimalIslandTheme theme,
+        required AnimalDatePickerMode mode,
+        AnimalDate? selectedDate,
+        double? callerViewportHeight,
+      }) async {
+        final AnimalDateSelection selection = AnimalDateSelection.date(
+          selectedDate ??
+              (mode == AnimalDatePickerMode.month
+                  ? AnimalDate(2026, 9, 1)
+                  : AnimalDate(2026, 9, 15)),
+        );
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: locale,
+            localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+            supportedLocales: AnimalLocalizations.supportedLocales,
+            theme: theme.toThemeData(),
+            home: Scaffold(
+              body: Builder(
+                builder: (BuildContext context) => MediaQuery(
+                  data: MediaQuery.of(context)
+                      .copyWith(textScaler: const TextScaler.linear(2)),
+                  child: SizedBox(
+                    width: 320,
+                    height: callerViewportHeight,
+                    child: SingleChildScrollView(
+                      child: AnimalDatePickerPanel(
+                        selection: selection,
+                        mode: mode,
+                        showToday: false,
+                        allowClear: false,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      void expectAllGridTextFits(
+        String label,
+        AnimalIslandTheme expectedTheme,
+      ) {
+        final Finder panel = find.byType(AnimalDatePickerPanel);
+        final Finder viewport = find.descendant(
+          of: panel,
+          matching: find.byType(SingleChildScrollView),
+        );
+        expect(viewport, findsOneWidget, reason: label);
+        final List<Element> renderedText = find
+            .descendant(of: viewport, matching: find.byType(RichText))
+            .evaluate()
+            .toList();
+        expect(renderedText, isNotEmpty, reason: label);
+        final List<Rect> textRects = <Rect>[];
+
+        for (final Element element in renderedText) {
+          final Finder textFinder = find.byElementPredicate(
+            (Element candidate) => identical(candidate, element),
+          );
+          final RenderParagraph paragraph = tester
+              .renderObject<RenderParagraph>(textFinder);
+          final TextSpan span = paragraph.text as TextSpan;
+          final String text = span.toPlainText();
+          expect(
+            span.style?.fontFamily,
+            expectedTheme.typography.fontFamily,
+            reason: '$label: themed font family must reach the real paragraph',
+          );
+          expect(
+            span.style?.fontFamilyFallback,
+            containsAll(expectedTheme.typography.fontFamilyFallback),
+            reason: '$label: bundled CJK fallback must reach the paragraph',
+          );
+          final List<LineMetrics> lines = _paragraphLineMetrics(paragraph);
+          expect(lines, isNotEmpty, reason: label);
+          final double totalLineHeight = lines.fold<double>(
+            0,
+            (double total, LineMetrics line) => total + line.height,
+          );
+          expect(
+            paragraph.size.height,
+            greaterThanOrEqualTo(totalLineHeight - 0.5),
+            reason: '$label: "$text" line box height; lines=$lines',
+          );
+          expect(
+            lines.every(
+              (LineMetrics line) => line.width <= paragraph.size.width + 0.5,
+            ),
+            isTrue,
+            reason: '$label: "$text" line box width; lines=$lines',
+          );
+
+          final Finder interactiveCell = find.ancestor(
+            of: textFinder,
+            matching: find.byType(InteractiveRegion),
+          );
+          final Finder cell = interactiveCell.evaluate().isNotEmpty
+              ? interactiveCell.first
+              : find
+                    .ancestor(of: textFinder, matching: find.byType(SizedBox))
+                    .first;
+          final Rect cellRect = tester.getRect(cell);
+          final Rect textRect = tester.getRect(textFinder);
+          textRects.add(textRect);
+          expect(textRect.left, greaterThanOrEqualTo(cellRect.left - 0.5));
+          expect(textRect.top, greaterThanOrEqualTo(cellRect.top - 0.5));
+          expect(textRect.right, lessThanOrEqualTo(cellRect.right + 0.5));
+          expect(textRect.bottom, lessThanOrEqualTo(cellRect.bottom + 0.5));
+          final Offset paragraphOrigin = paragraph.localToGlobal(Offset.zero);
+          final Rect paragraphRect = paragraphOrigin & paragraph.size;
+          expect(paragraphRect.left, greaterThanOrEqualTo(cellRect.left - 0.5));
+          expect(paragraphRect.top, greaterThanOrEqualTo(cellRect.top - 0.5));
+          expect(paragraphRect.right, lessThanOrEqualTo(cellRect.right + 0.5));
+          expect(
+            paragraphRect.bottom,
+            lessThanOrEqualTo(cellRect.bottom + 0.5),
+          );
+
+          final List<TextBox> selectionBoxes = paragraph.getBoxesForSelection(
+            TextSelection(baseOffset: 0, extentOffset: text.length),
+          );
+          expect(
+            selectionBoxes,
+            isNotEmpty,
+            reason: '$label selection geometry',
+          );
+          final List<Rect> globalSelectionRects = selectionBoxes
+              .map(
+                (TextBox box) => Rect.fromLTRB(
+                  box.left,
+                  box.top,
+                  box.right,
+                  box.bottom,
+                ).shift(paragraphOrigin),
+              )
+              .toList();
+          final String selectionGeometryReason =
+              '$label: selection geometry for "$text"; '
+              'boxes=$globalSelectionRects; lines=$lines; '
+              'paragraphSize=${paragraph.size}; paragraph=$paragraphRect; '
+              'textRect=$textRect; cell=$cellRect';
+          expect(
+            globalSelectionRects.every(
+              (Rect selectionRect) =>
+                  selectionRect.left >= cellRect.left - 0.5 &&
+                  selectionRect.top >= cellRect.top - 0.5 &&
+                  selectionRect.right <= cellRect.right + 0.5 &&
+                  selectionRect.bottom <= cellRect.bottom + 0.5,
+            ),
+            isTrue,
+            reason: selectionGeometryReason,
+          );
+        }
+
+        for (int left = 0; left < textRects.length; left++) {
+          for (int right = left + 1; right < textRects.length; right++) {
+            expect(
+              textRects[left].overlaps(textRects[right]),
+              isFalse,
+              reason: '$label grid labels must not overlap',
+            );
+          }
+        }
+      }
+
+      for (final variant in variants) {
+        for (final AnimalDatePickerMode mode in <AnimalDatePickerMode>[
+          AnimalDatePickerMode.date,
+          AnimalDatePickerMode.month,
+        ]) {
+          await pumpPicker(
+            locale: variant.locale,
+            theme: variant.theme,
+            mode: mode,
+          );
+          expect(tester.takeException(), isNull);
+          expectAllGridTextFits(
+            '${variant.locale.languageCode}/${variant.theme.colors.brightness.name}/$mode',
+            variant.theme,
+          );
+        }
+      }
+
+      await pumpPicker(
+        locale: const Locale('en'),
+        theme: largeLineTheme,
+        mode: AnimalDatePickerMode.date,
+        selectedDate: AnimalDate(2026, 8, 10),
+        callerViewportHeight: 320,
+      );
+      expect(tester.takeException(), isNull);
+
+      final Finder panel = find.byType(AnimalDatePickerPanel);
+      final Finder callerViewport = find.ancestor(
+        of: panel,
+        matching: find.byWidgetPredicate(
+          (Widget widget) =>
+              widget is SingleChildScrollView &&
+              widget.scrollDirection == Axis.vertical,
+        ),
+      );
+      expect(callerViewport, findsOneWidget);
+      final Finder panelViewport = find.descendant(
+        of: panel,
+        matching: find.byWidgetPredicate(
+          (Widget widget) =>
+              widget is SingleChildScrollView &&
+              widget.scrollDirection == Axis.horizontal,
+        ),
+      );
+      expect(panelViewport, findsOneWidget);
+
+      final Finder targetDate = find.byKey(
+        const ValueKey<String>('date-2026-08-31'),
+      );
+      void focusDate(Finder date) {
+        final Finder focusNodes = find.descendant(
+          of: date,
+          matching: find.byType(Focus),
+        );
+        expect(focusNodes, findsWidgets);
+        tester.widget<Focus>(focusNodes.first).focusNode!.requestFocus();
+      }
+
+      bool dateIsFocused(Finder date) {
+        final Finder focusNodes = find.descendant(
+          of: date,
+          matching: find.byType(Focus),
+        );
+        return focusNodes.evaluate().any(
+          (Element element) =>
+              (element.widget as Focus).focusNode?.hasFocus == true,
+        );
+      }
+
+      final Finder callerScrollable = find.ancestor(
+        of: panel,
+        matching: find.byWidgetPredicate(
+          (Widget widget) =>
+              widget is Scrollable &&
+              widget.axisDirection == AxisDirection.down,
+        ),
+      );
+      expect(callerScrollable, findsOneWidget);
+      final ScrollableState callerScrollState = tester.state<ScrollableState>(
+        callerScrollable,
+      );
+      expect(callerScrollState.position.pixels, 0);
+      final Rect targetBeforeFocusRect = tester.getRect(targetDate);
+      final Rect callerBeforeFocusRect = tester.getRect(callerViewport);
+      final Rect clippedTargetBeforeFocus = targetBeforeFocusRect.intersect(
+        callerBeforeFocusRect,
+      );
+      expect(
+        clippedTargetBeforeFocus.height,
+        lessThan(targetBeforeFocusRect.height - 0.5),
+        reason: 'The final grid row starts outside the 320dp caller viewport',
+      );
+      focusDate(targetDate);
+      await tester.pumpAndSettle();
+      expect(dateIsFocused(targetDate), isTrue);
+      final Rect targetRect = tester.getRect(targetDate);
+      final Rect callerRect = tester.getRect(callerViewport);
+      final Rect panelRect = tester.getRect(panelViewport);
+      final Rect visibleTargetRect = targetRect
+          .intersect(callerRect)
+          .intersect(panelRect);
+      expect(visibleTargetRect.width, closeTo(targetRect.width, 0.5));
+      expect(visibleTargetRect.height, closeTo(targetRect.height, 0.5));
+      expect(
+        callerScrollState.position.pixels,
+        greaterThan(0),
+        reason: 'Panel focus navigation scrolls its caller viewport to the final grid row',
+      );
+    },
+  );
+}
+
+List<LineMetrics> _paragraphLineMetrics(RenderParagraph paragraph) {
+  final BoxConstraints constraints = paragraph.constraints;
+  final bool boundedWrap =
+      paragraph.softWrap || paragraph.overflow == TextOverflow.ellipsis;
+  final TextPainter painter =
+      TextPainter(
+        text: paragraph.text,
+        textAlign: paragraph.textAlign,
+        textDirection: paragraph.textDirection,
+        textScaler: paragraph.textScaler,
+        maxLines: paragraph.maxLines,
+        ellipsis: paragraph.overflow == TextOverflow.ellipsis ? '\u2026' : null,
+        locale: paragraph.locale,
+        strutStyle: paragraph.strutStyle,
+        textWidthBasis: paragraph.textWidthBasis,
+        textHeightBehavior: paragraph.textHeightBehavior,
+      )..layout(
+        minWidth: constraints.minWidth,
+        maxWidth: boundedWrap ? constraints.maxWidth : double.infinity,
+      );
+  try {
+    return painter.computeLineMetrics();
+  } finally {
+    painter.dispose();
+  }
 }

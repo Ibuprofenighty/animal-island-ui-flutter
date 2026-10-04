@@ -134,7 +134,7 @@
     targetPath: lib/src/components/date_picker/date_picker.dart
     requirements: [R02, R04, R05]
     tests: [DAT01, DAT02, DAT03, DAT04, DAT05]
-    decision: "AnimalDate/Range timezone-free model; single calendar panel for inline & popover"
+    decision: "Gregorian civil-date model with a controlled date/range/month selection union and one shared inline/popover panel; IANA zones are test fixtures only"
   - id: C18
     name: AnimalTimePicker
     stage: S08

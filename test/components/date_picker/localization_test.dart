@@ -42,7 +42,7 @@ void main() {
             children: [
               AnimalDatePicker.popover(
                 key: const ValueKey('date-picker'),
-                value: selectedDate,
+                selection: AnimalDateSelection.date(selectedDate),
                 onChanged: (value) {
                   expect(value, isNull);
                   clearCalls++;
@@ -57,7 +57,7 @@ void main() {
               ),
               AnimalDatePicker.popover(
                 key: const ValueKey('empty-range-picker'),
-                range: true,
+                mode: AnimalDatePickerMode.range,
                 showToday: false,
                 allowClear: false,
               ),
@@ -69,8 +69,10 @@ void main() {
               ),
               AnimalDatePicker.popover(
                 key: const ValueKey('month-picker'),
-                value: selectedDate,
-                picker: AnimalDatePickerMode.month,
+                selection: AnimalDateSelection.date(
+                  AnimalDate(selectedDate.year, selectedDate.month, 1),
+                ),
+                mode: AnimalDatePickerMode.month,
                 showToday: false,
                 allowClear: false,
               ),
@@ -81,11 +83,15 @@ void main() {
     );
 
     final dateTriggerFinder = find.byKey(const ValueKey('date-picker'));
+    Finder panelText(String value) => find.descendant(
+      of: find.byType(AnimalDatePickerPanel),
+      matching: find.text(value),
+    );
     final englishMaterialLocalizations = MaterialLocalizations.of(
       tester.element(dateTriggerFinder),
     );
     final englishDateLabel = englishMaterialLocalizations.formatMediumDate(
-      DateTime(2024, 5, 6),
+      DateTime.utc(2024, 5, 6),
     );
     expect(
       find.descendant(
@@ -121,8 +127,8 @@ void main() {
     await tester.tap(dateTriggerFinder);
     await tester.pumpAndSettle();
     expect(
-      find.text(
-        englishMaterialLocalizations.formatMonthYear(DateTime(2024, 5)),
+      panelText(
+        englishMaterialLocalizations.formatMonthYear(DateTime.utc(2024, 5)),
       ),
       findsOneWidget,
     );
@@ -139,7 +145,7 @@ void main() {
     expect(find.text('Today'), findsOneWidget);
     expect(find.text('Clear'), findsOneWidget);
     final englishSelectedDate = englishMaterialLocalizations.formatFullDate(
-      DateTime(2024, 5, 6),
+      DateTime.utc(2024, 5, 6),
     );
     final englishSelectedDay = find.byWidgetPredicate(
       (widget) =>
@@ -177,8 +183,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(clearCalls, 2);
     expect(
-      find.text(
-        englishMaterialLocalizations.formatMonthYear(DateTime(2024, 5)),
+      panelText(
+        englishMaterialLocalizations.formatMonthYear(DateTime.utc(2024, 5)),
       ),
       findsNothing,
     );
@@ -192,7 +198,7 @@ void main() {
       tester.element(dateTriggerFinder),
     );
     final chineseDateLabel = chineseMaterialLocalizations.formatMediumDate(
-      DateTime(2024, 5, 6),
+      DateTime.utc(2024, 5, 6),
     );
     expect(
       find.descendant(
@@ -206,8 +212,8 @@ void main() {
     expect(find.text('Caller date'), findsOneWidget);
     expect(find.semantics.byLabel('清除日期'), findsNWidgets(2));
     expect(
-      find.text(
-        chineseMaterialLocalizations.formatMonthYear(DateTime(2024, 5)),
+      panelText(
+        chineseMaterialLocalizations.formatMonthYear(DateTime.utc(2024, 5)),
       ),
       findsOneWidget,
     );
@@ -224,7 +230,7 @@ void main() {
     expect(find.text('今天'), findsOneWidget);
     expect(find.text('清空'), findsOneWidget);
     final chineseSelectedDate = chineseMaterialLocalizations.formatFullDate(
-      DateTime(2024, 5, 6),
+      DateTime.utc(2024, 5, 6),
     );
     final chineseSelectedDay = find.byWidgetPredicate(
       (widget) =>

@@ -1,30 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
+import '../../foundation/models/clock.dart';
 import '../../foundation/models/date.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../input/input.dart';
+import 'calendar_model.dart';
 import 'date_picker_panel.dart';
 
-export 'calendar_model.dart';
-export 'date_picker_panel.dart';
-
-/// Animal Island calendar card date picker.
-///
-/// Features:
-/// - Single date or [range] selection mode with continuous citrus ribbon strip
-/// - Date or [month] picker mode
-/// - Custom [disabledDate] predicate
-/// - Bottom quick [showToday] and [allowClear] buttons
-/// - Inline panel or Popover trigger with [AnimalDatePicker.popover]
+/// Controlled civil-date selection with one inline or popover calendar panel.
 class AnimalDatePicker extends StatelessWidget {
-  final AnimalDate? value;
-  final AnimalDateRange? rangeValue;
-  final bool range;
-  final AnimalDatePickerMode picker;
-  final ValueChanged<AnimalDate?>? onChanged;
-  final ValueChanged<AnimalDateRange?>? onRangeChanged;
+  final AnimalDateSelection? selection;
+  final AnimalDatePickerMode mode;
+  final ValueChanged<AnimalDateSelection?>? onChanged;
   final AnimalDate? firstDate;
   final AnimalDate? lastDate;
   final bool Function(AnimalDate date)? disabledDate;
@@ -32,15 +21,13 @@ class AnimalDatePicker extends StatelessWidget {
   final bool allowClear;
   final bool disabled;
   final FocusNode? focusNode;
+  final AnimalClock clock;
 
-  const AnimalDatePicker({
+  AnimalDatePicker({
     super.key,
-    this.value,
-    this.rangeValue,
-    this.range = false,
-    this.picker = AnimalDatePickerMode.date,
+    this.selection,
+    this.mode = AnimalDatePickerMode.date,
     this.onChanged,
-    this.onRangeChanged,
     this.firstDate,
     this.lastDate,
     this.disabledDate,
@@ -48,17 +35,22 @@ class AnimalDatePicker extends StatelessWidget {
     this.allowClear = true,
     this.disabled = false,
     this.focusNode,
-  });
+    this.clock = const SystemClock(),
+  }) {
+    CalendarModel.validateInputs(
+      mode: mode,
+      selection: selection,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+  }
 
-  /// Factory launcher to build an interactive popover input field.
+  /// Builds the same controlled panel inside an input-style popover.
   static Widget popover({
     Key? key,
-    AnimalDate? value,
-    AnimalDateRange? rangeValue,
-    bool range = false,
-    AnimalDatePickerMode picker = AnimalDatePickerMode.date,
-    ValueChanged<AnimalDate?>? onChanged,
-    ValueChanged<AnimalDateRange?>? onRangeChanged,
+    AnimalDateSelection? selection,
+    AnimalDatePickerMode mode = AnimalDatePickerMode.date,
+    ValueChanged<AnimalDateSelection?>? onChanged,
     AnimalDate? firstDate,
     AnimalDate? lastDate,
     bool Function(AnimalDate date)? disabledDate,
@@ -68,15 +60,13 @@ class AnimalDatePicker extends StatelessWidget {
     bool disabled = false,
     AnimalInputStatus status = AnimalInputStatus.normal,
     FocusNode? focusNode,
+    AnimalClock clock = const SystemClock(),
   }) {
     return _AnimalDatePickerPopover(
       key: key,
-      value: value,
-      rangeValue: rangeValue,
-      range: range,
-      picker: picker,
+      selection: selection,
+      mode: mode,
       onChanged: onChanged,
-      onRangeChanged: onRangeChanged,
       firstDate: firstDate,
       lastDate: lastDate,
       disabledDate: disabledDate,
@@ -86,36 +76,30 @@ class AnimalDatePicker extends StatelessWidget {
       disabled: disabled,
       status: status,
       focusNode: focusNode,
+      clock: clock,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnimalDatePickerPanel(
-      value: value,
-      rangeValue: rangeValue,
-      range: range,
-      picker: picker,
-      onChanged: onChanged,
-      onRangeChanged: onRangeChanged,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      disabledDate: disabledDate,
-      showToday: showToday,
-      allowClear: allowClear,
-      disabled: disabled,
-      focusNode: focusNode,
-    );
-  }
+  Widget build(BuildContext context) => AnimalDatePickerPanel(
+    selection: selection,
+    mode: mode,
+    onChanged: onChanged,
+    firstDate: firstDate,
+    lastDate: lastDate,
+    disabledDate: disabledDate,
+    showToday: showToday,
+    allowClear: allowClear,
+    disabled: disabled,
+    focusNode: focusNode,
+    clock: clock,
+  );
 }
 
 class _AnimalDatePickerPopover extends StatefulWidget {
-  final AnimalDate? value;
-  final AnimalDateRange? rangeValue;
-  final bool range;
-  final AnimalDatePickerMode picker;
-  final ValueChanged<AnimalDate?>? onChanged;
-  final ValueChanged<AnimalDateRange?>? onRangeChanged;
+  final AnimalDateSelection? selection;
+  final AnimalDatePickerMode mode;
+  final ValueChanged<AnimalDateSelection?>? onChanged;
   final AnimalDate? firstDate;
   final AnimalDate? lastDate;
   final bool Function(AnimalDate date)? disabledDate;
@@ -125,15 +109,13 @@ class _AnimalDatePickerPopover extends StatefulWidget {
   final bool disabled;
   final AnimalInputStatus status;
   final FocusNode? focusNode;
+  final AnimalClock clock;
 
-  const _AnimalDatePickerPopover({
+  _AnimalDatePickerPopover({
     super.key,
-    this.value,
-    this.rangeValue,
-    this.range = false,
-    this.picker = AnimalDatePickerMode.date,
+    this.selection,
+    this.mode = AnimalDatePickerMode.date,
     this.onChanged,
-    this.onRangeChanged,
     this.firstDate,
     this.lastDate,
     this.disabledDate,
@@ -143,7 +125,15 @@ class _AnimalDatePickerPopover extends StatefulWidget {
     this.disabled = false,
     this.status = AnimalInputStatus.normal,
     this.focusNode,
-  });
+    this.clock = const SystemClock(),
+  }) {
+    CalendarModel.validateInputs(
+      mode: mode,
+      selection: selection,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+  }
 
   @override
   State<_AnimalDatePickerPopover> createState() =>
@@ -152,35 +142,56 @@ class _AnimalDatePickerPopover extends StatefulWidget {
 
 class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
   final MenuController _menuController = MenuController();
-  FocusNode? _internalFocusNode;
+  FocusNode? _internalTriggerFocusNode;
   bool _isFocused = false;
 
-  FocusNode get _effectiveFocusNode =>
-      widget.focusNode ?? (_internalFocusNode ??= FocusNode());
+  FocusNode get _triggerFocusNode =>
+      widget.focusNode ?? (_internalTriggerFocusNode ??= FocusNode());
 
   @override
   void dispose() {
-    _internalFocusNode?.dispose();
+    _internalTriggerFocusNode?.dispose();
     super.dispose();
+  }
+
+  void _restoreTriggerFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _triggerFocusNode.requestFocus();
+    });
   }
 
   String _displayText(
     AnimalLocalizations localizations,
     MaterialLocalizations materialLocalizations,
   ) {
-    if (widget.range) {
-      if (widget.rangeValue != null) {
-        return '${materialLocalizations.formatMediumDate(widget.rangeValue!.start.toDateTime())} – ${materialLocalizations.formatMediumDate(widget.rangeValue!.end.toDateTime())}';
-      }
-      return widget.placeholder ?? localizations.datePickerRangePlaceholder;
-    } else {
-      if (widget.value != null) {
-        return materialLocalizations.formatMediumDate(
-          widget.value!.toDateTime(),
-        );
-      }
-      return widget.placeholder ?? localizations.datePickerSinglePlaceholder;
-    }
+    final placeholder =
+        widget.placeholder ??
+        (widget.mode == AnimalDatePickerMode.range
+            ? localizations.datePickerRangePlaceholder
+            : localizations.datePickerSinglePlaceholder);
+    return switch (widget.selection) {
+      AnimalDateSingleSelection(:final date) =>
+        widget.mode == AnimalDatePickerMode.month
+            ? materialLocalizations.formatMonthYear(date.toDateTime())
+            : materialLocalizations.formatMediumDate(date.toDateTime()),
+      AnimalDateRangeSelection(:final start, :final end) =>
+        end == null
+            ? '${materialLocalizations.formatMediumDate(start.toDateTime())} – …'
+            : '${materialLocalizations.formatMediumDate(start.toDateTime())} – ${materialLocalizations.formatMediumDate(end.toDateTime())}',
+      null => placeholder,
+    };
+  }
+
+  bool get _hasValue => widget.selection != null;
+
+  void _handlePanelChange(AnimalDateSelection? selection) {
+    widget.onChanged?.call(selection);
+    final shouldClose =
+        selection == null ||
+        widget.mode != AnimalDatePickerMode.range ||
+        (selection is AnimalDateRangeSelection && selection.end != null);
+    if (shouldClose) _menuController.close();
   }
 
   @override
@@ -188,23 +199,19 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
     final theme = AnimalIslandTheme.of(context);
     final localizations = AnimalLocalizations.of(context)!;
     final materialLocalizations = MaterialLocalizations.of(context);
-    final hasValue = widget.range
-        ? widget.rangeValue != null
-        : widget.value != null;
-
-    final inputBg = widget.disabled
-        ? ((theme.colors.brightness == Brightness.dark)
+    final displayText = _displayText(localizations, materialLocalizations);
+    final inputBackground = widget.disabled
+        ? (theme.colors.brightness == Brightness.dark
               ? theme.colors.surfaceHeader
               : theme.colors.bgInputDisabled)
         : theme.colors.bgInput;
-
-    final defaultBorderColor = (theme.colors.brightness == Brightness.dark)
+    final defaultBorderColor = theme.colors.brightness == Brightness.dark
         ? theme.colors.border
         : theme.colors.borderLight;
     final canInteract = !widget.disabled;
+
     Color borderColor;
     Color? glowColor;
-
     if (widget.status == AnimalInputStatus.error) {
       borderColor = theme.colors.error;
       glowColor = theme.colors.error.withValues(alpha: 0.35);
@@ -219,11 +226,10 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
       glowColor = null;
     }
 
-    final displayText = _displayText(localizations, materialLocalizations);
-
     return MenuAnchor(
       controller: _menuController,
-      childFocusNode: _effectiveFocusNode,
+      childFocusNode: _triggerFocusNode,
+      onClose: _restoreTriggerFocus,
       style: MenuStyle(
         backgroundColor: WidgetStatePropertyAll(theme.colors.bgContent),
         elevation: const WidgetStatePropertyAll(0),
@@ -237,101 +243,136 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
       ),
       menuChildren: [
         AnimalDatePickerPanel(
-          value: widget.value,
-          rangeValue: widget.rangeValue,
-          range: widget.range,
-          picker: widget.picker,
+          selection: widget.selection,
+          mode: widget.mode,
           firstDate: widget.firstDate,
           lastDate: widget.lastDate,
           disabledDate: widget.disabledDate,
           showToday: widget.showToday,
           allowClear: widget.allowClear,
           disabled: widget.disabled,
-          onChanged: (d) {
-            widget.onChanged?.call(d);
-            if (!widget.range) {
-              _menuController.close();
-            }
-          },
-          onRangeChanged: (r) {
-            widget.onRangeChanged?.call(r);
-            _menuController.close();
-          },
+          clock: widget.clock,
+          onChanged: _handlePanelChange,
         ),
       ],
       builder: (context, controller, child) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InteractiveRegion(
-              onPressed: canInteract
-                  ? () {
-                      if (controller.isOpen) {
-                        controller.close();
-                      } else {
-                        controller.open();
-                      }
-                    }
-                  : null,
-              enableHaptics: false,
-              disabled: !canInteract,
-              focusNode: _effectiveFocusNode,
-              semanticLabel: displayText,
-              borderRadius: theme.radii.pillBorder,
-              surfaceColor: inputBg,
-              border: Border.all(color: borderColor, width: 1.5),
-              extraShadows: glowColor == null
-                  ? null
-                  : [
-                      BoxShadow(
-                        color: glowColor,
-                        blurRadius: 4.0,
-                        spreadRadius: 1.0,
-                      ),
-                    ],
-              padding: EdgeInsets.symmetric(horizontal: theme.spacing.md),
-              onFocusChanged: (focused) => setState(() => _isFocused = focused),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.calendar_today_rounded,
-                    size: 16.0,
-                    color: widget.disabled
-                        ? theme.colors.textDisabled
-                        : theme.colors.textSecondary,
+        final hasClear = widget.allowClear && _hasValue && canInteract;
+
+        Widget buildTrigger({required bool constrainText}) => InteractiveRegion(
+          onPressed: canInteract
+              ? () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                }
+              : null,
+          enableHaptics: false,
+          disabled: !canInteract,
+          focusNode: _triggerFocusNode,
+          semanticLabel: displayText,
+          borderRadius: theme.radii.pillBorder,
+          surfaceColor: inputBackground,
+          border: Border.all(color: borderColor, width: 1.5),
+          extraShadows: glowColor == null
+              ? null
+              : <BoxShadow>[
+                  BoxShadow(
+                    color: glowColor,
+                    blurRadius: 4.0,
+                    spreadRadius: 1.0,
                   ),
-                  SizedBox(width: theme.spacing.sm),
-                  Text(
+                ],
+          padding: EdgeInsets.symmetric(horizontal: theme.spacing.md),
+          onFocusChanged: (focused) => setState(() => _isFocused = focused),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.calendar_today_rounded,
+                size: 16.0,
+                color: widget.disabled
+                    ? theme.colors.textDisabled
+                    : theme.colors.textSecondary,
+              ),
+              SizedBox(width: theme.spacing.sm),
+              if (constrainText)
+                Flexible(
+                  child: Text(
                     displayText,
+                    softWrap: true,
                     style: theme.typography.body.copyWith(
-                      color: hasValue
+                      color: _hasValue
                           ? (widget.disabled
                                 ? theme.colors.textDisabled
                                 : theme.colors.text)
                           : theme.colors.textSecondary,
                     ),
                   ),
-                ],
-              ),
-            ),
-            if (widget.allowClear && hasValue && canInteract)
-              InteractiveRegion(
-                onPressed: () {
-                  widget.onChanged?.call(null);
-                  widget.onRangeChanged?.call(null);
-                },
-                enableHaptics: false,
-                semanticLabel: localizations.clearDate,
-                surfaceColor: Colors.transparent,
-                borderRadius: BorderRadius.circular(24),
-                child: Icon(
-                  Icons.cancel_rounded,
-                  size: 16.0,
-                  color: theme.colors.textSecondary,
+                )
+              else
+                Text(
+                  displayText,
+                  style: theme.typography.body.copyWith(
+                    color: _hasValue
+                        ? (widget.disabled
+                              ? theme.colors.textDisabled
+                              : theme.colors.text)
+                        : theme.colors.textSecondary,
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
+        );
+
+        Widget buildClearButton() => SizedBox.square(
+          dimension: 48,
+          child: InteractiveRegion(
+            onPressed: () {
+              widget.onChanged?.call(null);
+              _menuController.close();
+            },
+            enableHaptics: false,
+            semanticLabel: localizations.clearDate,
+            surfaceColor: Colors.transparent,
+            borderRadius: BorderRadius.circular(24),
+            child: Icon(
+              Icons.cancel_rounded,
+              size: 16.0,
+              color: theme.colors.textSecondary,
+            ),
+          ),
+        );
+
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final isWidthBounded =
+                constraints.hasBoundedWidth && constraints.maxWidth.isFinite;
+            final trigger = buildTrigger(constrainText: isWidthBounded);
+            if (!isWidthBounded) {
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [trigger, if (hasClear) buildClearButton()],
+              );
+            }
+
+            final clearWidth = hasClear ? 48.0 : 0.0;
+            final availableTriggerWidth = constraints.maxWidth - clearWidth;
+            final triggerMaxWidth = availableTriggerWidth < 48.0
+                ? 48.0
+                : availableTriggerWidth;
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: triggerMaxWidth),
+                  child: trigger,
+                ),
+                if (hasClear) buildClearButton(),
+              ],
+            );
+          },
         );
       },
     );

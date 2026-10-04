@@ -27,7 +27,9 @@ symbols:
   - AnimalDate
   - AnimalDatePicker
   - AnimalDatePickerMode
-  - AnimalDateRange
+  - AnimalDateRangeSelection
+  - AnimalDateSelection
+  - AnimalDateSingleSelection
   - AnimalDivider
   - AnimalDividerType
   - AnimalDrawer

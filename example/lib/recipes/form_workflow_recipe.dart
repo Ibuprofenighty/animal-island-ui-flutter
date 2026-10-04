@@ -19,7 +19,9 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
   final _kRole = AnimalFieldKey<String>(debugLabel: 'role');
   final _kNotifications = AnimalFieldKey<bool>(debugLabel: 'notifications');
   final _kSkills = AnimalFieldKey.list<String>(debugLabel: 'skills');
-  final _kBirthDate = AnimalFieldKey<AnimalDate>(debugLabel: 'birthDate');
+  final _kBirthDate = AnimalFieldKey<AnimalDateSelection>(
+    debugLabel: 'birthDate',
+  );
   final _kCheckInTime = AnimalFieldKey<AnimalTimeValue>(
     debugLabel: 'checkInTime',
   );
@@ -205,7 +207,7 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                   ),
                   const SizedBox(height: 16),
                   // Birth Date (DatePicker)
-                  AnimalFormItem<AnimalDate>(
+                  AnimalFormItem<AnimalDateSelection>(
                     fieldKey: _kBirthDate,
                     label: 'Island Arrival Date',
                     required: true,
@@ -216,7 +218,7 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                     ],
                     builder: (context, binding) {
                       return AnimalDatePicker.popover(
-                        value: binding.value,
+                        selection: binding.value,
                         placeholder: 'Pick arrival date',
                         onChanged: binding.onChanged,
                       );

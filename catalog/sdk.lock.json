@@ -32,7 +32,7 @@
   "dependencyLocks": {
     "root": {
       "path": "pubspec.lock",
-      "sha256": "2518e8dcddc3a40f138e8b4332be840dba88d7e51c5f95ea94bc2b1e37f3c1e9"
+      "sha256": "0a8b91e367c7c35dfc02b29f250de908ac4c3e4be7dd6ba63669e44b7723f6f3"
     },
     "example": {
       "path": "example/pubspec.lock",

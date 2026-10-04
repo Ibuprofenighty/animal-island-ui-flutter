@@ -682,7 +682,7 @@ void main() {
     testWidgets('AnimalDatePicker enforces date bounds and normalizes times', (
       tester,
     ) async {
-      AnimalDate? chosenDate;
+      AnimalDateSelection? chosenSelection;
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -691,10 +691,10 @@ void main() {
           theme: AnimalIslandTheme.light.toThemeData(),
           home: Scaffold(
             body: AnimalDatePicker(
-              value: AnimalDate(2026, 9, 15),
+              selection: AnimalDateSelection.date(AnimalDate(2026, 9, 15)),
               firstDate: AnimalDate(2026, 9, 10),
               lastDate: AnimalDate(2026, 9, 20),
-              onChanged: (d) => chosenDate = d,
+              onChanged: (selection) => chosenSelection = selection,
             ),
           ),
         ),
@@ -712,7 +712,7 @@ void main() {
       expect(find.text('15'), findsOneWidget);
 
       // Tap a valid date (16)
-      final validDateTarget = dateTarget(DateTime(2026, 9, 16));
+      final validDateTarget = dateTarget(DateTime.utc(2026, 9, 16));
       expect(validDateTarget, findsOneWidget);
       await tester.ensureVisible(
         find.descendant(of: validDateTarget, matching: find.text('16')),
@@ -726,11 +726,15 @@ void main() {
       );
       await tester.tap(validDateTarget);
       await tester.pumpAndSettle();
-      expect(chosenDate, AnimalDate(2026, 9, 16));
+      expect(chosenSelection, isA<AnimalDateSingleSelection>());
+      expect(
+        (chosenSelection! as AnimalDateSingleSelection).date,
+        AnimalDate(2026, 9, 16),
+      );
 
       // Tap a disabled date (5)
-      chosenDate = null;
-      final disabledDateTarget = dateTarget(DateTime(2026, 9, 5));
+      chosenSelection = null;
+      final disabledDateTarget = dateTarget(DateTime.utc(2026, 9, 5));
       expect(disabledDateTarget, findsOneWidget);
       await tester.ensureVisible(
         find.descendant(of: disabledDateTarget, matching: find.text('5')),
@@ -742,10 +746,12 @@ void main() {
         disabledDateTarget,
       );
       expect(disabledDateOwner.disabled, isTrue);
-      expect(disabledDateOwner.onPressed, isNull);
+      expect(disabledDateOwner.onPressed, isNotNull);
+      disabledDateOwner.onPressed!.call();
+      expect(chosenSelection, isNull);
       await tester.tap(disabledDateTarget);
       await tester.pumpAndSettle();
-      expect(chosenDate, isNull);
+      expect(chosenSelection, isNull);
     });
 
     testWidgets('AnimalTimePicker locks scroll physics when disabled', (
@@ -1361,9 +1367,9 @@ void main() {
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
               body: AnimalDatePicker(
-                value: AnimalDate(2026, 1, 1),
+                selection: AnimalDateSelection.date(AnimalDate(2026, 1, 1)),
                 disabled: true,
-                onChanged: (d) => dateChanged = true,
+                onChanged: (_) => dateChanged = true,
               ),
             ),
           ),
@@ -1787,7 +1793,7 @@ void main() {
         final selectKey = AnimalFieldKey<String>(debugLabel: 'select');
         final switchKey = AnimalFieldKey<bool>(debugLabel: 'switch');
         final radioGroupKey = AnimalFieldKey<String>(debugLabel: 'radio_group');
-        final dateKey = AnimalFieldKey<AnimalDate>(debugLabel: 'date');
+        final dateKey = AnimalFieldKey<AnimalDateSelection>(debugLabel: 'date');
         final timeKey = AnimalFieldKey<AnimalTimeValue>(debugLabel: 'time');
 
         await tester.pumpWidget(
@@ -1834,10 +1840,10 @@ void main() {
                           ],
                         ),
                       ),
-                      AnimalFormItem<AnimalDate>(
+                      AnimalFormItem<AnimalDateSelection>(
                         fieldKey: dateKey,
                         builder: (context, binding) => AnimalDatePicker.popover(
-                          value: binding.value,
+                          selection: binding.value,
                           onChanged: binding.onChanged,
                         ),
                       ),
@@ -1871,12 +1877,15 @@ void main() {
         expect(tester.widget<AnimalSwitch>(switchFinder).value, isTrue);
 
         // 3. Update Date & Time
-        controller.setValue(dateKey, AnimalDate(2026, 9, 10));
+        controller.setValue(
+          dateKey,
+          AnimalDateSelection.date(AnimalDate(2026, 9, 10)),
+        );
         controller.setValue(timeKey, AnimalTimeValue(hour: 15, minute: 45));
         await tester.pump();
         final expectedDate = MaterialLocalizations.of(
           tester.element(find.byType(AnimalForm)),
-        ).formatMediumDate(DateTime(2026, 9, 10));
+        ).formatMediumDate(DateTime.utc(2026, 9, 10));
         expect(find.text(expectedDate), findsOneWidget);
         expect(find.text('15:45'), findsOneWidget);
 
@@ -2277,10 +2286,11 @@ void main() {
       (tester) async {
         final formController = AnimalFormController();
         final focusNode = FocusNode();
-        final flightDateKey = AnimalFieldKey<AnimalDate>(
+        final flightDateKey = AnimalFieldKey<AnimalDateSelection>(
           debugLabel: 'flightDate',
         );
         final initialDate = AnimalDate(2026, 5, 10);
+        final FakeClock dateClock = FakeClock(DateTime.utc(2026, 5, 12, 10));
 
         await tester.pumpWidget(
           MaterialApp(
@@ -2291,16 +2301,17 @@ void main() {
             home: Scaffold(
               body: AnimalForm(
                 controller: formController,
-                child: AnimalFormItem<AnimalDate>(
+                child: AnimalFormItem<AnimalDateSelection>(
                   fieldKey: flightDateKey,
-                  initialValue: initialDate,
+                  initialValue: AnimalDateSelection.date(initialDate),
                   focusNode: focusNode,
                   builder: (context, binding) {
                     return AnimalDatePicker(
                       focusNode: binding.focusNode,
-                      value: binding.value,
+                      selection: binding.value,
                       onChanged: binding.onChanged,
                       allowClear: true,
+                      clock: dateClock,
                     );
                   },
                 ),
@@ -2331,10 +2342,11 @@ void main() {
         await tester.pumpAndSettle();
         final todayVal = formController.values.valueFor(flightDateKey);
         expect(todayVal, isNotNull);
-        final now = AnimalDate.today();
-        expect(todayVal!.year, now.year);
-        expect(todayVal.month, now.month);
-        expect(todayVal.day, now.day);
+        expect(todayVal, isA<AnimalDateSingleSelection>());
+        expect(
+          (todayVal! as AnimalDateSingleSelection).date,
+          AnimalDate(2026, 5, 12),
+        );
       },
     );
 
@@ -2653,7 +2665,9 @@ void main() {
     testWidgets(
       'A06: date cells activate through their shared keyboard owner',
       (tester) async {
-        AnimalDate? selectedDate = AnimalDate(2026, 6, 14);
+        AnimalDateSelection? selectedDate = AnimalDateSelection.date(
+          AnimalDate(2026, 6, 14),
+        );
         final semantics = tester.ensureSemantics();
 
         await tester.pumpWidget(
@@ -2664,7 +2678,7 @@ void main() {
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
               body: AnimalDatePicker(
-                value: selectedDate,
+                selection: selectedDate,
                 onChanged: (val) => selectedDate = val,
               ),
             ),
@@ -2674,7 +2688,9 @@ void main() {
         final localizations = MaterialLocalizations.of(
           tester.element(find.byType(AnimalDatePicker)),
         );
-        final dateLabel = localizations.formatFullDate(DateTime(2026, 6, 15));
+        final dateLabel = localizations.formatFullDate(
+          DateTime.utc(2026, 6, 15),
+        );
         final dayCell = find.byWidgetPredicate(
           (widget) =>
               widget is InteractiveRegion && widget.semanticLabel == dateLabel,
@@ -2687,7 +2703,11 @@ void main() {
         await tester.pump();
         await tester.sendKeyEvent(LogicalKeyboardKey.enter);
         await tester.pump();
-        expect(selectedDate, AnimalDate(2026, 6, 15));
+        expect(selectedDate, isA<AnimalDateSingleSelection>());
+        expect(
+          (selectedDate! as AnimalDateSingleSelection).date,
+          AnimalDate(2026, 6, 15),
+        );
         semantics.dispose();
       },
     );
@@ -2701,7 +2721,9 @@ void main() {
     testWidgets(
       'A01: date popover clear action uses the shared keyboard owner',
       (tester) async {
-        AnimalDate? selectedDate = AnimalDate(2026, 6, 15);
+        AnimalDateSelection? selectedDate = AnimalDateSelection.date(
+          AnimalDate(2026, 6, 15),
+        );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -2713,7 +2735,7 @@ void main() {
               body: StatefulBuilder(
                 builder: (context, setState) {
                   return AnimalDatePicker.popover(
-                    value: selectedDate,
+                    selection: selectedDate,
                     allowClear: true,
                     onChanged: (val) => setState(() => selectedDate = val),
                   );
@@ -2726,8 +2748,10 @@ void main() {
         final materialLocalizations = MaterialLocalizations.of(
           tester.element(find.byType(Scaffold)),
         );
+        final AnimalDate selectedCivilDate =
+            (selectedDate! as AnimalDateSingleSelection).date;
         final triggerLabel = materialLocalizations.formatMediumDate(
-          selectedDate!.toDateTime(),
+          selectedCivilDate.toDateTime(),
         );
         final trigger = find.byWidgetPredicate(
           (widget) =>

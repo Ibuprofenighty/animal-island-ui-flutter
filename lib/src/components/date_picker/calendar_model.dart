@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 
 import '../../foundation/models/date.dart';
 
-/// Represents a single cell in the calendar day grid.
+/// A single civil-date grid position. A null [date] is an inert boundary cell.
 @immutable
-class CalendarDayCell {
-  final AnimalDate date;
+final class CalendarDayCell {
+  final AnimalDate? date;
   final bool isCurrentMonth;
   final bool isToday;
   final bool isDisabled;
@@ -26,89 +26,149 @@ class CalendarDayCell {
   });
 }
 
-/// Pure computation model for calendar calculations.
-class CalendarModel {
-  /// Builds a 42-day calendar grid (6 rows of 7 days) for the specified [year] and [month].
+/// Pure Gregorian calendar calculations shared by inline and popover panels.
+abstract final class CalendarModel {
+  /// Validates the shared picker mode, controlled selection, and date bounds.
+  ///
+  /// Bounds-only model operations omit [mode] and [selection]. Any supplied
+  /// selection must include its mode, so picker construction and grid
+  /// generation share the same compatibility contract.
+  static void validateInputs({
+    AnimalDatePickerMode? mode,
+    AnimalDateSelection? selection,
+    AnimalDate? firstDate,
+    AnimalDate? lastDate,
+  }) {
+    if (firstDate != null && lastDate != null && firstDate.isAfter(lastDate)) {
+      throw ArgumentError('firstDate must be on or before lastDate');
+    }
+    if (selection != null &&
+        (mode == null || !selection.isCompatibleWith(mode))) {
+      throw ArgumentError.value(
+        selection,
+        'selection',
+        mode == null
+            ? 'A mode is required for a selection'
+            : 'Does not match $mode',
+      );
+    }
+  }
+
+  /// Builds a 42-position, Sunday-first month grid.
+  ///
+  /// [today] is explicit so the model has no hidden clock or host-time-zone
+  /// dependency. Positions outside the supported civil years are inert cells
+  /// with a null date.
   static List<CalendarDayCell> buildMonthGrid({
     required int year,
     required int month,
-    AnimalDate? selectedDate,
-    AnimalDateRange? selectedRange,
+    required AnimalDate today,
+    required AnimalDatePickerMode mode,
+    AnimalDateSelection? selection,
     AnimalDate? firstDate,
     AnimalDate? lastDate,
     bool Function(AnimalDate date)? disabledDate,
-    AnimalDate? today,
   }) {
-    final effectiveToday = today ?? AnimalDate.today();
-    final firstDayOfMonth = AnimalDate(year, month, 1);
-    final daysInCurrent = AnimalDate.daysInMonth(year, month);
+    validateInputs(
+      mode: mode,
+      selection: selection,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
 
-    // DateTime weekday: 1 = Monday, ..., 7 = Sunday.
-    // In our calendar, Sunday is column 0 or Monday is column 0.
-    // Sunday as column 0: weekday % 7 (Sunday = 0, Monday = 1, ... Saturday = 6).
-    final startWeekday = firstDayOfMonth.toDateTime().weekday % 7;
+    final firstOfMonth = AnimalDate(year, month, 1);
+    final daysInMonth = AnimalDate.daysInMonth(year, month);
+    final leadingCount = firstOfMonth.weekday % 7;
+    final dates = <AnimalDate?>[];
 
-    final prevMonth = month == 1 ? 12 : month - 1;
-    final prevYear = month == 1 ? year - 1 : year;
-    final daysInPrev = AnimalDate.daysInMonth(prevYear, prevMonth);
+    if (leadingCount > 0) {
+      final previousMonth = month == 1 ? 12 : month - 1;
+      final previousYear = month == 1 ? year - 1 : year;
+      final previousMonthDays = previousYear < AnimalDate.minimumYear
+          ? 0
+          : AnimalDate.daysInMonth(previousYear, previousMonth);
+      for (var index = leadingCount - 1; index >= 0; index--) {
+        dates.add(
+          previousMonthDays == 0
+              ? null
+              : AnimalDate(
+                  previousYear,
+                  previousMonth,
+                  previousMonthDays - index,
+                ),
+        );
+      }
+    }
 
-    final cells = <CalendarDayCell>[];
+    for (var day = 1; day <= daysInMonth; day++) {
+      dates.add(AnimalDate(year, month, day));
+    }
 
-    // Leading days from previous month
-    for (int i = startWeekday - 1; i >= 0; i--) {
-      final d = AnimalDate(prevYear, prevMonth, daysInPrev - i);
-      cells.add(
-        _createCell(
-          date: d,
-          isCurrentMonth: false,
-          today: effectiveToday,
-          selectedDate: selectedDate,
-          selectedRange: selectedRange,
-          firstDate: firstDate,
-          lastDate: lastDate,
-          disabledDate: disabledDate,
-        ),
+    while (dates.length < 42) {
+      final offset = dates.length - leadingCount - daysInMonth + 1;
+      final nextMonth = month == 12 ? 1 : month + 1;
+      final nextYear = month == 12 ? year + 1 : year;
+      dates.add(
+        nextYear > AnimalDate.maximumYear
+            ? null
+            : AnimalDate(nextYear, nextMonth, offset),
       );
     }
 
-    // Days of current month
-    for (int day = 1; day <= daysInCurrent; day++) {
-      final d = AnimalDate(year, month, day);
-      cells.add(
-        _createCell(
-          date: d,
-          isCurrentMonth: true,
-          today: effectiveToday,
-          selectedDate: selectedDate,
-          selectedRange: selectedRange,
-          firstDate: firstDate,
-          lastDate: lastDate,
-          disabledDate: disabledDate,
-        ),
-      );
-    }
+    final selectedDate = switch (selection) {
+      AnimalDateSingleSelection(:final date) => date,
+      _ => null,
+    };
+    final selectedRange = switch (selection) {
+      AnimalDateRangeSelection range => range,
+      _ => null,
+    };
 
-    // Trailing days from next month to complete 42 cells (6 rows x 7 cols)
-    final nextMonth = month == 12 ? 1 : month + 1;
-    final nextYear = month == 12 ? year + 1 : year;
-    int nextDay = 1;
-    while (cells.length < 42) {
-      final d = AnimalDate(nextYear, nextMonth, nextDay++);
-      cells.add(
-        _createCell(
-          date: d,
-          isCurrentMonth: false,
-          today: effectiveToday,
-          selectedDate: selectedDate,
-          selectedRange: selectedRange,
-          firstDate: firstDate,
-          lastDate: lastDate,
-          disabledDate: disabledDate,
-        ),
-      );
-    }
+    return List<CalendarDayCell>.unmodifiable(
+      List<CalendarDayCell>.generate(42, (index) {
+        final date = dates[index];
+        if (date == null) {
+          return const CalendarDayCell(
+            date: null,
+            isCurrentMonth: false,
+            isToday: false,
+            isDisabled: true,
+          );
+        }
 
-    return cells;
+        final isMonth = date.year == year && date.month == month;
+        final rangeStart = selectedRange?.start == date;
+        final rangeEnd = selectedRange?.end == date;
+        final isWithinRange =
+            selectedRange?.end != null &&
+            !date.isBefore(selectedRange!.start) &&
+            !date.isAfter(selectedRange.end!);
+        final selected = switch (mode) {
+          AnimalDatePickerMode.date => selectedDate == date,
+          AnimalDatePickerMode.range => rangeStart || rangeEnd,
+          AnimalDatePickerMode.month =>
+            selectedDate != null &&
+                selectedDate.year == date.year &&
+                selectedDate.month == date.month,
+        };
+
+        return CalendarDayCell(
+          date: date,
+          isCurrentMonth: isMonth,
+          isToday: date == today,
+          isDisabled: isDateDisabled(
+            date: date,
+            firstDate: firstDate,
+            lastDate: lastDate,
+            disabledDate: disabledDate,
+          ),
+          isSelected: selected,
+          isInRange: isWithinRange,
+          isRangeStart: rangeStart,
+          isRangeEnd: rangeEnd,
+        );
+      }, growable: false),
+    );
   }
 
   static bool isDateDisabled({
@@ -117,13 +177,30 @@ class CalendarModel {
     AnimalDate? lastDate,
     bool Function(AnimalDate date)? disabledDate,
   }) {
+    validateInputs(firstDate: firstDate, lastDate: lastDate);
     if (firstDate != null && date.isBefore(firstDate)) return true;
     if (lastDate != null && date.isAfter(lastDate)) return true;
-    if (disabledDate != null && disabledDate(date)) return true;
-    return false;
+    return disabledDate?.call(date) ?? false;
   }
 
-  /// Checks if any date strictly inside [start] and [end] is disabled.
+  /// A month is selectable when its canonical first day is enabled.
+  static bool isMonthDisabled({
+    required int year,
+    required int month,
+    AnimalDate? firstDate,
+    AnimalDate? lastDate,
+    bool Function(AnimalDate date)? disabledDate,
+  }) => isDateDisabled(
+    date: AnimalDate(year, month, 1),
+    firstDate: firstDate,
+    lastDate: lastDate,
+    disabledDate: disabledDate,
+  );
+
+  /// Returns whether any strictly interior date is disabled.
+  ///
+  /// Traversal advances one civil ordinal at a time and stops before [end], so
+  /// it stays bounded at both supported-year boundaries and across DST.
   static bool hasDisabledInteriorDate({
     required AnimalDate start,
     required AnimalDate end,
@@ -131,62 +208,91 @@ class CalendarModel {
     AnimalDate? lastDate,
     bool Function(AnimalDate date)? disabledDate,
   }) {
-    var cur = start.addDays(1);
-    while (cur.isBefore(end)) {
-      if (isDateDisabled(
-        date: cur,
-        firstDate: firstDate,
-        lastDate: lastDate,
-        disabledDate: disabledDate,
-      )) {
-        return true;
-      }
-      cur = cur.addDays(1);
+    validateInputs(firstDate: firstDate, lastDate: lastDate);
+    if (start.isAfter(end)) {
+      throw ArgumentError.value(end, 'end', 'Must be on or after start');
     }
-    return false;
+    if (start == end) return false;
+
+    final firstInterior = start.addDays(1);
+    final lastInterior = end.subtractDays(1);
+    if (firstInterior.isBefore(end) &&
+        firstDate != null &&
+        firstInterior.isBefore(firstDate)) {
+      return true;
+    }
+    if (lastInterior.isAfter(start) &&
+        lastDate != null &&
+        lastInterior.isAfter(lastDate)) {
+      return true;
+    }
+    if (disabledDate == null) return false;
+
+    var cursor = firstInterior;
+    while (true) {
+      if (cursor == end) return false;
+      if (disabledDate(cursor)) return true;
+      cursor = cursor.addDays(1);
+    }
   }
 
-  static CalendarDayCell _createCell({
-    required AnimalDate date,
-    required bool isCurrentMonth,
-    required AnimalDate today,
-    AnimalDate? selectedDate,
-    AnimalDateRange? selectedRange,
+  /// Tests both endpoints and every interior date before creating a range.
+  static bool isRangeDisabled({
+    required AnimalDate start,
+    required AnimalDate end,
     AnimalDate? firstDate,
     AnimalDate? lastDate,
     bool Function(AnimalDate date)? disabledDate,
   }) {
-    final disabled = isDateDisabled(
-      date: date,
+    if (start.isAfter(end)) {
+      throw ArgumentError.value(end, 'end', 'Must be on or after start');
+    }
+    if (isDateDisabled(
+      date: start,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      disabledDate: disabledDate,
+    )) {
+      return true;
+    }
+    if (start != end &&
+        isDateDisabled(
+          date: end,
+          firstDate: firstDate,
+          lastDate: lastDate,
+          disabledDate: disabledDate,
+        )) {
+      return true;
+    }
+    return hasDisabledInteriorDate(
+      start: start,
+      end: end,
       firstDate: firstDate,
       lastDate: lastDate,
       disabledDate: disabledDate,
     );
+  }
 
-    final isToday = date == today;
-    final isSelected = selectedDate != null && date == selectedDate;
-
-    bool isInRange = false;
-    bool isRangeStart = false;
-    bool isRangeEnd = false;
-
-    if (selectedRange != null) {
-      isRangeStart = date == selectedRange.start;
-      isRangeEnd = date == selectedRange.end;
-      isInRange =
-          (date.isAfter(selectedRange.start) || date == selectedRange.start) &&
-          (date.isBefore(selectedRange.end) || date == selectedRange.end);
+  /// Whether the target month intersects the inclusive bounds by month.
+  static bool canNavigateToMonth({
+    required int year,
+    required int month,
+    AnimalDate? firstDate,
+    AnimalDate? lastDate,
+  }) {
+    validateInputs(firstDate: firstDate, lastDate: lastDate);
+    final target = AnimalDate(year, month, 1);
+    if (firstDate != null &&
+        (target.year < firstDate.year ||
+            (target.year == firstDate.year &&
+                target.month < firstDate.month))) {
+      return false;
     }
-
-    return CalendarDayCell(
-      date: date,
-      isCurrentMonth: isCurrentMonth,
-      isToday: isToday,
-      isDisabled: disabled,
-      isSelected: isSelected,
-      isInRange: isInRange,
-      isRangeStart: isRangeStart,
-      isRangeEnd: isRangeEnd,
-    );
+    if (lastDate != null &&
+        (target.year > lastDate.year ||
+            (target.year == lastDate.year && target.month > lastDate.month))) {
+      return false;
+    }
+    return true;
   }
 }
