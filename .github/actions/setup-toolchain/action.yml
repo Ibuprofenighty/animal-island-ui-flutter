@@ -36,6 +36,10 @@ runs:
         channel: ${{ steps.lock.outputs.channel }}
         cache: true
 
+    - name: Expose the locked Flutter SDK to tests
+      shell: bash
+      run: echo "N04_FLUTTER_HOME=$FLUTTER_ROOT" >> "$GITHUB_ENV"
+
     - name: Set up Node.js
       if: inputs.node == 'true'
       uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
