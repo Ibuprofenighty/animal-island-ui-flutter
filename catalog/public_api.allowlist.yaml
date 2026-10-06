@@ -15,10 +15,13 @@ symbols:
   - AnimalCheckbox
   - AnimalCheckboxGroup
   - AnimalCheckboxSize
+  - AnimalCheckboxStyle
+  - AnimalCheckboxThemeData
   - AnimalClock
   - AnimalCodeBlock
   - AnimalCollapse
   - AnimalCollapseItem
+  - AnimalComponentThemes
   - AnimalCountdown
   - AnimalCountdownSize
   - AnimalCountdownVariant
@@ -27,6 +30,7 @@ symbols:
   - AnimalDate
   - AnimalDatePicker
   - AnimalDatePickerMode
+  - AnimalDatePickerStyle
   - AnimalDateRangeSelection
   - AnimalDateSelection
   - AnimalDateSingleSelection
@@ -38,11 +42,13 @@ symbols:
   - AnimalFieldKey
   - AnimalFieldRegistration
   - AnimalFieldValue
+  - AnimalFocusRingStyle
   - AnimalFooter
   - AnimalFooterType
   - AnimalForm
   - AnimalFormController
   - AnimalFormItem
+  - AnimalFormItemStyle
   - AnimalFormValues
   - AnimalIcon
   - AnimalIconData
@@ -52,6 +58,8 @@ symbols:
   - AnimalInput
   - AnimalInputSize
   - AnimalInputStatus
+  - AnimalInputStyle
+  - AnimalInputThemeData
   - AnimalIslandTheme
   - AnimalLoading
   - AnimalLoadingHandle
@@ -74,15 +82,20 @@ symbols:
   - AnimalRadio
   - AnimalRadioGroup
   - AnimalRadioSize
+  - AnimalRadioStyle
+  - AnimalRadioThemeData
   - AnimalRule
   - AnimalRuleType
   - AnimalSelect
+  - AnimalSelectStyle
   - AnimalSkeleton
   - AnimalSkeletonVariant
   - AnimalSubmitResult
   - AnimalSubmitStatus
   - AnimalSwitch
   - AnimalSwitchSize
+  - AnimalSwitchStyle
+  - AnimalSwitchThemeData
   - AnimalTabItem
   - AnimalTable
   - AnimalTableColumn
@@ -102,6 +115,7 @@ symbols:
   - AnimalTileColors
   - AnimalTime
   - AnimalTimePicker
+  - AnimalTimePickerStyle
   - AnimalTimeValue
   - AnimalTitle
   - AnimalTitleSize

@@ -105,7 +105,11 @@ void main() {
       );
 
       final field = inputField('normal');
-      expect(field.style!.fontSize, AnimalInputSize.middle.fontSize);
+      // The middle preset scales the theme body role by the registered 15/14.
+      expect(
+        field.style!.fontSize,
+        closeTo(theme.typography.body.fontSize! * 15 / 14, 1e-9),
+      );
       expect(field.style!.letterSpacing, theme.typography.body.letterSpacing);
       expect(field.style!.color, theme.colors.text);
       expect(field.enabled, isTrue);

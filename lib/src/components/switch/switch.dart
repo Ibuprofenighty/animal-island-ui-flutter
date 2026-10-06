@@ -5,25 +5,15 @@ import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../../internal/timing/lifecycle_observer.dart';
 import '../../internal/timing/motion_policy.dart';
+import '../../foundation/theme/components/switch_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/focus_ring.dart';
 
-/// Sizing scales for [AnimalSwitch].
-enum AnimalSwitchSize {
-  small(width: 46.0, height: 26.0, thumbSize: 18.0, fontSize: 11.0),
-  defaultSize(width: 58.0, height: 32.0, thumbSize: 24.0, fontSize: 13.0);
-
-  final double width;
-  final double height;
-  final double thumbSize;
-  final double fontSize;
-
-  const AnimalSwitchSize({
-    required this.width,
-    required this.height,
-    required this.thumbSize,
-    required this.fontSize,
-  });
-}
+/// Size presets for [AnimalSwitch].
+///
+/// A preset names a step; its metrics come from the active theme. See
+/// [AnimalSwitchStyle] for the values a theme or a single switch can override.
+enum AnimalSwitchSize { small, defaultSize }
 
 class _SwitchTrackDecoration extends BoxDecoration {
   const _SwitchTrackDecoration({
@@ -184,10 +174,15 @@ class _SwitchTrackPainter extends BoxPainter {
 /// - Embedded children [checkedChildren] and [unCheckedChildren] inside the track
 /// - Asynchronous [loading] indicator inside the thumb
 /// - Full theme-aware styling with sunken track
+/// - Visual overrides through [style] and
+///   `AnimalIslandTheme.components.switchControl`
 class AnimalSwitch extends StatefulWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
   final AnimalSwitchSize size;
+
+  /// Visual overrides for this switch; they take precedence over the theme.
+  final AnimalSwitchStyle? style;
   final bool disabled;
   final bool readOnly;
   final bool loading;
@@ -200,6 +195,7 @@ class AnimalSwitch extends StatefulWidget {
     required this.value,
     required this.onChanged,
     this.size = AnimalSwitchSize.defaultSize,
+    this.style,
     this.disabled = false,
     this.readOnly = false,
     this.loading = false,
@@ -591,28 +587,18 @@ class _AnimalSwitchState extends State<AnimalSwitch>
   @override
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
-    final size = widget.size;
     final bool effectiveChecked = widget.value;
+    final _ResolvedSwitchStyle resolved = _ResolvedSwitchStyle.resolve(
+      theme: theme,
+      size: widget.size,
+      style: widget.style,
+      checked: effectiveChecked,
+      disabled: _isDisabled,
+    );
 
-    final Color trackColor = _isDisabled
-        ? ((theme.colors.brightness == Brightness.dark)
-              ? theme.colors.surfaceAlt
-              : theme.colors.bgDisabled)
-        : (effectiveChecked ? theme.colors.success : theme.colors.bgSecondary);
-
-    final Color thumbBorderColor = _isDisabled
-        ? ((theme.colors.brightness == Brightness.dark)
-              ? theme.colors.border
-              : theme.colors.borderLight)
-        : (effectiveChecked
-              ? theme.colors.success
-              : ((theme.colors.brightness == Brightness.dark)
-                    ? theme.colors.border
-                    : theme.colors.borderLight));
-
-    final double padding = (size.height - size.thumbSize) / 2;
-    const double labelGap = 4;
-    final double thumbRailReservation = size.thumbSize + padding * 2 + labelGap;
+    final double padding = resolved.thumbInset;
+    final double thumbRailReservation =
+        resolved.thumbSize + padding * 2 + resolved.labelGap;
     final bool hasLabels =
         widget.checkedChildren != null || widget.unCheckedChildren != null;
     final Duration animationDuration = AnimalMotionPolicy.shouldAnimate(context)
@@ -644,27 +630,26 @@ class _AnimalSwitchState extends State<AnimalSwitch>
     }
 
     final Widget thumb = Container(
-      width: size.thumbSize,
-      height: size.thumbSize,
+      width: resolved.thumbSize,
+      height: resolved.thumbSize,
       decoration: BoxDecoration(
-        color: _isDisabled
-            ? theme.colors.surfaceHeader
-            : theme.colors.bgContent,
+        color: resolved.thumbColor,
         shape: BoxShape.circle,
-        border: Border.all(color: thumbBorderColor, width: 1.2),
+        border: Border.all(
+          color: resolved.thumbBorderColor,
+          width: resolved.thumbBorderWidth,
+        ),
         boxShadow: const <BoxShadow>[],
       ),
       alignment: Alignment.center,
       child: widget.loading
           ? SizedBox(
-              width: size.thumbSize * 0.6,
-              height: size.thumbSize * 0.6,
+              width: resolved.loadingIndicatorSize,
+              height: resolved.loadingIndicatorSize,
               child: CircularProgressIndicator(
-                strokeWidth: 2,
+                strokeWidth: resolved.loadingStrokeWidth,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  effectiveChecked
-                      ? theme.colors.onSuccess
-                      : theme.colors.textSecondary,
+                  resolved.loadingIndicatorColor,
                 ),
               ),
             )
@@ -687,10 +672,10 @@ class _AnimalSwitchState extends State<AnimalSwitch>
           child: Container(
             foregroundDecoration: _isFocused
                 ? BoxDecoration(
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: resolved.borderRadius,
                     border: Border.all(
-                      color: theme.colors.focusYellow,
-                      width: 2,
+                      color: resolved.focusColor,
+                      width: resolved.focusBorderWidth,
                     ),
                   )
                 : null,
@@ -698,24 +683,13 @@ class _AnimalSwitchState extends State<AnimalSwitch>
               duration: animationDuration,
               curve: theme.motion.ease,
               decoration: _SwitchTrackDecoration(
-                color: trackColor,
-                borderRadius: BorderRadius.circular(999),
+                color: resolved.trackColor,
+                borderRadius: resolved.borderRadius,
                 border: Border.all(
-                  color: _isDisabled
-                      ? ((theme.colors.brightness == Brightness.dark)
-                            ? theme.colors.border
-                            : theme.colors.borderLight)
-                      : (effectiveChecked
-                            ? theme.colors.success
-                            : ((theme.colors.brightness == Brightness.dark)
-                                  ? theme.colors.border
-                                  : theme.colors.borderLight)),
-                  width: 1.5,
+                  color: resolved.trackBorderColor,
+                  width: resolved.trackBorderWidth,
                 ),
-                insetShadow: theme.shadows.softElevation.copyWith(
-                  offset: Offset.zero,
-                  spreadRadius: 0,
-                ),
+                insetShadow: resolved.trackInsetShadow,
               ),
               child: AnimatedBuilder(
                 animation: _transitionController,
@@ -732,23 +706,9 @@ class _AnimalSwitchState extends State<AnimalSwitch>
 
                   final Widget sizingContent;
                   if (hasLabels) {
-                    final TextStyle checkedStyle = theme.typography.resolve(
-                      theme.typography.body.copyWith(
-                        color: theme.colors.onSuccess,
-                        fontSize: size.fontSize,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
-                    final TextStyle uncheckedStyle = theme.typography.resolve(
-                      theme.typography.body.copyWith(
-                        color: theme.colors.textSecondary,
-                        fontSize: size.fontSize,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
                     sizingContent = _SwitchLabelLayout(
-                      minimumTrackWidth: size.width,
-                      minimumTrackHeight: size.height,
+                      minimumTrackWidth: resolved.width,
+                      minimumTrackHeight: resolved.height,
                       thumbRailReservation: thumbRailReservation,
                       thumbAtLogicalStart: !labelLayoutValue,
                       textDirection: Directionality.of(context),
@@ -759,7 +719,7 @@ class _AnimalSwitchState extends State<AnimalSwitch>
                             phase,
                             theme.motion.ease,
                           ),
-                          style: checkedStyle,
+                          style: resolved.checkedLabelStyle,
                           child:
                               widget.checkedChildren ?? const SizedBox.shrink(),
                         ),
@@ -769,7 +729,7 @@ class _AnimalSwitchState extends State<AnimalSwitch>
                             phase,
                             theme.motion.ease,
                           ),
-                          style: uncheckedStyle,
+                          style: resolved.uncheckedLabelStyle,
                           child:
                               widget.unCheckedChildren ??
                               const SizedBox.shrink(),
@@ -778,8 +738,8 @@ class _AnimalSwitchState extends State<AnimalSwitch>
                     );
                   } else {
                     sizingContent = SizedBox(
-                      width: size.width,
-                      height: size.height,
+                      width: resolved.width,
+                      height: resolved.height,
                     );
                   }
 
@@ -807,6 +767,163 @@ class _AnimalSwitchState extends State<AnimalSwitch>
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The switch's visual values, resolved once per build.
+///
+/// Precedence: the switch's own style, then the theme's size-specific style,
+/// then the theme's general style, then defaults derived from theme tokens.
+class _ResolvedSwitchStyle {
+  final double width;
+  final double height;
+  final double thumbSize;
+  final double thumbInset;
+  final double labelGap;
+  final double trackBorderWidth;
+  final double thumbBorderWidth;
+  final double focusBorderWidth;
+  final double loadingStrokeWidth;
+  final double loadingIndicatorSize;
+  final BorderRadius borderRadius;
+  final TextStyle checkedLabelStyle;
+  final TextStyle uncheckedLabelStyle;
+  final Color trackColor;
+  final Color trackBorderColor;
+  final Color thumbColor;
+  final Color thumbBorderColor;
+  final Color loadingIndicatorColor;
+  final Color focusColor;
+  final BoxShadow trackInsetShadow;
+
+  const _ResolvedSwitchStyle._({
+    required this.width,
+    required this.height,
+    required this.thumbSize,
+    required this.thumbInset,
+    required this.labelGap,
+    required this.trackBorderWidth,
+    required this.thumbBorderWidth,
+    required this.focusBorderWidth,
+    required this.loadingStrokeWidth,
+    required this.loadingIndicatorSize,
+    required this.borderRadius,
+    required this.checkedLabelStyle,
+    required this.uncheckedLabelStyle,
+    required this.trackColor,
+    required this.trackBorderColor,
+    required this.thumbColor,
+    required this.thumbBorderColor,
+    required this.loadingIndicatorColor,
+    required this.focusColor,
+    required this.trackInsetShadow,
+  });
+
+  /// Default metrics per size. Label font sizes scale `typography.body` by
+  /// these registered ratios, so the standard 14 logical-pixel body gives
+  /// 11/13.
+  static ({double width, double height, double thumbSize, double factor})
+  _metrics(AnimalSwitchSize size) => switch (size) {
+    AnimalSwitchSize.small => (
+      width: 46,
+      height: 26,
+      thumbSize: 18,
+      factor: 11 / 14,
+    ),
+    AnimalSwitchSize.defaultSize => (
+      width: 58,
+      height: 32,
+      thumbSize: 24,
+      factor: 13 / 14,
+    ),
+  };
+
+  /// Loading indicator diameter as a fraction of the thumb diameter.
+  static const double _loadingIndicatorRatio = 0.6;
+
+  static _ResolvedSwitchStyle resolve({
+    required AnimalIslandTheme theme,
+    required AnimalSwitchSize size,
+    required AnimalSwitchStyle? style,
+    required bool checked,
+    required bool disabled,
+  }) {
+    final AnimalSwitchThemeData? themed = theme.components.switchControl;
+    final AnimalSwitchStyle? sized = switch (size) {
+      AnimalSwitchSize.small => themed?.smallStyle,
+      AnimalSwitchSize.defaultSize => themed?.defaultSizeStyle,
+    };
+    final AnimalSwitchStyle merged = (style ?? AnimalSwitchStyle())
+        .merge(sized)
+        .merge(themed?.style);
+
+    final colors = theme.colors;
+    final bool dark = colors.brightness == Brightness.dark;
+    final Set<WidgetState> states = <WidgetState>{
+      if (checked) WidgetState.selected,
+      if (disabled) WidgetState.disabled,
+    };
+    final metrics = _metrics(size);
+
+    final Color neutralBorder = dark ? colors.border : colors.borderLight;
+    final Color defaultBorder = !disabled && checked
+        ? colors.success
+        : neutralBorder;
+
+    final double height = merged.height ?? metrics.height;
+    final double thumbSize = merged.thumbSize ?? metrics.thumbSize;
+    final double inset = (height - thumbSize) / 2;
+
+    final TextStyle baseLabel = theme.typography.resolve(
+      theme.typography.body
+          .apply(fontSizeFactor: metrics.factor)
+          .copyWith(fontWeight: FontWeight.bold)
+          .merge(merged.labelTextStyle),
+    );
+    Color labelTextColor(bool labelChecked) =>
+        merged.labelTextColor?.resolve(<WidgetState>{
+          if (labelChecked) WidgetState.selected,
+          if (disabled) WidgetState.disabled,
+        }) ??
+        (labelChecked ? colors.onSuccess : colors.textSecondary);
+
+    return _ResolvedSwitchStyle._(
+      width: merged.width ?? metrics.width,
+      height: height,
+      thumbSize: thumbSize,
+      thumbInset: inset > 0 ? inset : 0,
+      labelGap: merged.labelGap ?? 4,
+      trackBorderWidth: merged.trackBorderWidth ?? 1.5,
+      thumbBorderWidth: merged.thumbBorderWidth ?? 1.2,
+      focusBorderWidth: merged.focusBorderWidth ?? 2,
+      loadingStrokeWidth: merged.loadingStrokeWidth ?? 2,
+      loadingIndicatorSize: thumbSize * _loadingIndicatorRatio,
+      borderRadius: merged.borderRadius ?? BorderRadius.circular(999),
+      checkedLabelStyle: baseLabel.copyWith(color: labelTextColor(true)),
+      uncheckedLabelStyle: baseLabel.copyWith(color: labelTextColor(false)),
+      trackColor:
+          merged.trackColor?.resolve(states) ??
+          (disabled
+              ? (dark ? colors.surfaceAlt : colors.bgDisabled)
+              : (checked ? colors.success : colors.bgSecondary)),
+      trackBorderColor:
+          merged.trackBorderColor?.resolve(states) ?? defaultBorder,
+      thumbColor:
+          merged.thumbColor?.resolve(states) ??
+          (disabled ? colors.surfaceHeader : colors.bgContent),
+      thumbBorderColor:
+          merged.thumbBorderColor?.resolve(states) ?? defaultBorder,
+      loadingIndicatorColor:
+          merged.loadingIndicatorColor?.resolve(states) ??
+          (checked ? colors.onSuccess : colors.textSecondary),
+      focusColor: resolveFocusRing(theme).color,
+      trackInsetShadow:
+          merged.trackInsetShadow ??
+          theme.shadows.softElevation.copyWith(
+            offset: Offset.zero,
+            spreadRadius: 0,
+          ),
     );
   }
 }

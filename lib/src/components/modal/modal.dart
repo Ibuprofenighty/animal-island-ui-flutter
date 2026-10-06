@@ -299,11 +299,12 @@ class _AnimalModalState extends State<AnimalModal> {
                   Expanded(
                     child: widget.title != null
                         ? DefaultTextStyle(
-                            style: theme.typography.title.copyWith(
-                              fontSize: theme.typography.title.fontSize! * 0.75,
-                              fontWeight: FontWeight.w800,
-                              color: theme.colors.text,
-                            ),
+                            style: theme.typography.title
+                                .apply(fontSizeFactor: 0.75)
+                                .copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: theme.colors.text,
+                                ),
                             child: widget.title!,
                           )
                         : const SizedBox.shrink(),
@@ -319,11 +320,9 @@ class _AnimalModalState extends State<AnimalModal> {
               SizedBox(height: theme.spacing.lg + theme.spacing.xxs),
               // Body Content
               DefaultTextStyle(
-                style: theme.typography.body.copyWith(
-                  color: theme.colors.textBody,
-                  fontSize: theme.typography.body.fontSize! * (15 / 14),
-                  height: 1.5,
-                ),
+                style: theme.typography.body
+                    .apply(fontSizeFactor: (15 / 14))
+                    .copyWith(color: theme.colors.textBody, height: 1.5),
                 child: effectiveContent,
               ),
               if (_errorMessage != null) ...[

@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/models/option.dart';
+import '../../foundation/theme/components/select_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/focus_ring.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../../internal/interaction/option_group_focus.dart';
 import '../../icons/icon.dart';
@@ -14,6 +16,8 @@ import '../../icons/icons.g.dart';
 import '../input/input.dart';
 
 /// A controlled select whose menu preserves unknown caller values.
+///
+/// Visual overrides come from [style] and `AnimalIslandTheme.components.select`.
 class AnimalSelect<T> extends StatefulWidget {
   final T? value;
   final List<AnimalOption<T>> options;
@@ -23,6 +27,9 @@ class AnimalSelect<T> extends StatefulWidget {
   final bool readOnly;
   final bool allowClear;
   final AnimalInputStatus status;
+
+  /// Overrides for this select, taking precedence over the theme.
+  final AnimalSelectStyle? style;
   final FocusNode? focusNode;
 
   AnimalSelect({
@@ -35,6 +42,7 @@ class AnimalSelect<T> extends StatefulWidget {
     this.readOnly = false,
     this.allowClear = false,
     this.status = AnimalInputStatus.normal,
+    this.style,
     this.focusNode,
   }) : options = snapshotUniqueOptions<T>(options, owner: 'AnimalSelect');
 
@@ -43,8 +51,6 @@ class AnimalSelect<T> extends StatefulWidget {
 }
 
 class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
-  static const double _maximumMenuHeight = 320;
-
   final MenuController _controller = MenuController();
   final ScrollController _menuScrollController = ScrollController();
   final Map<T, FocusNode> _optionFocusNodes = <T, FocusNode>{};
@@ -72,18 +78,27 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
 
   bool _isOptionEnabled(AnimalOption<T> option) => _canOpen && !option.disabled;
 
-  double get _optionExtent {
-    final AnimalIslandTheme theme = AnimalIslandTheme.of(context);
+  _ResolvedSelectStyle get _resolvedStyle => _ResolvedSelectStyle.resolve(
+    theme: AnimalIslandTheme.of(context),
+    style: widget.style,
+  );
+
+  double _optionExtentFor(_ResolvedSelectStyle resolved) {
     final TextPainter lineMetrics = TextPainter(
-      text: TextSpan(style: theme.typography.resolve(theme.typography.body)),
+      text: TextSpan(style: resolved.optionTextStyle),
       textDirection: Directionality.of(context),
       textScaler: MediaQuery.textScalerOf(context),
       maxLines: 2,
     );
     final double contentHeight = lineMetrics.preferredLineHeight * 2;
     lineMetrics.dispose();
-    return math.max(48, contentHeight + theme.spacing.sm * 2);
+    return math.max(
+      _ResolvedSelectStyle.minimumOptionExtent,
+      contentHeight + resolved.optionPadding.vertical,
+    );
   }
+
+  double get _optionExtent => _optionExtentFor(_resolvedStyle);
 
   @override
   void initState() {
@@ -276,9 +291,9 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final AnimalIslandTheme theme = AnimalIslandTheme.of(context);
     final AnimalLocalizations localizations = AnimalLocalizations.of(context)!;
-    final double optionExtent = _optionExtent;
+    final _ResolvedSelectStyle resolved = _resolvedStyle;
+    final double optionExtent = _optionExtentFor(resolved);
     final AnimalOption<T>? selected = _selectedOption;
     final bool hasKnownValue = selected != null;
     final bool hasUnknownValue = widget.value != null && selected == null;
@@ -287,18 +302,16 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
         widget.placeholder ??
         localizations.selectPlaceholder;
     final double menuWidth = math.min(
-      320,
-      math.max(1, MediaQuery.sizeOf(context).width - 24),
+      resolved.menuMaxWidth,
+      math.max(
+        1,
+        MediaQuery.sizeOf(context).width - _ResolvedSelectStyle.viewportMargin,
+      ),
     );
     final double menuHeight = math.min(
-      _maximumMenuHeight,
+      resolved.menuMaxHeight,
       math.max(1, widget.options.length * optionExtent),
     );
-    final Color inputBackground = _cannotActivate
-        ? ((theme.colors.brightness == Brightness.dark)
-              ? theme.colors.surfaceHeader
-              : theme.colors.bgInputDisabled)
-        : theme.colors.bgInput;
 
     return MenuAnchor(
       controller: _controller,
@@ -311,16 +324,21 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
         }, debugLabel: 'AnimalSelect.restoreFocusAfterClose');
       },
       style: MenuStyle(
-        backgroundColor: WidgetStatePropertyAll<Color>(theme.colors.bgContent),
-        elevation: const WidgetStatePropertyAll<double>(4),
+        backgroundColor: WidgetStatePropertyAll<Color>(
+          resolved.menuBackgroundColor,
+        ),
+        elevation: WidgetStatePropertyAll<double>(resolved.menuElevation),
         shape: WidgetStatePropertyAll<OutlinedBorder>(
           RoundedRectangleBorder(
-            borderRadius: theme.radii.tooltipBorder,
-            side: BorderSide(color: theme.colors.border, width: 1.5),
+            borderRadius: resolved.menuBorderRadius,
+            side: BorderSide(
+              color: resolved.menuBorderColor,
+              width: resolved.menuBorderWidth,
+            ),
           ),
         ),
         padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
-          EdgeInsets.symmetric(vertical: theme.spacing.xs),
+          EdgeInsets.symmetric(vertical: resolved.menuVerticalPadding),
         ),
       ),
       menuChildren: <Widget>[
@@ -343,7 +361,7 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
                   option: option,
                   selected: option.value == widget.value,
                   disabled: !_isOptionEnabled(option),
-                  theme: theme,
+                  resolved: resolved,
                   focusNode: _optionFocusNodes[option.value]!,
                   onPressed: () => _handleOptionSelected(option.value),
                   onKeyEvent: (_, KeyEvent event) =>
@@ -357,20 +375,15 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
       builder:
           (BuildContext context, MenuController controller, Widget? child) {
             final bool focusActive = _isFocused || controller.isOpen;
-            Color borderColor = theme.colors.border;
-            Color? focusGlowColor;
-            if (_cannotActivate) {
-              borderColor = (theme.colors.brightness == Brightness.dark)
-                  ? theme.colors.border.withValues(alpha: 0.3)
-                  : theme.colors.borderLight;
-            } else if (widget.status == AnimalInputStatus.error ||
-                hasUnknownValue) {
-              borderColor = theme.colors.errorText;
-              focusGlowColor = theme.colors.errorText.withValues(alpha: 0.45);
-            } else if (focusActive) {
-              borderColor = theme.colors.focusYellow;
-              focusGlowColor = theme.colors.focusYellow.withValues(alpha: 0.45);
-            }
+            final bool invalid =
+                widget.status == AnimalInputStatus.error || hasUnknownValue;
+            final Set<WidgetState> states = <WidgetState>{
+              if (_cannotActivate) WidgetState.disabled,
+              if (focusActive) WidgetState.focused,
+              if (invalid) WidgetState.error,
+              if (hasKnownValue) WidgetState.selected,
+            };
+            final bool showGlow = focusActive || (invalid && !_cannotActivate);
 
             return Row(
               children: <Widget>[
@@ -393,24 +406,26 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
                     invalid:
                         hasUnknownValue ||
                         widget.status == AnimalInputStatus.error,
-                    borderRadius: theme.radii.pillBorder,
-                    surfaceColor: inputBackground,
-                    border: Border.all(color: borderColor, width: 1.8),
-                    extraShadows: focusActive || focusGlowColor != null
+                    borderRadius: resolved.borderRadius,
+                    surfaceColor: resolved.backgroundColor(states),
+                    border: Border.all(
+                      color: resolved.borderColor(states),
+                      width: resolved.borderWidth,
+                    ),
+                    extraShadows: showGlow
                         ? <BoxShadow>[
                             BoxShadow(
-                              color:
-                                  focusGlowColor ??
-                                  theme.colors.focusYellow.withValues(
-                                    alpha: 0.45,
-                                  ),
+                              color: resolved.glowColor(states),
                               offset: Offset.zero,
-                              blurRadius: 4,
-                              spreadRadius: 2,
+                              blurRadius: _ResolvedSelectStyle.glowBlurRadius,
+                              spreadRadius:
+                                  _ResolvedSelectStyle.glowSpreadRadius,
                             ),
                           ]
                         : null,
-                    padding: EdgeInsets.symmetric(horizontal: theme.spacing.lg),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: resolved.horizontalPadding,
+                    ),
                     selected: hasKnownValue,
                     expanded: controller.isOpen,
                     onFocusChanged: (bool focused) =>
@@ -420,13 +435,8 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
                         Expanded(
                           child: Text(
                             visibleLabel,
-                            style: theme.typography.body.copyWith(
-                              color: _cannotActivate
-                                  ? theme.colors.textDisabled
-                                  : (hasKnownValue
-                                        ? theme.colors.text
-                                        : theme.colors.textSecondary),
-                              fontSize: 15,
+                            style: resolved.textStyle.copyWith(
+                              color: resolved.textColor(states),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -434,13 +444,11 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
                         ),
                         AnimatedRotation(
                           turns: controller.isOpen ? 0.5 : 0,
-                          duration: theme.motion.normal,
+                          duration: resolved.arrowTurnDuration,
                           child: Icon(
                             Icons.keyboard_arrow_down_rounded,
-                            size: 18,
-                            color: _cannotActivate
-                                ? theme.colors.textDisabled
-                                : theme.colors.textSecondary,
+                            size: resolved.arrowIconSize,
+                            color: resolved.arrowIconColor(states),
                           ),
                         ),
                       ],
@@ -455,8 +463,8 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
                     surfaceColor: Colors.transparent,
                     child: AnimalIcon(
                       data: AnimalIcons.close,
-                      size: 16,
-                      color: theme.colors.textSecondary,
+                      size: resolved.clearIconSize,
+                      color: resolved.clearIconColor,
                     ),
                   ),
               ],
@@ -470,7 +478,7 @@ class _SelectMenuOption<T> extends StatefulWidget {
   final AnimalOption<T> option;
   final bool selected;
   final bool disabled;
-  final AnimalIslandTheme theme;
+  final _ResolvedSelectStyle resolved;
   final FocusNode focusNode;
   final VoidCallback onPressed;
   final FocusOnKeyEventCallback onKeyEvent;
@@ -480,7 +488,7 @@ class _SelectMenuOption<T> extends StatefulWidget {
     required this.option,
     required this.selected,
     required this.disabled,
-    required this.theme,
+    required this.resolved,
     required this.focusNode,
     required this.onPressed,
     required this.onKeyEvent,
@@ -496,12 +504,13 @@ class _SelectMenuOptionState<T> extends State<_SelectMenuOption<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final AnimalIslandTheme theme = widget.theme;
-    final Color background = widget.selected
-        ? theme.colors.primary.withValues(alpha: 0.12)
-        : (_isHovered || _isFocused
-              ? theme.colors.primary.withValues(alpha: 0.06)
-              : Colors.transparent);
+    final _ResolvedSelectStyle resolved = widget.resolved;
+    final Set<WidgetState> states = <WidgetState>{
+      if (widget.disabled) WidgetState.disabled,
+      if (widget.selected) WidgetState.selected,
+      if (_isHovered) WidgetState.hovered,
+      if (_isFocused) WidgetState.focused,
+    };
     return InteractiveRegion(
       onPressed: widget.disabled ? null : widget.onPressed,
       focusNode: widget.focusNode,
@@ -521,12 +530,9 @@ class _SelectMenuOptionState<T> extends State<_SelectMenuOption<T>> {
             selected: widget.selected,
             onTap: activate,
           ),
-      surfaceColor: background,
-      borderRadius: BorderRadius.circular(4),
-      padding: EdgeInsets.symmetric(
-        horizontal: theme.spacing.lg,
-        vertical: theme.spacing.sm,
-      ),
+      surfaceColor: resolved.optionBackgroundColor(states),
+      borderRadius: resolved.optionBorderRadius,
+      padding: resolved.optionPadding,
       onFocusChanged: (bool focused) => setState(() => _isFocused = focused),
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
@@ -536,36 +542,249 @@ class _SelectMenuOptionState<T> extends State<_SelectMenuOption<T>> {
           children: <Widget>[
             if (widget.option.icon != null) ...<Widget>[
               ExcludeSemantics(child: widget.option.icon!),
-              SizedBox(width: theme.spacing.sm),
+              SizedBox(width: resolved.optionIconGap),
             ],
             Expanded(
               child: Text(
                 widget.option.label,
-                style: theme.typography.body.copyWith(
-                  color: widget.disabled
-                      ? theme.colors.textDisabled
-                      : (widget.selected
-                            ? theme.colors.primaryText
-                            : theme.colors.text),
-                  fontWeight: widget.selected
-                      ? FontWeight.w600
-                      : FontWeight.normal,
-                ),
+                style: resolved.optionLabelStyle(states),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             if (widget.selected) ...<Widget>[
-              SizedBox(width: theme.spacing.md),
+              SizedBox(width: resolved.checkIconGap),
               AnimalIcon(
                 data: AnimalIcons.check,
-                size: 16,
-                color: theme.colors.primaryText,
+                size: resolved.checkIconSize,
+                color: resolved.checkIconColor,
               ),
             ],
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The one place [AnimalSelect] turns its layers into concrete values.
+///
+/// Precedence: the select's own style, then the theme's select style, then
+/// defaults derived from theme tokens. State-dependent colors are resolved per
+/// build from the merged style.
+class _ResolvedSelectStyle {
+  /// Accessibility floor for each option row; not a style field.
+  static const double minimumOptionExtent = 48;
+
+  /// Space the menu keeps from the viewport edges combined.
+  static const double viewportMargin = 24;
+
+  /// Geometry of the focus and validation glow around the trigger.
+  static const double glowBlurRadius = 4;
+  static const double glowSpreadRadius = 2;
+
+  /// Opacity of the default glow relative to the border color it follows.
+  static const double _glowAlpha = 0.45;
+
+  final AnimalIslandTheme theme;
+  final AnimalSelectStyle style;
+  final Color focusColor;
+
+  final TextStyle textStyle;
+  final double borderWidth;
+  final BorderRadius borderRadius;
+  final double horizontalPadding;
+  final double arrowIconSize;
+  final double clearIconSize;
+  final Color clearIconColor;
+  final Color menuBackgroundColor;
+  final Color menuBorderColor;
+  final double menuBorderWidth;
+  final BorderRadius menuBorderRadius;
+  final double menuElevation;
+  final double menuVerticalPadding;
+  final double menuMaxWidth;
+  final double menuMaxHeight;
+
+  /// Unselected option label style, also used to size option rows.
+  final TextStyle optionTextStyle;
+  final TextStyle selectedOptionTextStyle;
+  final BorderRadius optionBorderRadius;
+  final EdgeInsetsGeometry optionPadding;
+  final double optionIconGap;
+  final double checkIconGap;
+  final double checkIconSize;
+  final Color checkIconColor;
+
+  const _ResolvedSelectStyle._({
+    required this.theme,
+    required this.style,
+    required this.focusColor,
+    required this.textStyle,
+    required this.borderWidth,
+    required this.borderRadius,
+    required this.horizontalPadding,
+    required this.arrowIconSize,
+    required this.clearIconSize,
+    required this.clearIconColor,
+    required this.menuBackgroundColor,
+    required this.menuBorderColor,
+    required this.menuBorderWidth,
+    required this.menuBorderRadius,
+    required this.menuElevation,
+    required this.menuVerticalPadding,
+    required this.menuMaxWidth,
+    required this.menuMaxHeight,
+    required this.optionTextStyle,
+    required this.selectedOptionTextStyle,
+    required this.optionBorderRadius,
+    required this.optionPadding,
+    required this.optionIconGap,
+    required this.checkIconGap,
+    required this.checkIconSize,
+    required this.checkIconColor,
+  });
+
+  static _ResolvedSelectStyle resolve({
+    required AnimalIslandTheme theme,
+    required AnimalSelectStyle? style,
+  }) {
+    final AnimalSelectStyle merged = (style ?? AnimalSelectStyle()).merge(
+      theme.components.select,
+    );
+    final colors = theme.colors;
+    final spacing = theme.spacing;
+    final typography = theme.typography;
+
+    // The trigger label is typography.body scaled by 15/14 (15 at the
+    // standard 14 logical-pixel body).
+    final TextStyle textStyle = typography.resolve(
+      typography.body.apply(fontSizeFactor: 15 / 14).merge(merged.textStyle),
+    );
+    // Option labels are typography.body: normal weight, and w600 when
+    // selected. A weight in optionTextStyle applies to both.
+    final TextStyle optionTextStyle = typography.resolve(
+      typography.body
+          .copyWith(fontWeight: FontWeight.normal)
+          .merge(merged.optionTextStyle),
+    );
+    final TextStyle selectedOptionTextStyle = typography.resolve(
+      typography.body
+          .copyWith(fontWeight: FontWeight.w600)
+          .merge(merged.optionTextStyle)
+          .merge(merged.selectedOptionTextStyle),
+    );
+
+    return _ResolvedSelectStyle._(
+      theme: theme,
+      style: merged,
+      focusColor: resolveFocusRing(theme).color,
+      textStyle: textStyle,
+      borderWidth: merged.borderWidth ?? 1.8,
+      borderRadius: merged.borderRadius ?? theme.radii.pillBorder,
+      horizontalPadding: merged.horizontalPadding ?? spacing.lg,
+      arrowIconSize: merged.arrowIconSize ?? 18,
+      clearIconSize: merged.clearIconSize ?? 16,
+      clearIconColor: merged.clearIconColor ?? colors.textSecondary,
+      menuBackgroundColor: merged.menuBackgroundColor ?? colors.bgContent,
+      menuBorderColor: merged.menuBorderColor ?? colors.border,
+      menuBorderWidth: merged.menuBorderWidth ?? 1.5,
+      menuBorderRadius: merged.menuBorderRadius ?? theme.radii.tooltipBorder,
+      menuElevation: merged.menuElevation ?? 4,
+      menuVerticalPadding: merged.menuVerticalPadding ?? spacing.xs,
+      menuMaxWidth: merged.menuMaxWidth ?? 320,
+      menuMaxHeight: merged.menuMaxHeight ?? 320,
+      optionTextStyle: optionTextStyle,
+      selectedOptionTextStyle: selectedOptionTextStyle,
+      optionBorderRadius:
+          merged.optionBorderRadius ??
+          const BorderRadius.all(Radius.circular(4)),
+      optionPadding:
+          merged.optionPadding ??
+          EdgeInsets.symmetric(horizontal: spacing.lg, vertical: spacing.sm),
+      optionIconGap: merged.optionIconGap ?? spacing.sm,
+      checkIconGap: merged.checkIconGap ?? spacing.md,
+      checkIconSize: merged.checkIconSize ?? 16,
+      checkIconColor: merged.checkIconColor ?? colors.primaryText,
+    );
+  }
+
+  bool get _dark => theme.colors.brightness == Brightness.dark;
+
+  /// Duration of the arrow's open and close turn: the theme's normal motion.
+  Duration get arrowTurnDuration => theme.motion.normal;
+
+  Color backgroundColor(Set<WidgetState> states) {
+    final colors = theme.colors;
+    return style.backgroundColor?.resolve(states) ??
+        (states.contains(WidgetState.disabled)
+            ? (_dark ? colors.surfaceHeader : colors.bgInputDisabled)
+            : colors.bgInput);
+  }
+
+  Color borderColor(Set<WidgetState> states) {
+    final Color? custom = style.borderColor?.resolve(states);
+    if (custom != null) return custom;
+    final colors = theme.colors;
+    if (states.contains(WidgetState.disabled)) {
+      return _dark ? colors.border.withValues(alpha: 0.3) : colors.borderLight;
+    }
+    if (states.contains(WidgetState.error)) return colors.errorText;
+    if (states.contains(WidgetState.focused)) return focusColor;
+    return colors.border;
+  }
+
+  Color glowColor(Set<WidgetState> states) {
+    final Color? custom = style.glowColor?.resolve(states);
+    if (custom != null) return custom;
+    final bool invalid =
+        states.contains(WidgetState.error) &&
+        !states.contains(WidgetState.disabled);
+    return (invalid ? theme.colors.errorText : focusColor).withValues(
+      alpha: _glowAlpha,
+    );
+  }
+
+  Color textColor(Set<WidgetState> states) {
+    final Color? custom = style.textColor?.resolve(states);
+    if (custom != null) return custom;
+    final colors = theme.colors;
+    if (states.contains(WidgetState.disabled)) return colors.textDisabled;
+    return states.contains(WidgetState.selected)
+        ? colors.text
+        : colors.textSecondary;
+  }
+
+  Color arrowIconColor(Set<WidgetState> states) =>
+      style.arrowIconColor?.resolve(states) ??
+      (states.contains(WidgetState.disabled)
+          ? theme.colors.textDisabled
+          : theme.colors.textSecondary);
+
+  Color optionBackgroundColor(Set<WidgetState> states) {
+    final Color? custom = style.optionBackgroundColor?.resolve(states);
+    if (custom != null) return custom;
+    final Color primary = theme.colors.primary;
+    if (states.contains(WidgetState.selected)) {
+      return primary.withValues(alpha: 0.12);
+    }
+    if (states.contains(WidgetState.hovered) ||
+        states.contains(WidgetState.focused)) {
+      return primary.withValues(alpha: 0.06);
+    }
+    return Colors.transparent;
+  }
+
+  TextStyle optionLabelStyle(Set<WidgetState> states) {
+    final colors = theme.colors;
+    final bool selected = states.contains(WidgetState.selected);
+    final Color color =
+        style.optionTextColor?.resolve(states) ??
+        (states.contains(WidgetState.disabled)
+            ? colors.textDisabled
+            : (selected ? colors.primaryText : colors.text));
+    return (selected ? selectedOptionTextStyle : optionTextStyle).copyWith(
+      color: color,
     );
   }
 }

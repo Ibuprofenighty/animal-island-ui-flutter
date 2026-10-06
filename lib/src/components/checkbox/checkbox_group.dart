@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../foundation/models/option.dart';
+import '../../foundation/theme/components/checkbox_theme.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/option_group_focus.dart';
 import 'checkbox.dart';
@@ -13,6 +14,10 @@ class AnimalCheckboxGroup<T> extends StatelessWidget {
   final bool disabled;
   final bool readOnly;
   final AnimalCheckboxSize size;
+
+  /// Overrides forwarded to every checkbox in the group.
+  final AnimalCheckboxStyle? style;
+
   final Axis direction;
   final FocusNode? focusNode;
 
@@ -24,6 +29,7 @@ class AnimalCheckboxGroup<T> extends StatelessWidget {
     this.disabled = false,
     this.readOnly = false,
     this.size = AnimalCheckboxSize.middle,
+    this.style,
     this.direction = Axis.horizontal,
     this.focusNode,
   }) : value = List<T>.unmodifiable(value),
@@ -45,15 +51,20 @@ class AnimalCheckboxGroup<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = AnimalIslandTheme.of(context).spacing;
+    final gaps = resolveCheckboxGroupGaps(
+      theme: AnimalIslandTheme.of(context),
+      size: size,
+      style: style,
+      direction: direction,
+    );
     return OptionGroupFocus<T>(
       options: options,
       direction: direction,
       roving: false,
       selectedValue: null,
       disabled: disabled || (onChanged == null && !readOnly),
-      spacing: direction == Axis.horizontal ? spacing.lg : spacing.sm,
-      runSpacing: spacing.sm,
+      spacing: gaps.gap,
+      runSpacing: gaps.runGap,
       focusNode: focusNode,
       itemBuilder: (context, option, node) {
         final bool optionDisabled = disabled || option.disabled;
@@ -63,6 +74,7 @@ class AnimalCheckboxGroup<T> extends StatelessWidget {
           disabled: optionDisabled,
           readOnly: readOnly,
           size: size,
+          style: style,
           focusNode: node,
           label: Text(option.label),
           onChanged: optionDisabled || onChanged == null

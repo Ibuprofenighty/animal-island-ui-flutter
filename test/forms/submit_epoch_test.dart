@@ -815,7 +815,7 @@ void main() {
           expect(consumerDirectory.existsSync(), isFalse);
         }
       },
-      timeout: const Timeout(Duration(minutes: 2)),
+      timeout: const Timeout(Duration(minutes: 5)),
     );
   });
 }

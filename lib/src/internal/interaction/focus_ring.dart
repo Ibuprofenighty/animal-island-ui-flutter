@@ -1,6 +1,24 @@
 import 'package:flutter/widgets.dart';
 
+import '../../foundation/theme/components/focus_ring_theme.dart';
 import '../../foundation/theme/theme.dart';
+
+/// The focus indicator every component uses, resolved once from the theme.
+///
+/// `AnimalIslandTheme.components.focusRing` overrides the default width,
+/// offset and color; components that draw their own focused border use
+/// [color] so the whole library shows one focus color.
+({double width, double offset, Color color, BorderRadius borderRadius})
+resolveFocusRing(AnimalIslandTheme theme) {
+  final AnimalFocusRingStyle? style = theme.components.focusRing;
+  return (
+    width: style?.width ?? 2.5,
+    offset: style?.offset ?? 2.0,
+    color: style?.color ?? theme.colors.focusYellow,
+    // A component passes its own shape; a bare ring is a pill.
+    borderRadius: theme.radii.pillBorder,
+  );
+}
 
 /// Cozy rounded focus ring for Animal Island UI.
 ///
@@ -11,18 +29,12 @@ class AnimalFocusRing extends StatelessWidget {
   final Widget child;
   final bool focused;
   final BorderRadius? borderRadius;
-  final double ringWidth;
-  final double ringOffset;
-  final Color? color;
 
   const AnimalFocusRing({
     super.key,
     required this.child,
     required this.focused,
     this.borderRadius,
-    this.ringWidth = 2.5,
-    this.ringOffset = 2.0,
-    this.color,
   });
 
   @override
@@ -30,15 +42,15 @@ class AnimalFocusRing extends StatelessWidget {
     if (!focused) return child;
 
     final AnimalIslandTheme theme = AnimalIslandTheme.of(context);
-    final Color ringColor = color ?? theme.colors.focusYellow;
+    final ring = resolveFocusRing(theme);
     final BorderRadius effectiveBorderRadius =
-        borderRadius ?? theme.radii.pillBorder;
+        borderRadius ?? ring.borderRadius;
     return CustomPaint(
       foregroundPainter: _FocusRingPainter(
-        color: ringColor,
+        color: ring.color,
         borderRadius: effectiveBorderRadius,
-        ringWidth: ringWidth,
-        ringOffset: ringOffset,
+        ringWidth: ring.width,
+        ringOffset: ring.offset,
       ),
       child: child,
     );

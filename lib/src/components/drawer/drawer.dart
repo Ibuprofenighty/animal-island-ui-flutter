@@ -202,11 +202,12 @@ class AnimalDrawer extends StatelessWidget {
                   Expanded(
                     child: title != null
                         ? DefaultTextStyle(
-                            style: theme.typography.title.copyWith(
-                              fontSize: theme.typography.title.fontSize! * 0.75,
-                              fontWeight: FontWeight.w800,
-                              color: theme.colors.text,
-                            ),
+                            style: theme.typography.title
+                                .apply(fontSizeFactor: 0.75)
+                                .copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: theme.colors.text,
+                                ),
                             child: title!,
                           )
                         : const SizedBox.shrink(),

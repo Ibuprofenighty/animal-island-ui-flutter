@@ -1,33 +1,23 @@
 import 'package:flutter/material.dart';
 
+import '../../foundation/theme/components/radio_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/focus_ring.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../../internal/interaction/option_group_focus.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
 
-/// Radio sizing scale matching animal-island-ui.
-enum AnimalRadioSize {
-  small(boxSize: 18.0, iconSize: 12.0, fontSize: 13.0, borderRadius: 12.0),
-  middle(boxSize: 22.0, iconSize: 14.0, fontSize: 14.0, borderRadius: 14.0),
-  large(boxSize: 26.0, iconSize: 18.0, fontSize: 16.0, borderRadius: 16.0);
-
-  final double boxSize;
-  final double iconSize;
-  final double fontSize;
-  final double borderRadius;
-
-  const AnimalRadioSize({
-    required this.boxSize,
-    required this.iconSize,
-    required this.fontSize,
-    this.borderRadius = 6.0,
-  });
-}
+/// Size presets for [AnimalRadio].
+///
+/// A preset names a step; its metrics come from the active theme. See
+/// [AnimalRadioStyle] for the values a theme or a single radio can override.
+enum AnimalRadioSize { small, middle, large }
 
 /// Animal Island Kawaii Radio component (C15).
 ///
 /// Uses the current compact 12/14/16 corner-radius contract and a check glyph.
+/// Visual overrides come from [style] and `AnimalIslandTheme.components.radio`.
 class AnimalRadio<T> extends StatefulWidget {
   final T value;
   final T? groupValue;
@@ -35,8 +25,19 @@ class AnimalRadio<T> extends StatefulWidget {
   final Widget? label;
   final bool disabled;
   final bool readOnly;
+
+  /// Visual size tier.
   final AnimalRadioSize size;
+
+  /// Overrides for this radio, taking precedence over the theme.
+  final AnimalRadioStyle? style;
+
   final FocusNode? focusNode;
+
+  /// Selected fill and border tone for this radio, drawn with a white check.
+  ///
+  /// It belongs to the instance layer: the matching [style] fields win over
+  /// it, and it wins over the component theme.
   final Color? activeColor;
 
   const AnimalRadio({
@@ -48,6 +49,7 @@ class AnimalRadio<T> extends StatefulWidget {
     this.disabled = false,
     this.readOnly = false,
     this.size = AnimalRadioSize.middle,
+    this.style,
     this.focusNode,
     this.activeColor,
   });
@@ -84,26 +86,16 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
-    final size = widget.size;
     final isSelected = _isSelected;
-
-    final activeTone = widget.activeColor ?? theme.colors.primary;
-
-    final Color bgColor = _isDisabled
-        ? ((theme.colors.brightness == Brightness.dark)
-              ? theme.colors.surfaceAlt
-              : theme.colors.bgDisabled)
-        : (isSelected
-              ? activeTone
-              : ((theme.colors.brightness == Brightness.dark)
-                    ? theme.colors.surfaceHeader
-                    : theme.colors.bgInput));
-
-    final Color borderColor = _isDisabled
-        ? ((theme.colors.brightness == Brightness.dark)
-              ? theme.colors.border.withValues(alpha: 0.3)
-              : theme.colors.borderLight)
-        : (isSelected ? activeTone : theme.colors.border);
+    final _ResolvedRadioStyle resolved = _ResolvedRadioStyle.resolve(
+      theme: theme,
+      size: widget.size,
+      style: widget.style,
+      activeColor: widget.activeColor,
+      selected: isSelected,
+      disabled: _isDisabled,
+      focused: _isFocused,
+    );
 
     return InteractiveRegion(
       onPressed: _handleSelect,
@@ -122,20 +114,20 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
           AnimatedContainer(
             duration: theme.motion.fast,
             curve: theme.motion.ease,
-            width: size.boxSize,
-            height: size.boxSize,
+            width: resolved.boxSize,
+            height: resolved.boxSize,
             decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(size.borderRadius),
+              color: resolved.fillColor,
+              borderRadius: resolved.borderRadius,
               border: Border.all(
-                color: _isFocused ? theme.colors.focusYellow : borderColor,
-                width: 1.8,
+                color: resolved.borderColor,
+                width: resolved.borderWidth,
               ),
               boxShadow: [
-                if (!_isDisabled) theme.shadows.softElevation,
+                if (!_isDisabled) resolved.shadow,
                 if (_isFocused)
                   BoxShadow(
-                    color: theme.colors.focusYellow.withValues(alpha: 0.45),
+                    color: resolved.borderColor.withValues(alpha: 0.45),
                     blurRadius: 4,
                     spreadRadius: 1,
                   ),
@@ -145,27 +137,188 @@ class _AnimalRadioState<T> extends State<AnimalRadio<T>> {
             child: isSelected
                 ? AnimalIcon(
                     data: AnimalIcons.check,
-                    size: size.iconSize,
-                    color: widget.activeColor == null
-                        ? theme.colors.onPrimary
-                        : Colors.white,
+                    size: resolved.iconSize,
+                    color: resolved.checkColor,
                   )
                 : null,
           ),
           if (widget.label != null) ...[
-            SizedBox(width: theme.spacing.sm),
-            DefaultTextStyle(
-              style: theme.typography.body.copyWith(
-                fontSize: size.fontSize,
-                color: _isDisabled
-                    ? theme.colors.textDisabled
-                    : theme.colors.text,
+            SizedBox(width: resolved.labelGap),
+            Flexible(
+              child: DefaultTextStyle(
+                style: resolved.labelTextStyle,
+                child: widget.label!,
               ),
-              child: widget.label!,
             ),
           ],
         ],
       ),
     );
   }
+}
+
+/// The single resolution path for radio visuals.
+///
+/// Precedence: the radio's own style, then its `activeColor`, then the
+/// theme's size-specific style, then the theme's general style, then defaults
+/// derived from theme tokens.
+class _ResolvedRadioStyle {
+  final double boxSize;
+  final double iconSize;
+  final double borderWidth;
+  final double labelGap;
+  final BorderRadius borderRadius;
+  final TextStyle labelTextStyle;
+  final Color fillColor;
+  final Color borderColor;
+  final Color checkColor;
+  final BoxShadow shadow;
+
+  const _ResolvedRadioStyle._({
+    required this.boxSize,
+    required this.iconSize,
+    required this.borderWidth,
+    required this.labelGap,
+    required this.borderRadius,
+    required this.labelTextStyle,
+    required this.fillColor,
+    required this.borderColor,
+    required this.checkColor,
+    required this.shadow,
+  });
+
+  /// Default metrics per size. Label font sizes scale `typography.body` by
+  /// these registered ratios, so the standard 14 logical-pixel body gives
+  /// 13/14/16. The 12/14/16 radii keep the DD-01 near-round silhouette.
+  static ({double box, double icon, double radius, double factor}) _metrics(
+    AnimalRadioSize size,
+  ) => switch (size) {
+    AnimalRadioSize.small => (box: 18, icon: 12, radius: 12, factor: 13 / 14),
+    AnimalRadioSize.middle => (box: 22, icon: 14, radius: 14, factor: 1),
+    AnimalRadioSize.large => (box: 26, icon: 18, radius: 16, factor: 16 / 14),
+  };
+
+  /// Check glyph color on a caller-provided [AnimalRadio.activeColor].
+  ///
+  /// A registered invariant: the theme has no on-color for an arbitrary
+  /// caller tone, and the RAD03 golden (`goldens/animal_radio_n15.png`) pins
+  /// this white check. `checkColor` in the instance style still overrides it.
+  static const Color _activeCheckColor = Color(0xFFFFFFFF);
+
+  static _ResolvedRadioStyle resolve({
+    required AnimalIslandTheme theme,
+    required AnimalRadioSize size,
+    required AnimalRadioStyle? style,
+    required Color? activeColor,
+    required bool selected,
+    required bool disabled,
+    required bool focused,
+  }) {
+    final AnimalRadioThemeData? themed = theme.components.radio;
+    final AnimalRadioStyle? sized = switch (size) {
+      AnimalRadioSize.small => themed?.smallStyle,
+      AnimalRadioSize.middle => themed?.middleStyle,
+      AnimalRadioSize.large => themed?.largeStyle,
+    };
+    final AnimalRadioStyle merged = (style ?? AnimalRadioStyle())
+        .merge(sized)
+        .merge(themed?.style);
+
+    final colors = theme.colors;
+    final bool dark = colors.brightness == Brightness.dark;
+    final Set<WidgetState> states = <WidgetState>{
+      if (selected) WidgetState.selected,
+      if (disabled) WidgetState.disabled,
+      if (focused) WidgetState.focused,
+    };
+    final metrics = _metrics(size);
+
+    // The instance activeColor applies to the enabled selected surface,
+    // below the instance style and above the theme layers.
+    final bool activeSurface = activeColor != null && selected && !disabled;
+    final Color? activeFill = activeSurface ? activeColor : null;
+    final Color? activeBorder = activeSurface && !focused ? activeColor : null;
+    final Color? activeCheck = activeColor == null ? null : _activeCheckColor;
+
+    Color defaultFill() {
+      if (disabled) return dark ? colors.surfaceAlt : colors.bgDisabled;
+      if (selected) return colors.primary;
+      return dark ? colors.surfaceHeader : colors.bgInput;
+    }
+
+    Color defaultBorder() {
+      if (focused) return resolveFocusRing(theme).color;
+      if (disabled) {
+        return dark ? colors.border.withValues(alpha: 0.3) : colors.borderLight;
+      }
+      if (selected) return colors.primary;
+      return colors.border;
+    }
+
+    final TextStyle labelTextStyle = theme.typography
+        .resolve(
+          theme.typography.body
+              .apply(fontSizeFactor: metrics.factor)
+              .merge(merged.labelTextStyle),
+        )
+        .copyWith(
+          color:
+              merged.labelTextColor?.resolve(states) ??
+              (disabled ? colors.textDisabled : colors.text),
+        );
+
+    return _ResolvedRadioStyle._(
+      boxSize: merged.boxSize ?? metrics.box,
+      iconSize: merged.iconSize ?? metrics.icon,
+      borderWidth: merged.borderWidth ?? 1.8,
+      labelGap: merged.labelGap ?? theme.spacing.sm,
+      borderRadius:
+          merged.borderRadius ??
+          BorderRadius.all(Radius.circular(metrics.radius)),
+      labelTextStyle: labelTextStyle,
+      fillColor:
+          style?.fillColor?.resolve(states) ??
+          activeFill ??
+          merged.fillColor?.resolve(states) ??
+          defaultFill(),
+      borderColor:
+          style?.borderColor?.resolve(states) ??
+          activeBorder ??
+          merged.borderColor?.resolve(states) ??
+          defaultBorder(),
+      checkColor:
+          style?.checkColor?.resolve(states) ??
+          activeCheck ??
+          merged.checkColor?.resolve(states) ??
+          colors.onPrimary,
+      shadow: merged.shadow ?? theme.shadows.softElevation,
+    );
+  }
+}
+
+/// Item gaps of an `AnimalRadioGroup`, resolved over the same layers as its
+/// items: the group's `style`, the size theme, the general theme, then
+/// `spacing.lg` along a horizontal group or `spacing.sm` along a vertical
+/// one, with `spacing.sm` between runs.
+({double gap, double runGap}) resolveRadioGroupGaps({
+  required AnimalIslandTheme theme,
+  required AnimalRadioSize size,
+  required AnimalRadioStyle? style,
+  required Axis direction,
+}) {
+  final AnimalRadioThemeData? themed = theme.components.radio;
+  final AnimalRadioStyle? sized = switch (size) {
+    AnimalRadioSize.small => themed?.smallStyle,
+    AnimalRadioSize.middle => themed?.middleStyle,
+    AnimalRadioSize.large => themed?.largeStyle,
+  };
+  final AnimalRadioStyle merged = (style ?? AnimalRadioStyle())
+      .merge(sized)
+      .merge(themed?.style);
+  return (
+    gap:
+        merged.groupGap ??
+        (direction == Axis.horizontal ? theme.spacing.lg : theme.spacing.sm),
+    runGap: merged.groupRunGap ?? theme.spacing.sm,
+  );
 }

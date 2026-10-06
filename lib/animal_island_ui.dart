@@ -20,6 +20,25 @@ export 'src/foundation/theme/radii.dart' show AnimalThemeRadii;
 export 'src/foundation/theme/spacing.dart' show AnimalThemeSpacing;
 export 'src/foundation/theme/motion.dart' show AnimalThemeMotion;
 export 'src/foundation/theme/theme.dart' show AnimalIslandTheme;
+export 'src/foundation/theme/component_themes.dart' show AnimalComponentThemes;
+export 'src/foundation/theme/components/focus_ring_theme.dart'
+    show AnimalFocusRingStyle;
+export 'src/foundation/theme/components/input_theme.dart'
+    show AnimalInputStyle, AnimalInputThemeData;
+export 'src/foundation/theme/components/switch_theme.dart'
+    show AnimalSwitchStyle, AnimalSwitchThemeData;
+export 'src/foundation/theme/components/checkbox_theme.dart'
+    show AnimalCheckboxStyle, AnimalCheckboxThemeData;
+export 'src/foundation/theme/components/radio_theme.dart'
+    show AnimalRadioStyle, AnimalRadioThemeData;
+export 'src/foundation/theme/components/select_theme.dart'
+    show AnimalSelectStyle;
+export 'src/foundation/theme/components/date_picker_theme.dart'
+    show AnimalDatePickerStyle;
+export 'src/foundation/theme/components/time_picker_theme.dart'
+    show AnimalTimePickerStyle;
+export 'src/foundation/theme/components/form_item_theme.dart'
+    show AnimalFormItemStyle;
 export 'src/foundation/forms/animal_validation_issue.dart'
     show AnimalValidationIssue, AnimalValidationIssueKind;
 export 'src/foundation/forms/animal_field_key.dart' show AnimalFieldKey;

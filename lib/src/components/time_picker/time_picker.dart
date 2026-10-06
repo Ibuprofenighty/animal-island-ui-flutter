@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/models/clock.dart';
 import '../../foundation/models/time.dart';
+import '../../foundation/theme/components/time_picker_theme.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../input/input.dart';
@@ -20,6 +21,7 @@ export 'wheel_model.dart';
 /// - Supports [format] masks (e.g. 'HH:mm' or 'HH:mm:ss')
 /// - Inline panel or Popover trigger with [AnimalTimePicker.popover]
 /// - Unified [AnimalTimeValue] model with full hour, minute, and second support
+/// - Visual overrides through [style] and `AnimalIslandTheme.components.timePicker`
 class AnimalTimePicker extends StatelessWidget {
   final AnimalTimeValue? value;
   final ValueChanged<AnimalTimeValue?>? onChanged;
@@ -31,6 +33,9 @@ class AnimalTimePicker extends StatelessWidget {
   final bool allowClear;
   final bool disabled;
   final FocusNode? focusNode;
+
+  /// Overrides for this picker, taking precedence over the theme.
+  final AnimalTimePickerStyle? style;
 
   /// Canonical clock for Now.
   final AnimalClock clock;
@@ -47,6 +52,7 @@ class AnimalTimePicker extends StatelessWidget {
     this.allowClear = true,
     this.disabled = false,
     this.focusNode,
+    this.style,
     this.clock = const SystemClock(),
   }) {
     TimeWheelModel.validateStep(hourStep, 'hourStep');
@@ -69,6 +75,7 @@ class AnimalTimePicker extends StatelessWidget {
     bool disabled = false,
     AnimalInputStatus status = AnimalInputStatus.normal,
     FocusNode? focusNode,
+    AnimalTimePickerStyle? style,
     AnimalClock clock = const SystemClock(),
   }) {
     return _AnimalTimePickerPopover(
@@ -85,6 +92,7 @@ class AnimalTimePicker extends StatelessWidget {
       disabled: disabled,
       status: status,
       focusNode: focusNode,
+      style: style,
       clock: clock,
     );
   }
@@ -102,6 +110,7 @@ class AnimalTimePicker extends StatelessWidget {
       allowClear: allowClear,
       disabled: disabled,
       focusNode: focusNode,
+      style: style,
       clock: clock,
     );
   }
@@ -120,6 +129,7 @@ class _AnimalTimePickerPopover extends StatefulWidget {
   final bool disabled;
   final AnimalInputStatus status;
   final FocusNode? focusNode;
+  final AnimalTimePickerStyle? style;
   final AnimalClock clock;
 
   _AnimalTimePickerPopover({
@@ -136,6 +146,7 @@ class _AnimalTimePickerPopover extends StatefulWidget {
     this.disabled = false,
     this.status = AnimalInputStatus.normal,
     this.focusNode,
+    this.style,
     this.clock = const SystemClock(),
   }) {
     TimeWheelModel.validateStep(hourStep, 'hourStep');
@@ -174,33 +185,28 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
     final theme = AnimalIslandTheme.of(context);
     final localizations = AnimalLocalizations.of(context)!;
     final hasValue = widget.value != null;
+    final ResolvedTimePickerStyle resolved = ResolvedTimePickerStyle.resolve(
+      theme: theme,
+      style: widget.style,
+      disabled: widget.disabled,
+    );
 
-    final inputBg = widget.disabled
-        ? ((theme.colors.brightness == Brightness.dark)
-              ? theme.colors.surfaceHeader
-              : theme.colors.bgInputDisabled)
-        : theme.colors.bgInput;
-
-    final defaultBorderColor = (theme.colors.brightness == Brightness.dark)
-        ? theme.colors.border
-        : theme.colors.borderLight;
     final canInteract = !widget.disabled;
-    Color borderColor;
-    Color? glowColor;
-
-    if (widget.status == AnimalInputStatus.error) {
-      borderColor = theme.colors.error;
-      glowColor = theme.colors.error.withValues(alpha: 0.35);
-    } else if (widget.status == AnimalInputStatus.warning) {
-      borderColor = theme.colors.warning;
-      glowColor = theme.colors.warning.withValues(alpha: 0.35);
-    } else if (_menuController.isOpen || _isFocused) {
-      borderColor = theme.colors.focusYellow;
-      glowColor = theme.colors.focusYellow.withValues(alpha: 0.45);
-    } else {
-      borderColor = defaultBorderColor;
-      glowColor = null;
-    }
+    final bool error = widget.status == AnimalInputStatus.error;
+    final bool warning = widget.status == AnimalInputStatus.warning;
+    final bool focused = _menuController.isOpen || _isFocused;
+    final Color borderColor = resolved.triggerBorderColor(
+      focused: focused,
+      error: error,
+      warning: warning,
+    );
+    // The glow follows the resolved border: 35% alpha for a status and 45%
+    // for focus.
+    final Color? glowColor = error || warning
+        ? borderColor.withValues(alpha: 0.35)
+        : focused
+        ? borderColor.withValues(alpha: 0.45)
+        : null;
 
     final displayText = _displayText(localizations);
 
@@ -208,13 +214,13 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
       controller: _menuController,
       childFocusNode: _effectiveFocusNode,
       style: MenuStyle(
-        backgroundColor: WidgetStatePropertyAll(theme.colors.bgContent),
+        backgroundColor: WidgetStatePropertyAll(resolved.backgroundColor),
         elevation: const WidgetStatePropertyAll(0),
         padding: const WidgetStatePropertyAll(EdgeInsets.zero),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
-            borderRadius: theme.radii.cardBorder,
-            side: BorderSide(color: borderColor, width: 1.5),
+            borderRadius: resolved.borderRadius,
+            side: BorderSide(color: borderColor, width: resolved.borderWidth),
           ),
         ),
       ),
@@ -229,6 +235,7 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
           allowClear: widget.allowClear,
           disabled: widget.disabled,
           clock: widget.clock,
+          style: widget.style,
           onChanged: widget.onChanged,
         ),
       ],
@@ -250,9 +257,12 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
               disabled: !canInteract,
               focusNode: _effectiveFocusNode,
               semanticLabel: displayText,
-              borderRadius: theme.radii.pillBorder,
-              surfaceColor: inputBg,
-              border: Border.all(color: borderColor, width: 1.5),
+              borderRadius: resolved.triggerBorderRadius,
+              surfaceColor: resolved.triggerBackgroundColor,
+              border: Border.all(
+                color: borderColor,
+                width: resolved.triggerBorderWidth,
+              ),
               extraShadows: glowColor == null
                   ? null
                   : [
@@ -262,28 +272,20 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
                         spreadRadius: 1.0,
                       ),
                     ],
-              padding: EdgeInsets.symmetric(horizontal: theme.spacing.md),
+              padding: resolved.triggerPadding,
               onFocusChanged: (focused) => setState(() => _isFocused = focused),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     Icons.access_time_rounded,
-                    size: 16.0,
-                    color: widget.disabled
-                        ? theme.colors.textDisabled
-                        : theme.colors.textSecondary,
+                    size: resolved.triggerIconSize,
+                    color: resolved.triggerIconColor(),
                   ),
-                  SizedBox(width: theme.spacing.sm),
+                  SizedBox(width: resolved.triggerIconGap),
                   Text(
                     displayText,
-                    style: theme.typography.body.copyWith(
-                      color: hasValue
-                          ? (widget.disabled
-                                ? theme.colors.textDisabled
-                                : theme.colors.text)
-                          : theme.colors.textSecondary,
-                    ),
+                    style: resolved.triggerTextStyle(hasValue: hasValue),
                   ),
                 ],
               ),
@@ -297,8 +299,8 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
                 borderRadius: BorderRadius.circular(24),
                 child: Icon(
                   Icons.cancel_rounded,
-                  size: 16.0,
-                  color: theme.colors.textSecondary,
+                  size: resolved.triggerIconSize,
+                  color: resolved.triggerIconColor(clearIcon: true),
                 ),
               ),
           ],

@@ -277,20 +277,17 @@ class AnimalNotificationCardState extends State<AnimalNotificationCard>
             mainAxisSize: MainAxisSize.min,
             children: [
               DefaultTextStyle(
-                style: theme.typography.heading.copyWith(
-                  fontSize: theme.typography.heading.fontSize! * 0.75,
-                  color: headingColor,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: theme.typography.heading
+                    .apply(fontSizeFactor: 0.75)
+                    .copyWith(color: headingColor, fontWeight: FontWeight.w800),
                 child: widget.config.message,
               ),
               if (widget.config.description != null) ...[
                 SizedBox(height: theme.spacing.xs),
                 DefaultTextStyle(
-                  style: theme.typography.body.copyWith(
-                    fontSize: theme.typography.body.fontSize! * (13 / 14),
-                    color: theme.colors.textBody,
-                  ),
+                  style: theme.typography.body
+                      .apply(fontSizeFactor: (13 / 14))
+                      .copyWith(color: theme.colors.textBody),
                   child: widget.config.description!,
                 ),
               ],

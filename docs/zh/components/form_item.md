@@ -20,6 +20,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 - `margin`
 - `required`
 - `rules`
+- `style`
 - `textController`
 
 <!-- generated:api:end -->
@@ -44,6 +45,19 @@ Controller 在注册时冻结该值作为 baseline。文本字段必须显式传
 请把 key 保存在所属 State 或其他稳定 owner 中，不要在 `build` 中创建。
 普通重建和通过 `GlobalKey` 移动同一个 State 都会保留 registration generation、当前值和 baseline。
 重新挂载的新 item 会取得新 generation，并以当前类型化初始值捕获 baseline。
+
+## 定制
+
+`style` 接受 `AnimalFormItemStyle`，只覆盖当前表单项。主题的
+`components.formItem` 是作用于所有表单项的 `AnimalFormItemStyle`；表单项没有尺寸预设。
+未设置的字段回落到由当前 token 推导的默认值：标签为 `typography.body`、字重 600、
+颜色 `colors.text`；必填标记为加粗的 `typography.body`、颜色 `colors.errorText`；
+帮助与错误文字为 `typography.caption`，颜色分别为 `colors.textSecondary` 与
+`colors.errorText`（错误文字字重 500）；标签与反馈间距为 `spacing.sm - spacing.xxs`；
+`bottomMargin`（表单项下方的间距）为 `spacing.lg`；反馈过渡时长为 `motion.fast * 4/3`。
+
+文字样式自带颜色并逐字段合并，部分样式会保留下层的其余字段。显式的 `margin`
+仍会替代 `bottomMargin`。
 
 ## 示例
 参见示例 Gallery 中的 [`form_item_story.dart`](../../../example/lib/stories/form_item_story.dart)。

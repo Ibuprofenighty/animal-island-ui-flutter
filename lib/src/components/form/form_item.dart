@@ -5,12 +5,16 @@ import '../../foundation/forms/animal_field_key.dart';
 import '../../foundation/forms/animal_validation_issue.dart';
 import '../../foundation/localization/animal_validation_issue_formatter.dart';
 import '../../foundation/localization/generated/animal_localizations.g.dart';
+import '../../foundation/theme/components/form_item_theme.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/form/form_scope.dart';
 import 'form_controller.dart';
 import 'validation.dart';
 
 /// Form field layout and accessibility wrapper backed by one live registration.
+///
+/// Visual overrides come from [style] and `AnimalIslandTheme.components.formItem`;
+/// see [AnimalFormItemStyle].
 class AnimalFormItem<T> extends StatefulWidget {
   final AnimalFieldKey<T> fieldKey;
   final String? label;
@@ -27,6 +31,9 @@ class AnimalFormItem<T> extends StatefulWidget {
   builder;
   final EdgeInsetsGeometry? margin;
 
+  /// Visual overrides for this item; they take precedence over the theme.
+  final AnimalFormItemStyle? style;
+
   const AnimalFormItem({
     super.key,
     required this.fieldKey,
@@ -40,6 +47,7 @@ class AnimalFormItem<T> extends StatefulWidget {
     this.focusNode,
     required this.builder,
     this.margin,
+    this.style,
   });
 
   @override
@@ -195,6 +203,10 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
+    final resolved = _ResolvedFormItemStyle.resolve(
+      theme: theme,
+      style: widget.style,
+    );
     final controller = _controller;
     final registration = _registration;
     if (controller == null || registration == null) {
@@ -202,14 +214,14 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
     }
 
     return Padding(
-      padding: widget.margin ?? EdgeInsets.only(bottom: theme.spacing.lg),
+      padding: widget.margin ?? EdgeInsets.only(bottom: resolved.bottomMargin),
       child: AnimatedBuilder(
         animation: registration,
         builder: (context, _) {
           final binding = controller.bindingFor<T>(registration);
           return _buildItemShell(
             context,
-            theme,
+            resolved,
             widget.builder(context, binding),
             binding.error,
           );
@@ -220,7 +232,7 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
 
   Widget _buildItemShell(
     BuildContext context,
-    AnimalIslandTheme theme,
+    _ResolvedFormItemStyle resolved,
     Widget content,
     AnimalValidationIssue? error,
   ) {
@@ -233,46 +245,32 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (hasLabel) ...[
-          _buildLabel(context, theme),
-          SizedBox(height: theme.spacing.sm - theme.spacing.xxs),
+          _buildLabel(context, resolved),
+          SizedBox(height: resolved.labelGap),
         ],
         content,
-        _buildFeedback(context, theme, error),
+        _buildFeedback(context, resolved, error),
       ],
     );
   }
 
-  Widget _buildLabel(BuildContext context, AnimalIslandTheme theme) {
+  Widget _buildLabel(BuildContext context, _ResolvedFormItemStyle resolved) {
     if (widget.labelWidget != null) return widget.labelWidget!;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.required) ...[
-          Text(
-            '* ',
-            style: theme.typography.body.copyWith(
-              color: theme.colors.errorText,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text('* ', style: resolved.requiredMarkTextStyle),
         ],
-        Flexible(
-          child: Text(
-            widget.label!,
-            style: theme.typography.body.copyWith(
-              fontWeight: FontWeight.w600,
-              color: theme.colors.text,
-            ),
-          ),
-        ),
+        Flexible(child: Text(widget.label!, style: resolved.labelTextStyle)),
       ],
     );
   }
 
   Widget _buildFeedback(
     BuildContext context,
-    AnimalIslandTheme theme,
+    _ResolvedFormItemStyle resolved,
     AnimalValidationIssue? error,
   ) {
     final errorText = error == null
@@ -287,7 +285,7 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
     if (!hasError && !hasHelp) return const SizedBox.shrink();
 
     return AnimatedSwitcher(
-      duration: theme.motion.fast * (200 / 150),
+      duration: resolved.feedbackDuration,
       transitionBuilder: (child, animation) => FadeTransition(
         opacity: animation,
         child: SizeTransition(
@@ -299,34 +297,95 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
       child: hasError
           ? Padding(
               key: const ValueKey('form_item_error'),
-              padding: EdgeInsets.only(
-                top: theme.spacing.sm - theme.spacing.xxs,
-              ),
+              padding: EdgeInsets.only(top: resolved.feedbackGap),
               child: Semantics(
                 liveRegion: true,
-                child: Text(
-                  errorText,
-                  style: theme.typography.caption.copyWith(
-                    color: theme.colors.errorText,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                child: Text(errorText, style: resolved.errorTextStyle),
               ),
             )
           : (hasHelp
                 ? Padding(
                     key: const ValueKey('form_item_help'),
-                    padding: EdgeInsets.only(
-                      top: theme.spacing.sm - theme.spacing.xxs,
-                    ),
-                    child: Text(
-                      widget.help!,
-                      style: theme.typography.caption.copyWith(
-                        color: theme.colors.textSecondary,
-                      ),
-                    ),
+                    padding: EdgeInsets.only(top: resolved.feedbackGap),
+                    child: Text(widget.help!, style: resolved.helpTextStyle),
                   )
                 : const SizedBox.shrink()),
+    );
+  }
+}
+
+/// The one place [AnimalFormItem] turns its layers into concrete values.
+///
+/// Precedence: the item's own style, then the theme's form-item style, then
+/// defaults derived from theme tokens.
+class _ResolvedFormItemStyle {
+  final TextStyle labelTextStyle;
+  final TextStyle requiredMarkTextStyle;
+  final TextStyle helpTextStyle;
+  final TextStyle errorTextStyle;
+  final double labelGap;
+  final double feedbackGap;
+  final double bottomMargin;
+  final Duration feedbackDuration;
+
+  const _ResolvedFormItemStyle._({
+    required this.labelTextStyle,
+    required this.requiredMarkTextStyle,
+    required this.helpTextStyle,
+    required this.errorTextStyle,
+    required this.labelGap,
+    required this.feedbackGap,
+    required this.bottomMargin,
+    required this.feedbackDuration,
+  });
+
+  static _ResolvedFormItemStyle resolve({
+    required AnimalIslandTheme theme,
+    required AnimalFormItemStyle? style,
+  }) {
+    final AnimalFormItemStyle merged = (style ?? AnimalFormItemStyle()).merge(
+      theme.components.formItem,
+    );
+    final colors = theme.colors;
+    final typography = theme.typography;
+    // Label and feedback lines sit one step below spacing.sm; the spacing
+    // scale is validated as ordered, so the difference is never negative.
+    final double gap = theme.spacing.sm - theme.spacing.xxs;
+
+    TextStyle text(TextStyle base, TextStyle? override) =>
+        typography.resolve(base.merge(override));
+
+    return _ResolvedFormItemStyle._(
+      labelTextStyle: text(
+        typography.body.copyWith(
+          fontWeight: FontWeight.w600,
+          color: colors.text,
+        ),
+        merged.labelTextStyle,
+      ),
+      requiredMarkTextStyle: text(
+        typography.body.copyWith(
+          color: colors.errorText,
+          fontWeight: FontWeight.bold,
+        ),
+        merged.requiredMarkTextStyle,
+      ),
+      helpTextStyle: text(
+        typography.caption.copyWith(color: colors.textSecondary),
+        merged.helpTextStyle,
+      ),
+      errorTextStyle: text(
+        typography.caption.copyWith(
+          color: colors.errorText,
+          fontWeight: FontWeight.w500,
+        ),
+        merged.errorTextStyle,
+      ),
+      labelGap: merged.labelGap ?? gap,
+      feedbackGap: merged.feedbackGap ?? gap,
+      bottomMargin: merged.bottomMargin ?? theme.spacing.lg,
+      feedbackDuration:
+          merged.feedbackDuration ?? theme.motion.fast * (200 / 150),
     );
   }
 }

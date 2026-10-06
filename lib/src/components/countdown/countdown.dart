@@ -209,30 +209,15 @@ class _AnimalCountdownState extends State<AnimalCountdown> {
     if (notifyWhenChanged && changed) widget.onChange?.call(current);
   }
 
-  (double width, double height, double fontSize, double labelSize)
+  (double width, double height, double digitFactor, double labelFactor)
   _resolveSizes(AnimalIslandTheme theme) {
     switch (widget.size) {
       case AnimalCountdownSize.small:
-        return (
-          40.0,
-          36.0,
-          theme.typography.countdown.fontSize! * (15 / 28),
-          theme.typography.caption.fontSize! * (9 / 12),
-        );
+        return (40.0, 36.0, 15 / 28, 9 / 12);
       case AnimalCountdownSize.middle:
-        return (
-          54.0,
-          48.0,
-          theme.typography.countdown.fontSize! * (22 / 28),
-          theme.typography.caption.fontSize! * (10 / 12),
-        );
+        return (54.0, 48.0, 22 / 28, 10 / 12);
       case AnimalCountdownSize.large:
-        return (
-          68.0,
-          60.0,
-          theme.typography.countdown.fontSize!,
-          theme.typography.caption.fontSize! * (11 / 12),
-        );
+        return (68.0, 60.0, 1.0, 11 / 12);
     }
   }
 
@@ -332,7 +317,7 @@ class _AnimalCountdownState extends State<AnimalCountdown> {
   }
 
   Widget _buildTile(String value, String label, AnimalIslandTheme theme) {
-    final (w, h, fontSz, labelSz) = _resolveSizes(theme);
+    final (w, h, digitFactor, labelFactor) = _resolveSizes(theme);
     final isDark = theme.colors.brightness == Brightness.dark;
     final borderColor = isDark ? theme.colors.border : theme.colors.borderLight;
     final tileBg = widget.variant == AnimalCountdownVariant.island
@@ -366,27 +351,27 @@ class _AnimalCountdownState extends State<AnimalCountdown> {
           alignment: Alignment.center,
           child: Text(
             value,
-            style: theme.typography.countdown.copyWith(
-              fontSize: fontSz,
-              color: theme.colors.text,
-            ),
+            style: theme.typography.countdown
+                .apply(fontSizeFactor: digitFactor)
+                .copyWith(color: theme.colors.text),
           ),
         ),
         SizedBox(height: theme.spacing.sm - theme.spacing.xxs),
         Text(
           label,
-          style: theme.typography.caption.copyWith(
-            fontWeight: FontWeight.w700,
-            fontSize: labelSz,
-            color: theme.colors.textSecondary,
-          ),
+          style: theme.typography.caption
+              .apply(fontSizeFactor: labelFactor)
+              .copyWith(
+                fontWeight: FontWeight.w700,
+                color: theme.colors.textSecondary,
+              ),
         ),
       ],
     );
   }
 
   Widget _buildSeparator(AnimalIslandTheme theme) {
-    final (_, _, fontSz, _) = _resolveSizes(theme);
+    final (_, _, digitFactor, _) = _resolveSizes(theme);
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: widget.size == AnimalCountdownSize.small
@@ -396,11 +381,9 @@ class _AnimalCountdownState extends State<AnimalCountdown> {
       ),
       child: Text(
         ':',
-        style: theme.typography.countdown.copyWith(
-          fontSize: fontSz,
-          fontWeight: FontWeight.w900,
-          color: theme.colors.text,
-        ),
+        style: theme.typography.countdown
+            .apply(fontSizeFactor: digitFactor)
+            .copyWith(fontWeight: FontWeight.w900, color: theme.colors.text),
       ),
     );
   }

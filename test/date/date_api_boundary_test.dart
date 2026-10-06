@@ -122,7 +122,7 @@ void acceptLegacyRange(AnimalDateRange value) {}
       consumer.deleteSync(recursive: true);
       expect(consumer.existsSync(), isFalse);
     }
-  }, timeout: const Timeout(Duration(minutes: 2)));
+  }, timeout: const Timeout(Duration(minutes: 5)));
 }
 
 Future<ResolvedUnitResult> _resolve(

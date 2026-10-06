@@ -18,6 +18,7 @@
 - `onChanged`
 - `secondStep`
 - `showNow`
+- `style`
 - `value`
 
 <!-- generated:api:end -->
@@ -40,6 +41,31 @@ Default prompts, panel actions, and wheel-value semantics use generated AnimalLo
 ## Interaction and accessibility
 
 Each actionable part responds to pointer taps and, when focused, to Enter or Space, with matching accessibility semantics and focus handling. Where the component groups several items, keyboard navigation between them is handled by the component itself. Each action has a 48 logical-pixel hit target, adjacent actions do not overlap, and a pending activation is cancelled when the control loses focus, is disabled, is hidden, has its callback replaced, or is unmounted.
+
+## Customization
+
+`style` takes an `AnimalTimePickerStyle` and overrides the theme for this
+picker; `AnimalTimePicker.popover(style: ...)` applies the same style to the
+trigger and its panel. The theme's `components.timePicker` is an
+`AnimalTimePickerStyle` that applies to every picker (there are no size
+presets). Unset fields fall back to defaults derived from the active tokens:
+the title and wheel separators use `typography.heading`, the selected wheel
+label `typography.subheading`, other wheel labels and the trigger text
+`typography.body`, and the Now and Clear labels `typography.caption`, each at
+ratio 1. The focused trigger border uses the library focus color.
+
+Panel colors resolve against `WidgetState.disabled`; wheel labels also against
+`WidgetState.selected`. The trigger border resolves against `focused` (also
+while the menu is open) and `error`; the warning status uses `warningColor`,
+and the status or focus glow follows the resolved border color.
+
+`minItemExtent` (36 by default) is a minimum: each wheel item and the selection
+band grow to the rendered height of the larger wheel label under the ambient
+text scaler, and `wheelHeight` (160 by default) grows to show at least three
+items, so labels never clip at large type or 200% text scale. Footer labels
+scale down instead of overflowing a narrow panel. When the extent changes the
+wheels re-centre on the shown time without proposing a value; a wheel the user
+is dragging keeps its position and is re-centred when the drag ends.
 
 ## Example
 See [`time_picker_story.dart`](../../../../example/lib/stories/time_picker_story.dart) in the example Gallery.

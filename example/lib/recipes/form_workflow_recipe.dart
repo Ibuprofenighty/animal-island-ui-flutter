@@ -274,9 +274,7 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                       return Row(
                         children: [
                           ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: AnimalSwitchSize.defaultSize.width,
-                            ),
+                            constraints: const BoxConstraints(maxWidth: 58),
                             child: AnimalSwitch(
                               value: binding.value ?? false,
                               onChanged: binding.onChanged,

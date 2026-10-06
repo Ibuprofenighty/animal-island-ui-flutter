@@ -137,7 +137,12 @@ void main() {
             AnimalIslandTheme.light,
             AnimalIslandTheme.dark,
           ]) {
-            for (final AnimalCheckboxSize size in AnimalCheckboxSize.values) {
+            for (final (AnimalCheckboxSize size, double boxSize)
+                in <(AnimalCheckboxSize, double)>[
+                  (AnimalCheckboxSize.small, 18),
+                  (AnimalCheckboxSize.middle, 22),
+                  (AnimalCheckboxSize.large, 26),
+                ]) {
               for (final double textScale in <double>[1, 2]) {
                 final AnimalFormController controller = AnimalFormController();
                 addTearDown(controller.dispose);
@@ -211,10 +216,7 @@ void main() {
                   matching: find.byType(AnimatedContainer),
                 );
                 final Finder controlBox = control.last;
-                expect(
-                  tester.getSize(controlBox),
-                  Size(size.boxSize, size.boxSize),
-                );
+                expect(tester.getSize(controlBox), Size(boxSize, boxSize));
                 final BoxDecoration controlDecoration =
                     tester.widget<AnimatedContainer>(controlBox).decoration!
                         as BoxDecoration;

@@ -4,6 +4,8 @@ import 'package:flutter/painting.dart';
 /// Typography tokens owned by one theme.
 ///
 /// Colors stay in the color family; these styles define font metrics and weight.
+/// Every style carries a finite, positive font size, so components can scale a
+/// role with `TextStyle.apply(fontSizeFactor: ...)`.
 /// The family has no dependency on the theme extension, so it cannot form a
 /// reverse dependency cycle.
 @immutable
@@ -52,11 +54,12 @@ class AnimalThemeTypography {
       'digitLarge': digitLarge,
     }.entries) {
       final style = entry.value;
-      if (style.fontSize case final size? when !size.isFinite || size <= 0) {
+      final size = style.fontSize;
+      if (size == null || !size.isFinite || size <= 0) {
         throw ArgumentError.value(
           size,
           entry.key,
-          'font size must be finite and positive',
+          'font size must be present, finite and positive',
         );
       }
       if (style.height case final height?

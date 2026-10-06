@@ -99,9 +99,7 @@ void main() {
           Row(
             children: [
               ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: AnimalSwitchSize.defaultSize.width,
-                ),
+                constraints: const BoxConstraints(maxWidth: 58),
                 child: AnimalSwitch(value: true, onChanged: (_) {}),
               ),
               const SizedBox(width: 16),

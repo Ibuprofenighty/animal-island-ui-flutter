@@ -44,6 +44,12 @@ widths use two decimal places; zero and negative widths canonicalize to `0`.
    shadow belongs to filled primary and danger buttons, not to every widget.
 7. When customizing colors, keep readable foreground/background pairs and use the
    semantic `*Text` roles for text on ordinary surfaces.
+8. Customize component visuals through one path. A component's `style`
+   parameter overrides `AnimalIslandTheme.components`, which overrides defaults
+   derived from the token families; both layers use the same `Animal*Style`
+   type (for example `AnimalInputStyle`). Sized components also accept per-size
+   theme styles such as `middleStyle`. Never wrap a component to restyle it, and
+   never hard-code a value the style or tokens already provide.
 
 ## Interaction
 
@@ -63,7 +69,8 @@ the thumb border is 1.2 logical pixels, and the label/thumb gap is 4 logical
 pixels.
 The track requires an inset shadow and has
 no outer shadow; the bordered thumb remains flat. The public `size` enum selects
-these presets; there is no arbitrary track-geometry style parameter. ON/OFF
+these presets, and `AnimalSwitchStyle` (instance or `components.switchControl`)
+overrides any of them. ON/OFF
 children mount once and share a stable label area beside the thumb. Both labels
 use the same constrained layout, and their actual content dimensions determine
 an area that fits either state alongside the thumb and padding. During a
@@ -92,11 +99,11 @@ suppress these transitions.
 active `TextScaler`, and vertical spacing. Rows show up to two lines with
 ellipsis and keep a minimum 48×48 logical-pixel hit target. Theme tokens supply
 menu colors, body typography, radii, and spacing. Menu width and list viewport
-height cap at 320 logical pixels; width also fits the available viewport minus
-24 logical pixels. The trigger label uses other theme body attributes at a
-fixed 15 logical-pixel font size, with state-dependent color and active
-`TextScaler`. The public API does not expose menu geometry overrides, and the
-list remains lazy.
+height default to a 320 logical-pixel cap (`menuMaxWidth`, `menuMaxHeight`); width
+also fits the available viewport minus 24 logical pixels. The trigger label defaults to theme body scaled by 15/14,
+with state-dependent color and active `TextScaler`. `AnimalSelectStyle`
+overrides trigger, menu and option geometry, text and colors; the 48 logical-pixel
+option floor stays fixed, and the list remains lazy.
 Checkbox field errors are formatted and announced by the surrounding
 `AnimalFormItem`; the checkbox owns only its checked and mixed state.
 

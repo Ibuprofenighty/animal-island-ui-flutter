@@ -7,6 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:animal_island_ui/src/internal/interaction/interactive_region.dart';
 
+// Default light-preset metrics per size: minimum track width and height and
+// thumb diameter.
+const Map<AnimalSwitchSize, ({double width, double height, double thumbSize})>
+_defaultMetrics =
+    <AnimalSwitchSize, ({double width, double height, double thumbSize})>{
+      AnimalSwitchSize.small: (width: 46, height: 26, thumbSize: 18),
+      AnimalSwitchSize.defaultSize: (width: 58, height: 32, thumbSize: 24),
+    };
+
 void main() {
   group('AnimalSwitch Tests (C13 / SW01-SW03)', () {
     setUpAll(() async {
@@ -235,8 +244,14 @@ void main() {
                       ? neighborRect.left - hitRect.right
                       : hitRect.left - neighborRect.right;
                   expect(neighborGap, closeTo(12, 0.1));
-                  expect(trackRect.width, greaterThanOrEqualTo(size.width));
-                  expect(trackRect.height, greaterThanOrEqualTo(size.height));
+                  expect(
+                    trackRect.width,
+                    greaterThanOrEqualTo(_defaultMetrics[size]!.width),
+                  );
+                  expect(
+                    trackRect.height,
+                    greaterThanOrEqualTo(_defaultMetrics[size]!.height),
+                  );
                   expect(
                     trackRect.width,
                     greaterThanOrEqualTo(trackRect.height),
@@ -246,7 +261,13 @@ void main() {
                       .toRRect(trackRect)
                       .scaleRadii();
                   expect(renderedTrackShape.isStadium, isTrue);
-                  expect(thumbRect.size, Size(size.thumbSize, size.thumbSize));
+                  expect(
+                    thumbRect.size,
+                    Size(
+                      _defaultMetrics[size]!.thumbSize,
+                      _defaultMetrics[size]!.thumbSize,
+                    ),
+                  );
                   expect(
                     (thumbRect.center.dy - trackRect.center.dy).abs(),
                     lessThanOrEqualTo(1),
@@ -264,7 +285,12 @@ void main() {
                       (trackDecoration.border! as Border).left.width;
                   expect(
                     thumbEndpointInset - trackBorderInset,
-                    closeTo((size.height - size.thumbSize) / 2, 0.1),
+                    closeTo(
+                      (_defaultMetrics[size]!.height -
+                              _defaultMetrics[size]!.thumbSize) /
+                          2,
+                      0.1,
+                    ),
                   );
                   final String labelText = value ? 'ON' : 'OFF';
                   final Finder labelFinder = find.text(labelText);
@@ -593,12 +619,7 @@ void main() {
           expect(checkedWidth.isFinite, isTrue);
           expect(uncheckedWidth.isFinite, isTrue);
           expect(checkedWidth, closeTo(uncheckedWidth, 0.1));
-          expect(
-            checkedWidth,
-            lessThanOrEqualTo(
-              maxWidth - AnimalSwitchSize.defaultSize.height - 4,
-            ),
-          );
+          expect(checkedWidth, lessThanOrEqualTo(maxWidth - 32 - 4));
           final Finder track = find
               .descendant(
                 of: find.byType(AnimalSwitch),
@@ -691,7 +712,7 @@ void main() {
             .last;
         final Size offSize = tester.getSize(track);
         expect(offSize.width, lessThanOrEqualTo(84));
-        expect(offSize.height, greaterThan(AnimalSwitchSize.small.height));
+        expect(offSize.height, greaterThan(26));
         final Finder offLabel = find.text('OFF keeps every word visible');
         final RenderParagraph offParagraph = tester
             .renderObject<RenderParagraph>(offLabel);

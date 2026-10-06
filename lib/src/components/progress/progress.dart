@@ -278,18 +278,19 @@ class _AnimalProgressState extends State<AnimalProgress>
                       padding: EdgeInsets.only(right: theme.spacing.sm),
                       child: Text(
                         infoText,
-                        style: theme.typography.button.copyWith(
-                          fontSize: theme.typography.button.fontSize! * 0.8,
-                          color: _resolveOnFillColor(theme),
-                          shadows: <Shadow>[
-                            Shadow(
-                              color: theme.shadows.softElevation.color,
-                              offset: theme.shadows.softElevation.offset,
-                              blurRadius:
-                                  theme.shadows.softElevation.blurRadius,
+                        style: theme.typography.button
+                            .apply(fontSizeFactor: 0.8)
+                            .copyWith(
+                              color: _resolveOnFillColor(theme),
+                              shadows: <Shadow>[
+                                Shadow(
+                                  color: theme.shadows.softElevation.color,
+                                  offset: theme.shadows.softElevation.offset,
+                                  blurRadius:
+                                      theme.shadows.softElevation.blurRadius,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
                       ),
                     ),
                   ),
@@ -420,12 +421,9 @@ class _AnimalCircularProgressState extends State<_AnimalCircularProgress> {
             if (widget.showInfo)
               Text(
                 infoText,
-                style: theme.typography.digitLarge.copyWith(
-                  fontSize:
-                      theme.typography.digitLarge.fontSize! *
-                      (widget.circleSize / 180),
-                  color: theme.colors.text,
-                ),
+                style: theme.typography.digitLarge
+                    .apply(fontSizeFactor: (widget.circleSize / 180))
+                    .copyWith(color: theme.colors.text),
               ),
           ],
         ),

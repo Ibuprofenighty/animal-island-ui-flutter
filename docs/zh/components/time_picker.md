@@ -20,6 +20,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 - `onChanged`
 - `secondStep`
 - `showNow`
+- `style`
 - `value`
 
 <!-- generated:api:end -->
@@ -42,6 +43,25 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 ## 交互与无障碍
 
 每个可操作部分响应指针点击，并在获得焦点时响应 Enter 或 Space，同时提供对应的无障碍语义和焦点处理。组件包含多个项目时，项目之间的键盘导航由组件自身处理。每个操作的命中区域为 48 逻辑像素，相邻操作互不重叠；控件失去焦点、被禁用、被隐藏、回调被替换或被卸载时，未完成的激活会被取消。
+
+## 定制
+
+`style` 接受 `AnimalTimePickerStyle`，只覆盖当前选择器；
+`AnimalTimePicker.popover(style: ...)` 将同一样式应用于触发器及其面板。主题的
+`components.timePicker` 是一个作用于所有选择器的 `AnimalTimePickerStyle`（没有尺寸预设）。
+未设置的字段回落到由当前 token 推导的默认值：标题和滚轮分隔符使用
+`typography.heading`，选中滚轮标签使用 `typography.subheading`，其他滚轮标签和触发器文字使用
+`typography.body`，“现在”和“清除”标签使用 `typography.caption`，比例均为 1。
+聚焦的触发器边框使用库统一的焦点色。
+
+面板颜色按 `WidgetState.disabled` 解析，滚轮标签还按 `WidgetState.selected` 解析。
+触发器边框按 `focused`（菜单打开时同样适用）和 `error` 解析；warning 状态使用
+`warningColor`，状态或焦点光晕跟随解析后的边框颜色。
+
+`minItemExtent`（默认 36）是最小值：每个滚轮项和选中带会增长到环境文字缩放下较大滚轮标签的
+实际渲染高度，`wheelHeight`（默认 160）会增长到至少显示三项，因此大字号或 200% 文字缩放下
+标签不会被裁切。页脚标签在面板较窄时缩小而不是溢出。项高度变化时，滚轮重新居中到当前显示的
+时间且不提出任何值；用户正在拖动的滚轮保持位置，并在拖动结束时重新居中。
 
 ## 示例
 参见示例 Gallery 中的 [`time_picker_story.dart`](../../../example/lib/stories/time_picker_story.dart)。

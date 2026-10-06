@@ -28,6 +28,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 - `shadow`
 - `size`
 - `status`
+- `style`
 - `suffix`
 - `textInputAction`
 
@@ -62,6 +63,19 @@ outside the editable area at every size. The selected size height is a minimum.
 Prefix and suffix are bounded to part of the available width, wrap when large
 text scaling needs more room, and let the input grow without shrinking text or
 covering the editable area.
+
+## Customization
+
+`style` takes an `AnimalInputStyle` and overrides the theme for this input.
+The theme's `components.input` (`AnimalInputThemeData`) applies a general
+`style` and optional `smallStyle`, `middleStyle` and `largeStyle`. Unset
+fields fall back to defaults derived from the active tokens: text is
+`typography.body` scaled by 13/14, 15/14 or 17/14 by size, and the focused
+border uses the library focus color.
+
+Colors resolve against `WidgetState.disabled`, `focused` and `error`; the
+warning status uses `warningColor`. The status glow follows the resolved border
+color.
 
 ## Example
 See [`input_story.dart`](../../../example/lib/stories/input_story.dart) in the example Gallery.

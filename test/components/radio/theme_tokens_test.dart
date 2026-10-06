@@ -72,23 +72,17 @@ void main() {
               widget is AnimatedContainer &&
               widget.decoration is BoxDecoration &&
               (widget.decoration! as BoxDecoration).borderRadius ==
-                  BorderRadius.circular(AnimalRadioSize.middle.borderRadius),
+                  BorderRadius.circular(14),
         ),
       );
 
       final selectedBoxFinder = boxFinder('selected');
       expect(selectedBoxFinder, findsOneWidget);
       final selectedBox = tester.widget<AnimatedContainer>(selectedBoxFinder);
-      expect(
-        tester.getSize(selectedBoxFinder),
-        Size(AnimalRadioSize.middle.boxSize, AnimalRadioSize.middle.boxSize),
-      );
+      expect(tester.getSize(selectedBoxFinder), const Size(22, 22));
       final selectedDecoration = selectedBox.decoration! as BoxDecoration;
       expect(selectedDecoration.color, theme.colors.primary);
-      expect(
-        selectedDecoration.borderRadius,
-        BorderRadius.circular(AnimalRadioSize.middle.borderRadius),
-      );
+      expect(selectedDecoration.borderRadius, BorderRadius.circular(14));
       expect(selectedDecoration.boxShadow, [theme.shadows.softElevation]);
       expect(selectedBox.duration, theme.motion.fast);
       expect(selectedBox.curve, theme.motion.ease);
@@ -115,7 +109,7 @@ void main() {
                 .first,
           )
           .style;
-      expect(selectedLabel.fontSize, AnimalRadioSize.middle.fontSize);
+      expect(selectedLabel.fontSize, theme.typography.body.fontSize);
       expect(selectedLabel.color, theme.colors.text);
       expect(
         themeContrastRatio(selectedLabel.color!, theme.colors.bg),

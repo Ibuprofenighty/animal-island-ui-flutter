@@ -171,6 +171,7 @@
             "onChanged",
             "readOnly",
             "size",
+            "style",
             "value"
           ]
         }
@@ -199,6 +200,7 @@
             "options",
             "readOnly",
             "size",
+            "style",
             "value"
           ]
         }
@@ -334,7 +336,8 @@
             "mode",
             "onChanged",
             "selection",
-            "showToday"
+            "showToday",
+            "style"
           ]
         }
       },
@@ -513,6 +516,7 @@
             "margin",
             "required",
             "rules",
+            "style",
             "textController"
           ]
         }
@@ -617,6 +621,7 @@
             "shadow",
             "size",
             "status",
+            "style",
             "suffix",
             "textInputAction"
           ]
@@ -850,6 +855,7 @@
             "onChanged",
             "readOnly",
             "size",
+            "style",
             "value"
           ]
         }
@@ -879,6 +885,7 @@
             "options",
             "readOnly",
             "size",
+            "style",
             "value"
           ]
         }
@@ -902,6 +909,7 @@
             "placeholder",
             "readOnly",
             "status",
+            "style",
             "value"
           ]
         }
@@ -958,6 +966,7 @@
             "onChanged",
             "readOnly",
             "size",
+            "style",
             "unCheckedChildren",
             "value"
           ]
@@ -1115,6 +1124,7 @@
             "onChanged",
             "secondStep",
             "showNow",
+            "style",
             "value"
           ]
         }
@@ -1723,6 +1733,400 @@
       "topLevelVariables": {},
       "functions": {}
     },
+    "lib/src/foundation/theme/component_themes.dart": {
+      "classes": {
+        "AnimalComponentThemes": {
+          "constructors": [
+            "AnimalComponentThemes"
+          ],
+          "fields": [
+            "checkbox",
+            "datePicker",
+            "focusRing",
+            "formItem",
+            "hashCode",
+            "input",
+            "radio",
+            "select",
+            "switchControl",
+            "timePicker"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/checkbox_theme.dart": {
+      "classes": {
+        "AnimalCheckboxStyle": {
+          "constructors": [
+            "AnimalCheckboxStyle"
+          ],
+          "fields": [
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "boxSize",
+            "checkColor",
+            "fillColor",
+            "groupGap",
+            "groupRunGap",
+            "hashCode",
+            "iconSize",
+            "labelGap",
+            "labelTextColor",
+            "labelTextStyle",
+            "shadow"
+          ]
+        },
+        "AnimalCheckboxThemeData": {
+          "constructors": [
+            "AnimalCheckboxThemeData"
+          ],
+          "fields": [
+            "hashCode",
+            "largeStyle",
+            "middleStyle",
+            "smallStyle",
+            "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/date_picker_theme.dart": {
+      "classes": {
+        "AnimalDatePickerStyle": {
+          "constructors": [
+            "AnimalDatePickerStyle"
+          ],
+          "fields": [
+            "actionHorizontalPadding",
+            "actionTextStyle",
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "cellGap",
+            "cellInset",
+            "cellTextColor",
+            "cellTextStyle",
+            "clearTextColor",
+            "footerGap",
+            "hashCode",
+            "headerTextColor",
+            "headerTextStyle",
+            "monthBorderColor",
+            "monthBorderRadius",
+            "monthBorderWidth",
+            "navigationIconSize",
+            "outsideMonthTextColor",
+            "padding",
+            "placeholderTextColor",
+            "rangeBackgroundColor",
+            "rangeBorderRadius",
+            "rangeTextColor",
+            "sectionGap",
+            "selectedBackgroundColor",
+            "todayTextColor",
+            "triggerBackgroundColor",
+            "triggerBorderRadius",
+            "triggerHorizontalPadding",
+            "triggerIconColor",
+            "triggerIconGap",
+            "triggerIconSize",
+            "triggerTextColor",
+            "triggerTextStyle",
+            "warningColor",
+            "weekdayTextColor",
+            "weekdayTextStyle",
+            "width"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/focus_ring_theme.dart": {
+      "classes": {
+        "AnimalFocusRingStyle": {
+          "constructors": [
+            "AnimalFocusRingStyle"
+          ],
+          "fields": [
+            "color",
+            "hashCode",
+            "minimumWidth",
+            "offset",
+            "width"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/form_item_theme.dart": {
+      "classes": {
+        "AnimalFormItemStyle": {
+          "constructors": [
+            "AnimalFormItemStyle"
+          ],
+          "fields": [
+            "bottomMargin",
+            "errorTextStyle",
+            "feedbackDuration",
+            "feedbackGap",
+            "hashCode",
+            "helpTextStyle",
+            "labelGap",
+            "labelTextStyle",
+            "requiredMarkTextStyle"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/input_theme.dart": {
+      "classes": {
+        "AnimalInputStyle": {
+          "constructors": [
+            "AnimalInputStyle"
+          ],
+          "fields": [
+            "adornmentGap",
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "clearButtonPadding",
+            "clearIconColor",
+            "cursorColor",
+            "depthShadow",
+            "hashCode",
+            "horizontalPadding",
+            "iconSize",
+            "minHeight",
+            "multilineBorderRadius",
+            "multilineVerticalPadding",
+            "placeholderTextColor",
+            "placeholderTextStyle",
+            "textColor",
+            "textStyle",
+            "warningColor"
+          ]
+        },
+        "AnimalInputThemeData": {
+          "constructors": [
+            "AnimalInputThemeData"
+          ],
+          "fields": [
+            "hashCode",
+            "largeStyle",
+            "middleStyle",
+            "smallStyle",
+            "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/radio_theme.dart": {
+      "classes": {
+        "AnimalRadioStyle": {
+          "constructors": [
+            "AnimalRadioStyle"
+          ],
+          "fields": [
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "boxSize",
+            "checkColor",
+            "fillColor",
+            "groupGap",
+            "groupRunGap",
+            "hashCode",
+            "iconSize",
+            "labelGap",
+            "labelTextColor",
+            "labelTextStyle",
+            "shadow"
+          ]
+        },
+        "AnimalRadioThemeData": {
+          "constructors": [
+            "AnimalRadioThemeData"
+          ],
+          "fields": [
+            "hashCode",
+            "largeStyle",
+            "middleStyle",
+            "smallStyle",
+            "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/select_theme.dart": {
+      "classes": {
+        "AnimalSelectStyle": {
+          "constructors": [
+            "AnimalSelectStyle"
+          ],
+          "fields": [
+            "arrowIconColor",
+            "arrowIconSize",
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "checkIconColor",
+            "checkIconGap",
+            "checkIconSize",
+            "clearIconColor",
+            "clearIconSize",
+            "glowColor",
+            "hashCode",
+            "horizontalPadding",
+            "menuBackgroundColor",
+            "menuBorderColor",
+            "menuBorderRadius",
+            "menuBorderWidth",
+            "menuElevation",
+            "menuMaxHeight",
+            "menuMaxWidth",
+            "menuVerticalPadding",
+            "optionBackgroundColor",
+            "optionBorderRadius",
+            "optionIconGap",
+            "optionPadding",
+            "optionTextColor",
+            "optionTextStyle",
+            "selectedOptionTextStyle",
+            "textColor",
+            "textStyle"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/switch_theme.dart": {
+      "classes": {
+        "AnimalSwitchStyle": {
+          "constructors": [
+            "AnimalSwitchStyle"
+          ],
+          "fields": [
+            "borderRadius",
+            "focusBorderWidth",
+            "hashCode",
+            "height",
+            "labelGap",
+            "labelTextColor",
+            "labelTextStyle",
+            "loadingIndicatorColor",
+            "loadingStrokeWidth",
+            "thumbBorderColor",
+            "thumbBorderWidth",
+            "thumbColor",
+            "thumbSize",
+            "trackBorderColor",
+            "trackBorderWidth",
+            "trackColor",
+            "trackInsetShadow",
+            "width"
+          ]
+        },
+        "AnimalSwitchThemeData": {
+          "constructors": [
+            "AnimalSwitchThemeData"
+          ],
+          "fields": [
+            "defaultSizeStyle",
+            "hashCode",
+            "smallStyle",
+            "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/time_picker_theme.dart": {
+      "classes": {
+        "AnimalTimePickerStyle": {
+          "constructors": [
+            "AnimalTimePickerStyle"
+          ],
+          "fields": [
+            "actionPadding",
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "clearTextColor",
+            "clearTextStyle",
+            "dividerColor",
+            "dividerPadding",
+            "dividerThickness",
+            "hashCode",
+            "headerGap",
+            "headerIconColor",
+            "headerIconSize",
+            "itemTextColor",
+            "itemTextStyle",
+            "minItemExtent",
+            "nowTextColor",
+            "nowTextStyle",
+            "padding",
+            "placeholderTextColor",
+            "selectedItemTextStyle",
+            "selectionBackgroundColor",
+            "selectionBorderColor",
+            "selectionBorderRadius",
+            "selectionBorderWidth",
+            "selectionInset",
+            "separatorTextColor",
+            "separatorTextStyle",
+            "titleTextColor",
+            "titleTextStyle",
+            "triggerBackgroundColor",
+            "triggerBorderColor",
+            "triggerBorderRadius",
+            "triggerBorderWidth",
+            "triggerIconColor",
+            "triggerIconGap",
+            "triggerIconSize",
+            "triggerPadding",
+            "triggerTextColor",
+            "triggerTextStyle",
+            "warningColor",
+            "wheelGap",
+            "wheelHeight",
+            "width",
+            "widthWithSeconds"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
     "lib/src/foundation/theme/motion.dart": {
       "classes": {
         "AnimalThemeMotion": {
@@ -1820,6 +2224,7 @@
           ],
           "fields": [
             "colors",
+            "components",
             "dark",
             "hashCode",
             "light",
@@ -2024,5 +2429,5 @@
       "functions": {}
     }
   },
-  "sha256": "07a07461a90ba42a4c71aee21b0f2997a46b7b758adec246e2c835c802933c6a"
+  "sha256": "860bc3ada279119a290a9646a05be468020c744d9a87a57ed8dcb9197e289fdf"
 }

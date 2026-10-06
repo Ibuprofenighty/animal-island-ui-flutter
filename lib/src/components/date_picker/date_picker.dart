@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/models/clock.dart';
 import '../../foundation/models/date.dart';
+import '../../foundation/theme/components/date_picker_theme.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../input/input.dart';
@@ -23,6 +24,10 @@ class AnimalDatePicker extends StatelessWidget {
   final FocusNode? focusNode;
   final AnimalClock clock;
 
+  /// Visual overrides; precedence is this style, then
+  /// `AnimalIslandTheme.components.datePicker`, then token defaults.
+  final AnimalDatePickerStyle? style;
+
   AnimalDatePicker({
     super.key,
     this.selection,
@@ -36,6 +41,7 @@ class AnimalDatePicker extends StatelessWidget {
     this.disabled = false,
     this.focusNode,
     this.clock = const SystemClock(),
+    this.style,
   }) {
     CalendarModel.validateInputs(
       mode: mode,
@@ -61,6 +67,7 @@ class AnimalDatePicker extends StatelessWidget {
     AnimalInputStatus status = AnimalInputStatus.normal,
     FocusNode? focusNode,
     AnimalClock clock = const SystemClock(),
+    AnimalDatePickerStyle? style,
   }) {
     return _AnimalDatePickerPopover(
       key: key,
@@ -77,6 +84,7 @@ class AnimalDatePicker extends StatelessWidget {
       status: status,
       focusNode: focusNode,
       clock: clock,
+      style: style,
     );
   }
 
@@ -93,6 +101,7 @@ class AnimalDatePicker extends StatelessWidget {
     disabled: disabled,
     focusNode: focusNode,
     clock: clock,
+    style: style,
   );
 }
 
@@ -110,6 +119,7 @@ class _AnimalDatePickerPopover extends StatefulWidget {
   final AnimalInputStatus status;
   final FocusNode? focusNode;
   final AnimalClock clock;
+  final AnimalDatePickerStyle? style;
 
   _AnimalDatePickerPopover({
     super.key,
@@ -126,6 +136,7 @@ class _AnimalDatePickerPopover extends StatefulWidget {
     this.status = AnimalInputStatus.normal,
     this.focusNode,
     this.clock = const SystemClock(),
+    this.style,
   }) {
     CalendarModel.validateInputs(
       mode: mode,
@@ -200,44 +211,45 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
     final localizations = AnimalLocalizations.of(context)!;
     final materialLocalizations = MaterialLocalizations.of(context);
     final displayText = _displayText(localizations, materialLocalizations);
-    final inputBackground = widget.disabled
-        ? (theme.colors.brightness == Brightness.dark
-              ? theme.colors.surfaceHeader
-              : theme.colors.bgInputDisabled)
-        : theme.colors.bgInput;
-    final defaultBorderColor = theme.colors.brightness == Brightness.dark
-        ? theme.colors.border
-        : theme.colors.borderLight;
+    final resolved = ResolvedDatePickerStyle.resolve(
+      theme: theme,
+      style: widget.style,
+      disabled: widget.disabled,
+    );
+    final inputBackground = resolved.triggerBackgroundColor(
+      disabled: widget.disabled,
+    );
     final canInteract = !widget.disabled;
-
-    Color borderColor;
-    Color? glowColor;
-    if (widget.status == AnimalInputStatus.error) {
-      borderColor = theme.colors.error;
-      glowColor = theme.colors.error.withValues(alpha: 0.35);
-    } else if (widget.status == AnimalInputStatus.warning) {
-      borderColor = theme.colors.warning;
-      glowColor = theme.colors.warning.withValues(alpha: 0.35);
-    } else if (_menuController.isOpen || _isFocused) {
-      borderColor = theme.colors.focusYellow;
-      glowColor = theme.colors.focusYellow.withValues(alpha: 0.45);
-    } else {
-      borderColor = defaultBorderColor;
-      glowColor = null;
-    }
+    final triggerBorder = resolved.triggerBorder(
+      disabled: widget.disabled,
+      focused: _menuController.isOpen || _isFocused,
+      error: widget.status == AnimalInputStatus.error,
+      warning: widget.status == AnimalInputStatus.warning,
+    );
+    final Color borderColor = triggerBorder.border;
+    final Color? glowColor = triggerBorder.glow;
+    final Color iconColor = resolved.triggerIconColor(
+      disabled: widget.disabled,
+    );
+    final TextStyle triggerTextStyle = resolved.triggerTextStyle.copyWith(
+      color: resolved.triggerTextColor(
+        disabled: widget.disabled,
+        hasValue: _hasValue,
+      ),
+    );
 
     return MenuAnchor(
       controller: _menuController,
       childFocusNode: _triggerFocusNode,
       onClose: _restoreTriggerFocus,
       style: MenuStyle(
-        backgroundColor: WidgetStatePropertyAll(theme.colors.bgContent),
+        backgroundColor: WidgetStatePropertyAll(resolved.backgroundColor),
         elevation: const WidgetStatePropertyAll(0),
         padding: const WidgetStatePropertyAll(EdgeInsets.zero),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
-            borderRadius: theme.radii.cardBorder,
-            side: BorderSide(color: borderColor, width: 1.5),
+            borderRadius: resolved.borderRadius,
+            side: BorderSide(color: borderColor, width: resolved.borderWidth),
           ),
         ),
       ),
@@ -252,6 +264,7 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
           allowClear: widget.allowClear,
           disabled: widget.disabled,
           clock: widget.clock,
+          style: widget.style,
           onChanged: _handlePanelChange,
         ),
       ],
@@ -272,9 +285,9 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
           disabled: !canInteract,
           focusNode: _triggerFocusNode,
           semanticLabel: displayText,
-          borderRadius: theme.radii.pillBorder,
+          borderRadius: resolved.triggerBorderRadius,
           surfaceColor: inputBackground,
-          border: Border.all(color: borderColor, width: 1.5),
+          border: Border.all(color: borderColor, width: resolved.borderWidth),
           extraShadows: glowColor == null
               ? null
               : <BoxShadow>[
@@ -284,44 +297,29 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
                     spreadRadius: 1.0,
                   ),
                 ],
-          padding: EdgeInsets.symmetric(horizontal: theme.spacing.md),
+          padding: EdgeInsets.symmetric(
+            horizontal: resolved.triggerHorizontalPadding,
+          ),
           onFocusChanged: (focused) => setState(() => _isFocused = focused),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Icons.calendar_today_rounded,
-                size: 16.0,
-                color: widget.disabled
-                    ? theme.colors.textDisabled
-                    : theme.colors.textSecondary,
+                size: resolved.triggerIconSize,
+                color: iconColor,
               ),
-              SizedBox(width: theme.spacing.sm),
+              SizedBox(width: resolved.triggerIconGap),
               if (constrainText)
                 Flexible(
                   child: Text(
                     displayText,
                     softWrap: true,
-                    style: theme.typography.body.copyWith(
-                      color: _hasValue
-                          ? (widget.disabled
-                                ? theme.colors.textDisabled
-                                : theme.colors.text)
-                          : theme.colors.textSecondary,
-                    ),
+                    style: triggerTextStyle,
                   ),
                 )
               else
-                Text(
-                  displayText,
-                  style: theme.typography.body.copyWith(
-                    color: _hasValue
-                        ? (widget.disabled
-                              ? theme.colors.textDisabled
-                              : theme.colors.text)
-                        : theme.colors.textSecondary,
-                  ),
-                ),
+                Text(displayText, style: triggerTextStyle),
             ],
           ),
         );
@@ -339,8 +337,8 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
             borderRadius: BorderRadius.circular(24),
             child: Icon(
               Icons.cancel_rounded,
-              size: 16.0,
-              color: theme.colors.textSecondary,
+              size: resolved.triggerIconSize,
+              color: iconColor,
             ),
           ),
         );

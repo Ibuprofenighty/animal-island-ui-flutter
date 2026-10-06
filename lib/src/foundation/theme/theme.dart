@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
+import 'component_themes.dart';
 import 'motion.dart';
 import 'radii.dart';
 import 'shadows.dart';
@@ -17,6 +18,9 @@ class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
   final AnimalThemeShadows shadows;
   final AnimalThemeMotion motion;
 
+  /// Component-level overrides; empty in the presets.
+  final AnimalComponentThemes components;
+
   const AnimalIslandTheme({
     required this.colors,
     required this.typography,
@@ -24,6 +28,7 @@ class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
     required this.spacing,
     required this.shadows,
     required this.motion,
+    this.components = const AnimalComponentThemes(),
   });
 
   /// Canonical light preset assembled from each token family's single owner.
@@ -149,6 +154,7 @@ class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
     AnimalThemeSpacing? spacing,
     AnimalThemeShadows? shadows,
     AnimalThemeMotion? motion,
+    AnimalComponentThemes? components,
   }) => AnimalIslandTheme(
     colors: colors ?? this.colors,
     typography: typography ?? this.typography,
@@ -156,6 +162,7 @@ class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
     spacing: spacing ?? this.spacing,
     shadows: shadows ?? this.shadows,
     motion: motion ?? this.motion,
+    components: components ?? this.components,
   );
 
   @override
@@ -170,6 +177,7 @@ class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
       spacing: spacing.lerp(other.spacing, t),
       shadows: shadows.lerp(other.shadows, t),
       motion: motion.lerp(other.motion, t),
+      components: components.lerp(other.components, t),
     );
   }
 
@@ -182,9 +190,17 @@ class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
           radii == other.radii &&
           spacing == other.spacing &&
           shadows == other.shadows &&
-          motion == other.motion;
+          motion == other.motion &&
+          components == other.components;
 
   @override
-  int get hashCode =>
-      Object.hash(colors, typography, radii, spacing, shadows, motion);
+  int get hashCode => Object.hash(
+    colors,
+    typography,
+    radii,
+    spacing,
+    shadows,
+    motion,
+    components,
+  );
 }

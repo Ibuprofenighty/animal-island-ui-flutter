@@ -1,13 +1,16 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/models/clock.dart';
 import '../../foundation/models/date.dart';
+import '../../foundation/theme/components/date_picker_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/focus_ring.dart';
 import '../../internal/interaction/interactive_region.dart';
 import 'calendar_model.dart';
 
@@ -25,6 +28,9 @@ class AnimalDatePickerPanel extends StatefulWidget {
   final FocusNode? focusNode;
   final AnimalClock clock;
 
+  /// Visual overrides; see [AnimalDatePickerStyle].
+  final AnimalDatePickerStyle? style;
+
   AnimalDatePickerPanel({
     super.key,
     this.selection,
@@ -38,6 +44,7 @@ class AnimalDatePickerPanel extends StatefulWidget {
     this.disabled = false,
     this.focusNode,
     this.clock = const SystemClock(),
+    this.style,
   }) {
     CalendarModel.validateInputs(
       mode: mode,
@@ -53,7 +60,12 @@ class AnimalDatePickerPanel extends StatefulWidget {
 
 class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
   static const int _monthColumnCount = 3;
-  static const double _monthBorderWidth = 1.0;
+
+  /// Registered layout floors: the 48dp interactive target, the narrowest
+  /// month cell and the weekday header row.
+  static const double _minimumTarget = 48.0;
+  static const double _monthMinimumWidth = 86.0;
+  static const double _weekdayMinimumHeight = 24.0;
 
   late int _viewYear;
   late int _viewMonth;
@@ -599,85 +611,94 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
     final theme = AnimalIslandTheme.of(context);
     final localizations = AnimalLocalizations.of(context)!;
     final materialLocalizations = MaterialLocalizations.of(context);
-    final borderColor = theme.colors.brightness == Brightness.dark
-        ? theme.colors.border
-        : theme.colors.borderLight;
+    final resolved = ResolvedDatePickerStyle.resolve(
+      theme: theme,
+      style: widget.style,
+      disabled: widget.disabled,
+    );
+    final borderColor = resolved.panelBorderColor;
     final today = AnimalDate.today(clock: widget.clock);
     final todayTarget = _todayTarget(today);
     final todayDisabled = widget.disabled || _isDateDisabled(todayTarget);
     final clearDisabled = widget.disabled || widget.selection == null;
 
+    // The preferred width yields to a narrower parent: Container tightens
+    // within the incoming constraints.
     return Focus(
       focusNode: _rootFocusNode,
       canRequestFocus: !widget.disabled,
       onKeyEvent: _handleKeyEvent,
       child: Container(
-        width: 300.0,
-        padding: EdgeInsets.all(theme.spacing.md),
+        width: resolved.width,
+        padding: resolved.padding,
         decoration: BoxDecoration(
-          color: theme.colors.bgContent,
-          borderRadius: theme.radii.cardBorder,
-          border: Border.all(color: borderColor, width: 1.5),
+          color: resolved.backgroundColor,
+          borderRadius: resolved.borderRadius,
+          border: Border.all(color: borderColor, width: resolved.borderWidth),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildHeader(theme, localizations, materialLocalizations),
-            SizedBox(height: theme.spacing.sm),
+            _buildHeader(resolved, localizations, materialLocalizations),
+            SizedBox(height: resolved.sectionGap),
             if (widget.mode == AnimalDatePickerMode.month)
-              _buildMonthGrid(theme, materialLocalizations)
+              _buildMonthGrid(resolved, materialLocalizations)
             else
-              _buildDateGrid(theme, today, materialLocalizations),
+              _buildDateGrid(resolved, today, materialLocalizations),
             if (widget.showToday || widget.allowClear) ...[
-              SizedBox(height: theme.spacing.sm),
+              SizedBox(height: resolved.sectionGap),
               Divider(height: 1, color: borderColor),
-              SizedBox(height: theme.spacing.xs),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (widget.showToday)
-                    InteractiveRegion(
-                      onPressed: _handleToday,
-                      enableHaptics: false,
-                      disabled: todayDisabled,
-                      semanticLabel: localizations.today,
-                      surfaceColor: Colors.transparent,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: theme.spacing.sm,
-                      ),
-                      child: Text(
-                        localizations.today,
-                        style: theme.typography.caption.copyWith(
-                          color: todayDisabled
-                              ? theme.colors.textDisabled
-                              : theme.colors.primaryText,
-                          fontWeight: FontWeight.w700,
+              SizedBox(height: resolved.footerGap),
+              // A Wrap keeps both actions on one line when they fit and moves
+              // Clear to its own line when large text would overflow.
+              SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    if (widget.showToday)
+                      InteractiveRegion(
+                        onPressed: _handleToday,
+                        enableHaptics: false,
+                        disabled: todayDisabled,
+                        semanticLabel: localizations.today,
+                        surfaceColor: Colors.transparent,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: resolved.actionHorizontalPadding,
+                        ),
+                        child: Text(
+                          localizations.today,
+                          style: resolved.todayTextStyle.copyWith(
+                            color: resolved.todayTextColor(
+                              disabled: todayDisabled,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      const SizedBox.shrink(),
+                    if (widget.allowClear)
+                      InteractiveRegion(
+                        onPressed: _handleClear,
+                        enableHaptics: false,
+                        disabled: clearDisabled,
+                        semanticLabel: localizations.clearDate,
+                        surfaceColor: Colors.transparent,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: resolved.actionHorizontalPadding,
+                        ),
+                        child: Text(
+                          localizations.clear,
+                          style: resolved.clearTextStyle.copyWith(
+                            color: resolved.clearTextColor(
+                              disabled: clearDisabled,
+                            ),
+                          ),
                         ),
                       ),
-                    )
-                  else
-                    const SizedBox.shrink(),
-                  if (widget.allowClear)
-                    InteractiveRegion(
-                      onPressed: _handleClear,
-                      enableHaptics: false,
-                      disabled: clearDisabled,
-                      semanticLabel: localizations.clearDate,
-                      surfaceColor: Colors.transparent,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: theme.spacing.sm,
-                      ),
-                      child: Text(
-                        localizations.clear,
-                        style: theme.typography.caption.copyWith(
-                          color: clearDisabled
-                              ? theme.colors.textDisabled
-                              : theme.colors.textSecondary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ],
           ],
@@ -687,7 +708,7 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
   }
 
   Widget _buildHeader(
-    AnimalIslandTheme theme,
+    ResolvedDatePickerStyle resolved,
     AnimalLocalizations localizations,
     MaterialLocalizations materialLocalizations,
   ) {
@@ -704,95 +725,88 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
             AnimalDate(_viewYear, _viewMonth, 1).toDateTime(),
           );
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InteractiveRegion(
-              onPressed: _prevYear,
-              enableHaptics: false,
-              disabled: !canPrevYear,
-              semanticLabel: localizations.datePickerPreviousYear,
-              surfaceColor: Colors.transparent,
-              child: Icon(
-                Icons.keyboard_double_arrow_left_rounded,
-                size: 18,
-                color: canPrevYear
-                    ? theme.colors.text
-                    : theme.colors.textDisabled,
-              ),
-            ),
-            if (!isMonthMode)
-              InteractiveRegion(
-                onPressed: _prevMonth,
-                enableHaptics: false,
-                disabled: !canPrevMonth,
-                semanticLabel: materialLocalizations.previousMonthTooltip,
-                surfaceColor: Colors.transparent,
-                child: Icon(
-                  Icons.chevron_left_rounded,
-                  size: 20,
-                  color: canPrevMonth
-                      ? theme.colors.text
-                      : theme.colors.textDisabled,
-                ),
-              ),
-          ],
+    final List<Widget> startButtons = <Widget>[
+      InteractiveRegion(
+        onPressed: _prevYear,
+        enableHaptics: false,
+        disabled: !canPrevYear,
+        semanticLabel: localizations.datePickerPreviousYear,
+        surfaceColor: Colors.transparent,
+        child: Icon(
+          Icons.keyboard_double_arrow_left_rounded,
+          size: resolved.yearIconSize,
+          color: resolved.headerTextColor(enabled: canPrevYear),
         ),
-        Flexible(
-          child: Text(
-            headerLabel,
-            textAlign: TextAlign.center,
-            style: theme.typography.heading.copyWith(
-              fontSize: 15.0,
-              color: widget.disabled
-                  ? theme.colors.textDisabled
-                  : theme.colors.text,
-            ),
+      ),
+      if (!isMonthMode)
+        InteractiveRegion(
+          onPressed: _prevMonth,
+          enableHaptics: false,
+          disabled: !canPrevMonth,
+          semanticLabel: materialLocalizations.previousMonthTooltip,
+          surfaceColor: Colors.transparent,
+          child: Icon(
+            Icons.chevron_left_rounded,
+            size: resolved.navigationIconSize,
+            color: resolved.headerTextColor(enabled: canPrevMonth),
           ),
         ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (!isMonthMode)
-              InteractiveRegion(
-                onPressed: _nextMonth,
-                enableHaptics: false,
-                disabled: !canNextMonth,
-                semanticLabel: materialLocalizations.nextMonthTooltip,
-                surfaceColor: Colors.transparent,
-                child: Icon(
-                  Icons.chevron_right_rounded,
-                  size: 20,
-                  color: canNextMonth
-                      ? theme.colors.text
-                      : theme.colors.textDisabled,
-                ),
-              ),
-            InteractiveRegion(
-              onPressed: _nextYear,
-              enableHaptics: false,
-              disabled: !canNextYear,
-              semanticLabel: localizations.datePickerNextYear,
-              surfaceColor: Colors.transparent,
-              child: Icon(
-                Icons.keyboard_double_arrow_right_rounded,
-                size: 18,
-                color: canNextYear
-                    ? theme.colors.text
-                    : theme.colors.textDisabled,
-              ),
-            ),
-          ],
+    ];
+    final Widget label = Text(
+      headerLabel,
+      textAlign: TextAlign.center,
+      style: resolved.headerTextStyle.copyWith(
+        color: resolved.headerTextColor(enabled: !widget.disabled),
+      ),
+    );
+    final List<Widget> endButtons = <Widget>[
+      if (!isMonthMode)
+        InteractiveRegion(
+          onPressed: _nextMonth,
+          enableHaptics: false,
+          disabled: !canNextMonth,
+          semanticLabel: materialLocalizations.nextMonthTooltip,
+          surfaceColor: Colors.transparent,
+          child: Icon(
+            Icons.chevron_right_rounded,
+            size: resolved.navigationIconSize,
+            color: resolved.headerTextColor(enabled: canNextMonth),
+          ),
         ),
-      ],
+      InteractiveRegion(
+        onPressed: _nextYear,
+        enableHaptics: false,
+        disabled: !canNextYear,
+        semanticLabel: localizations.datePickerNextYear,
+        surfaceColor: Colors.transparent,
+        child: Icon(
+          Icons.keyboard_double_arrow_right_rounded,
+          size: resolved.yearIconSize,
+          color: resolved.headerTextColor(enabled: canNextYear),
+        ),
+      ),
+    ];
+
+    // Navigation targets keep 48dp. When the panel is too narrow for them and
+    // a 48dp label slot on one line, the label moves above the navigation.
+    return _DatePickerHeaderLayout(
+      minimumLabelWidth: _minimumTarget,
+      start: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: startButtons,
+      ),
+      label: label,
+      end: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: endButtons,
+      ),
     );
   }
 
   Widget _buildMonthGrid(
-    AnimalIslandTheme theme,
+    ResolvedDatePickerStyle resolved,
     MaterialLocalizations materialLocalizations,
   ) {
     final locale = Localizations.localeOf(context).toString();
@@ -811,16 +825,19 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
     };
     _scheduleMonthFocusPrune(visibleMonths);
 
-    final monthSpacing = theme.spacing.xs;
-    final monthStyle = theme.typography.body.copyWith(
-      fontSize: 13.0,
+    final monthSpacing = resolved.cellGap;
+    final monthBorderWidth = resolved.monthBorderWidth;
+    final monthStyle = resolved.cellTextStyle.copyWith(
       fontWeight: FontWeight.w700,
     );
     final monthMetrics = _measureTextMetrics(months, monthStyle);
-    final monthItemWidth = _atLeast(86.0, monthMetrics.width + 12.0);
+    final monthItemWidth = _atLeast(
+      _monthMinimumWidth,
+      monthMetrics.width + 2 * resolved.cellInset,
+    );
     final monthItemHeight = _atLeast(
-      48.0,
-      monthMetrics.height + 2 * _monthBorderWidth,
+      _minimumTarget,
+      monthMetrics.height + 2 * monthBorderWidth,
     );
     final monthGridWidth =
         monthItemWidth * _monthColumnCount +
@@ -864,34 +881,28 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
                   ),
                   selected: isSelected,
                   surfaceColor: Colors.transparent,
-                  borderRadius: theme.radii.pillBorder,
+                  borderRadius: resolved.monthBorderRadius,
                   child: Container(
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? theme.colors.primary
+                          ? resolved.selectedBackgroundColor
                           : Colors.transparent,
-                      borderRadius: theme.radii.pillBorder,
+                      borderRadius: resolved.monthBorderRadius,
                       border: Border.all(
-                        width: _monthBorderWidth,
-                        color: isSelected
-                            ? theme.colors.primaryActive
-                            : theme.colors.border.withValues(alpha: 0.5),
+                        width: monthBorderWidth,
+                        color: resolved.monthBorderColor(selected: isSelected),
                       ),
                     ),
                     alignment: Alignment.center,
                     child: Text(
                       months[index],
-                      style: theme.typography.body.copyWith(
-                        fontSize: 13.0,
-                        color: isMonthDisabled
-                            ? theme.colors.textDisabled
-                            : (isSelected
-                                  ? theme.colors.onPrimary
-                                  : theme.colors.text),
-                        fontWeight: isSelected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                      ),
+                      style: (isSelected ? monthStyle : resolved.cellTextStyle)
+                          .copyWith(
+                            color: resolved.cellTextColor(
+                              selected: isSelected,
+                              disabled: isMonthDisabled,
+                            ),
+                          ),
                     ),
                   ),
                 ),
@@ -904,7 +915,7 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
   }
 
   Widget _buildDateGrid(
-    AnimalIslandTheme theme,
+    ResolvedDatePickerStyle resolved,
     AnimalDate today,
     MaterialLocalizations materialLocalizations,
   ) {
@@ -925,24 +936,27 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
     _scheduleDateFocusPrune(visibleDates);
 
     final weekdays = materialLocalizations.narrowWeekdays;
-    final weekdayStyle = theme.typography.caption.copyWith(
-      fontWeight: FontWeight.w700,
-    );
-    final dayStyle = theme.typography.body.copyWith(
-      fontSize: 13.0,
-      fontWeight: FontWeight.w700,
-    );
+    final weekdayStyle = resolved.weekdayTextStyle;
+    final dayStyle = resolved.cellTextStyle;
+    final emphasizedDayStyle = dayStyle.copyWith(fontWeight: FontWeight.bold);
+    final cellInset = resolved.cellInset;
     final weekdayMetrics = _measureTextMetrics(weekdays, weekdayStyle);
     final dayMetrics = _measureTextMetrics(
       List<String>.generate(31, (index) => '${index + 1}', growable: false),
-      dayStyle,
+      emphasizedDayStyle,
     );
     final columnWidth = _atLeast(
-      48.0,
-      _atLeast(dayMetrics.width + 12.0, weekdayMetrics.width),
+      _minimumTarget,
+      _atLeast(dayMetrics.width + 2 * cellInset, weekdayMetrics.width),
     );
-    final dayCellHeight = _atLeast(48.0, dayMetrics.height + 12.0);
-    final weekdayRowHeight = _atLeast(24.0, weekdayMetrics.height);
+    final dayCellHeight = _atLeast(
+      _minimumTarget,
+      dayMetrics.height + 2 * cellInset,
+    );
+    final weekdayRowHeight = _atLeast(
+      _weekdayMinimumHeight,
+      weekdayMetrics.height,
+    );
 
     Widget buildDateCell(CalendarDayCell cell) {
       final date = cell.date;
@@ -955,17 +969,16 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
           cell.isSelected || cell.isRangeStart || cell.isRangeEnd;
       final isRangeMode = widget.mode == AnimalDatePickerMode.range;
       final background = isSelected
-          ? (isRangeMode ? theme.colors.warning : theme.colors.primary)
-          : (cell.isInRange
-                ? theme.colors.warning.withValues(alpha: 0.18)
-                : Colors.transparent);
-      final textColor = disabled
-          ? theme.colors.textDisabled
-          : isSelected
-          ? (isRangeMode ? theme.colors.onWarning : theme.colors.onPrimary)
-          : (!cell.isCurrentMonth
-                ? theme.colors.textSecondary
-                : theme.colors.text);
+          ? (isRangeMode
+                ? resolved.rangeBackgroundColor
+                : resolved.selectedBackgroundColor)
+          : (cell.isInRange ? resolved.rangeFillColor : Colors.transparent);
+      final textColor = resolved.cellTextColor(
+        selected: isSelected,
+        disabled: disabled,
+        rangeEndpoint: isRangeMode,
+        outsideMonth: !cell.isCurrentMonth,
+      );
       final focusNode = _dateFocusNodes.putIfAbsent(date, FocusNode.new);
 
       return SizedBox(
@@ -983,30 +996,29 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
             date.toDateTime(),
           ),
           surfaceColor: Colors.transparent,
-          minimumHitSize: 48,
+          minimumHitSize: _minimumTarget,
           child: Padding(
-            padding: const EdgeInsets.all(6),
+            padding: EdgeInsets.all(cellInset),
             child: Container(
               decoration: BoxDecoration(
                 color: background,
                 shape: isSelected ? BoxShape.circle : BoxShape.rectangle,
                 borderRadius: cell.isInRange && !isSelected
-                    ? BorderRadius.circular(4)
+                    ? resolved.rangeBorderRadius
                     : null,
               ),
               alignment: Alignment.center,
               child: Text(
                 '${date.day}',
-                style: theme.typography.body.copyWith(
-                  fontSize: 13,
-                  fontWeight: isSelected || cell.isToday
-                      ? FontWeight.bold
-                      : FontWeight.w500,
-                  color: textColor,
-                  decoration: cell.isToday && !isSelected
-                      ? TextDecoration.underline
-                      : null,
-                ),
+                style:
+                    (isSelected || cell.isToday ? emphasizedDayStyle : dayStyle)
+                        .copyWith(
+                          color: textColor,
+                          // Today keeps an underline so it is not color-only.
+                          decoration: cell.isToday && !isSelected
+                              ? TextDecoration.underline
+                              : null,
+                        ),
               ),
             ),
           ),
@@ -1035,21 +1047,18 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
                     child: Text(
                       weekdays[index],
                       textAlign: TextAlign.center,
-                      style: theme.typography.caption.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colors.textSecondary,
-                      ),
+                      style: weekdayStyle,
                     ),
                   ),
                 ),
                 growable: false,
               ),
             ),
-            SizedBox(height: theme.spacing.xs),
+            SizedBox(height: resolved.cellGap),
             for (var week = 0; week < 6; week++)
               Padding(
                 padding: EdgeInsets.only(
-                  bottom: week == 5 ? 0 : theme.spacing.xs,
+                  bottom: week == 5 ? 0 : resolved.cellGap,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -1115,4 +1124,498 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
 
   double _atLeast(double minimum, double value) =>
       value > minimum ? value : minimum;
+}
+
+/// Header layout: navigation at both ends with the label between them, like a
+/// space-between row, while the navigation and a [minimumLabelWidth] label
+/// slot fit on one line; otherwise the label sits above centered navigation.
+///
+/// Unlike a `LayoutBuilder`, it reports intrinsic sizes, which the popover
+/// menu queries.
+class _DatePickerHeaderLayout extends MultiChildRenderObjectWidget {
+  _DatePickerHeaderLayout({
+    required this.minimumLabelWidth,
+    required Widget start,
+    required Widget label,
+    required Widget end,
+  }) : super(children: <Widget>[start, label, end]);
+
+  final double minimumLabelWidth;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderDatePickerHeader(minimumLabelWidth, Directionality.of(context));
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderDatePickerHeader renderObject,
+  ) {
+    renderObject
+      ..minimumLabelWidth = minimumLabelWidth
+      ..textDirection = Directionality.of(context);
+  }
+}
+
+class _DatePickerHeaderParentData extends ContainerBoxParentData<RenderBox> {}
+
+class _RenderDatePickerHeader extends RenderBox
+    with
+        ContainerRenderObjectMixin<RenderBox, _DatePickerHeaderParentData>,
+        RenderBoxContainerDefaultsMixin<
+          RenderBox,
+          _DatePickerHeaderParentData
+        > {
+  _RenderDatePickerHeader(this._minimumLabelWidth, this._textDirection);
+
+  double _minimumLabelWidth;
+  set minimumLabelWidth(double value) {
+    if (value == _minimumLabelWidth) return;
+    _minimumLabelWidth = value;
+    markNeedsLayout();
+  }
+
+  TextDirection _textDirection;
+  set textDirection(TextDirection value) {
+    if (value == _textDirection) return;
+    _textDirection = value;
+    markNeedsLayout();
+  }
+
+  RenderBox get _start => firstChild!;
+  RenderBox get _label => childAfter(_start)!;
+  RenderBox get _end => lastChild!;
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! _DatePickerHeaderParentData) {
+      child.parentData = _DatePickerHeaderParentData();
+    }
+  }
+
+  bool _fitsOneLine(double width, double startWidth, double endWidth) =>
+      startWidth + endWidth + _minimumLabelWidth <= width;
+
+  @override
+  double computeMinIntrinsicWidth(double height) => math.max(
+    _label.getMinIntrinsicWidth(height),
+    math.max(
+      _start.getMinIntrinsicWidth(height),
+      _end.getMinIntrinsicWidth(height),
+    ),
+  );
+
+  @override
+  double computeMaxIntrinsicWidth(double height) =>
+      _start.getMaxIntrinsicWidth(height) +
+      _label.getMaxIntrinsicWidth(height) +
+      _end.getMaxIntrinsicWidth(height);
+
+  double _intrinsicHeight(double width) {
+    final double startWidth = math.min(
+      width,
+      _start.getMaxIntrinsicWidth(double.infinity),
+    );
+    final double endWidth = math.min(
+      width,
+      _end.getMaxIntrinsicWidth(double.infinity),
+    );
+    if (!width.isFinite || _fitsOneLine(width, startWidth, endWidth)) {
+      return math.max(
+        _label.getMaxIntrinsicHeight(
+          width.isFinite ? width - startWidth - endWidth : double.infinity,
+        ),
+        math.max(
+          _start.getMaxIntrinsicHeight(startWidth),
+          _end.getMaxIntrinsicHeight(endWidth),
+        ),
+      );
+    }
+    final double navigation = startWidth + endWidth <= width
+        ? math.max(
+            _start.getMaxIntrinsicHeight(startWidth),
+            _end.getMaxIntrinsicHeight(endWidth),
+          )
+        : _start.getMaxIntrinsicHeight(width) +
+              _end.getMaxIntrinsicHeight(width);
+    return _label.getMaxIntrinsicHeight(width) + navigation;
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) => _intrinsicHeight(width);
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => _intrinsicHeight(width);
+
+  @override
+  Size computeDryLayout(covariant BoxConstraints constraints) =>
+      _layout(constraints, ChildLayoutHelper.dryLayoutChild, position: false);
+
+  @override
+  void performLayout() {
+    size = _layout(constraints, ChildLayoutHelper.layoutChild, position: true);
+  }
+
+  Size _layout(
+    BoxConstraints constraints,
+    ChildLayouter layoutChild, {
+    required bool position,
+  }) {
+    final BoxConstraints loose = BoxConstraints(maxWidth: constraints.maxWidth);
+    final Size start = layoutChild(_start, loose);
+    final Size end = layoutChild(_end, loose);
+    final bool rtl = _textDirection == TextDirection.rtl;
+    void place(RenderBox child, double x, double y) {
+      if (!position) return;
+      (child.parentData! as _DatePickerHeaderParentData).offset = Offset(x, y);
+    }
+
+    final bool bounded = constraints.hasBoundedWidth;
+    if (!bounded ||
+        _fitsOneLine(constraints.maxWidth, start.width, end.width)) {
+      final Size label = layoutChild(
+        _label,
+        BoxConstraints(
+          maxWidth: bounded
+              ? constraints.maxWidth - start.width - end.width
+              : double.infinity,
+        ),
+      );
+      final double width = bounded
+          ? constraints.maxWidth
+          : start.width + label.width + end.width;
+      final double height = math.max(
+        label.height,
+        math.max(start.height, end.height),
+      );
+      final double gap = (width - start.width - label.width - end.width) / 2;
+      place(_start, rtl ? width - start.width : 0, (height - start.height) / 2);
+      place(
+        _label,
+        rtl ? end.width + gap : start.width + gap,
+        (height - label.height) / 2,
+      );
+      place(_end, rtl ? 0 : width - end.width, (height - end.height) / 2);
+      return constraints.constrain(Size(width, height));
+    }
+
+    final double width = constraints.maxWidth;
+    final Size label = layoutChild(_label, loose);
+    place(_label, (width - label.width) / 2, 0);
+    double height = label.height;
+    if (start.width + end.width <= width) {
+      final double row = math.max(start.height, end.height);
+      final double left = (width - start.width - end.width) / 2;
+      final RenderBox first = rtl ? _end : _start;
+      final Size firstSize = rtl ? end : start;
+      final RenderBox second = rtl ? _start : _end;
+      final Size secondSize = rtl ? start : end;
+      place(first, left, height + (row - firstSize.height) / 2);
+      place(
+        second,
+        left + firstSize.width,
+        height + (row - secondSize.height) / 2,
+      );
+      height += row;
+    } else {
+      place(_start, (width - start.width) / 2, height);
+      height += start.height;
+      place(_end, (width - end.width) / 2, height);
+      height += end.height;
+    }
+    return constraints.constrain(Size(width, height));
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) =>
+      defaultHitTestChildren(result, position: position);
+
+  @override
+  void paint(PaintingContext context, Offset offset) =>
+      defaultPaint(context, offset);
+}
+
+/// The one place the date picker turns its style layers into concrete values.
+///
+/// Precedence: the picker's own style, then the theme's date picker style,
+/// then defaults derived from theme tokens. The panel and the popover trigger
+/// both read from this resolver.
+class ResolvedDatePickerStyle {
+  /// Registered ratio of the heading to `typography.heading` (15 of 20).
+  static const double headerFontRatio = 15 / 20;
+
+  /// Registered ratio of day and month labels to `typography.body` (13 of 14).
+  static const double cellFontRatio = 13 / 14;
+
+  /// Registered ratio of the year icons to the month icons (18 of 20).
+  static const double yearIconRatio = 18 / 20;
+
+  final AnimalIslandTheme theme;
+  final AnimalDatePickerStyle style;
+
+  final double width;
+  final EdgeInsetsGeometry padding;
+  final double borderWidth;
+  final BorderRadius borderRadius;
+  final double cellInset;
+  final BorderRadius rangeBorderRadius;
+  final double monthBorderWidth;
+  final BorderRadius monthBorderRadius;
+  final double navigationIconSize;
+  final double triggerIconSize;
+  final BorderRadius triggerBorderRadius;
+  final double triggerHorizontalPadding;
+  final double triggerIconGap;
+  final double sectionGap;
+  final double footerGap;
+  final double cellGap;
+  final double actionHorizontalPadding;
+
+  /// Heading, without its color.
+  final TextStyle headerTextStyle;
+
+  /// Weekday labels, with their color.
+  final TextStyle weekdayTextStyle;
+
+  /// Regular-weight day and month labels, without their color.
+  final TextStyle cellTextStyle;
+
+  /// Today action, without its color.
+  final TextStyle todayTextStyle;
+
+  /// Clear action, without its color.
+  final TextStyle clearTextStyle;
+
+  /// Trigger text, without its color.
+  final TextStyle triggerTextStyle;
+
+  final Color backgroundColor;
+  final Color panelBorderColor;
+
+  ResolvedDatePickerStyle._({
+    required this.theme,
+    required this.style,
+    required this.width,
+    required this.padding,
+    required this.borderWidth,
+    required this.borderRadius,
+    required this.cellInset,
+    required this.rangeBorderRadius,
+    required this.monthBorderWidth,
+    required this.monthBorderRadius,
+    required this.navigationIconSize,
+    required this.triggerIconSize,
+    required this.triggerBorderRadius,
+    required this.triggerHorizontalPadding,
+    required this.triggerIconGap,
+    required this.sectionGap,
+    required this.footerGap,
+    required this.cellGap,
+    required this.actionHorizontalPadding,
+    required this.headerTextStyle,
+    required this.weekdayTextStyle,
+    required this.cellTextStyle,
+    required this.todayTextStyle,
+    required this.clearTextStyle,
+    required this.triggerTextStyle,
+    required this.backgroundColor,
+    required this.panelBorderColor,
+  });
+
+  static ResolvedDatePickerStyle resolve({
+    required AnimalIslandTheme theme,
+    required AnimalDatePickerStyle? style,
+    required bool disabled,
+  }) {
+    final AnimalDatePickerStyle merged = (style ?? AnimalDatePickerStyle())
+        .merge(theme.components.datePicker);
+    final colors = theme.colors;
+    final typography = theme.typography;
+    final Color defaultBorder = colors.brightness == Brightness.dark
+        ? colors.border
+        : colors.borderLight;
+    final TextStyle caption = typography.caption;
+
+    return ResolvedDatePickerStyle._(
+      theme: theme,
+      style: merged,
+      width: merged.width ?? 300.0,
+      padding: merged.padding ?? EdgeInsets.all(theme.spacing.md),
+      borderWidth: merged.borderWidth ?? 1.5,
+      borderRadius: merged.borderRadius ?? theme.radii.cardBorder,
+      cellInset: merged.cellInset ?? 6.0,
+      rangeBorderRadius: merged.rangeBorderRadius ?? BorderRadius.circular(4),
+      monthBorderWidth: merged.monthBorderWidth ?? 1.0,
+      monthBorderRadius: merged.monthBorderRadius ?? theme.radii.pillBorder,
+      navigationIconSize: merged.navigationIconSize ?? 20.0,
+      triggerIconSize: merged.triggerIconSize ?? 16.0,
+      triggerBorderRadius: merged.triggerBorderRadius ?? theme.radii.pillBorder,
+      triggerHorizontalPadding:
+          merged.triggerHorizontalPadding ?? theme.spacing.md,
+      triggerIconGap: merged.triggerIconGap ?? theme.spacing.sm,
+      sectionGap: merged.sectionGap ?? theme.spacing.sm,
+      footerGap: merged.footerGap ?? theme.spacing.xs,
+      cellGap: merged.cellGap ?? theme.spacing.xs,
+      actionHorizontalPadding:
+          merged.actionHorizontalPadding ?? theme.spacing.sm,
+      headerTextStyle: typography.resolve(
+        typography.heading
+            .apply(fontSizeFactor: headerFontRatio)
+            .merge(merged.headerTextStyle),
+      ),
+      weekdayTextStyle: typography
+          .resolve(
+            caption
+                .copyWith(fontWeight: FontWeight.w700)
+                .merge(merged.weekdayTextStyle),
+          )
+          .copyWith(color: merged.weekdayTextColor ?? colors.textSecondary),
+      cellTextStyle: typography.resolve(
+        typography.body
+            .apply(fontSizeFactor: cellFontRatio)
+            .copyWith(fontWeight: FontWeight.w500)
+            .merge(merged.cellTextStyle),
+      ),
+      todayTextStyle: typography.resolve(
+        caption
+            .copyWith(fontWeight: FontWeight.w700)
+            .merge(merged.actionTextStyle),
+      ),
+      clearTextStyle: typography.resolve(
+        caption
+            .copyWith(fontWeight: FontWeight.w600)
+            .merge(merged.actionTextStyle),
+      ),
+      triggerTextStyle: typography.resolve(
+        typography.body.merge(merged.triggerTextStyle),
+      ),
+      backgroundColor: merged.backgroundColor ?? colors.bgContent,
+      panelBorderColor:
+          merged.borderColor?.resolve(<WidgetState>{
+            if (disabled) WidgetState.disabled,
+          }) ??
+          defaultBorder,
+    );
+  }
+
+  Set<WidgetState> _states({bool disabled = false, bool selected = false}) =>
+      <WidgetState>{
+        if (disabled) WidgetState.disabled,
+        if (selected) WidgetState.selected,
+      };
+
+  /// Size of the previous/next year icons.
+  double get yearIconSize => navigationIconSize * yearIconRatio;
+
+  /// Heading text or a navigation icon; [enabled] false renders it inert.
+  Color headerTextColor({required bool enabled}) =>
+      style.headerTextColor?.resolve(_states(disabled: !enabled)) ??
+      (enabled ? theme.colors.text : theme.colors.textDisabled);
+
+  /// Label of a day or month cell.
+  Color cellTextColor({
+    required bool selected,
+    required bool disabled,
+    bool rangeEndpoint = false,
+    bool outsideMonth = false,
+  }) {
+    final colors = theme.colors;
+    if (!disabled && selected && rangeEndpoint) {
+      return style.rangeTextColor ?? colors.onWarning;
+    }
+    if (!disabled && !selected && outsideMonth) {
+      return style.outsideMonthTextColor ?? colors.textSecondary;
+    }
+    return style.cellTextColor?.resolve(
+          _states(disabled: disabled, selected: selected),
+        ) ??
+        (disabled
+            ? colors.textDisabled
+            : selected
+            ? colors.onPrimary
+            : colors.text);
+  }
+
+  /// Fill of the selected day or month.
+  Color get selectedBackgroundColor =>
+      style.selectedBackgroundColor ?? theme.colors.primary;
+
+  /// Fill of range endpoints.
+  Color get rangeBackgroundColor =>
+      style.rangeBackgroundColor ?? theme.colors.warning;
+
+  /// Fill of days inside a range: [rangeBackgroundColor] at a registered 18% opacity.
+  Color get rangeFillColor => rangeBackgroundColor.withValues(alpha: 0.18);
+
+  /// Border of a month cell.
+  Color monthBorderColor({required bool selected}) =>
+      style.monthBorderColor?.resolve(_states(selected: selected)) ??
+      (selected
+          ? theme.colors.primaryActive
+          : theme.colors.border.withValues(alpha: 0.5));
+
+  Color todayTextColor({required bool disabled}) =>
+      style.todayTextColor?.resolve(_states(disabled: disabled)) ??
+      (disabled ? theme.colors.textDisabled : theme.colors.primaryText);
+
+  Color clearTextColor({required bool disabled}) =>
+      style.clearTextColor?.resolve(_states(disabled: disabled)) ??
+      (disabled ? theme.colors.textDisabled : theme.colors.textSecondary);
+
+  Color triggerBackgroundColor({required bool disabled}) {
+    final colors = theme.colors;
+    return style.triggerBackgroundColor?.resolve(_states(disabled: disabled)) ??
+        (disabled
+            ? (colors.brightness == Brightness.dark
+                  ? colors.surfaceHeader
+                  : colors.bgInputDisabled)
+            : colors.bgInput);
+  }
+
+  /// Trigger text: the selected value or the placeholder.
+  Color triggerTextColor({required bool disabled, required bool hasValue}) {
+    if (!hasValue) {
+      return style.placeholderTextColor ?? theme.colors.textSecondary;
+    }
+    return style.triggerTextColor?.resolve(_states(disabled: disabled)) ??
+        (disabled ? theme.colors.textDisabled : theme.colors.text);
+  }
+
+  Color triggerIconColor({required bool disabled}) =>
+      style.triggerIconColor?.resolve(_states(disabled: disabled)) ??
+      (disabled ? theme.colors.textDisabled : theme.colors.textSecondary);
+
+  /// Trigger and popover menu border, with its glow.
+  ///
+  /// Error and warning statuses glow at a registered 35% opacity of their
+  /// border, the focused or open trigger at 45%; the idle trigger has none.
+  ({Color border, Color? glow}) triggerBorder({
+    required bool disabled,
+    required bool focused,
+    required bool error,
+    required bool warning,
+  }) {
+    final colors = theme.colors;
+    if (warning) {
+      final Color color = style.warningColor ?? colors.warning;
+      return (border: color, glow: color.withValues(alpha: 0.35));
+    }
+    final Set<WidgetState> states = <WidgetState>{
+      if (disabled) WidgetState.disabled,
+      if (focused) WidgetState.focused,
+      if (error) WidgetState.error,
+    };
+    final Color border =
+        style.borderColor?.resolve(states) ??
+        (error
+            ? colors.error
+            : focused
+            ? resolveFocusRing(theme).color
+            : panelBorderColor);
+    final double? glowAlpha = error ? 0.35 : (focused ? 0.45 : null);
+    return (
+      border: border,
+      glow: glowAlpha == null ? null : border.withValues(alpha: glowAlpha),
+    );
+  }
 }

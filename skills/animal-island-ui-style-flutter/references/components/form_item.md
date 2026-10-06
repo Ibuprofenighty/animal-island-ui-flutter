@@ -18,9 +18,26 @@
 - `margin`
 - `required`
 - `rules`
+- `style`
 - `textController`
 
 <!-- generated:api:end -->
+
+## Customization
+
+`style` takes an `AnimalFormItemStyle` and overrides the theme for this item.
+The theme's `components.formItem` is an `AnimalFormItemStyle` applied to every
+item; the item has no size presets. Unset fields fall back to defaults derived
+from the active tokens: the label is `typography.body` at weight 600 in
+`colors.text`, the required marker is bold `typography.body` in
+`colors.errorText`, help and error text are `typography.caption` in
+`colors.textSecondary` and `colors.errorText` (error at weight 500), the label
+and feedback gaps are `spacing.sm - spacing.xxs`, `bottomMargin` (the space
+below the item) is
+`spacing.lg` and the feedback transition lasts `motion.fast * 4/3`.
+
+Text styles carry their color and merge field by field, so a partial style
+keeps the lower layers. An explicit `margin` still replaces `bottomMargin`.
 
 ## Example
 See [`form_item_story.dart`](../../../../example/lib/stories/form_item_story.dart) in the example Gallery.

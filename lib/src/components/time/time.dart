@@ -139,10 +139,9 @@ class _AnimalTimeState extends State<AnimalTime> {
             SizedBox(width: theme.spacing.sm),
             Text(
               timeText,
-              style: theme.typography.heading.copyWith(
-                fontSize: theme.typography.heading.fontSize! * 0.9,
-                color: theme.colors.text,
-              ),
+              style: theme.typography.heading
+                  .apply(fontSizeFactor: 0.9)
+                  .copyWith(color: theme.colors.text),
             ),
           ],
         ),

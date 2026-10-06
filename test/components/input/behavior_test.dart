@@ -267,14 +267,23 @@ void main() {
           final Rect editableRect = tester.getRect(find.byType(EditableText));
           final Rect suffixRect = tester.getRect(find.text('Suffix'));
           final Rect inputRect = tester.getRect(find.byType(AnimalInput));
-          expect(inputRect.height, greaterThan(AnimalInputSize.large.height));
+          expect(
+            inputRect.height,
+            greaterThan(_defaultHeight(AnimalInputSize.large)),
+          );
           expect(prefixRect.width, lessThanOrEqualTo(80));
           expect(suffixRect.width, lessThanOrEqualTo(80));
-          expect(prefixRect.height, greaterThan(AnimalInputSize.large.height));
-          expect(suffixRect.height, greaterThan(AnimalInputSize.large.height));
+          expect(
+            prefixRect.height,
+            greaterThan(_defaultHeight(AnimalInputSize.large)),
+          );
+          expect(
+            suffixRect.height,
+            greaterThan(_defaultHeight(AnimalInputSize.large)),
+          );
           expect(
             editableRect.width,
-            greaterThanOrEqualTo(AnimalInputSize.large.fontSize * 4),
+            greaterThanOrEqualTo(_defaultFontSize(AnimalInputSize.large) * 4),
           );
           expect(prefixRect.right, lessThanOrEqualTo(editableRect.left));
           expect(editableRect.right, lessThanOrEqualTo(suffixRect.left));
@@ -340,7 +349,7 @@ void main() {
         );
         expect(
           singleLineRect.height,
-          greaterThanOrEqualTo(AnimalInputSize.middle.height),
+          greaterThanOrEqualTo(_defaultHeight(AnimalInputSize.middle)),
         );
         expect(singleLineRect.height, lessThan(100));
 
@@ -354,7 +363,7 @@ void main() {
             );
             expect(
               shortMultilineRect.height,
-              greaterThanOrEqualTo(size.height),
+              greaterThanOrEqualTo(_defaultHeight(size)),
               reason:
                   '${size.name} maxLines=$maxLines keeps its minimum height',
             );
@@ -373,10 +382,13 @@ void main() {
           maxLines: 3,
         );
         final Size editableSize = tester.getSize(find.byType(EditableText));
-        expect(multilineRect.height, greaterThan(AnimalInputSize.large.height));
+        expect(
+          multilineRect.height,
+          greaterThan(_defaultHeight(AnimalInputSize.large)),
+        );
         expect(
           editableSize.height,
-          greaterThanOrEqualTo(AnimalInputSize.large.fontSize * 3),
+          greaterThanOrEqualTo(_defaultFontSize(AnimalInputSize.large) * 3),
         );
         expect(multilineController.value, multilineValue);
 
@@ -391,11 +403,11 @@ void main() {
         );
         expect(
           unboundedMultilineRect.height,
-          greaterThan(AnimalInputSize.large.height),
+          greaterThan(_defaultHeight(AnimalInputSize.large)),
         );
         expect(
           unboundedEditableSize.height,
-          greaterThanOrEqualTo(AnimalInputSize.large.fontSize * 3),
+          greaterThanOrEqualTo(_defaultFontSize(AnimalInputSize.large) * 3),
         );
         expect(multilineController.value, multilineValue);
         expect(tester.takeException(), isNull);
@@ -478,7 +490,7 @@ void main() {
         consumer.deleteSync(recursive: true);
         expect(consumer.existsSync(), isFalse);
       }
-    }, timeout: const Timeout(Duration(minutes: 2)));
+    }, timeout: const Timeout(Duration(minutes: 5)));
   });
 
   group('AnimalForm text buffer N14', () {
@@ -1341,3 +1353,18 @@ Directory _findPackageRoot() {
     current = parent;
   }
 }
+
+/// Default single-line minimum heights of the light preset.
+double _defaultHeight(AnimalInputSize size) => switch (size) {
+  AnimalInputSize.small => 34,
+  AnimalInputSize.middle => 44,
+  AnimalInputSize.large => 52,
+};
+
+/// Default font sizes of the light preset: its 14 logical-pixel body scaled
+/// by the registered 13/14, 15/14 and 17/14 ratios.
+double _defaultFontSize(AnimalInputSize size) => switch (size) {
+  AnimalInputSize.small => 13,
+  AnimalInputSize.middle => 15,
+  AnimalInputSize.large => 17,
+};

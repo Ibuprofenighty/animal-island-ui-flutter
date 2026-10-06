@@ -40,9 +40,7 @@ class _SwitchStoryState extends State<SwitchStory> {
             child: Row(
               children: [
                 ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: AnimalSwitchSize.defaultSize.width,
-                  ),
+                  constraints: const BoxConstraints(maxWidth: 58),
                   child: AnimalSwitch(
                     value: _enabled,
                     onChanged: (v) => setState(() => _enabled = v),

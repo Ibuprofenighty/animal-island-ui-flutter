@@ -98,10 +98,9 @@ class AnimalPagination extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: theme.spacing.md),
             child: Text(
               '$current / $pages',
-              style: theme.typography.button.copyWith(
-                fontSize: theme.typography.button.fontSize! * (14 / 15),
-                color: theme.colors.text,
-              ),
+              style: theme.typography.button
+                  .apply(fontSizeFactor: (14 / 15))
+                  .copyWith(color: theme.colors.text),
             ),
           ),
           InteractiveRegion(
@@ -203,14 +202,16 @@ class AnimalPagination extends StatelessWidget {
                   ),
                   child: Text(
                     '•••',
-                    style: theme.typography.button.copyWith(
-                      fontSize: theme.typography.button.fontSize! * (12 / 15),
-                      color: canJump
-                          ? theme.colors.textSecondary
-                          : theme.colors.textDisabled,
-                      letterSpacing:
-                          (theme.typography.button.letterSpacing ?? 0.2) * 7.5,
-                    ),
+                    style: theme.typography.button
+                        .apply(fontSizeFactor: (12 / 15))
+                        .copyWith(
+                          color: canJump
+                              ? theme.colors.textSecondary
+                              : theme.colors.textDisabled,
+                          letterSpacing:
+                              (theme.typography.button.letterSpacing ?? 0.2) *
+                              7.5,
+                        ),
                   ),
                 ),
               );
@@ -240,15 +241,18 @@ class AnimalPagination extends StatelessWidget {
                 ),
                 child: Text(
                   '$item',
-                  style: theme.typography.button.copyWith(
-                    fontSize: theme.typography.button.fontSize! * (14 / 15),
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                    color: isSelected
-                        ? theme.colors.onPrimary
-                        : (disabled
-                              ? theme.colors.textDisabled
-                              : theme.colors.text),
-                  ),
+                  style: theme.typography.button
+                      .apply(fontSizeFactor: (14 / 15))
+                      .copyWith(
+                        fontWeight: isSelected
+                            ? FontWeight.w800
+                            : FontWeight.w600,
+                        color: isSelected
+                            ? theme.colors.onPrimary
+                            : (disabled
+                                  ? theme.colors.textDisabled
+                                  : theme.colors.text),
+                      ),
                 ),
               ),
             );

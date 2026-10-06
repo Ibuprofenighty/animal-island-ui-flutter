@@ -88,10 +88,7 @@ void main() {
       final selectedBox = box('selected');
       final selectedDecoration = selectedBox.decoration! as BoxDecoration;
       expect(selectedDecoration.color, theme.colors.success);
-      expect(
-        selectedDecoration.borderRadius,
-        BorderRadius.circular(AnimalCheckboxSize.middle.borderRadius),
-      );
+      expect(selectedDecoration.borderRadius, BorderRadius.circular(6));
       expect(selectedDecoration.boxShadow, [theme.shadows.softElevation]);
       expect(selectedBox.duration, theme.motion.fast);
       expect(selectedBox.curve, theme.motion.ease);
@@ -110,7 +107,7 @@ void main() {
 
       final selectedLabelStyle = labelStyle('Selected').style;
       expect(selectedLabelStyle.color, theme.colors.text);
-      expect(selectedLabelStyle.fontSize, AnimalCheckboxSize.middle.fontSize);
+      expect(selectedLabelStyle.fontSize, theme.typography.body.fontSize);
       expect(
         themeContrastRatio(selectedLabelStyle.color!, theme.colors.bg),
         greaterThanOrEqualTo(4.5),

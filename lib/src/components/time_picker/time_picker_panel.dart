@@ -1,9 +1,14 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/models/clock.dart';
 import '../../foundation/models/time.dart';
+import '../../foundation/theme/colors.dart';
+import '../../foundation/theme/components/time_picker_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/focus_ring.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
@@ -28,6 +33,9 @@ class AnimalTimePickerPanel extends StatefulWidget {
   final bool disabled;
   final FocusNode? focusNode;
 
+  /// Overrides for this panel, taking precedence over the theme.
+  final AnimalTimePickerStyle? style;
+
   /// Canonical clock for Now; tests and hosts inject a deterministic clock.
   final AnimalClock clock;
 
@@ -43,6 +51,7 @@ class AnimalTimePickerPanel extends StatefulWidget {
     this.allowClear = true,
     this.disabled = false,
     this.focusNode,
+    this.style,
     this.clock = const SystemClock(),
   }) {
     TimeWheelModel.validateStep(hourStep, 'hourStep');
@@ -78,6 +87,17 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
   int _batch = 0;
 
   bool get _hasSeconds => widget.format.contains('ss');
+
+  /// The wheel item extent of the last build. Wheel offsets are in pixels, so
+  /// a new extent (larger type or text scale) re-centers the shown items.
+  double? _itemExtent;
+
+  /// Wheels the user is dragging or flinging. A re-centre never jumps them;
+  /// they are re-centred when their scroll ends ([_recenterPending]).
+  final Set<_TimeColumn> _userScrolling = <_TimeColumn>{};
+
+  /// User-scrolled wheels whose re-centre waits for the end of their scroll.
+  final Set<_TimeColumn> _recenterPending = <_TimeColumn>{};
 
   List<int> get _hours => TimeWheelModel.generateItems(24, widget.hourStep);
   List<int> get _minutes => TimeWheelModel.generateItems(60, widget.minuteStep);
@@ -130,6 +150,11 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
   void didUpdateWidget(covariant AnimalTimePickerPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.format != widget.format) {
+      if (!_hasSeconds) {
+        // A removed seconds wheel never sends its scroll end.
+        _userScrolling.remove(_TimeColumn.second);
+        _recenterPending.remove(_TimeColumn.second);
+      }
       // A newly shown seconds wheel attaches after this build.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _moveWheels(widget.value, animate: false);
@@ -146,21 +171,45 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
   /// Starts one programmatic batch that shows [target] (first items for null)
   /// and supersedes any older batch. Jumps finish synchronously; animations
   /// keep the batch open until every one of them completes.
-  void _moveWheels(AnimalTimeValue? target, {required bool animate}) {
+  ///
+  /// [recenter] jumps a wheel even when it already reports its item, which
+  /// re-centers it after the item extent changed. A re-centre skips a wheel
+  /// the user is scrolling and re-centres it when that scroll ends.
+  void _moveWheels(
+    AnimalTimeValue? target, {
+    required bool animate,
+    bool recenter = false,
+  }) {
     final bool interrupting = _isProgrammaticScroll;
     final int batch = ++_batch;
     _isProgrammaticScroll = true;
     _select(target);
     final motion = animate ? AnimalIslandTheme.of(context).motion : null;
     final List<Future<void>> animations = <Future<void>>[];
-    for (final (FixedExtentScrollController controller, int index)
-        in <(FixedExtentScrollController, int)>[
-          (_hourController, _hours.indexOf(_selectedHour)),
-          (_minuteController, _minutes.indexOf(_selectedMinute)),
+    for (final (
+          _TimeColumn column,
+          FixedExtentScrollController controller,
+          int index,
+        )
+        in <(_TimeColumn, FixedExtentScrollController, int)>[
+          (_TimeColumn.hour, _hourController, _hours.indexOf(_selectedHour)),
+          (
+            _TimeColumn.minute,
+            _minuteController,
+            _minutes.indexOf(_selectedMinute),
+          ),
           if (_hasSeconds)
-            (_secondController, _seconds.indexOf(_selectedSecond)),
+            (
+              _TimeColumn.second,
+              _secondController,
+              _seconds.indexOf(_selectedSecond),
+            ),
         ]) {
       if (!controller.hasClients) continue;
+      if (recenter && _userScrolling.contains(column)) {
+        _recenterPending.add(column);
+        continue;
+      }
       if (motion != null) {
         animations.add(
           controller.animateToItem(
@@ -169,7 +218,7 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
             curve: motion.ease,
           ),
         );
-      } else if (interrupting || controller.selectedItem != index) {
+      } else if (recenter || interrupting || controller.selectedItem != index) {
         // A jump also stops an older batch's animation on this wheel.
         controller.jumpToItem(index);
       }
@@ -238,7 +287,9 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
   /// the parent did not accept it.
   void _reconcileAfterFrame() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || _isProgrammaticScroll) return;
+      if (!mounted || _isProgrammaticScroll || _userScrolling.isNotEmpty) {
+        return;
+      }
       final AnimalTimeValue? value = widget.value;
       final AnimalTimeValue? onSteps = value == null
           ? null
@@ -251,6 +302,15 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
       if (_shownValue != onSteps) {
         setState(() => _moveWheels(widget.value, animate: false));
       }
+    });
+  }
+
+  /// Re-centres the wheels on the shown time after the item extent changed,
+  /// as a jump-only programmatic batch that proposes nothing. A wheel the
+  /// user is scrolling keeps its offset until that scroll ends.
+  void _recenterAfterFrame() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _moveWheels(_shownValue, animate: false, recenter: true);
     });
   }
 
@@ -288,22 +348,34 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
     final localizations = AnimalLocalizations.of(context)!;
-    final borderColor = (theme.colors.brightness == Brightness.dark)
-        ? theme.colors.border
-        : theme.colors.borderLight;
+    final ResolvedTimePickerStyle resolved = ResolvedTimePickerStyle.resolve(
+      theme: theme,
+      style: widget.style,
+      disabled: widget.disabled,
+    );
+    final double itemExtent = resolved.itemExtent(
+      textScaler: MediaQuery.textScalerOf(context),
+      textDirection: Directionality.of(context),
+    );
+    if (_itemExtent != null && _itemExtent != itemExtent) {
+      _recenterAfterFrame();
+    }
+    _itemExtent = itemExtent;
+    final double wheelHeight = math.max(resolved.wheelHeight, itemExtent * 3);
+    final Text separator = Text(':', style: resolved.separatorStyle);
 
     return Focus(
       focusNode: _effectiveFocusNode,
       child: Container(
-        width: _hasSeconds ? 300.0 : 250.0,
-        padding: EdgeInsets.symmetric(
-          horizontal: theme.spacing.lg,
-          vertical: theme.spacing.md,
-        ),
+        width: _hasSeconds ? resolved.widthWithSeconds : resolved.width,
+        padding: resolved.padding,
         decoration: BoxDecoration(
-          color: theme.colors.bgContent,
-          borderRadius: theme.radii.cardBorder,
-          border: Border.all(color: borderColor, width: 1.5),
+          color: resolved.backgroundColor,
+          borderRadius: resolved.borderRadius,
+          border: Border.all(
+            color: resolved.borderColor,
+            width: resolved.borderWidth,
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -313,10 +385,10 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
               children: [
                 AnimalIcon(
                   data: AnimalIcons.clock,
-                  size: 18,
-                  color: theme.colors.primaryText,
+                  size: resolved.headerIconSize,
+                  color: resolved.headerIconColor,
                 ),
-                SizedBox(width: theme.spacing.sm),
+                SizedBox(width: resolved.headerGap),
                 Flexible(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -324,35 +396,29 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
                       localizations.timePickerTitle,
                       maxLines: 1,
                       softWrap: false,
-                      style: theme.typography.heading.copyWith(
-                        color: widget.disabled
-                            ? theme.colors.textDisabled
-                            : theme.colors.text,
-                      ),
+                      style: resolved.titleTextStyle,
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: theme.spacing.md),
+            SizedBox(height: resolved.wheelGap),
             SizedBox(
-              height: 160.0,
+              height: wheelHeight,
               child: Stack(
                 children: [
                   Center(
                     child: Container(
-                      height: 36.0,
+                      height: itemExtent,
                       margin: EdgeInsets.symmetric(
-                        horizontal: theme.spacing.xs,
+                        horizontal: resolved.selectionInset,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.colors.primary.withValues(alpha: 0.15),
-                        borderRadius: theme.radii.pillBorder,
+                        color: resolved.selectionBackgroundColor,
+                        borderRadius: resolved.selectionBorderRadius,
                         border: Border.all(
-                          color: theme.colors.primaryActive.withValues(
-                            alpha: 0.4,
-                          ),
-                          width: 1.2,
+                          color: resolved.selectionBorderColor,
+                          width: resolved.selectionBorderWidth,
                         ),
                       ),
                     ),
@@ -367,16 +433,11 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
                           unitLabel: 'hours',
                           column: _TimeColumn.hour,
                           localizations: localizations,
-                          theme: theme,
+                          resolved: resolved,
+                          itemExtent: itemExtent,
                         ),
                       ),
-                      Text(
-                        ':',
-                        style: theme.typography.heading.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: theme.colors.text,
-                        ),
-                      ),
+                      separator,
                       Expanded(
                         child: _buildWheel(
                           controller: _minuteController,
@@ -385,17 +446,12 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
                           unitLabel: 'minutes',
                           column: _TimeColumn.minute,
                           localizations: localizations,
-                          theme: theme,
+                          resolved: resolved,
+                          itemExtent: itemExtent,
                         ),
                       ),
                       if (_hasSeconds) ...[
-                        Text(
-                          ':',
-                          style: theme.typography.heading.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colors.text,
-                          ),
-                        ),
+                        separator,
                         Expanded(
                           child: _buildWheel(
                             controller: _secondController,
@@ -404,7 +460,8 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
                             unitLabel: 'seconds',
                             column: _TimeColumn.second,
                             localizations: localizations,
-                            theme: theme,
+                            resolved: resolved,
+                            itemExtent: itemExtent,
                           ),
                         ),
                       ],
@@ -414,51 +471,46 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
               ),
             ),
             if (widget.showNow || widget.allowClear) ...[
-              SizedBox(height: theme.spacing.sm),
-              Divider(height: 1, color: borderColor),
-              SizedBox(height: theme.spacing.xs),
+              Padding(
+                padding: resolved.dividerPadding,
+                child: Divider(
+                  height: resolved.dividerThickness,
+                  thickness: resolved.dividerThickness,
+                  color: resolved.dividerColor,
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   if (widget.showNow)
-                    InteractiveRegion(
-                      onPressed: widget.disabled ? null : _handleNow,
-                      enableHaptics: false,
-                      disabled: widget.disabled,
-                      semanticLabel: localizations.now,
-                      surfaceColor: Colors.transparent,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: theme.spacing.sm,
-                      ),
-                      child: Text(
-                        localizations.now,
-                        style: theme.typography.caption.copyWith(
-                          color: widget.disabled
-                              ? theme.colors.textDisabled
-                              : theme.colors.primaryText,
-                          fontWeight: FontWeight.w700,
+                    Flexible(
+                      child: InteractiveRegion(
+                        onPressed: widget.disabled ? null : _handleNow,
+                        enableHaptics: false,
+                        disabled: widget.disabled,
+                        semanticLabel: localizations.now,
+                        surfaceColor: Colors.transparent,
+                        padding: resolved.actionPadding,
+                        child: _FooterLabel(
+                          localizations.now,
+                          style: resolved.nowStyle,
                         ),
                       ),
                     )
                   else
                     const SizedBox.shrink(),
                   if (widget.allowClear)
-                    InteractiveRegion(
-                      onPressed: widget.disabled ? null : _handleClear,
-                      enableHaptics: false,
-                      disabled: widget.disabled,
-                      semanticLabel: localizations.clearTime,
-                      surfaceColor: Colors.transparent,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: theme.spacing.sm,
-                      ),
-                      child: Text(
-                        localizations.clear,
-                        style: theme.typography.caption.copyWith(
-                          color: widget.disabled
-                              ? theme.colors.textDisabled
-                              : theme.colors.textSecondary,
-                          fontWeight: FontWeight.w600,
+                    Flexible(
+                      child: InteractiveRegion(
+                        onPressed: widget.disabled ? null : _handleClear,
+                        enableHaptics: false,
+                        disabled: widget.disabled,
+                        semanticLabel: localizations.clearTime,
+                        surfaceColor: Colors.transparent,
+                        padding: resolved.actionPadding,
+                        child: _FooterLabel(
+                          localizations.clear,
+                          style: resolved.clearStyle,
                         ),
                       ),
                     ),
@@ -478,11 +530,12 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
     required int selectedVal,
     required String unitLabel,
     required AnimalLocalizations localizations,
-    required AnimalIslandTheme theme,
+    required ResolvedTimePickerStyle resolved,
+    required double itemExtent,
   }) {
     final Widget wheel = ListWheelScrollView.useDelegate(
       controller: controller,
-      itemExtent: 36.0,
+      itemExtent: itemExtent,
       physics: widget.disabled
           ? const NeverScrollableScrollPhysics()
           : const FixedExtentScrollPhysics(),
@@ -500,22 +553,14 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
             child: Semantics(
               label: localizations.timePickerWheelValue(val, unitLabel),
               selected: isSelected,
-              child: Text(
-                val.toString().padLeft(2, '0'),
-                style:
-                    (isSelected
-                            ? theme.typography.subheading
-                            : theme.typography.body)
-                        .copyWith(
-                          fontWeight: isSelected
-                              ? FontWeight.w800
-                              : FontWeight.w500,
-                          color: widget.disabled
-                              ? theme.colors.textDisabled
-                              : (isSelected
-                                    ? theme.colors.text
-                                    : theme.colors.textSecondary),
-                        ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  val.toString().padLeft(2, '0'),
+                  maxLines: 1,
+                  softWrap: false,
+                  style: resolved.itemStyle(selected: isSelected),
+                ),
               ),
             ),
           );
@@ -526,14 +571,234 @@ class _AnimalTimePickerPanelState extends State<AnimalTimePickerPanel> {
       onNotification: (ScrollNotification notification) {
         if (notification is ScrollStartNotification &&
             notification.dragDetails != null) {
+          _userScrolling.add(column);
           _handleDragStart(column);
-        } else if (notification is ScrollEndNotification &&
-            !_isProgrammaticScroll) {
-          _reconcileAfterFrame();
+        } else if (notification is ScrollEndNotification) {
+          _userScrolling.remove(column);
+          if (_recenterPending.remove(column)) _recenterAfterFrame();
+          if (!_isProgrammaticScroll) _reconcileAfterFrame();
         }
         return false;
       },
       child: wheel,
     );
   }
+}
+
+/// A footer action label that scales down instead of overflowing when large
+/// type or a narrow panel leaves less room than the label needs.
+class _FooterLabel extends StatelessWidget {
+  const _FooterLabel(this.text, {required this.style});
+
+  final String text;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) => FittedBox(
+    fit: BoxFit.scaleDown,
+    child: Text(text, maxLines: 1, softWrap: false, style: style),
+  );
+}
+
+/// The one resolution path for [AnimalTimePickerStyle], shared by the panel
+/// and the popover trigger.
+///
+/// Precedence: the instance `style`, then
+/// `AnimalIslandTheme.components.timePicker`, then defaults derived from the
+/// theme tokens. Text styles merge field by field across the layers.
+class ResolvedTimePickerStyle {
+  ResolvedTimePickerStyle._(this._theme, this._style, this._disabled);
+
+  /// Merges [style] over the theme's time picker style for [theme].
+  factory ResolvedTimePickerStyle.resolve({
+    required AnimalIslandTheme theme,
+    required AnimalTimePickerStyle? style,
+    required bool disabled,
+  }) => ResolvedTimePickerStyle._(
+    theme,
+    (style ?? AnimalTimePickerStyle()).merge(theme.components.timePicker),
+    disabled,
+  );
+
+  final AnimalIslandTheme _theme;
+  final AnimalTimePickerStyle _style;
+  final bool _disabled;
+
+  AnimalThemeColors get _colors => _theme.colors;
+  bool get _dark => _colors.brightness == Brightness.dark;
+  Set<WidgetState> get _states => <WidgetState>{
+    if (_disabled) WidgetState.disabled,
+  };
+
+  /// Default panel and trigger border: the light border token in the light
+  /// palette and the standard border token in the dark palette.
+  Color get _defaultBorder => _dark ? _colors.border : _colors.borderLight;
+
+  TextStyle _text(TextStyle base, TextStyle? override, Color color) =>
+      _theme.typography.resolve(base.merge(override)).copyWith(color: color);
+
+  // Panel.
+
+  double get width => _style.width ?? 250;
+  double get widthWithSeconds => _style.widthWithSeconds ?? 300;
+  EdgeInsetsGeometry get padding =>
+      _style.padding ??
+      EdgeInsets.symmetric(
+        horizontal: _theme.spacing.lg,
+        vertical: _theme.spacing.md,
+      );
+  Color get backgroundColor => _style.backgroundColor ?? _colors.bgContent;
+  Color get borderColor => _style.borderColor ?? _defaultBorder;
+  double get borderWidth => _style.borderWidth ?? 1.5;
+  BorderRadius get borderRadius =>
+      _style.borderRadius ?? _theme.radii.cardBorder;
+  double get headerIconSize => _style.headerIconSize ?? 18;
+  Color get headerIconColor => _style.headerIconColor ?? _colors.primaryText;
+  double get headerGap => _style.headerGap ?? _theme.spacing.sm;
+  TextStyle get titleTextStyle => _text(
+    _theme.typography.heading,
+    _style.titleTextStyle,
+    _style.titleTextColor?.resolve(_states) ??
+        (_disabled ? _colors.textDisabled : _colors.text),
+  );
+  double get wheelGap => _style.wheelGap ?? _theme.spacing.md;
+  double get wheelHeight => _style.wheelHeight ?? 160;
+  double get minItemExtent => _style.minItemExtent ?? 36;
+
+  /// Wheel label style; the selected label uses `typography.subheading` at
+  /// weight 800 and the others `typography.body` at weight 500.
+  TextStyle itemStyle({required bool selected}) {
+    final Set<WidgetState> states = <WidgetState>{
+      ..._states,
+      if (selected) WidgetState.selected,
+    };
+    return _text(
+      selected
+          ? _theme.typography.subheading.copyWith(fontWeight: FontWeight.w800)
+          : _theme.typography.body.copyWith(fontWeight: FontWeight.w500),
+      selected ? _style.selectedItemTextStyle : _style.itemTextStyle,
+      _style.itemTextColor?.resolve(states) ??
+          (_disabled
+              ? _colors.textDisabled
+              : (selected ? _colors.text : _colors.textSecondary)),
+    );
+  }
+
+  /// Height of one wheel item: at least [minItemExtent], and never less than
+  /// the rendered height of the larger wheel label under [textScaler].
+  double itemExtent({
+    required TextScaler textScaler,
+    required TextDirection textDirection,
+  }) {
+    double labelHeight = 0;
+    for (final bool selected in <bool>[false, true]) {
+      final TextPainter painter = TextPainter(
+        text: TextSpan(
+          text: '00',
+          style: itemStyle(selected: selected),
+        ),
+        textDirection: textDirection,
+        textScaler: textScaler,
+        maxLines: 1,
+      )..layout();
+      labelHeight = math.max(labelHeight, painter.height);
+      painter.dispose();
+    }
+    return math.max(minItemExtent, labelHeight);
+  }
+
+  TextStyle get separatorStyle => _text(
+    _theme.typography.heading.copyWith(fontWeight: FontWeight.bold),
+    _style.separatorTextStyle,
+    _style.separatorTextColor ?? _colors.text,
+  );
+  Color get selectionBackgroundColor =>
+      _style.selectionBackgroundColor ??
+      _colors.primary.withValues(alpha: 0.15);
+  Color get selectionBorderColor =>
+      _style.selectionBorderColor ??
+      _colors.primaryActive.withValues(alpha: 0.4);
+  double get selectionBorderWidth => _style.selectionBorderWidth ?? 1.2;
+  BorderRadius get selectionBorderRadius =>
+      _style.selectionBorderRadius ?? _theme.radii.pillBorder;
+  double get selectionInset => _style.selectionInset ?? _theme.spacing.xs;
+  Color get dividerColor => _style.dividerColor ?? _defaultBorder;
+  double get dividerThickness => _style.dividerThickness ?? 1;
+  EdgeInsetsGeometry get dividerPadding =>
+      _style.dividerPadding ??
+      EdgeInsets.only(top: _theme.spacing.sm, bottom: _theme.spacing.xs);
+  EdgeInsetsGeometry get actionPadding =>
+      _style.actionPadding ??
+      EdgeInsets.symmetric(horizontal: _theme.spacing.sm);
+  TextStyle get nowStyle => _text(
+    _theme.typography.caption.copyWith(fontWeight: FontWeight.w700),
+    _style.nowTextStyle,
+    _style.nowTextColor?.resolve(_states) ??
+        (_disabled ? _colors.textDisabled : _colors.primaryText),
+  );
+  TextStyle get clearStyle => _text(
+    _theme.typography.caption.copyWith(fontWeight: FontWeight.w600),
+    _style.clearTextStyle,
+    _style.clearTextColor?.resolve(_states) ??
+        (_disabled ? _colors.textDisabled : _colors.textSecondary),
+  );
+
+  // Popover trigger.
+
+  /// Trigger border color for the current interaction state.
+  ///
+  /// Error and warning take precedence over focus; the focused default is the
+  /// library focus color.
+  Color triggerBorderColor({
+    required bool focused,
+    required bool error,
+    required bool warning,
+  }) {
+    if (warning) return _style.warningColor ?? _colors.warning;
+    final Set<WidgetState> states = <WidgetState>{
+      ..._states,
+      if (focused) WidgetState.focused,
+      if (error) WidgetState.error,
+    };
+    final Color? themed = _style.triggerBorderColor?.resolve(states);
+    if (themed != null) return themed;
+    if (error) return _colors.error;
+    if (focused) return resolveFocusRing(_theme).color;
+    return _defaultBorder;
+  }
+
+  Color get triggerBackgroundColor =>
+      _style.triggerBackgroundColor?.resolve(_states) ??
+      (_disabled
+          ? (_dark ? _colors.surfaceHeader : _colors.bgInputDisabled)
+          : _colors.bgInput);
+  double get triggerBorderWidth => _style.triggerBorderWidth ?? 1.5;
+  BorderRadius get triggerBorderRadius =>
+      _style.triggerBorderRadius ?? _theme.radii.pillBorder;
+  EdgeInsetsGeometry get triggerPadding =>
+      _style.triggerPadding ??
+      EdgeInsets.symmetric(horizontal: _theme.spacing.md);
+
+  /// Trigger text style for a shown time ([hasValue]) or the placeholder.
+  TextStyle triggerTextStyle({required bool hasValue}) => _text(
+    _theme.typography.body,
+    _style.triggerTextStyle,
+    hasValue
+        ? _style.triggerTextColor?.resolve(_states) ??
+              (_disabled ? _colors.textDisabled : _colors.text)
+        : _style.placeholderTextColor ?? _colors.textSecondary,
+  );
+  double get triggerIconSize => _style.triggerIconSize ?? 16;
+
+  /// Color of the trigger clock icon, or of the clear icon when
+  /// [clearIcon] is set (the clear icon is only shown while enabled).
+  Color triggerIconColor({bool clearIcon = false}) {
+    final Set<WidgetState> states = clearIcon ? <WidgetState>{} : _states;
+    return _style.triggerIconColor?.resolve(states) ??
+        (states.contains(WidgetState.disabled)
+            ? _colors.textDisabled
+            : _colors.textSecondary);
+  }
+
+  double get triggerIconGap => _style.triggerIconGap ?? _theme.spacing.sm;
 }

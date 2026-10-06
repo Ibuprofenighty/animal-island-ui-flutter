@@ -142,17 +142,15 @@ class AnimalTag extends StatelessWidget {
       children: [
         if (icon != null) ...[icon!, SizedBox(width: theme.spacing.xs)],
         DefaultTextStyle(
-          style: theme.typography.caption.copyWith(
-            color: text,
-            fontSize:
-                theme.typography.caption.fontSize! *
-                switch (size) {
+          style: theme.typography.caption
+              .apply(
+                fontSizeFactor: switch (size) {
                   AnimalTagSize.small => 10 / 12,
                   AnimalTagSize.middle => 1,
                   AnimalTagSize.large => 14 / 12,
                 },
-            fontWeight: FontWeight.w700,
-          ),
+              )
+              .copyWith(color: text, fontWeight: FontWeight.w700),
           child: child,
         ),
       ],

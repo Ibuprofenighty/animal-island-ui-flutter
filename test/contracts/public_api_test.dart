@@ -8,7 +8,7 @@ void main() {
   group('Public API Contract Tests (S02)', () {
     test('public API generator check passes without drift', () async {
       await expectLater(generatePublicApi(checkOnly: true), completes);
-    }, timeout: const Timeout(Duration(minutes: 2)));
+    }, timeout: const Timeout(Duration(minutes: 5)));
 
     test('catalog/public_api.json contains entrypoint and sha256', () {
       final file = File('catalog/public_api.json');

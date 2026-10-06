@@ -93,11 +93,12 @@ class AnimalTooltip extends StatelessWidget {
               WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
                 child: DefaultTextStyle(
-                  style: theme.typography.caption.copyWith(
-                    color: theme.colors.text,
-                    fontWeight: FontWeight.w800,
-                    fontSize: theme.typography.caption.fontSize! * (13 / 12),
-                  ),
+                  style: theme.typography.caption
+                      .apply(fontSizeFactor: (13 / 12))
+                      .copyWith(
+                        color: theme.colors.text,
+                        fontWeight: FontWeight.w800,
+                      ),
                   child: title!,
                 ),
               ),
@@ -131,11 +132,9 @@ class AnimalTooltip extends StatelessWidget {
             : theme.spacing.sm,
       ),
       decoration: decoration,
-      textStyle: theme.typography.caption.copyWith(
-        color: theme.colors.text,
-        fontWeight: FontWeight.w700,
-        fontSize: theme.typography.caption.fontSize! * (13 / 12),
-      ),
+      textStyle: theme.typography.caption
+          .apply(fontSizeFactor: (13 / 12))
+          .copyWith(color: theme.colors.text, fontWeight: FontWeight.w700),
       child: child,
     );
   }

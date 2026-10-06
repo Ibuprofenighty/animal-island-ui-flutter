@@ -88,9 +88,6 @@ void main() {
     testWidgets(
       'RAD03: Renders the current rounded control with an SVG check',
       (tester) async {
-        expect(AnimalRadioSize.small.borderRadius, 12);
-        expect(AnimalRadioSize.middle.borderRadius, 14);
-        expect(AnimalRadioSize.large.borderRadius, 16);
         tester.view.physicalSize = const Size(620, 196);
         tester.view.devicePixelRatio = 1;
         addTearDown(() {
@@ -187,16 +184,18 @@ void main() {
         final BoxDecoration focusedDecoration =
             tester.widget<AnimatedContainer>(controlFinder).decoration!
                 as BoxDecoration;
-        expect(
-          tester.getSize(controlFinder),
-          Size(AnimalRadioSize.small.boxSize, AnimalRadioSize.small.boxSize),
-        );
+        expect(tester.getSize(controlFinder), const Size(18, 18));
         expect(focusedDecoration.color, activeColor);
         expect(
           (focusedDecoration.border! as Border).top.color,
           AnimalIslandTheme.light.colors.focusYellow,
         );
-        for (final AnimalRadioSize size in AnimalRadioSize.values) {
+        for (final (AnimalRadioSize size, double box, double radius)
+            in <(AnimalRadioSize, double, double)>[
+              (AnimalRadioSize.small, 18, 12),
+              (AnimalRadioSize.middle, 22, 14),
+              (AnimalRadioSize.large, 26, 16),
+            ]) {
           final Finder selectedControl = find
               .descendant(
                 of: find.byKey(ValueKey<String>('dark-${size.name}-selected')),
@@ -206,15 +205,9 @@ void main() {
           final BoxDecoration decoration =
               tester.widget<AnimatedContainer>(selectedControl).decoration!
                   as BoxDecoration;
-          expect(
-            tester.getSize(selectedControl),
-            Size(size.boxSize, size.boxSize),
-          );
+          expect(tester.getSize(selectedControl), Size(box, box));
           expect(decoration.color, activeColor);
-          expect(
-            decoration.borderRadius,
-            BorderRadius.circular(size.borderRadius),
-          );
+          expect(decoration.borderRadius, BorderRadius.circular(radius));
         }
         await expectLater(
           find.byKey(matrixKey),

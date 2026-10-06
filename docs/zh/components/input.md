@@ -28,6 +28,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 - `shadow`
 - `size`
 - `status`
+- `style`
 - `suffix`
 - `textInputAction`
 
@@ -51,6 +52,16 @@ Form 直接观察同一个 controller，无需该回调再写入第二份值。
 文本编辑由底层 `TextField` 处理。清除操作响应指针点击，并在获得焦点时响应 Enter 或 Space。传入的 `FocusNode` 仍归调用方所有，输入框会跟随替换后的节点。
 
 错误状态会在文本框语义中标记为校验无效。`AnimalFormItem` 提供的可见标签和校验消息仍对辅助技术可见，placeholder 作为文本框提示保留。普通输入不会添加厚重的底部阴影，除非显式启用 `shadow`；不同尺寸下前后缀都位于可编辑区域之外。尺寸高度是最小高度。大字号缩放时，前后缀限制在可用宽度的一部分并可换行，输入框随之增高；文字不会缩小，可编辑区域也不会被遮挡。
+
+## 定制
+
+`style` 接受 `AnimalInputStyle`，只覆盖当前输入框。主题的 `components.input`
+（`AnimalInputThemeData`）提供通用 `style`，以及可选的 `smallStyle`、
+`middleStyle`、`largeStyle`。未设置的字段回落到由当前 token 推导的默认值：
+文字为 `typography.body` 按尺寸乘以 13/14、15/14 或 17/14；聚焦边框使用库统一的焦点色。
+
+颜色按 `WidgetState.disabled`、`focused`、`error` 解析；warning 状态使用
+`warningColor`。状态光晕跟随解析后的边框颜色。
 
 ## 示例
 参见示例 Gallery 中的 [`input_story.dart`](../../../example/lib/stories/input_story.dart)。

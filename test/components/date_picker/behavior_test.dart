@@ -940,7 +940,14 @@ void main() {
         (theme: AnimalIslandTheme.dark, direction: TextDirection.rtl),
         (
           theme: AnimalIslandTheme.light.copyWith(
-            spacing: AnimalThemeSpacing.standard.copyWith(xs: 20),
+            // A wide xs gap; the larger steps rise with it to keep the scale
+            // ordered.
+            spacing: AnimalThemeSpacing.standard.copyWith(
+              xs: 20,
+              sm: 20,
+              md: 20,
+              lg: 20,
+            ),
           ),
           direction: TextDirection.rtl,
         ),

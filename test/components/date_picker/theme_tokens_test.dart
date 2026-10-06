@@ -80,7 +80,11 @@ void main() {
       final monthTitle = tester.widget<Text>(
         find.text(materialLocalizations.formatMonthYear(DateTime.utc(2024, 5))),
       );
-      expect(monthTitle.style!.fontSize, 15.0);
+      // The heading is typography.heading at the registered 15/20 ratio.
+      expect(
+        monthTitle.style!.fontSize,
+        closeTo(theme.typography.heading.fontSize! * 15 / 20, 1e-9),
+      );
       expect(
         monthTitle.style!.letterSpacing,
         theme.typography.heading.letterSpacing,
@@ -147,7 +151,11 @@ void main() {
       expect(selectedSemantics.properties.selected, isTrue);
       expect(selectedSemantics.properties.enabled, isTrue);
       final selectedDay = dayText(selectedSemantics, '10');
-      expect(selectedDay.style!.fontSize, 13.0);
+      // Day labels are typography.body at the registered 13/14 ratio.
+      expect(
+        selectedDay.style!.fontSize,
+        closeTo(theme.typography.body.fontSize! * 13 / 14, 1e-9),
+      );
       expect(selectedDay.style!.color, theme.colors.onPrimary);
       expect(
         selectedDay.style!.letterSpacing,

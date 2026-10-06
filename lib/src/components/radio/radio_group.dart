@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../foundation/models/option.dart';
+import '../../foundation/theme/components/radio_theme.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/option_group_focus.dart';
 import 'radio.dart';
@@ -13,6 +14,10 @@ class AnimalRadioGroup<T> extends StatelessWidget {
   final bool disabled;
   final bool readOnly;
   final AnimalRadioSize size;
+
+  /// Overrides forwarded to every radio in the group.
+  final AnimalRadioStyle? style;
+
   final Axis direction;
   final FocusNode? focusNode;
   final Color? activeColor;
@@ -25,6 +30,7 @@ class AnimalRadioGroup<T> extends StatelessWidget {
     this.disabled = false,
     this.readOnly = false,
     this.size = AnimalRadioSize.middle,
+    this.style,
     this.direction = Axis.horizontal,
     this.focusNode,
     this.activeColor,
@@ -36,15 +42,20 @@ class AnimalRadioGroup<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = AnimalIslandTheme.of(context).spacing;
+    final gaps = resolveRadioGroupGaps(
+      theme: AnimalIslandTheme.of(context),
+      size: size,
+      style: style,
+      direction: direction,
+    );
     return OptionGroupFocus<T>(
       options: options,
       direction: direction,
       roving: true,
       selectedValue: value,
       disabled: disabled || (onChanged == null && !readOnly),
-      spacing: direction == Axis.horizontal ? spacing.lg : spacing.sm,
-      runSpacing: spacing.sm,
+      spacing: gaps.gap,
+      runSpacing: gaps.runGap,
       focusNode: focusNode,
       onNavigate: readOnly || onChanged == null ? null : _proposeNavigation,
       itemBuilder: (context, option, node) {
@@ -55,6 +66,7 @@ class AnimalRadioGroup<T> extends StatelessWidget {
           disabled: optionDisabled,
           readOnly: readOnly,
           size: size,
+          style: style,
           activeColor: activeColor,
           focusNode: node,
           label: Text(option.label),

@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 /// Spacing values owned by one Animal Island theme.
+///
+/// The scale is ordered from `xxs` to `xxl`, so a component may derive a
+/// non-negative gap from the difference of two steps.
 @immutable
 class AnimalThemeSpacing {
   final double xxs;
@@ -34,6 +37,14 @@ class AnimalThemeSpacing {
           entry.value,
           entry.key,
           'spacing must be finite and non-negative',
+        );
+      }
+    }
+    final ordered = <double>[xxs, xs, sm, md, lg, xl, xxl];
+    for (var i = 1; i < ordered.length; i++) {
+      if (ordered[i] < ordered[i - 1]) {
+        throw ArgumentError(
+          'Spacing must be ordered xxs <= xs <= sm <= md <= lg <= xl <= xxl.',
         );
       }
     }

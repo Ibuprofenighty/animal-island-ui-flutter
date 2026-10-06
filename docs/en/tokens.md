@@ -5,7 +5,7 @@ How Animal Island UI is themed, customized and kept readable. [中文](../zh/tok
 ## One theme source
 
 `AnimalIslandTheme` is an immutable Flutter `ThemeExtension`. It composes six
-value families:
+token families and one set of component overrides:
 
 | Theme property | Public value type | Responsibility |
 | --- | --- | --- |
@@ -15,6 +15,7 @@ value families:
 | `spacing` | `AnimalThemeSpacing` | Layout spacing |
 | `shadows` | `AnimalThemeShadows` | Shadow values |
 | `motion` | `AnimalThemeMotion` | Transition durations and curves |
+| `components` | `AnimalComponentThemes` | Optional per-component overrides; empty in the presets |
 
 ## Installing a theme
 
@@ -48,6 +49,54 @@ the active theme, so there is no second styling path to keep in sync.
   `theme.typography.resolve(...)` so the family's font configuration applies.
 - `motion` configures transition durations and curves. Animations also follow the
   platform's reduce-motion setting.
+
+Token constructors reject values components cannot render. Every typography role
+needs a finite, positive `fontSize`, and spacing must be ordered
+`xxs ≤ xs ≤ sm ≤ md ≤ lg ≤ xl ≤ xxl`.
+
+### Component styles
+
+A component's look resolves from three layers. The first one that sets a value
+wins:
+
+1. The component's own `style` parameter.
+2. `AnimalIslandTheme.components`. For a sized component, a size-specific style
+   such as `middleStyle` comes before the general `style`.
+3. Defaults derived from the token families. For example, a middle input's font
+   size is `typography.body` scaled by 15/14.
+
+The instance parameter and the theme use the same style type, so one value
+customizes a single widget or the whole app:
+
+```dart
+final theme = AnimalIslandTheme.light.copyWith(
+  components: AnimalComponentThemes(
+    input: AnimalInputThemeData(
+      style: AnimalInputStyle(borderWidth: 2),
+      largeStyle: AnimalInputStyle(minHeight: 56),
+    ),
+    focusRing: AnimalFocusRingStyle(color: const Color(0xFF2F6FDE)),
+  ),
+);
+
+final input = AnimalInput(
+  controller: controller,
+  style: AnimalInputStyle(textStyle: const TextStyle(fontSize: 18)),
+);
+```
+
+Field names follow one convention: the equivalent Flutter Material name when one
+exists (`fillColor`, `trackColor`), otherwise a part plus a role such as
+`labelTextStyle`, `placeholderTextColor`, `menuBorderRadius` or `optionPadding`.
+
+Colors that change with interaction state are `WidgetStateProperty` values. A
+partial text style merges with the lower layers, so overriding only the font size
+keeps the theme's family and weight. To restyle one subtree, wrap it in Flutter's
+`Theme` with a modified `AnimalIslandTheme`.
+
+Accessibility floors stay fixed: 48 logical-pixel hit targets, and a focus ring
+at least `AnimalFocusRingStyle.minimumWidth` wide. Choose focus and text colors
+that keep the contrast targets below.
 
 ## Visual identity and accessibility
 

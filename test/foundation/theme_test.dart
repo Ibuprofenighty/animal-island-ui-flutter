@@ -387,6 +387,22 @@ void main() {
           throwsArgumentError,
         );
         expect(
+          () => AnimalThemeSpacing.standard.copyWith(xxs: 8, sm: 4),
+          throwsArgumentError,
+        );
+        expect(
+          AnimalThemeSpacing.standard
+              .copyWith(xxs: 0, xs: 0, sm: 0, md: 0, lg: 0, xl: 0, xxl: 0)
+              .sm,
+          0,
+        );
+        expect(
+          () => AnimalThemeTypography.standard.copyWith(
+            body: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+          throwsArgumentError,
+        );
+        expect(
           () => AnimalThemeTypography.standard.copyWith(fontFamily: '  '),
           throwsArgumentError,
         );
