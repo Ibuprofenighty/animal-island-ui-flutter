@@ -126,6 +126,10 @@ class AnimalTimePickerStyle {
   /// open) and [WidgetState.error].
   final WidgetStateProperty<Color?>? triggerBorderColor;
 
+  /// Color of the glow around a focused or invalid trigger, resolved against
+  /// [WidgetState.focused] and [WidgetState.error].
+  final WidgetStateProperty<Color?>? triggerGlowColor;
+
   /// Popover trigger border and glow color for the warning status.
   final Color? warningColor;
 
@@ -155,6 +159,15 @@ class AnimalTimePickerStyle {
   /// Color of the trigger clock icon and clear icon; resolves against
   /// [WidgetState.disabled].
   final WidgetStateProperty<Color?>? triggerIconColor;
+
+  /// Padding around the clear icon inside its 48 logical-pixel target.
+  final EdgeInsetsGeometry? triggerClearButtonPadding;
+
+  /// Corner radius of the clear control's hover fill and focus ring.
+  final BorderRadius? triggerClearButtonBorderRadius;
+
+  /// Fill behind the clear icon, resolved against [WidgetState.hovered].
+  final WidgetStateProperty<Color?>? triggerClearButtonBackgroundColor;
 
   /// Gap between the trigger icon and its text.
   final double? triggerIconGap;
@@ -195,6 +208,7 @@ class AnimalTimePickerStyle {
     this.clearTextColor,
     this.triggerBackgroundColor,
     this.triggerBorderColor,
+    this.triggerGlowColor,
     this.warningColor,
     this.triggerBorderWidth,
     this.triggerBorderRadius,
@@ -204,6 +218,9 @@ class AnimalTimePickerStyle {
     this.placeholderTextColor,
     this.triggerIconSize,
     this.triggerIconColor,
+    this.triggerClearButtonPadding,
+    this.triggerClearButtonBorderRadius,
+    this.triggerClearButtonBackgroundColor,
     this.triggerIconGap,
   }) {
     AnimalStyleValues.checkDimension('width', width);
@@ -271,6 +288,7 @@ class AnimalTimePickerStyle {
     WidgetStateProperty<Color?>? clearTextColor,
     WidgetStateProperty<Color?>? triggerBackgroundColor,
     WidgetStateProperty<Color?>? triggerBorderColor,
+    WidgetStateProperty<Color?>? triggerGlowColor,
     Color? warningColor,
     double? triggerBorderWidth,
     BorderRadius? triggerBorderRadius,
@@ -280,6 +298,9 @@ class AnimalTimePickerStyle {
     Color? placeholderTextColor,
     double? triggerIconSize,
     WidgetStateProperty<Color?>? triggerIconColor,
+    EdgeInsetsGeometry? triggerClearButtonPadding,
+    BorderRadius? triggerClearButtonBorderRadius,
+    WidgetStateProperty<Color?>? triggerClearButtonBackgroundColor,
     double? triggerIconGap,
   }) => AnimalTimePickerStyle(
     width: width ?? this.width,
@@ -319,6 +340,7 @@ class AnimalTimePickerStyle {
     triggerBackgroundColor:
         triggerBackgroundColor ?? this.triggerBackgroundColor,
     triggerBorderColor: triggerBorderColor ?? this.triggerBorderColor,
+    triggerGlowColor: triggerGlowColor ?? this.triggerGlowColor,
     warningColor: warningColor ?? this.warningColor,
     triggerBorderWidth: triggerBorderWidth ?? this.triggerBorderWidth,
     triggerBorderRadius: triggerBorderRadius ?? this.triggerBorderRadius,
@@ -328,6 +350,13 @@ class AnimalTimePickerStyle {
     placeholderTextColor: placeholderTextColor ?? this.placeholderTextColor,
     triggerIconSize: triggerIconSize ?? this.triggerIconSize,
     triggerIconColor: triggerIconColor ?? this.triggerIconColor,
+    triggerClearButtonPadding:
+        triggerClearButtonPadding ?? this.triggerClearButtonPadding,
+    triggerClearButtonBorderRadius:
+        triggerClearButtonBorderRadius ?? this.triggerClearButtonBorderRadius,
+    triggerClearButtonBackgroundColor:
+        triggerClearButtonBackgroundColor ??
+        this.triggerClearButtonBackgroundColor,
     triggerIconGap: triggerIconGap ?? this.triggerIconGap,
   );
 
@@ -382,6 +411,7 @@ class AnimalTimePickerStyle {
       triggerBackgroundColor:
           triggerBackgroundColor ?? other.triggerBackgroundColor,
       triggerBorderColor: triggerBorderColor ?? other.triggerBorderColor,
+      triggerGlowColor: triggerGlowColor ?? other.triggerGlowColor,
       warningColor: warningColor ?? other.warningColor,
       triggerBorderWidth: triggerBorderWidth ?? other.triggerBorderWidth,
       triggerBorderRadius: triggerBorderRadius ?? other.triggerBorderRadius,
@@ -392,6 +422,14 @@ class AnimalTimePickerStyle {
       placeholderTextColor: placeholderTextColor ?? other.placeholderTextColor,
       triggerIconSize: triggerIconSize ?? other.triggerIconSize,
       triggerIconColor: triggerIconColor ?? other.triggerIconColor,
+      triggerClearButtonPadding:
+          triggerClearButtonPadding ?? other.triggerClearButtonPadding,
+      triggerClearButtonBorderRadius:
+          triggerClearButtonBorderRadius ??
+          other.triggerClearButtonBorderRadius,
+      triggerClearButtonBackgroundColor:
+          triggerClearButtonBackgroundColor ??
+          other.triggerClearButtonBackgroundColor,
       triggerIconGap: triggerIconGap ?? other.triggerIconGap,
     );
   }
@@ -564,6 +602,11 @@ class AnimalTimePickerStyle {
         b?.triggerBorderColor,
         t,
       ),
+      triggerGlowColor: AnimalStyleValues.lerpColors(
+        a?.triggerGlowColor,
+        b?.triggerGlowColor,
+        t,
+      ),
       warningColor: AnimalStyleValues.lerpColor(
         a?.warningColor,
         b?.warningColor,
@@ -607,6 +650,21 @@ class AnimalTimePickerStyle {
       triggerIconColor: AnimalStyleValues.lerpColors(
         a?.triggerIconColor,
         b?.triggerIconColor,
+        t,
+      ),
+      triggerClearButtonPadding: AnimalStyleValues.lerpInsets(
+        a?.triggerClearButtonPadding,
+        b?.triggerClearButtonPadding,
+        t,
+      ),
+      triggerClearButtonBorderRadius: AnimalStyleValues.lerpRadius(
+        a?.triggerClearButtonBorderRadius,
+        b?.triggerClearButtonBorderRadius,
+        t,
+      ),
+      triggerClearButtonBackgroundColor: AnimalStyleValues.lerpColors(
+        a?.triggerClearButtonBackgroundColor,
+        b?.triggerClearButtonBackgroundColor,
         t,
       ),
       triggerIconGap: AnimalStyleValues.lerpDimension(
@@ -656,6 +714,7 @@ class AnimalTimePickerStyle {
           clearTextColor == other.clearTextColor &&
           triggerBackgroundColor == other.triggerBackgroundColor &&
           triggerBorderColor == other.triggerBorderColor &&
+          triggerGlowColor == other.triggerGlowColor &&
           warningColor == other.warningColor &&
           triggerBorderWidth == other.triggerBorderWidth &&
           triggerBorderRadius == other.triggerBorderRadius &&
@@ -665,6 +724,11 @@ class AnimalTimePickerStyle {
           placeholderTextColor == other.placeholderTextColor &&
           triggerIconSize == other.triggerIconSize &&
           triggerIconColor == other.triggerIconColor &&
+          triggerClearButtonPadding == other.triggerClearButtonPadding &&
+          triggerClearButtonBorderRadius ==
+              other.triggerClearButtonBorderRadius &&
+          triggerClearButtonBackgroundColor ==
+              other.triggerClearButtonBackgroundColor &&
           triggerIconGap == other.triggerIconGap;
 
   @override
@@ -704,6 +768,7 @@ class AnimalTimePickerStyle {
     clearTextColor,
     triggerBackgroundColor,
     triggerBorderColor,
+    triggerGlowColor,
     warningColor,
     triggerBorderWidth,
     triggerBorderRadius,
@@ -713,6 +778,9 @@ class AnimalTimePickerStyle {
     placeholderTextColor,
     triggerIconSize,
     triggerIconColor,
+    triggerClearButtonPadding,
+    triggerClearButtonBorderRadius,
+    triggerClearButtonBackgroundColor,
     triggerIconGap,
   ]);
 }

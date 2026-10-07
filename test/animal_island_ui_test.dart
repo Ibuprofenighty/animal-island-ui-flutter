@@ -265,21 +265,23 @@ void main() {
             supportedLocales: AnimalLocalizations.supportedLocales,
 
             theme: AnimalIslandTheme.light.toThemeData(),
-            home: Builder(
-              builder: (context) {
-                return Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      AnimalNotification.success(
-                        context,
-                        message: 'Bells Collected!',
-                        description: '10,000 Bells added to your wallet',
-                      );
-                    },
-                    child: const Text('Notify'),
-                  ),
-                );
-              },
+            home: AnimalOverlayHost(
+              child: Builder(
+                builder: (context) {
+                  return Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        AnimalNotification.success(
+                          context,
+                          message: 'Bells Collected!',
+                          description: '10,000 Bells added to your wallet',
+                        );
+                      },
+                      child: const Text('Notify'),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         );
@@ -291,7 +293,7 @@ void main() {
         expect(find.text('Bells Collected!'), findsOneWidget);
         expect(find.text('10,000 Bells added to your wallet'), findsOneWidget);
 
-        AnimalNotification.destroy();
+        AnimalNotification.closeAll(tester.element(find.text('Notify')));
         await tester.pumpAndSettle();
         expect(find.text('Bells Collected!'), findsNothing);
       },
@@ -644,7 +646,6 @@ void main() {
             body: AnimalModal(
               title: const Text('Blob Dialog'),
               content: const Text('Organic Modal Content'),
-              onOk: () => true,
             ),
           ),
         ),
@@ -1060,9 +1061,10 @@ void main() {
             home: Scaffold(
               body: AnimalModal(
                 title: const Text('Villager Dialogue'),
-                typewriter: true,
-                typeSpeed: const Duration(milliseconds: 10),
-                content: const Text('Hello Island Resident!'),
+                content: const AnimalTypewriter(
+                  text: 'Hello Island Resident!',
+                  speed: Duration(milliseconds: 10),
+                ),
               ),
             ),
           ),
@@ -1113,11 +1115,14 @@ void main() {
               body: Builder(
                 builder: (context) => AnimalButton(
                   onPressed: () {
-                    AnimalDrawer.show(
+                    AnimalDrawer.show<void>(
                       context: context,
                       title: const Text('Island Storage'),
-                      barrierColor: const Color(0x80000000),
-                      child: const Text('Drawer Contents'),
+                      style: AnimalDrawerStyle(
+                        barrierColor: const Color(0x80000000),
+                      ),
+                      builder: (context, close) =>
+                          const Text('Drawer Contents'),
                     );
                   },
                   child: const Text('Open Drawer'),
@@ -1950,7 +1955,6 @@ void main() {
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
               body: AnimalModal(
-                typewriter: true,
                 onClose: () => closed = true,
                 content: const Padding(
                   padding: EdgeInsets.all(8.0),
@@ -1961,11 +1965,9 @@ void main() {
           ),
         );
 
-        // Verify AnimalTypewriter received the nested text
-        final typewriterFinder = find.byType(AnimalTypewriter);
-        expect(typewriterFinder, findsOneWidget);
-        final typewriter = tester.widget<AnimalTypewriter>(typewriterFinder);
-        expect(typewriter.text, 'Nested dialogue text');
+        // The body is rendered as given; no text is extracted or re-typed.
+        expect(find.byType(AnimalTypewriter), findsNothing);
+        expect(find.text('Nested dialogue text'), findsOneWidget);
 
         // Test close button keyboard activation
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -2413,10 +2415,11 @@ void main() {
               body: Builder(
                 builder: (context) => ElevatedButton(
                   onPressed: () {
-                    AnimalDrawer.show(
+                    AnimalDrawer.show<void>(
                       context: context,
                       title: const Text('Island Tools'),
-                      child: const Text('Net and Fishing Rod'),
+                      builder: (context, close) =>
+                          const Text('Net and Fishing Rod'),
                     );
                   },
                   child: const Text('Open Drawer'),
@@ -2524,17 +2527,19 @@ void main() {
             supportedLocales: AnimalLocalizations.supportedLocales,
 
             theme: AnimalIslandTheme.light.toThemeData(),
-            home: Builder(
-              builder: (context) => Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    AnimalNotification.info(
-                      context,
-                      message: 'Morning Announcement',
-                      duration: const Duration(seconds: 10),
-                    );
-                  },
-                  child: const Text('Notify'),
+            home: AnimalOverlayHost(
+              child: Builder(
+                builder: (context) => Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      AnimalNotification.info(
+                        context,
+                        message: 'Morning Announcement',
+                        duration: const Duration(seconds: 10),
+                      );
+                    },
+                    child: const Text('Notify'),
+                  ),
                 ),
               ),
             ),
@@ -3163,25 +3168,28 @@ void main() {
     );
 
     testWidgets(
-      'AnimalNotification.destroy dismisses notifications programmatically',
+      'AnimalNotificationHandle.close dismisses notifications programmatically',
       (tester) async {
+        AnimalNotificationHandle? turnip;
         await tester.pumpWidget(
           MaterialApp(
             localizationsDelegates: AnimalLocalizations.localizationsDelegates,
             supportedLocales: AnimalLocalizations.supportedLocales,
 
             theme: AnimalIslandTheme.light.toThemeData(),
-            home: Scaffold(
-              body: Builder(
-                builder: (context) => ElevatedButton(
-                  onPressed: () {
-                    AnimalNotification.open(
-                      context,
-                      key: 'turnip_notif',
-                      message: const Text('Turnip Alert'),
-                    );
-                  },
-                  child: const Text('Notify'),
+            home: AnimalOverlayHost(
+              child: Scaffold(
+                body: Builder(
+                  builder: (context) => ElevatedButton(
+                    onPressed: () {
+                      turnip = AnimalNotification.open(
+                        context,
+                        key: 'turnip_notif',
+                        message: const Text('Turnip Alert'),
+                      );
+                    },
+                    child: const Text('Notify'),
+                  ),
                 ),
               ),
             ),
@@ -3189,11 +3197,13 @@ void main() {
         );
 
         await tester.tap(find.text('Notify'));
-        await tester.pumpAndSettle();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
         expect(find.text('Turnip Alert'), findsOneWidget);
 
-        // Dismiss by key
-        AnimalNotification.destroy('turnip_notif');
+        // Dismiss through the occurrence's own handle.
+        turnip!.close();
+        expect(turnip!.status, AnimalNotificationStatus.closed);
         await tester.pumpAndSettle();
         expect(find.text('Turnip Alert'), findsNothing);
       },

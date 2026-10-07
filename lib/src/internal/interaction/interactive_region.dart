@@ -5,6 +5,9 @@ import 'package:flutter/widgets.dart';
 import '../../foundation/theme/theme.dart';
 import 'focus_ring.dart';
 
+/// Smallest hit target of every activatable control, in logical pixels.
+const double kAnimalMinimumTarget = 48;
+
 typedef InteractiveSemanticsBuilder = SemanticsProperties Function(
   bool enabled,
   bool visible,
@@ -81,8 +84,8 @@ class InteractiveRegion extends StatefulWidget {
     this.semanticsBuilder,
     this.onKeyEvent,
     this.onFocusChanged,
-    this.minimumHitSize = 48,
-  }) : assert(minimumHitSize >= 48);
+    this.minimumHitSize = kAnimalMinimumTarget,
+  }) : assert(minimumHitSize >= kAnimalMinimumTarget);
 
   @override
   State<InteractiveRegion> createState() => _InteractiveRegionState();

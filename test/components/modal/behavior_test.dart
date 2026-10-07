@@ -18,7 +18,7 @@ void main() {
               body: Builder(
                 builder: (context) => ElevatedButton(
                   onPressed: () {
-                    AnimalModal.show(
+                    AnimalModal.confirm(
                       context: context,
                       title: const Text('Island Notice'),
                       content: const Text('Turnip prices are soaring today!'),
@@ -49,7 +49,7 @@ void main() {
     );
 
     testWidgets(
-      'MOD02: async onOk returning false keeps modal open; true closes modal',
+      'MOD02: async onConfirm returning false keeps modal open; true closes modal',
       (tester) async {
         bool shouldSucceed = false;
 
@@ -63,11 +63,11 @@ void main() {
               body: Builder(
                 builder: (context) => ElevatedButton(
                   onPressed: () {
-                    AnimalModal.show(
+                    AnimalModal.confirm(
                       context: context,
                       title: const Text('Async Test'),
                       content: const Text('Confirm deletion?'),
-                      onOk: () async {
+                      onConfirm: () async {
                         await Future<void>.delayed(
                           const Duration(milliseconds: 50),
                         );

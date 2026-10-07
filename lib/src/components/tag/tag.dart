@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/theme/colors.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/icon_action.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
@@ -199,39 +200,26 @@ class AnimalTag extends StatelessWidget {
             interactiveBody,
             if (onClose != null && !disabled) ...[
               SizedBox(width: theme.spacing.xs),
-              _TagCloseButton(
-                onClose: onClose!,
-                iconSize: size.iconSize,
-                color: text,
+              AnimalIconAction(
+                onPressed: onClose!,
+                semanticLabel: AnimalLocalizations.of(context)!.tagRemoveLabel,
+                padding: EdgeInsets.zero,
+                borderRadius: const BorderRadius.all(Radius.circular(24)),
+                backgroundColor: resolveIconActionBackground(
+                  null,
+                  idle: Colors.transparent,
+                  hovered: Colors.transparent,
+                ),
+                icon: AnimalIcon(
+                  data: AnimalIcons.close,
+                  size: size.iconSize,
+                  color: text,
+                ),
               ),
             ],
           ],
         ),
       ),
-    );
-  }
-}
-
-class _TagCloseButton extends StatelessWidget {
-  final VoidCallback onClose;
-  final double iconSize;
-  final Color color;
-
-  const _TagCloseButton({
-    required this.onClose,
-    required this.iconSize,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InteractiveRegion(
-      onPressed: onClose,
-      enableHaptics: false,
-      semanticLabel: AnimalLocalizations.of(context)!.tagRemoveLabel,
-      surfaceColor: Colors.transparent,
-      borderRadius: BorderRadius.circular(24),
-      child: AnimalIcon(data: AnimalIcons.close, size: iconSize, color: color),
     );
   }
 }

@@ -24,6 +24,20 @@
 4. 每份状态只有一个所有者；只释放自己代码拥有的 controller 和资源。
 5. `AnimalModal` 与 `AnimalDrawer` 以 route 方式显示；`AnimalNotification` 与
    `AnimalLoading` 显示在浮层中。各自通过自己的 API 使用。
+   `AnimalModal.confirm` 返回 `Future<bool>`（只有确认成功时为 `true`）；
+   `AnimalModal.show<T>` 与 `AnimalDrawer.show<T>` 返回 `Future<T?>`：其 builder 收到的
+   `close` 回调所传入的值，被关闭时为 `null`。两者都显示在最近的 `Navigator` 上；
+   `onConfirm` 挂起期间所有关闭请求都会被忽略。
+   `AnimalLoading.show` 要求 context 之上有 `AnimalOverlayHost`，返回的 handle 只能通过
+   幂等的 `close()` 移除加载。
+   `AnimalNotification.open` 同样需要 host，返回 `AnimalNotificationHandle`（`status`、
+   幂等的 `close()`）；方位队列已满（显示 3 条、等待 50 条）时返回 `rejected`。仍在队列中的
+   业务 `key` 会原位更新其通知；`AnimalNotification.closeAll(context)` 关闭该 host 的通知。
+   自定义浮层时，`AnimalOverlayHost.of(context)` 返回该 host 的 `AnimalOverlayController`：
+   `show(builder:, onClose:)` 返回带幂等 `close()` 与 `isClosed` 的 `AnimalOverlayEntryHandle`，
+   `close(handle)` 关闭本 controller 的一个 occurrence（其他 controller 的 handle 抛出 `ArgumentError`），
+   `closeAll()` 关闭该 host 的全部 occurrence。交给 host 的 controller 仍归你所有，只能在 host
+   移除后 dispose。
 6. 遵循各组件自身的几何与状态；例如叠层深度阴影属于主色和危险色的填充按钮，而非所有组件。
 7. 定制颜色时保持前景/背景配对可读，普通表面上的文字使用语义 `*Text` 角色。
 8. 组件外观只走一条定制路径：组件的 `style` 参数覆盖 `AnimalIslandTheme.components`，

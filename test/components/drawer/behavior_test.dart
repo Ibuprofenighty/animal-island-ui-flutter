@@ -17,12 +17,13 @@ void main() {
               body: Builder(
                 builder: (context) => ElevatedButton(
                   onPressed: () {
-                    AnimalDrawer.show(
+                    AnimalDrawer.show<void>(
                       context: context,
                       placement: AnimalDrawerPlacement.right,
                       maskClosable: false,
                       title: const Text('Island Settings'),
-                      child: const Text('Audio and graphics settings'),
+                      builder: (context, close) =>
+                          const Text('Audio and graphics settings'),
                     );
                   },
                   child: const Text('Open Drawer'),
@@ -76,11 +77,11 @@ void main() {
               body: Builder(
                 builder: (context) => ElevatedButton(
                   onPressed: () {
-                    AnimalDrawer.show(
+                    AnimalDrawer.show<void>(
                       context: context,
                       placement: placement,
                       title: Text('Drawer $placement'),
-                      child: const Text('Content'),
+                      builder: (context, close) => const Text('Content'),
                     );
                   },
                   child: const Text('Open'),

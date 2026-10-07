@@ -5,6 +5,9 @@ import '../../foundation/models/clock.dart';
 import '../../foundation/models/date.dart';
 import '../../foundation/theme/components/date_picker_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../icons/icon.dart';
+import '../../icons/icons.g.dart';
+import '../../internal/interaction/icon_action.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../input/input.dart';
 import 'calendar_model.dart';
@@ -220,14 +223,12 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
       disabled: widget.disabled,
     );
     final canInteract = !widget.disabled;
-    final triggerBorder = resolved.triggerBorder(
+    final trigger = resolved.trigger(
       disabled: widget.disabled,
       focused: _menuController.isOpen || _isFocused,
       error: widget.status == AnimalInputStatus.error,
       warning: widget.status == AnimalInputStatus.warning,
     );
-    final Color borderColor = triggerBorder.border;
-    final Color? glowColor = triggerBorder.glow;
     final Color iconColor = resolved.triggerIconColor(
       disabled: widget.disabled,
     );
@@ -249,7 +250,10 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
             borderRadius: resolved.borderRadius,
-            side: BorderSide(color: borderColor, width: resolved.borderWidth),
+            side: BorderSide(
+              color: trigger.border,
+              width: resolved.borderWidth,
+            ),
           ),
         ),
       ),
@@ -287,16 +291,14 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
           semanticLabel: displayText,
           borderRadius: resolved.triggerBorderRadius,
           surfaceColor: inputBackground,
-          border: Border.all(color: borderColor, width: resolved.borderWidth),
-          extraShadows: glowColor == null
-              ? null
-              : <BoxShadow>[
-                  BoxShadow(
-                    color: glowColor,
-                    blurRadius: 4.0,
-                    spreadRadius: 1.0,
-                  ),
-                ],
+          border: Border.all(
+            color: trigger.border,
+            width: resolved.borderWidth,
+          ),
+          extraShadows: switch (trigger.glow) {
+            final BoxShadow glow => <BoxShadow>[glow],
+            null => null,
+          },
           padding: EdgeInsets.symmetric(
             horizontal: resolved.triggerHorizontalPadding,
           ),
@@ -324,22 +326,19 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
           ),
         );
 
-        Widget buildClearButton() => SizedBox.square(
-          dimension: 48,
-          child: InteractiveRegion(
-            onPressed: () {
-              widget.onChanged?.call(null);
-              _menuController.close();
-            },
-            enableHaptics: false,
-            semanticLabel: localizations.clearDate,
-            surfaceColor: Colors.transparent,
-            borderRadius: BorderRadius.circular(24),
-            child: Icon(
-              Icons.cancel_rounded,
-              size: resolved.triggerIconSize,
-              color: iconColor,
-            ),
+        Widget buildClearButton() => AnimalIconAction(
+          onPressed: () {
+            widget.onChanged?.call(null);
+            _menuController.close();
+          },
+          semanticLabel: localizations.clearDate,
+          padding: resolved.triggerClearButtonPadding,
+          borderRadius: resolved.triggerClearButtonBorderRadius,
+          backgroundColor: resolved.triggerClearButtonBackgroundColor,
+          icon: AnimalIcon(
+            data: AnimalIcons.close,
+            size: resolved.triggerIconSize,
+            color: iconColor,
           ),
         );
 
@@ -355,10 +354,16 @@ class _AnimalDatePickerPopoverState extends State<_AnimalDatePickerPopover> {
               );
             }
 
-            final clearWidth = hasClear ? 48.0 : 0.0;
+            final double clearWidth = hasClear
+                ? animalIconActionWidth(
+                    iconSize: resolved.triggerIconSize,
+                    padding: resolved.triggerClearButtonPadding,
+                    textDirection: Directionality.of(context),
+                  )
+                : 0.0;
             final availableTriggerWidth = constraints.maxWidth - clearWidth;
-            final triggerMaxWidth = availableTriggerWidth < 48.0
-                ? 48.0
+            final triggerMaxWidth = availableTriggerWidth < kAnimalMinimumTarget
+                ? kAnimalMinimumTarget
                 : availableTriggerWidth;
             return Row(
               mainAxisSize: MainAxisSize.min,

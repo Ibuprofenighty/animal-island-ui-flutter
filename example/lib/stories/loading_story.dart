@@ -3,8 +3,36 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../gallery/story_card.dart';
 
-class LoadingStory extends StatelessWidget {
+class LoadingStory extends StatefulWidget {
   const LoadingStory({super.key});
+
+  @override
+  State<LoadingStory> createState() => _LoadingStoryState();
+}
+
+class _LoadingStoryState extends State<LoadingStory> {
+  AnimalLoadingHandle? _handle;
+
+  @override
+  void dispose() {
+    _handle?.close();
+    super.dispose();
+  }
+
+  Future<void> _showFullScreen() async {
+    // The Gallery wraps every page in an AnimalOverlayHost.
+    final AnimalLoadingHandle handle = AnimalLoading.show(
+      context,
+      tip: 'Syncing island...',
+    );
+    _handle = handle;
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
+    } finally {
+      handle.close();
+      if (identical(_handle, handle)) _handle = null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +49,8 @@ class LoadingStory extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Whimsical island leaf spinners, falling snowflakes, and bounce dots with scoped handles (F14 Root Fix)',
+            'Island leaf spinners, snowflakes and bouncing dots, plus a '
+            'full-screen loading shown in the nearest overlay host',
             style: theme.typography.body.copyWith(
               color: theme.colors.textSecondary,
             ),
@@ -32,7 +61,7 @@ class LoadingStory extends StatelessWidget {
             capabilityIds: const ['C25-LOD', 'LOD01', 'F14'],
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
+              children: [
                 AnimalLoading(type: AnimalLoadingType.spinner, tip: 'Spinning'),
                 AnimalLoading(type: AnimalLoadingType.dots, tip: 'Bouncing'),
                 AnimalLoading(
@@ -40,6 +69,23 @@ class LoadingStory extends StatelessWidget {
                   tip: 'Snowing',
                 ),
               ],
+            ),
+          ),
+          StoryCard(
+            title: 'Full-screen Loading',
+            capabilityIds: const ['LOD02', 'LOD03'],
+            codeSnippet: '''final handle = AnimalLoading.show(
+  context,
+  tip: 'Syncing island...',
+);
+try {
+  await sync();
+} finally {
+  handle.close();
+}''',
+            child: AnimalButton(
+              onPressed: _showFullScreen,
+              child: const Text('Show full-screen loading'),
             ),
           ),
         ],

@@ -134,7 +134,10 @@ class AnimalLocalizationsEn extends AnimalLocalizations {
   String get modalCloseLabel => 'Close modal';
 
   @override
-  String get drawerSemanticsLabel => 'Drawer';
+  String get modalRouteLabel => 'Dialog';
+
+  @override
+  String get drawerRouteLabel => 'Drawer';
 
   @override
   String get drawerCloseLabel => 'Close drawer';
@@ -190,6 +193,9 @@ class AnimalLocalizationsEn extends AnimalLocalizations {
 
   @override
   String get imagePreviewCloseLabel => 'Close preview';
+
+  @override
+  String get imagePreviewRouteLabel => 'Image preview';
 
   @override
   String imagePreviewSemanticLabel(String label) {

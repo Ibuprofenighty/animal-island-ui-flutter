@@ -21,7 +21,7 @@ void main() {
                   TextButton(
                     key: const ValueKey('open-modal'),
                     onPressed: () {
-                      AnimalModal.show<void>(
+                      AnimalModal.confirm(
                         context: context,
                         title: const Text('Caller title'),
                         content: const Text('Caller content'),
@@ -35,7 +35,8 @@ void main() {
                       AnimalDrawer.show<void>(
                         context: context,
                         title: const Text('Caller drawer title'),
-                        child: const Text('Caller drawer content'),
+                        builder: (context, close) =>
+                            const Text('Caller drawer content'),
                       );
                     },
                     child: const Text('Open drawer'),

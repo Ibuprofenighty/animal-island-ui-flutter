@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:animal_island_ui/src/components/notification/notification_card.dart';
-import 'package:animal_island_ui/src/components/notification/notification_queue.dart';
+import 'package:animal_island_ui/src/components/notification/notification_model.dart';
 
 import '../../support/theme_contrast.dart';
 import '../theme_fixtures.dart';
@@ -50,8 +50,8 @@ void main() {
                     type: type,
                     duration: const Duration(days: 1),
                   ),
-                  onDismiss: () {},
-                  onTimeout: () {},
+                  onClose: () {},
+                  onPausedChanged: (_) {},
                 ),
               ),
             ),
@@ -140,7 +140,7 @@ void main() {
           }
         }
 
-        AnimalNotificationQueueState? queueState;
+        late BuildContext hostContext;
         await tester.pumpWidget(
           MaterialApp(
             localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -148,25 +148,23 @@ void main() {
 
             key: ValueKey('${theme.hashCode}-queue'),
             theme: theme.toThemeData(),
-            home: Scaffold(
-              body: Stack(
-                children: [
-                  AnimalNotificationQueueContainer(
-                    placement: AnimalNotificationPlacement.topRight,
-                    onStateReady: (state) => queueState = state,
-                    onEmpty: () {},
-                  ),
-                ],
+            home: AnimalOverlayHost(
+              child: Scaffold(
+                body: Builder(
+                  builder: (context) {
+                    hostContext = context;
+                    return const SizedBox.expand();
+                  },
+                ),
               ),
             ),
           ),
         );
-        queueState!.add(
-          AnimalNotificationConfig(
-            key: 'theme-probe',
-            message: const Text('Queued notice'),
-            duration: const Duration(days: 1),
-          ),
+        AnimalNotification.open(
+          hostContext,
+          key: 'theme-probe',
+          message: const Text('Queued notice'),
+          duration: null,
         );
         await tester.pump();
         await tester.pump(theme.motion.normal ~/ 2);
@@ -198,8 +196,8 @@ void main() {
         await tester.pump(theme.motion.normal - (theme.motion.normal ~/ 2));
         expect(fade.opacity.value, 1);
         final queuePaddings = tester.widgetList<Padding>(
-          find.descendant(
-            of: find.byType(AnimalNotificationQueueContainer),
+          find.ancestor(
+            of: find.text('Queued notice'),
             matching: find.byType(Padding),
           ),
         );
@@ -219,6 +217,7 @@ void main() {
             EdgeInsets.only(bottom: theme.spacing.sm + theme.spacing.xxs / 2),
           ),
         );
+        AnimalNotification.closeAll(hostContext);
       }
     },
   );

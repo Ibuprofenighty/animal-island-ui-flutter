@@ -9,8 +9,6 @@ import '../../icons/icons.g.dart';
 import '../skeleton/skeleton.dart';
 import 'image_preview.dart';
 
-export 'image_preview.dart';
-
 /// Presentation variants for [AnimalImage].
 enum AnimalImageVariant {
   /// Default 20px card radius with soft elevation.
@@ -29,7 +27,7 @@ enum AnimalImageVariant {
 /// - Full-screen interactive lightbox preview with zoom, pinch, and pan
 /// - Keyboard accessibility: preview opens via Enter/Space and closes via Escape
 /// - Restores focus to the triggering element upon preview dismissal
-class AnimalImage extends StatefulWidget {
+class AnimalImage extends StatelessWidget {
   /// The image provider to display.
   final ImageProvider image;
 
@@ -78,35 +76,13 @@ class AnimalImage extends StatefulWidget {
     this.semanticLabel,
   });
 
-  @override
-  State<AnimalImage> createState() => _AnimalImageState();
-}
-
-class _AnimalImageState extends State<AnimalImage> {
-  final FocusNode _focusNode = FocusNode();
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
   void _openLightbox(BuildContext context) {
-    Navigator.of(context)
-        .push(
-          AnimalImagePreviewRoute(
-            image: widget.image,
-            semanticLabel: widget.semanticLabel,
-            fallback: widget.fallback,
-            theme: AnimalIslandTheme.of(context),
-          ),
-        )
-        .then((_) {
-          // Restore focus to this element after preview is closed
-          if (mounted) {
-            _focusNode.requestFocus();
-          }
-        });
+    presentAnimalImagePreview(
+      context,
+      image: image,
+      semanticLabel: semanticLabel,
+      fallback: fallback,
+    );
   }
 
   @override
@@ -114,38 +90,38 @@ class _AnimalImageState extends State<AnimalImage> {
     final localizations = AnimalLocalizations.of(context)!;
     final theme = AnimalIslandTheme.of(context);
     final effectiveRadius =
-        widget.borderRadius ??
-        (widget.variant == AnimalImageVariant.standard
+        borderRadius ??
+        (variant == AnimalImageVariant.standard
             ? theme.radii.cardBorder
             : theme.radii.smBorder);
 
-    final frameColor = widget.color == null
+    final frameColor = color == null
         ? theme.colors.bgContent
-        : theme.colors.tile(widget.color!).background;
+        : theme.colors.tile(color!).background;
     final borderColor = theme.colors.brightness == Brightness.dark
         ? theme.colors.border
         : theme.colors.borderLight;
 
     Widget imageWidget = Image(
-      image: widget.image,
-      width: widget.width,
-      height: widget.height,
-      fit: widget.fit,
-      semanticLabel: widget.semanticLabel,
+      image: image,
+      width: width,
+      height: height,
+      fit: fit,
+      semanticLabel: semanticLabel,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) return child;
-        return widget.placeholder ??
+        return placeholder ??
             SizedBox(
-              width: widget.width,
-              height: widget.height,
+              width: width,
+              height: height,
               child: const AnimalSkeleton(),
             );
       },
       errorBuilder: (context, error, stackTrace) {
-        return widget.fallback ??
+        return fallback ??
             Container(
-              width: widget.width,
-              height: widget.height,
+              width: width,
+              height: height,
               decoration: BoxDecoration(
                 color: theme.colors.bgContent,
                 borderRadius: effectiveRadius,
@@ -164,7 +140,7 @@ class _AnimalImageState extends State<AnimalImage> {
     );
 
     Widget core;
-    if (widget.variant == AnimalImageVariant.bordered) {
+    if (variant == AnimalImageVariant.bordered) {
       core = Container(
         padding: EdgeInsets.all(theme.spacing.xs + theme.spacing.xxs),
         decoration: BoxDecoration(
@@ -188,14 +164,13 @@ class _AnimalImageState extends State<AnimalImage> {
       );
     }
 
-    if (widget.preview) {
+    if (preview) {
       return InteractiveRegion(
         onPressed: () => _openLightbox(context),
         enableHaptics: false,
-        focusNode: _focusNode,
         semanticContainer: true,
-        semanticLabel: widget.semanticLabel != null
-            ? localizations.imagePreviewSemanticLabel(widget.semanticLabel!)
+        semanticLabel: semanticLabel != null
+            ? localizations.imagePreviewSemanticLabel(semanticLabel!)
             : localizations.imagePreviewDefaultSemanticLabel,
         child: core,
       );

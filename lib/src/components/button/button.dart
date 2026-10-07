@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../foundation/theme/components/loading_theme.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../loading/loading.dart';
@@ -88,7 +89,10 @@ class AnimalButton extends StatelessWidget {
           SizedBox(
             width: size.iconSize,
             height: size.iconSize,
-            child: AnimalLoading(size: size.iconSize, color: style.textColor),
+            child: AnimalLoading(
+              size: size.iconSize,
+              style: AnimalLoadingStyle(color: style.textColor),
+            ),
           ),
           SizedBox(width: theme.spacing.sm),
         ] else if (icon != null) ...[

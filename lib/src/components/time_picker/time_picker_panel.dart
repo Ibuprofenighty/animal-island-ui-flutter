@@ -8,7 +8,8 @@ import '../../foundation/models/time.dart';
 import '../../foundation/theme/colors.dart';
 import '../../foundation/theme/components/time_picker_theme.dart';
 import '../../foundation/theme/theme.dart';
-import '../../internal/interaction/focus_ring.dart';
+import '../../internal/interaction/field_status.dart';
+import '../../internal/interaction/icon_action.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
@@ -745,27 +746,23 @@ class ResolvedTimePickerStyle {
 
   // Popover trigger.
 
-  /// Trigger border color for the current interaction state.
-  ///
-  /// Error and warning take precedence over focus; the focused default is the
-  /// library focus color.
-  Color triggerBorderColor({
+  /// Trigger border and glow; see [resolveFieldTriggerStatus].
+  AnimalFieldTriggerStatus trigger({
     required bool focused,
     required bool error,
     required bool warning,
-  }) {
-    if (warning) return _style.warningColor ?? _colors.warning;
-    final Set<WidgetState> states = <WidgetState>{
+  }) => resolveFieldTriggerStatus(
+    theme: _theme,
+    states: <WidgetState>{
       ..._states,
       if (focused) WidgetState.focused,
       if (error) WidgetState.error,
-    };
-    final Color? themed = _style.triggerBorderColor?.resolve(states);
-    if (themed != null) return themed;
-    if (error) return _colors.error;
-    if (focused) return resolveFocusRing(_theme).color;
-    return _defaultBorder;
-  }
+    },
+    warning: warning,
+    borderColor: _style.triggerBorderColor,
+    warningColor: _style.warningColor,
+    glowColor: _style.triggerGlowColor,
+  );
 
   Color get triggerBackgroundColor =>
       _style.triggerBackgroundColor?.resolve(_states) ??
@@ -801,4 +798,15 @@ class ResolvedTimePickerStyle {
   }
 
   double get triggerIconGap => _style.triggerIconGap ?? _theme.spacing.sm;
+
+  EdgeInsetsGeometry get triggerClearButtonPadding =>
+      _style.triggerClearButtonPadding ?? EdgeInsets.zero;
+  BorderRadius get triggerClearButtonBorderRadius =>
+      _style.triggerClearButtonBorderRadius ?? _theme.radii.pillBorder;
+  WidgetStateProperty<Color> get triggerClearButtonBackgroundColor =>
+      resolveIconActionBackground(
+        _style.triggerClearButtonBackgroundColor,
+        idle: const Color(0x00000000),
+        hovered: const Color(0x00000000),
+      );
 }

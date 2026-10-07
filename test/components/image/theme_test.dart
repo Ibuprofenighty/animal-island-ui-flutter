@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
-import 'package:animal_island_ui/src/components/image/image_preview.dart';
 
 import '../theme_fixtures.dart';
 
@@ -61,7 +60,6 @@ void main() {
       await tester.pump();
       final previewContent = find.byType(InteractiveViewer);
       final previewRoute = ModalRoute.of(tester.element(previewContent))!;
-      expect(previewRoute, isA<AnimalImagePreviewRoute>());
       expect(previewRoute.transitionDuration, theme.motion.normal);
     },
   );

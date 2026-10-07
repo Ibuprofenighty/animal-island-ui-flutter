@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "sdk": ">=3.47.5",
   "dartSdk": ">=3.13.4 <4.0.0",
-  "publicApiSha256": "bba4b832fbb955ac2b76ec3d7c554e0fbc2a720111c896fc75610a3cbaaf5ea4",
+  "publicApiSha256": "3ba0baace7e6f0f94d349e98f3f5e5a4d1694eb3b8cc00cb0fb353484e75d1b4",
   "singleEntrypoint": "skills/animal-island-ui-style-flutter/SKILL.md",
   "setupGuide": "skills/animal-island-ui-style-flutter/references/setup.md",
   "componentsDirectory": "skills/animal-island-ui-style-flutter/references/components",

@@ -7,71 +7,53 @@ void main() {
     testWidgets(
       'two isolated apps or hosts must not share single static notification queue',
       (tester) async {
-        // Defect F07: AnimalNotification uses static Map<_activeQueues> and Map<_activeEntries>,
-        // meaning notifications opened in App A pollute and interact with App B!
+        // Each app has its own AnimalOverlayHost, so each keeps its own queue:
+        // the same placement and key in App B must not reach App A.
         BuildContext? ctxA;
         BuildContext? ctxB;
+
+        Widget app(String label, void Function(BuildContext) capture) =>
+            MaterialApp(
+              localizationsDelegates:
+                  AnimalLocalizations.localizationsDelegates,
+              supportedLocales: AnimalLocalizations.supportedLocales,
+              theme: AnimalIslandTheme.light.toThemeData(),
+              home: AnimalOverlayHost(
+                child: Scaffold(
+                  body: Builder(
+                    builder: (context) {
+                      capture(context);
+                      return Text(label);
+                    },
+                  ),
+                ),
+              ),
+            );
 
         await tester.pumpWidget(
           Row(
             textDirection: TextDirection.ltr,
             children: [
-              Expanded(
-                child: MaterialApp(
-                  localizationsDelegates:
-                      AnimalLocalizations.localizationsDelegates,
-                  supportedLocales: AnimalLocalizations.supportedLocales,
-
-                  theme: AnimalIslandTheme.light.toThemeData(),
-                  home: Scaffold(
-                    body: Builder(
-                      builder: (context) {
-                        ctxA = context;
-                        return const Text('App A');
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: MaterialApp(
-                  localizationsDelegates:
-                      AnimalLocalizations.localizationsDelegates,
-                  supportedLocales: AnimalLocalizations.supportedLocales,
-
-                  theme: AnimalIslandTheme.light.toThemeData(),
-                  home: Scaffold(
-                    body: Builder(
-                      builder: (context) {
-                        ctxB = context;
-                        return const Text('App B');
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              Expanded(child: app('App A', (c) => ctxA = c)),
+              Expanded(child: app('App B', (c) => ctxB = c)),
             ],
           ),
         );
 
-        // Open in App A
-        AnimalNotification.open(
+        final AnimalNotificationHandle inA = AnimalNotification.open(
           ctxA!,
           key: 'shared_key',
           message: const Text('Notification for A'),
         );
         await tester.pump();
 
-        // Open in App B with same placement & key
-        AnimalNotification.open(
+        final AnimalNotificationHandle inB = AnimalNotification.open(
           ctxB!,
           key: 'shared_key',
           message: const Text('Notification for B'),
         );
         await tester.pump();
 
-        // In a multi-host architecture, App A has 1 notification and App B has 1 notification.
-        // Under old static architecture, the second open overwrote or shared the exact same queue entry!
         expect(
           find.text('Notification for A'),
           findsOneWidget,
@@ -82,9 +64,18 @@ void main() {
           findsOneWidget,
           reason: 'App B should show Notification for B in its isolated host',
         );
+        expect(identical(inA, inB), isFalse);
 
-        // Cleanup
-        AnimalNotification.reset();
+        // Dismissing in host A leaves host B untouched.
+        AnimalNotification.closeAll(ctxA!);
+        await tester.pump();
+        expect(find.text('Notification for A'), findsNothing);
+        expect(find.text('Notification for B'), findsOneWidget);
+        expect(inB.status, AnimalNotificationStatus.active);
+
+        // Removing both hosts closes the remaining occurrence and its timer.
+        await tester.pumpWidget(const SizedBox.shrink());
+        expect(inB.status, AnimalNotificationStatus.closed);
       },
     );
   });

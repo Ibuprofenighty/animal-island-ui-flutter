@@ -113,6 +113,47 @@ void main() {
       expect(optionText(tester, 'Beta').style!.fontSize, closeTo(28, 1e-9));
     });
 
+    testWidgets('clear action and warning fields change the rendered select', (
+      tester,
+    ) async {
+      await pumpSelect(
+        tester,
+        allowClear: true,
+        status: AnimalInputStatus.warning,
+        theme: themed(
+          AnimalSelectStyle(
+            clearButtonPadding: const EdgeInsets.all(5),
+            clearButtonBorderRadius: const BorderRadius.all(Radius.circular(3)),
+            clearButtonBackgroundColor: const WidgetStatePropertyAll<Color>(
+              Color(0xFF0000AA),
+            ),
+            warningColor: const Color(0xFFCC6600),
+          ),
+        ),
+      );
+      final Finder clearIcon = find.byWidgetPredicate(
+        (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+      );
+      final AnimatedContainer fill = tester.widget<AnimatedContainer>(
+        find
+            .ancestor(of: clearIcon, matching: find.byType(AnimatedContainer))
+            .first,
+      );
+      expect(fill.padding, const EdgeInsets.all(5));
+      final BoxDecoration fillDecoration = fill.decoration! as BoxDecoration;
+      expect(fillDecoration.color, const Color(0xFF0000AA));
+      expect(
+        fillDecoration.borderRadius,
+        const BorderRadius.all(Radius.circular(3)),
+      );
+      // The warning status takes the themed warning color, with a status glow.
+      expect(trigger(tester).border!.top.color, const Color(0xFFCC6600));
+      expect(
+        trigger(tester).extraShadows!.single.color,
+        const Color(0xFFCC6600).withValues(alpha: 0.35),
+      );
+    });
+
     testWidgets('every component-theme field changes the rendered select', (
       tester,
     ) async {

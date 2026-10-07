@@ -20,9 +20,6 @@ class AnimalInputStyle {
   /// Horizontal padding inside the field border.
   final double? horizontalPadding;
 
-  /// Size of the clear icon.
-  final double? iconSize;
-
   /// Gap between the editable text and a prefix, suffix or clear action.
   final double? adornmentGap;
 
@@ -32,22 +29,49 @@ class AnimalInputStyle {
   /// Padding around the clear icon inside its 48 logical-pixel target.
   final EdgeInsetsGeometry? clearButtonPadding;
 
+  /// Corner radius of the clear control's hover fill and focus ring.
+  final BorderRadius? clearButtonBorderRadius;
+
+  /// Fill behind the clear icon; resolves against WidgetState.hovered.
+  final WidgetStateProperty<Color?>? clearButtonBackgroundColor;
+
   /// Style of the edited text. Its color is resolved from [textColor].
   final TextStyle? textStyle;
 
   /// Style of the placeholder. Its color is resolved from [placeholderTextColor].
   final TextStyle? placeholderTextStyle;
 
+  /// Field fill, resolved against [WidgetState.disabled], [WidgetState.focused]
+  /// and [WidgetState.error].
   final WidgetStateProperty<Color?>? backgroundColor;
+
+  /// Field border, resolved against the same states as [backgroundColor]; the
+  /// warning status uses [warningColor] instead.
   final WidgetStateProperty<Color?>? borderColor;
+
+  /// Color of the glow around a focused or invalid trigger, resolved against
+  /// [WidgetState.focused] and [WidgetState.error].
+  final WidgetStateProperty<Color?>? glowColor;
+
+  /// Color of the edited text, resolved against the field states.
   final WidgetStateProperty<Color?>? textColor;
+
+  /// Color of the placeholder, resolved against the field states.
   final WidgetStateProperty<Color?>? placeholderTextColor;
 
   /// Border and glow color for the warning status.
   final Color? warningColor;
 
+  /// Color of the text cursor.
   final Color? cursorColor;
+
+  /// Color of the clear icon.
   final Color? clearIconColor;
+
+  /// Size of the clear icon.
+  final double? clearIconSize;
+
+  /// Width of the field border.
   final double? borderWidth;
 
   /// Corner radius of a single-line field.
@@ -62,19 +86,22 @@ class AnimalInputStyle {
   AnimalInputStyle({
     this.minHeight,
     this.horizontalPadding,
-    this.iconSize,
     this.adornmentGap,
     this.multilineVerticalPadding,
     this.clearButtonPadding,
+    this.clearButtonBorderRadius,
+    this.clearButtonBackgroundColor,
     this.textStyle,
     this.placeholderTextStyle,
     this.backgroundColor,
     this.borderColor,
+    this.glowColor,
     this.textColor,
     this.placeholderTextColor,
     this.warningColor,
     this.cursorColor,
     this.clearIconColor,
+    this.clearIconSize,
     this.borderWidth,
     this.borderRadius,
     this.multilineBorderRadius,
@@ -82,7 +109,6 @@ class AnimalInputStyle {
   }) {
     AnimalStyleValues.checkDimension('minHeight', minHeight);
     AnimalStyleValues.checkDimension('horizontalPadding', horizontalPadding);
-    AnimalStyleValues.checkDimension('iconSize', iconSize);
     AnimalStyleValues.checkDimension('adornmentGap', adornmentGap);
     AnimalStyleValues.checkDimension(
       'multilineVerticalPadding',
@@ -94,24 +120,28 @@ class AnimalInputStyle {
       'placeholderTextStyle',
       placeholderTextStyle,
     );
+    AnimalStyleValues.checkDimension('clearIconSize', clearIconSize);
   }
 
   AnimalInputStyle copyWith({
     double? minHeight,
     double? horizontalPadding,
-    double? iconSize,
     double? adornmentGap,
     double? multilineVerticalPadding,
     EdgeInsetsGeometry? clearButtonPadding,
+    BorderRadius? clearButtonBorderRadius,
+    WidgetStateProperty<Color?>? clearButtonBackgroundColor,
     TextStyle? textStyle,
     TextStyle? placeholderTextStyle,
     WidgetStateProperty<Color?>? backgroundColor,
     WidgetStateProperty<Color?>? borderColor,
+    WidgetStateProperty<Color?>? glowColor,
     WidgetStateProperty<Color?>? textColor,
     WidgetStateProperty<Color?>? placeholderTextColor,
     Color? warningColor,
     Color? cursorColor,
     Color? clearIconColor,
+    double? clearIconSize,
     double? borderWidth,
     BorderRadius? borderRadius,
     BorderRadius? multilineBorderRadius,
@@ -119,20 +149,25 @@ class AnimalInputStyle {
   }) => AnimalInputStyle(
     minHeight: minHeight ?? this.minHeight,
     horizontalPadding: horizontalPadding ?? this.horizontalPadding,
-    iconSize: iconSize ?? this.iconSize,
     adornmentGap: adornmentGap ?? this.adornmentGap,
     multilineVerticalPadding:
         multilineVerticalPadding ?? this.multilineVerticalPadding,
     clearButtonPadding: clearButtonPadding ?? this.clearButtonPadding,
+    clearButtonBorderRadius:
+        clearButtonBorderRadius ?? this.clearButtonBorderRadius,
+    clearButtonBackgroundColor:
+        clearButtonBackgroundColor ?? this.clearButtonBackgroundColor,
     textStyle: textStyle ?? this.textStyle,
     placeholderTextStyle: placeholderTextStyle ?? this.placeholderTextStyle,
     backgroundColor: backgroundColor ?? this.backgroundColor,
     borderColor: borderColor ?? this.borderColor,
+    glowColor: glowColor ?? this.glowColor,
     textColor: textColor ?? this.textColor,
     placeholderTextColor: placeholderTextColor ?? this.placeholderTextColor,
     warningColor: warningColor ?? this.warningColor,
     cursorColor: cursorColor ?? this.cursorColor,
     clearIconColor: clearIconColor ?? this.clearIconColor,
+    clearIconSize: clearIconSize ?? this.clearIconSize,
     borderWidth: borderWidth ?? this.borderWidth,
     borderRadius: borderRadius ?? this.borderRadius,
     multilineBorderRadius: multilineBorderRadius ?? this.multilineBorderRadius,
@@ -148,22 +183,27 @@ class AnimalInputStyle {
     return AnimalInputStyle(
       minHeight: minHeight ?? other.minHeight,
       horizontalPadding: horizontalPadding ?? other.horizontalPadding,
-      iconSize: iconSize ?? other.iconSize,
       adornmentGap: adornmentGap ?? other.adornmentGap,
       multilineVerticalPadding:
           multilineVerticalPadding ?? other.multilineVerticalPadding,
       clearButtonPadding: clearButtonPadding ?? other.clearButtonPadding,
+      clearButtonBorderRadius:
+          clearButtonBorderRadius ?? other.clearButtonBorderRadius,
+      clearButtonBackgroundColor:
+          clearButtonBackgroundColor ?? other.clearButtonBackgroundColor,
       textStyle: other.textStyle?.merge(textStyle) ?? textStyle,
       placeholderTextStyle:
           other.placeholderTextStyle?.merge(placeholderTextStyle) ??
           placeholderTextStyle,
       backgroundColor: backgroundColor ?? other.backgroundColor,
       borderColor: borderColor ?? other.borderColor,
+      glowColor: glowColor ?? other.glowColor,
       textColor: textColor ?? other.textColor,
       placeholderTextColor: placeholderTextColor ?? other.placeholderTextColor,
       warningColor: warningColor ?? other.warningColor,
       cursorColor: cursorColor ?? other.cursorColor,
       clearIconColor: clearIconColor ?? other.clearIconColor,
+      clearIconSize: clearIconSize ?? other.clearIconSize,
       borderWidth: borderWidth ?? other.borderWidth,
       borderRadius: borderRadius ?? other.borderRadius,
       multilineBorderRadius:
@@ -187,7 +227,6 @@ class AnimalInputStyle {
         b?.horizontalPadding,
         t,
       ),
-      iconSize: AnimalStyleValues.lerpDimension(a?.iconSize, b?.iconSize, t),
       adornmentGap: AnimalStyleValues.lerpDimension(
         a?.adornmentGap,
         b?.adornmentGap,
@@ -201,6 +240,16 @@ class AnimalInputStyle {
       clearButtonPadding: AnimalStyleValues.lerpInsets(
         a?.clearButtonPadding,
         b?.clearButtonPadding,
+        t,
+      ),
+      clearButtonBorderRadius: AnimalStyleValues.lerpRadius(
+        a?.clearButtonBorderRadius,
+        b?.clearButtonBorderRadius,
+        t,
+      ),
+      clearButtonBackgroundColor: AnimalStyleValues.lerpColors(
+        a?.clearButtonBackgroundColor,
+        b?.clearButtonBackgroundColor,
         t,
       ),
       textStyle: AnimalStyleValues.lerpTextStyle(a?.textStyle, b?.textStyle, t),
@@ -219,6 +268,7 @@ class AnimalInputStyle {
         b?.borderColor,
         t,
       ),
+      glowColor: AnimalStyleValues.lerpColors(a?.glowColor, b?.glowColor, t),
       textColor: AnimalStyleValues.lerpColors(a?.textColor, b?.textColor, t),
       placeholderTextColor: AnimalStyleValues.lerpColors(
         a?.placeholderTextColor,
@@ -238,6 +288,11 @@ class AnimalInputStyle {
       clearIconColor: AnimalStyleValues.lerpColor(
         a?.clearIconColor,
         b?.clearIconColor,
+        t,
+      ),
+      clearIconSize: AnimalStyleValues.lerpDimension(
+        a?.clearIconSize,
+        b?.clearIconSize,
         t,
       ),
       borderWidth: AnimalStyleValues.lerpDimension(
@@ -269,19 +324,22 @@ class AnimalInputStyle {
       other is AnimalInputStyle &&
           minHeight == other.minHeight &&
           horizontalPadding == other.horizontalPadding &&
-          iconSize == other.iconSize &&
           adornmentGap == other.adornmentGap &&
           multilineVerticalPadding == other.multilineVerticalPadding &&
           clearButtonPadding == other.clearButtonPadding &&
+          clearButtonBorderRadius == other.clearButtonBorderRadius &&
+          clearButtonBackgroundColor == other.clearButtonBackgroundColor &&
           textStyle == other.textStyle &&
           placeholderTextStyle == other.placeholderTextStyle &&
           backgroundColor == other.backgroundColor &&
           borderColor == other.borderColor &&
+          glowColor == other.glowColor &&
           textColor == other.textColor &&
           placeholderTextColor == other.placeholderTextColor &&
           warningColor == other.warningColor &&
           cursorColor == other.cursorColor &&
           clearIconColor == other.clearIconColor &&
+          clearIconSize == other.clearIconSize &&
           borderWidth == other.borderWidth &&
           borderRadius == other.borderRadius &&
           multilineBorderRadius == other.multilineBorderRadius &&
@@ -291,19 +349,22 @@ class AnimalInputStyle {
   int get hashCode => Object.hashAll(<Object?>[
     minHeight,
     horizontalPadding,
-    iconSize,
     adornmentGap,
     multilineVerticalPadding,
     clearButtonPadding,
+    clearButtonBorderRadius,
+    clearButtonBackgroundColor,
     textStyle,
     placeholderTextStyle,
     backgroundColor,
     borderColor,
+    glowColor,
     textColor,
     placeholderTextColor,
     warningColor,
     cursorColor,
     clearIconColor,
+    clearIconSize,
     borderWidth,
     borderRadius,
     multilineBorderRadius,
@@ -318,9 +379,16 @@ class AnimalInputStyle {
 /// precedence over both.
 @immutable
 class AnimalInputThemeData {
+  /// Style applied to inputs of every size.
   final AnimalInputStyle? style;
+
+  /// Style for small inputs; wins over [style].
   final AnimalInputStyle? smallStyle;
+
+  /// Style for middle inputs; wins over [style].
   final AnimalInputStyle? middleStyle;
+
+  /// Style for large inputs; wins over [style].
   final AnimalInputStyle? largeStyle;
 
   const AnimalInputThemeData({

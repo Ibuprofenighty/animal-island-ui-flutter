@@ -290,11 +290,17 @@ abstract class AnimalLocalizations {
   /// **'Close modal'**
   String get modalCloseLabel;
 
-  /// No description provided for @drawerSemanticsLabel.
+  /// No description provided for @modalRouteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Dialog'**
+  String get modalRouteLabel;
+
+  /// No description provided for @drawerRouteLabel.
   ///
   /// In en, this message translates to:
   /// **'Drawer'**
-  String get drawerSemanticsLabel;
+  String get drawerRouteLabel;
 
   /// No description provided for @drawerCloseLabel.
   ///
@@ -397,6 +403,12 @@ abstract class AnimalLocalizations {
   /// In en, this message translates to:
   /// **'Close preview'**
   String get imagePreviewCloseLabel;
+
+  /// No description provided for @imagePreviewRouteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Image preview'**
+  String get imagePreviewRouteLabel;
 
   /// No description provided for @imagePreviewSemanticLabel.
   ///

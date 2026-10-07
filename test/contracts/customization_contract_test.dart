@@ -102,6 +102,52 @@ final List<_Subject> _deliveredComponents = <_Subject>[
       ),
     ),
   ),
+  (
+    name: 'AnimalLoading',
+    build: () => AnimalLoading(tip: 'Loading the island tip'),
+  ),
+  (
+    name: 'AnimalLoading dots',
+    build: () => const AnimalLoading.dots(tip: 'Loading the island tip'),
+  ),
+  (
+    name: 'AnimalLoading full screen',
+    build: () => SizedBox(
+      height: 400,
+      child: AnimalLoading.snowflake(
+        fullScreen: true,
+        tip: 'Loading the island tip',
+        snowSeed: 1,
+      ),
+    ),
+  ),
+  (
+    name: 'AnimalModal',
+    build: () => AnimalModal(
+      title: const Text('Island dialog'),
+      content: const Text('Modal content'),
+      footer: const Text('Footer'),
+      onClose: () {},
+    ),
+  ),
+  for (final AnimalDrawerPlacement placement in AnimalDrawerPlacement.values)
+    (
+      name: 'AnimalDrawer ${placement.name}',
+      build: () => AnimalDrawer(
+        placement: placement,
+        title: const Text('Island drawer'),
+        footer: const Text('Footer'),
+        onClose: () {},
+        child: const Text('Drawer content'),
+      ),
+    ),
+  (
+    name: 'AnimalNotification',
+    build: () => const SizedBox(
+      height: 600,
+      child: AnimalOverlayHost(child: _NotificationProbe()),
+    ),
+  ),
 ];
 
 /// Boundary-valid themes every delivered component must render under.
@@ -326,4 +372,36 @@ class _OwnedState<T> extends State<_Owned<T>> {
 
   @override
   Widget build(BuildContext context) => widget.builder(_value);
+}
+
+/// Opens one persistent notification in every placement after the host binds.
+class _NotificationProbe extends StatefulWidget {
+  const _NotificationProbe();
+
+  @override
+  State<_NotificationProbe> createState() => _NotificationProbeState();
+}
+
+class _NotificationProbeState extends State<_NotificationProbe> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      for (final AnimalNotificationPlacement placement
+          in AnimalNotificationPlacement.values) {
+        AnimalNotification.open(
+          context,
+          message: Text('Message ${placement.name}'),
+          description: const Text('A longer island description'),
+          duration: null,
+          placement: placement,
+          onClick: () {},
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.expand();
 }

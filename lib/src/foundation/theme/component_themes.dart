@@ -2,9 +2,13 @@ import 'package:flutter/foundation.dart';
 
 import 'components/checkbox_theme.dart';
 import 'components/date_picker_theme.dart';
+import 'components/drawer_theme.dart';
 import 'components/focus_ring_theme.dart';
 import 'components/form_item_theme.dart';
 import 'components/input_theme.dart';
+import 'components/loading_theme.dart';
+import 'components/modal_theme.dart';
+import 'components/notification_theme.dart';
 import 'components/radio_theme.dart';
 import 'components/select_theme.dart';
 import 'components/switch_theme.dart';
@@ -27,6 +31,10 @@ class AnimalComponentThemes {
   final AnimalDatePickerStyle? datePicker;
   final AnimalTimePickerStyle? timePicker;
   final AnimalFormItemStyle? formItem;
+  final AnimalNotificationStyle? notification;
+  final AnimalLoadingStyle? loading;
+  final AnimalModalStyle? modal;
+  final AnimalDrawerStyle? drawer;
 
   const AnimalComponentThemes({
     this.focusRing,
@@ -38,6 +46,10 @@ class AnimalComponentThemes {
     this.datePicker,
     this.timePicker,
     this.formItem,
+    this.notification,
+    this.loading,
+    this.modal,
+    this.drawer,
   });
 
   AnimalComponentThemes copyWith({
@@ -50,6 +62,10 @@ class AnimalComponentThemes {
     AnimalDatePickerStyle? datePicker,
     AnimalTimePickerStyle? timePicker,
     AnimalFormItemStyle? formItem,
+    AnimalNotificationStyle? notification,
+    AnimalLoadingStyle? loading,
+    AnimalModalStyle? modal,
+    AnimalDrawerStyle? drawer,
   }) => AnimalComponentThemes(
     focusRing: focusRing ?? this.focusRing,
     input: input ?? this.input,
@@ -60,6 +76,10 @@ class AnimalComponentThemes {
     datePicker: datePicker ?? this.datePicker,
     timePicker: timePicker ?? this.timePicker,
     formItem: formItem ?? this.formItem,
+    notification: notification ?? this.notification,
+    loading: loading ?? this.loading,
+    modal: modal ?? this.modal,
+    drawer: drawer ?? this.drawer,
   );
 
   AnimalComponentThemes lerp(AnimalComponentThemes other, double t) {
@@ -79,6 +99,14 @@ class AnimalComponentThemes {
       datePicker: AnimalDatePickerStyle.lerp(datePicker, other.datePicker, t),
       timePicker: AnimalTimePickerStyle.lerp(timePicker, other.timePicker, t),
       formItem: AnimalFormItemStyle.lerp(formItem, other.formItem, t),
+      notification: AnimalNotificationStyle.lerp(
+        notification,
+        other.notification,
+        t,
+      ),
+      loading: AnimalLoadingStyle.lerp(loading, other.loading, t),
+      modal: AnimalModalStyle.lerp(modal, other.modal, t),
+      drawer: AnimalDrawerStyle.lerp(drawer, other.drawer, t),
     );
   }
 
@@ -94,10 +122,14 @@ class AnimalComponentThemes {
           select == other.select &&
           datePicker == other.datePicker &&
           timePicker == other.timePicker &&
-          formItem == other.formItem;
+          formItem == other.formItem &&
+          notification == other.notification &&
+          loading == other.loading &&
+          modal == other.modal &&
+          drawer == other.drawer;
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll(<Object?>[
     focusRing,
     input,
     switchControl,
@@ -107,5 +139,9 @@ class AnimalComponentThemes {
     datePicker,
     timePicker,
     formItem,
-  );
+    notification,
+    loading,
+    modal,
+    drawer,
+  ]);
 }

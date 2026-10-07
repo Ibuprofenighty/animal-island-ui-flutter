@@ -20,14 +20,28 @@ class AnimalSelectStyle {
   /// Style of the trigger label. Its color is resolved from [textColor].
   final TextStyle? textStyle;
 
+  /// Color of the trigger label, resolved against the trigger states.
   final WidgetStateProperty<Color?>? textColor;
+
+  /// Trigger fill, resolved against [WidgetState.disabled],
+  /// [WidgetState.focused], [WidgetState.error] and [WidgetState.selected].
   final WidgetStateProperty<Color?>? backgroundColor;
+
+  /// Trigger border, resolved against the same states as [backgroundColor];
+  /// the warning status uses [warningColor] instead.
   final WidgetStateProperty<Color?>? borderColor;
 
-  /// Color of the glow drawn around a focused or invalid trigger.
+  /// Color of the glow around a focused or invalid trigger, resolved against
+  /// [WidgetState.focused] and [WidgetState.error].
   final WidgetStateProperty<Color?>? glowColor;
 
+  /// Trigger border and glow for the warning status.
+  final Color? warningColor;
+
+  /// Width of the trigger border.
   final double? borderWidth;
+
+  /// Corner radius of the trigger.
   final BorderRadius? borderRadius;
 
   /// Horizontal padding inside the trigger border.
@@ -35,16 +49,38 @@ class AnimalSelectStyle {
 
   /// Size of the trigger's dropdown arrow.
   final double? arrowIconSize;
+
+  /// Color of the dropdown arrow, resolved against the trigger states.
   final WidgetStateProperty<Color?>? arrowIconColor;
 
   /// Size of the clear icon shown when `allowClear` is set.
   final double? clearIconSize;
+
+  /// Color of the clear icon.
   final Color? clearIconColor;
 
+  /// Padding around the clear icon inside its 48 logical-pixel target.
+  final EdgeInsetsGeometry? clearButtonPadding;
+
+  /// Corner radius of the clear control's hover fill and focus ring.
+  final BorderRadius? clearButtonBorderRadius;
+
+  /// Fill behind the clear icon; resolves against WidgetState.hovered.
+  final WidgetStateProperty<Color?>? clearButtonBackgroundColor;
+
+  /// Fill of the option menu.
   final Color? menuBackgroundColor;
+
+  /// Border of the option menu.
   final Color? menuBorderColor;
+
+  /// Width of the option menu border.
   final double? menuBorderWidth;
+
+  /// Corner radius of the option menu.
   final BorderRadius? menuBorderRadius;
+
+  /// Elevation of the option menu.
   final double? menuElevation;
 
   /// Vertical padding between the menu border and its first and last rows.
@@ -63,8 +99,15 @@ class AnimalSelectStyle {
   /// Merged over [optionTextStyle] for the selected option.
   final TextStyle? selectedOptionTextStyle;
 
+  /// Color of an option label, resolved against [WidgetState.selected],
+  /// [WidgetState.disabled], [WidgetState.focused] and [WidgetState.hovered].
   final WidgetStateProperty<Color?>? optionTextColor;
+
+  /// Fill of an option row, resolved against the same states as
+  /// [optionTextColor].
   final WidgetStateProperty<Color?>? optionBackgroundColor;
+
+  /// Corner radius of an option row.
   final BorderRadius? optionBorderRadius;
 
   /// Padding inside each option row. The vertical padding also sizes the row.
@@ -75,7 +118,11 @@ class AnimalSelectStyle {
 
   /// Gap between the selected option's label and its check icon.
   final double? checkIconGap;
+
+  /// Size of the selected option's check icon.
   final double? checkIconSize;
+
+  /// Color of the selected option's check icon.
   final Color? checkIconColor;
 
   AnimalSelectStyle({
@@ -84,6 +131,7 @@ class AnimalSelectStyle {
     this.backgroundColor,
     this.borderColor,
     this.glowColor,
+    this.warningColor,
     this.borderWidth,
     this.borderRadius,
     this.horizontalPadding,
@@ -91,6 +139,9 @@ class AnimalSelectStyle {
     this.arrowIconColor,
     this.clearIconSize,
     this.clearIconColor,
+    this.clearButtonPadding,
+    this.clearButtonBorderRadius,
+    this.clearButtonBackgroundColor,
     this.menuBackgroundColor,
     this.menuBorderColor,
     this.menuBorderWidth,
@@ -150,6 +201,7 @@ class AnimalSelectStyle {
     WidgetStateProperty<Color?>? backgroundColor,
     WidgetStateProperty<Color?>? borderColor,
     WidgetStateProperty<Color?>? glowColor,
+    Color? warningColor,
     double? borderWidth,
     BorderRadius? borderRadius,
     double? horizontalPadding,
@@ -157,6 +209,9 @@ class AnimalSelectStyle {
     WidgetStateProperty<Color?>? arrowIconColor,
     double? clearIconSize,
     Color? clearIconColor,
+    EdgeInsetsGeometry? clearButtonPadding,
+    BorderRadius? clearButtonBorderRadius,
+    WidgetStateProperty<Color?>? clearButtonBackgroundColor,
     Color? menuBackgroundColor,
     Color? menuBorderColor,
     double? menuBorderWidth,
@@ -181,6 +236,7 @@ class AnimalSelectStyle {
     backgroundColor: backgroundColor ?? this.backgroundColor,
     borderColor: borderColor ?? this.borderColor,
     glowColor: glowColor ?? this.glowColor,
+    warningColor: warningColor ?? this.warningColor,
     borderWidth: borderWidth ?? this.borderWidth,
     borderRadius: borderRadius ?? this.borderRadius,
     horizontalPadding: horizontalPadding ?? this.horizontalPadding,
@@ -188,6 +244,11 @@ class AnimalSelectStyle {
     arrowIconColor: arrowIconColor ?? this.arrowIconColor,
     clearIconSize: clearIconSize ?? this.clearIconSize,
     clearIconColor: clearIconColor ?? this.clearIconColor,
+    clearButtonPadding: clearButtonPadding ?? this.clearButtonPadding,
+    clearButtonBorderRadius:
+        clearButtonBorderRadius ?? this.clearButtonBorderRadius,
+    clearButtonBackgroundColor:
+        clearButtonBackgroundColor ?? this.clearButtonBackgroundColor,
     menuBackgroundColor: menuBackgroundColor ?? this.menuBackgroundColor,
     menuBorderColor: menuBorderColor ?? this.menuBorderColor,
     menuBorderWidth: menuBorderWidth ?? this.menuBorderWidth,
@@ -221,6 +282,7 @@ class AnimalSelectStyle {
       backgroundColor: backgroundColor ?? other.backgroundColor,
       borderColor: borderColor ?? other.borderColor,
       glowColor: glowColor ?? other.glowColor,
+      warningColor: warningColor ?? other.warningColor,
       borderWidth: borderWidth ?? other.borderWidth,
       borderRadius: borderRadius ?? other.borderRadius,
       horizontalPadding: horizontalPadding ?? other.horizontalPadding,
@@ -228,6 +290,11 @@ class AnimalSelectStyle {
       arrowIconColor: arrowIconColor ?? other.arrowIconColor,
       clearIconSize: clearIconSize ?? other.clearIconSize,
       clearIconColor: clearIconColor ?? other.clearIconColor,
+      clearButtonPadding: clearButtonPadding ?? other.clearButtonPadding,
+      clearButtonBorderRadius:
+          clearButtonBorderRadius ?? other.clearButtonBorderRadius,
+      clearButtonBackgroundColor:
+          clearButtonBackgroundColor ?? other.clearButtonBackgroundColor,
       menuBackgroundColor: menuBackgroundColor ?? other.menuBackgroundColor,
       menuBorderColor: menuBorderColor ?? other.menuBorderColor,
       menuBorderWidth: menuBorderWidth ?? other.menuBorderWidth,
@@ -277,6 +344,11 @@ class AnimalSelectStyle {
         t,
       ),
       glowColor: AnimalStyleValues.lerpColors(a?.glowColor, b?.glowColor, t),
+      warningColor: AnimalStyleValues.lerpColor(
+        a?.warningColor,
+        b?.warningColor,
+        t,
+      ),
       borderWidth: dim(a?.borderWidth, b?.borderWidth),
       borderRadius: AnimalStyleValues.lerpRadius(
         a?.borderRadius,
@@ -294,6 +366,21 @@ class AnimalSelectStyle {
       clearIconColor: AnimalStyleValues.lerpColor(
         a?.clearIconColor,
         b?.clearIconColor,
+        t,
+      ),
+      clearButtonPadding: AnimalStyleValues.lerpInsets(
+        a?.clearButtonPadding,
+        b?.clearButtonPadding,
+        t,
+      ),
+      clearButtonBorderRadius: AnimalStyleValues.lerpRadius(
+        a?.clearButtonBorderRadius,
+        b?.clearButtonBorderRadius,
+        t,
+      ),
+      clearButtonBackgroundColor: AnimalStyleValues.lerpColors(
+        a?.clearButtonBackgroundColor,
+        b?.clearButtonBackgroundColor,
         t,
       ),
       menuBackgroundColor: AnimalStyleValues.lerpColor(
@@ -366,6 +453,7 @@ class AnimalSelectStyle {
           backgroundColor == other.backgroundColor &&
           borderColor == other.borderColor &&
           glowColor == other.glowColor &&
+          warningColor == other.warningColor &&
           borderWidth == other.borderWidth &&
           borderRadius == other.borderRadius &&
           horizontalPadding == other.horizontalPadding &&
@@ -373,6 +461,9 @@ class AnimalSelectStyle {
           arrowIconColor == other.arrowIconColor &&
           clearIconSize == other.clearIconSize &&
           clearIconColor == other.clearIconColor &&
+          clearButtonPadding == other.clearButtonPadding &&
+          clearButtonBorderRadius == other.clearButtonBorderRadius &&
+          clearButtonBackgroundColor == other.clearButtonBackgroundColor &&
           menuBackgroundColor == other.menuBackgroundColor &&
           menuBorderColor == other.menuBorderColor &&
           menuBorderWidth == other.menuBorderWidth &&
@@ -399,6 +490,7 @@ class AnimalSelectStyle {
     backgroundColor,
     borderColor,
     glowColor,
+    warningColor,
     borderWidth,
     borderRadius,
     horizontalPadding,
@@ -406,6 +498,9 @@ class AnimalSelectStyle {
     arrowIconColor,
     clearIconSize,
     clearIconColor,
+    clearButtonPadding,
+    clearButtonBorderRadius,
+    clearButtonBackgroundColor,
     menuBackgroundColor,
     menuBorderColor,
     menuBorderWidth,

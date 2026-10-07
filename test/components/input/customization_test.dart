@@ -154,6 +154,137 @@ void main() {
       expect(decoration(tester).border!.top.color, const Color(0xFF00AA00));
     });
 
+    testWidgets('clear action and glow fields change the rendered input', (
+      tester,
+    ) async {
+      final FocusNode focusNode = FocusNode();
+      addTearDown(focusNode.dispose);
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+          supportedLocales: AnimalLocalizations.supportedLocales,
+          theme: themed(
+            AnimalInputThemeData(
+              style: AnimalInputStyle(
+                clearIconSize: 21,
+                clearIconColor: const Color(0xFF00AA00),
+                clearButtonBorderRadius: const BorderRadius.all(
+                  Radius.circular(3),
+                ),
+                clearButtonBackgroundColor: const WidgetStatePropertyAll<Color>(
+                  Color(0xFF0000AA),
+                ),
+                glowColor: const WidgetStatePropertyAll<Color>(
+                  Color(0xFFAA00AA),
+                ),
+              ),
+            ),
+          ).toThemeData(),
+          home: Scaffold(
+            body: SizedBox(
+              width: 300,
+              child: AnimalInput(
+                key: const ValueKey<String>('input'),
+                controller: controller,
+                clearable: true,
+                focusNode: focusNode,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(seconds: 1));
+      final Finder clearIcon = find.byWidgetPredicate(
+        (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+      );
+      final AnimalIcon icon = tester.widget(clearIcon);
+      expect(icon.size, 21);
+      expect(icon.color, const Color(0xFF00AA00));
+      final BoxDecoration fill =
+          tester
+                  .widget<AnimatedContainer>(
+                    find
+                        .ancestor(
+                          of: clearIcon,
+                          matching: find.byType(AnimatedContainer),
+                        )
+                        .first,
+                  )
+                  .decoration!
+              as BoxDecoration;
+      expect(fill.color, const Color(0xFF0000AA));
+      expect(fill.borderRadius, const BorderRadius.all(Radius.circular(3)));
+
+      focusNode.requestFocus();
+      await tester.pump(const Duration(seconds: 1));
+      final BoxDecoration field =
+          tester
+                  .widgetList<AnimatedContainer>(
+                    find.descendant(
+                      of: find.byKey(const ValueKey<String>('input')),
+                      matching: find.byType(AnimatedContainer),
+                    ),
+                  )
+                  .first
+                  .decoration!
+              as BoxDecoration;
+      expect(
+        field.boxShadow,
+        contains(
+          const BoxShadow(
+            color: Color(0xFFAA00AA),
+            blurRadius: 4,
+            spreadRadius: 2,
+          ),
+        ),
+      );
+    });
+
+    testWidgets('a wide clear control still fits the field', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+          supportedLocales: AnimalLocalizations.supportedLocales,
+          theme: themed(
+            AnimalInputThemeData(
+              style: AnimalInputStyle(
+                clearIconSize: 24,
+                clearButtonPadding: const EdgeInsets.symmetric(horizontal: 40),
+              ),
+            ),
+          ).toThemeData(),
+          home: Scaffold(
+            body: SizedBox(
+              width: 220,
+              child: AnimalInput(
+                key: const ValueKey<String>('input'),
+                controller: controller,
+                clearable: true,
+                prefix: const Text('Prefix'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(seconds: 1));
+      expect(tester.takeException(), isNull);
+      final Rect field = tester.getRect(
+        find.byKey(const ValueKey<String>('input')),
+      );
+      final Rect action = tester.getRect(
+        find
+            .ancestor(
+              of: find.byWidgetPredicate(
+                (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+              ),
+              matching: find.byType(AnimatedContainer),
+            )
+            .first,
+      );
+      expect(action.width, closeTo(104, 1e-6));
+      expect(action.right, lessThanOrEqualTo(field.right + 1e-6));
+    });
+
     testWidgets('spacing fields replace the token gaps', (tester) async {
       await tester.pumpWidget(
         MaterialApp(

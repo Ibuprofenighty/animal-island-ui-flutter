@@ -1183,7 +1183,9 @@ void main() {
 
         final Finder clearIcon = find.descendant(
           of: trigger,
-          matching: find.byIcon(Icons.cancel_rounded),
+          matching: find.byWidgetPredicate(
+            (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+          ),
         );
         expect(clearIcon, findsOneWidget);
         final Finder clearRegion = find

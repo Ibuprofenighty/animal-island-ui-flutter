@@ -37,7 +37,7 @@ The inline `AnimalDatePicker` defaults to `mode: AnimalDatePickerMode.date`, a n
 
 Today proposes the current civil date in date mode, a controlled start draft in range mode, and the first day of the current month in month mode. It is disabled when that target is outside the inclusive bounds or matches `disabledDate`; the whole disabled picker has no callbacks. Clear proposes null once when a selection exists. In popover mode, Clear closes the menu and restores focus to its trigger; a completed date/month selection or range also closes it, while a range start draft stays open.
 
-The shared panel prefers a width of 300 logical pixels and takes a narrower parent width when one is given, with `bgContent`, `cardBorder`, `spacing.md` padding, and a 1.5-pixel border (`border` in dark themes, `borderLight` in light themes). It uses `spacing.sm` between sections and `spacing.xs` for compact grid/footer gaps. Date and month labels use `typography.body` scaled by 13/14 (13 pixels in the standard typography); weekday and footer labels use caption typography; the header uses `typography.heading` scaled by 15/20 (15 pixels). Single-date selections use `primary`/`onPrimary`; month selections use those colors with a `primaryActive` outline. Range endpoints use `warning`/`onWarning`, and the range interior uses the range color at 18% opacity. Date-grid columns are at least 48 logical pixels wide and expand to fit the widest rendered day label plus twice the 6-pixel cell inset, or the weekday label. Day-cell height is `max(48, measured day-layout height + 2 × cell inset)` and weekday-row height is `max(24, measured caption-layout height)`, measured with the resolved styles and `MediaQuery` text scaling. The single measurement includes the paragraph size and centered selection-box extents so font layout stays within the cell. Month cells are at least 86×48 logical pixels and expand to fit the widest localized month label plus twice the cell inset and its measured layout height plus two month-border insets (1 pixel by default). With default text metrics, dates are 48×48, weekdays 48×24, and months 86×48. When the panel is too narrow for the navigation buttons and a 48-pixel label slot on one line, the heading moves above the navigation, which wraps while every button keeps its 48-pixel target; the date and month grids scroll horizontally, and the Today and Clear actions wrap onto separate lines when large text does not fit. The popover trigger uses `bgInput`, or `surfaceHeader` when disabled in a dark theme and `bgInputDisabled` when disabled in a light theme. Normal status uses the theme's dark/light border; error and warning use their matching color with a 35% glow, while focus uses the library focus color with a 45% glow. The calendar keeps the same shared layout.
+The shared panel prefers a width of 300 logical pixels and takes a narrower parent width when one is given, with `bgContent`, `cardBorder`, `spacing.md` padding, and a 1.5-pixel border (`border` in dark themes, `borderLight` in light themes). It uses `spacing.sm` between sections and `spacing.xs` for compact grid/footer gaps. Date and month labels use `typography.body` scaled by 13/14 (13 pixels in the standard typography); weekday and footer labels use caption typography; the header uses `typography.heading` scaled by 15/20 (15 pixels). Single-date selections use `primary`/`onPrimary`; month selections use those colors with a `primaryActive` outline. Range endpoints use `warning`/`onWarning`, and the range interior uses the range color at 18% opacity. Date-grid columns are at least 48 logical pixels wide and expand to fit the widest rendered day label plus twice the 6-pixel cell inset, or the weekday label. Day-cell height is `max(48, measured day-layout height + 2 × cell inset)` and weekday-row height is `max(24, measured caption-layout height)`, measured with the resolved styles and `MediaQuery` text scaling. The single measurement includes the paragraph size and centered selection-box extents so font layout stays within the cell. Month cells are at least 86×48 logical pixels and expand to fit the widest localized month label plus twice the cell inset and its measured layout height plus two month-border insets (1 pixel by default). With default text metrics, dates are 48×48, weekdays 48×24, and months 86×48. When the panel is too narrow for the navigation buttons and a 48-pixel label slot on one line, the heading moves above the navigation, which wraps while every button keeps its 48-pixel target; the date and month grids scroll horizontally, and the Today and Clear actions wrap onto separate lines when large text does not fit. The popover trigger uses `bgInput`, or `surfaceHeader` when disabled in a dark theme and `bgInputDisabled` when disabled in a light theme. Its border and glow follow the field-trigger rule described under Customization. The calendar keeps the same shared layout.
 
 ## Localization
 Default prompts and footer actions use generated AnimalLocalizations; date display, month names, weekday labels, navigation labels, and date-cell semantics follow the active Material locale. A supplied placeholder remains caller-owned.
@@ -81,10 +81,28 @@ and `borderColor` against `focused`, `error` and `disabled` on the trigger.
 The selected fill is `selectedBackgroundColor`; range endpoints use
 `rangeBackgroundColor` and `rangeTextColor`, outside-month days
 `outsideMonthTextColor`, the weekday labels `weekdayTextColor`, the empty
-trigger `placeholderTextColor`, and the warning status `warningColor`. The
-status glow follows the resolved border color. The 48-pixel targets, 86-pixel
-month minimum, 24-pixel weekday row, three month columns and the 18% range
-fill are fixed.
+trigger `placeholderTextColor`, the warning status `warningColor`, and the
+trigger glow `glowColor`, resolved against `focused` and `error`. The 48-pixel
+targets, 86-pixel month minimum, 24-pixel weekday row, three month columns and
+the 18% range fill are fixed.
+
+The trigger border and glow follow the one rule shared by Input, Select,
+DatePicker and TimePicker. A disabled trigger uses the styled border, otherwise
+`borderLight` in light themes or `border` at 30% opacity in dark themes, and
+has no glow. The warning status uses `warningColor`, otherwise `warningText`;
+an error wins over a warning. Otherwise the styled border applies, then
+`errorText` for an error, the focus-ring color when focused and `border` at
+rest. An idle trigger without a status has no glow; otherwise the glow is the
+styled glow color, or the border color at 45% opacity when only focused and
+35% for an error or warning, with blur 4 and spread 2.
+
+The clear control is the package's shared icon action: a 48 logical-pixel
+target with a focus ring, the localized clear label as its accessible name, the
+close icon in `triggerIconSize` and `triggerIconColor`, and a hover fill from
+`triggerClearButtonBackgroundColor`, resolved against `WidgetState.hovered`;
+under reduced motion the fill changes instantly. `triggerClearButtonPadding`
+defaults to zero, `triggerClearButtonBorderRadius` to a pill and
+`triggerClearButtonBackgroundColor` to transparent.
 
 ## Example
 See [`date_picker_story.dart`](../../../../example/lib/stories/date_picker_story.dart) in the example Gallery.

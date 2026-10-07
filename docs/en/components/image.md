@@ -29,8 +29,19 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 ## Localization
 The preview trigger uses generated default or caller-label messages. The open
-preview resolves its close and barrier labels from the active locale, including
-locale changes while the route remains open.
+preview resolves its route name (`imagePreviewRouteLabel`, announced
+once), close and barrier labels from the active locale, including locale
+changes while the route remains open.
+
+## Preview
+
+The preview is presented as the same route as Modal and Drawer: the close
+control, Escape, system back and a barrier tap dismiss it, focus stays inside it
+and returns to the control that was focused when it opened. With reduced motion
+it appears without transition. The close control is the package's shared icon
+action: a 48 logical-pixel target with a focus ring, the localized close label
+as its accessible name and a hover fill resolved against `WidgetState.hovered`;
+under reduced motion the fill changes instantly.
 
 ## Interaction and accessibility
 

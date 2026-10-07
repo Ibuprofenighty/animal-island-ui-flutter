@@ -80,7 +80,8 @@ void main() {
                 onPressed: () => AnimalDrawer.show<void>(
                   context: context,
                   title: const Text('Routed island drawer'),
-                  child: const Text('Routed drawer content'),
+                  builder: (context, close) =>
+                      const Text('Routed drawer content'),
                 ),
                 child: const Text('Open drawer'),
               ),

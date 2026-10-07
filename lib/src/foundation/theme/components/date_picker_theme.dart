@@ -90,6 +90,10 @@ class AnimalDatePickerStyle {
   /// [WidgetState.focused], [WidgetState.error] and [WidgetState.disabled].
   final WidgetStateProperty<Color?>? borderColor;
 
+  /// Color of the glow around a focused or invalid trigger, resolved against
+  /// [WidgetState.focused] and [WidgetState.error].
+  final WidgetStateProperty<Color?>? glowColor;
+
   /// Trigger border and glow for the warning status.
   final Color? warningColor;
 
@@ -137,6 +141,15 @@ class AnimalDatePickerStyle {
   /// Popover calendar and clear icons, against [WidgetState.disabled].
   final WidgetStateProperty<Color?>? triggerIconColor;
 
+  /// Padding around the clear icon inside its 48 logical-pixel target.
+  final EdgeInsetsGeometry? triggerClearButtonPadding;
+
+  /// Corner radius of the clear control's hover fill and focus ring.
+  final BorderRadius? triggerClearButtonBorderRadius;
+
+  /// Fill behind the clear icon, resolved against [WidgetState.hovered].
+  final WidgetStateProperty<Color?>? triggerClearButtonBackgroundColor;
+
   AnimalDatePickerStyle({
     this.width,
     this.padding,
@@ -162,6 +175,7 @@ class AnimalDatePickerStyle {
     this.triggerTextStyle,
     this.backgroundColor,
     this.borderColor,
+    this.glowColor,
     this.warningColor,
     this.headerTextColor,
     this.weekdayTextColor,
@@ -177,6 +191,9 @@ class AnimalDatePickerStyle {
     this.triggerTextColor,
     this.placeholderTextColor,
     this.triggerIconColor,
+    this.triggerClearButtonPadding,
+    this.triggerClearButtonBorderRadius,
+    this.triggerClearButtonBackgroundColor,
   }) {
     AnimalStyleValues.checkDimension('width', width);
     // Resolving covers start/end insets as well as left/right ones.
@@ -236,6 +253,7 @@ class AnimalDatePickerStyle {
     TextStyle? triggerTextStyle,
     Color? backgroundColor,
     WidgetStateProperty<Color?>? borderColor,
+    WidgetStateProperty<Color?>? glowColor,
     Color? warningColor,
     WidgetStateProperty<Color?>? headerTextColor,
     Color? weekdayTextColor,
@@ -251,6 +269,9 @@ class AnimalDatePickerStyle {
     WidgetStateProperty<Color?>? triggerTextColor,
     Color? placeholderTextColor,
     WidgetStateProperty<Color?>? triggerIconColor,
+    EdgeInsetsGeometry? triggerClearButtonPadding,
+    BorderRadius? triggerClearButtonBorderRadius,
+    WidgetStateProperty<Color?>? triggerClearButtonBackgroundColor,
   }) => AnimalDatePickerStyle(
     width: width ?? this.width,
     padding: padding ?? this.padding,
@@ -278,6 +299,7 @@ class AnimalDatePickerStyle {
     triggerTextStyle: triggerTextStyle ?? this.triggerTextStyle,
     backgroundColor: backgroundColor ?? this.backgroundColor,
     borderColor: borderColor ?? this.borderColor,
+    glowColor: glowColor ?? this.glowColor,
     warningColor: warningColor ?? this.warningColor,
     headerTextColor: headerTextColor ?? this.headerTextColor,
     weekdayTextColor: weekdayTextColor ?? this.weekdayTextColor,
@@ -295,6 +317,13 @@ class AnimalDatePickerStyle {
     triggerTextColor: triggerTextColor ?? this.triggerTextColor,
     placeholderTextColor: placeholderTextColor ?? this.placeholderTextColor,
     triggerIconColor: triggerIconColor ?? this.triggerIconColor,
+    triggerClearButtonPadding:
+        triggerClearButtonPadding ?? this.triggerClearButtonPadding,
+    triggerClearButtonBorderRadius:
+        triggerClearButtonBorderRadius ?? this.triggerClearButtonBorderRadius,
+    triggerClearButtonBackgroundColor:
+        triggerClearButtonBackgroundColor ??
+        this.triggerClearButtonBackgroundColor,
   );
 
   /// Returns this style with its null fields taken from [other].
@@ -334,6 +363,7 @@ class AnimalDatePickerStyle {
           other.triggerTextStyle?.merge(triggerTextStyle) ?? triggerTextStyle,
       backgroundColor: backgroundColor ?? other.backgroundColor,
       borderColor: borderColor ?? other.borderColor,
+      glowColor: glowColor ?? other.glowColor,
       warningColor: warningColor ?? other.warningColor,
       headerTextColor: headerTextColor ?? other.headerTextColor,
       weekdayTextColor: weekdayTextColor ?? other.weekdayTextColor,
@@ -352,6 +382,14 @@ class AnimalDatePickerStyle {
       triggerTextColor: triggerTextColor ?? other.triggerTextColor,
       placeholderTextColor: placeholderTextColor ?? other.placeholderTextColor,
       triggerIconColor: triggerIconColor ?? other.triggerIconColor,
+      triggerClearButtonPadding:
+          triggerClearButtonPadding ?? other.triggerClearButtonPadding,
+      triggerClearButtonBorderRadius:
+          triggerClearButtonBorderRadius ??
+          other.triggerClearButtonBorderRadius,
+      triggerClearButtonBackgroundColor:
+          triggerClearButtonBackgroundColor ??
+          other.triggerClearButtonBackgroundColor,
     );
   }
 
@@ -411,6 +449,7 @@ class AnimalDatePickerStyle {
       triggerTextStyle: text(a?.triggerTextStyle, b?.triggerTextStyle),
       backgroundColor: color(a?.backgroundColor, b?.backgroundColor),
       borderColor: colors(a?.borderColor, b?.borderColor),
+      glowColor: colors(a?.glowColor, b?.glowColor),
       warningColor: color(a?.warningColor, b?.warningColor),
       headerTextColor: colors(a?.headerTextColor, b?.headerTextColor),
       weekdayTextColor: color(a?.weekdayTextColor, b?.weekdayTextColor),
@@ -441,6 +480,19 @@ class AnimalDatePickerStyle {
         b?.placeholderTextColor,
       ),
       triggerIconColor: colors(a?.triggerIconColor, b?.triggerIconColor),
+      triggerClearButtonPadding: AnimalStyleValues.lerpInsets(
+        a?.triggerClearButtonPadding,
+        b?.triggerClearButtonPadding,
+        t,
+      ),
+      triggerClearButtonBorderRadius: radius(
+        a?.triggerClearButtonBorderRadius,
+        b?.triggerClearButtonBorderRadius,
+      ),
+      triggerClearButtonBackgroundColor: colors(
+        a?.triggerClearButtonBackgroundColor,
+        b?.triggerClearButtonBackgroundColor,
+      ),
     );
   }
 
@@ -469,6 +521,7 @@ class AnimalDatePickerStyle {
     triggerTextStyle,
     backgroundColor,
     borderColor,
+    glowColor,
     warningColor,
     headerTextColor,
     weekdayTextColor,
@@ -484,6 +537,9 @@ class AnimalDatePickerStyle {
     triggerTextColor,
     placeholderTextColor,
     triggerIconColor,
+    triggerClearButtonPadding,
+    triggerClearButtonBorderRadius,
+    triggerClearButtonBackgroundColor,
   ];
 
   @override

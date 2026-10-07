@@ -141,7 +141,7 @@ void main() {
       expect(warningDecoration.border!.top.color, theme.colors.warningText);
       expect(
         warningDecoration.boxShadow!.single.color,
-        theme.colors.warningText.withValues(alpha: 0.45),
+        theme.colors.warningText.withValues(alpha: 0.35),
       );
       expect(
         themeContrastRatio(theme.colors.warningText, theme.colors.bgInput),
@@ -159,7 +159,7 @@ void main() {
       expect(errorDecoration.border!.top.color, theme.colors.errorText);
       expect(
         errorDecoration.boxShadow!.single.color,
-        theme.colors.errorText.withValues(alpha: 0.45),
+        theme.colors.errorText.withValues(alpha: 0.35),
       );
       expect(
         themeContrastRatio(theme.colors.errorText, theme.colors.bgInput),

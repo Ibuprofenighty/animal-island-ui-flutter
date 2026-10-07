@@ -38,6 +38,7 @@ symbols:
   - AnimalDividerType
   - AnimalDrawer
   - AnimalDrawerPlacement
+  - AnimalDrawerStyle
   - AnimalFieldBinding
   - AnimalFieldKey
   - AnimalFieldRegistration
@@ -63,16 +64,20 @@ symbols:
   - AnimalIslandTheme
   - AnimalLoading
   - AnimalLoadingHandle
+  - AnimalLoadingStyle
   - AnimalLoadingType
   - AnimalLocalizations
   - AnimalModal
+  - AnimalModalStyle
   - AnimalNotification
+  - AnimalNotificationHandle
   - AnimalNotificationPlacement
+  - AnimalNotificationStatus
+  - AnimalNotificationStyle
   - AnimalNotificationType
   - AnimalOption
   - AnimalOverlayController
   - AnimalOverlayEntryHandle
-  - AnimalOverlayEntryState
   - AnimalOverlayHost
   - AnimalPagination
   - AnimalProgress

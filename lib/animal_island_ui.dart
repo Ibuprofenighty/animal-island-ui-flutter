@@ -39,6 +39,13 @@ export 'src/foundation/theme/components/time_picker_theme.dart'
     show AnimalTimePickerStyle;
 export 'src/foundation/theme/components/form_item_theme.dart'
     show AnimalFormItemStyle;
+export 'src/foundation/theme/components/notification_theme.dart'
+    show AnimalNotificationStyle;
+export 'src/foundation/theme/components/loading_theme.dart'
+    show AnimalLoadingStyle;
+export 'src/foundation/theme/components/modal_theme.dart' show AnimalModalStyle;
+export 'src/foundation/theme/components/drawer_theme.dart'
+    show AnimalDrawerStyle;
 export 'src/foundation/forms/animal_validation_issue.dart'
     show AnimalValidationIssue, AnimalValidationIssueKind;
 export 'src/foundation/forms/animal_field_key.dart' show AnimalFieldKey;
@@ -65,11 +72,7 @@ export 'src/foundation/models/clock.dart' show AnimalClock, SystemClock;
 // 2. Overlay Realm & Scoped Host
 // =============================================================================
 export 'src/components/overlay_host/overlay_host.dart'
-    show
-        AnimalOverlayController,
-        AnimalOverlayEntryHandle,
-        AnimalOverlayEntryState,
-        AnimalOverlayHost;
+    show AnimalOverlayController, AnimalOverlayEntryHandle, AnimalOverlayHost;
 
 // =============================================================================
 // 3. 101 Vector Icons
@@ -152,7 +155,9 @@ export 'src/components/time/time.dart' show AnimalTime;
 export 'src/components/notification/notification.dart'
     show
         AnimalNotification,
+        AnimalNotificationHandle,
         AnimalNotificationPlacement,
+        AnimalNotificationStatus,
         AnimalNotificationType;
 
 // Category 8: Data Display (Table, Pagination, CodeBlock, Tag, Image)

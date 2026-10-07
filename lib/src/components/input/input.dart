@@ -8,8 +8,8 @@ import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/theme/components/input_theme.dart';
 import '../../foundation/theme/components/style_values.dart';
 import '../../foundation/theme/theme.dart';
-import '../../internal/interaction/focus_ring.dart';
-import '../../internal/interaction/interactive_region.dart';
+import '../../internal/interaction/icon_action.dart';
+import '../../internal/interaction/field_status.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
 
@@ -205,13 +205,7 @@ class _AnimalInputState extends State<AnimalInput> {
 
     final shadows = <BoxShadow>[
       if (widget.shadow && !widget.disabled) resolved.depthShadow,
-      if (_isFocused || effectiveStatus != AnimalInputStatus.normal)
-        BoxShadow(
-          color: borderColor.withValues(alpha: 0.45),
-          offset: Offset.zero,
-          blurRadius: 4,
-          spreadRadius: 2,
-        ),
+      if (resolved.glow case final BoxShadow glow) glow,
     ];
 
     final bool showClearAction =
@@ -242,7 +236,13 @@ class _AnimalInputState extends State<AnimalInput> {
               (widget.prefix == null ? 0 : 1) + (widget.suffix == null ? 0 : 1);
           final int gapCount =
               boundedAdornmentCount + (showClearAction ? 1 : 0);
-          final double clearWidth = showClearAction ? 48.0 : 0.0;
+          final double clearWidth = showClearAction
+              ? animalIconActionWidth(
+                  iconSize: resolved.clearIconSize,
+                  padding: resolved.clearButtonPadding,
+                  textDirection: Directionality.of(context),
+                )
+              : 0.0;
           final double minimumEditorWidth = resolved.fontSize * 4;
           final double maxAdornmentWidth = boundedAdornmentCount == 0
               ? 0
@@ -306,14 +306,21 @@ class _AnimalInputState extends State<AnimalInput> {
               ),
               if (showClearAction) ...[
                 SizedBox(width: resolved.adornmentGap),
-                _InputClearButton(
-                  iconSize: resolved.iconSize,
-                  padding: resolved.clearButtonPadding,
-                  iconColor: resolved.clearIconColor,
-                  onClear: () {
+                AnimalIconAction(
+                  onPressed: () {
                     widget.controller.clear();
                     widget.onChanged?.call('');
                   },
+                  semanticLabel: AnimalLocalizations.of(context)!
+                      .inputClearLabel,
+                  padding: resolved.clearButtonPadding,
+                  borderRadius: resolved.clearButtonBorderRadius,
+                  backgroundColor: resolved.clearButtonBackgroundColor,
+                  icon: AnimalIcon(
+                    data: AnimalIcons.close,
+                    size: resolved.clearIconSize,
+                    color: resolved.clearIconColor,
+                  ),
                 ),
               ],
               if (widget.suffix != null) ...[
@@ -328,37 +335,6 @@ class _AnimalInputState extends State<AnimalInput> {
   }
 }
 
-class _InputClearButton extends StatelessWidget {
-  final VoidCallback onClear;
-  final double iconSize;
-  final Color iconColor;
-  final EdgeInsetsGeometry padding;
-
-  const _InputClearButton({
-    required this.onClear,
-    required this.iconSize,
-    required this.iconColor,
-    required this.padding,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InteractiveRegion(
-      onPressed: onClear,
-      enableHaptics: false,
-      semanticLabel: AnimalLocalizations.of(context)!.inputClearLabel,
-      surfaceColor: Colors.transparent,
-      minimumHitSize: 48,
-      padding: padding,
-      child: AnimalIcon(
-        data: AnimalIcons.close,
-        size: iconSize,
-        color: iconColor,
-      ),
-    );
-  }
-}
-
 /// The one place [AnimalInput] turns its layers into concrete values.
 ///
 /// Precedence: the input's own style, then the theme's size-specific style,
@@ -366,15 +342,20 @@ class _InputClearButton extends StatelessWidget {
 class _ResolvedInputStyle {
   final double minHeight;
   final double horizontalPadding;
-  final double iconSize;
   final double adornmentGap;
   final double multilineVerticalPadding;
   final EdgeInsetsGeometry clearButtonPadding;
+  final BorderRadius clearButtonBorderRadius;
+  final WidgetStateProperty<Color> clearButtonBackgroundColor;
+  final double clearIconSize;
   final TextStyle textStyle;
   final double fontSize;
   final TextStyle hintStyle;
   final Color backgroundColor;
   final Color borderColor;
+
+  /// Focus or status glow; null when the field has none.
+  final BoxShadow? glow;
   final Color cursorColor;
   final Color clearIconColor;
   final double borderWidth;
@@ -385,15 +366,18 @@ class _ResolvedInputStyle {
   const _ResolvedInputStyle._({
     required this.minHeight,
     required this.horizontalPadding,
-    required this.iconSize,
     required this.adornmentGap,
     required this.multilineVerticalPadding,
     required this.clearButtonPadding,
+    required this.clearButtonBorderRadius,
+    required this.clearButtonBackgroundColor,
+    required this.clearIconSize,
     required this.textStyle,
     required this.fontSize,
     required this.hintStyle,
     required this.backgroundColor,
     required this.borderColor,
+    required this.glow,
     required this.cursorColor,
     required this.clearIconColor,
     required this.borderWidth,
@@ -404,24 +388,29 @@ class _ResolvedInputStyle {
 
   /// Default metrics per size. Font sizes scale `typography.body` by these
   /// registered ratios, so the standard 14 logical-pixel body gives 13/15/17.
-  static ({double minHeight, double padding, double iconSize, double factor})
+  static ({
+    double minHeight,
+    double padding,
+    double clearIconSize,
+    double factor,
+  })
   _metrics(AnimalInputSize size) => switch (size) {
     AnimalInputSize.small => (
       minHeight: 34,
       padding: 14,
-      iconSize: 14,
+      clearIconSize: 14,
       factor: 13 / 14,
     ),
     AnimalInputSize.middle => (
       minHeight: 44,
       padding: 18,
-      iconSize: 16,
+      clearIconSize: 16,
       factor: 15 / 14,
     ),
     AnimalInputSize.large => (
       minHeight: 52,
       padding: 22,
-      iconSize: 18,
+      clearIconSize: 18,
       factor: 17 / 14,
     ),
   };
@@ -453,18 +442,14 @@ class _ResolvedInputStyle {
     };
     final metrics = _metrics(size);
 
-    Color defaultBorder() {
-      if (disabled) {
-        return dark ? colors.border.withValues(alpha: 0.3) : colors.borderLight;
-      }
-      if (status == AnimalInputStatus.error) return colors.errorText;
-      if (focused) return resolveFocusRing(theme).color;
-      return colors.border;
-    }
-
-    final Color borderColor = !disabled && status == AnimalInputStatus.warning
-        ? merged.warningColor ?? colors.warningText
-        : merged.borderColor?.resolve(states) ?? defaultBorder();
+    final AnimalFieldTriggerStatus trigger = resolveFieldTriggerStatus(
+      theme: theme,
+      states: states,
+      warning: status == AnimalInputStatus.warning,
+      borderColor: merged.borderColor,
+      warningColor: merged.warningColor,
+      glowColor: merged.glowColor,
+    );
 
     final TextStyle baseText = theme.typography.resolve(
       theme.typography.body
@@ -493,13 +478,20 @@ class _ResolvedInputStyle {
     return _ResolvedInputStyle._(
       minHeight: merged.minHeight ?? metrics.minHeight,
       horizontalPadding: merged.horizontalPadding ?? metrics.padding,
-      iconSize: merged.iconSize ?? metrics.iconSize,
       adornmentGap: merged.adornmentGap ?? theme.spacing.sm,
       multilineVerticalPadding:
           merged.multilineVerticalPadding ?? theme.spacing.sm,
       clearButtonPadding:
           merged.clearButtonPadding ??
           EdgeInsets.symmetric(horizontal: theme.spacing.xs),
+      clearButtonBorderRadius:
+          merged.clearButtonBorderRadius ?? theme.radii.pillBorder,
+      clearButtonBackgroundColor: resolveIconActionBackground(
+        merged.clearButtonBackgroundColor,
+        idle: const Color(0x00000000),
+        hovered: const Color(0x00000000),
+      ),
+      clearIconSize: merged.clearIconSize ?? metrics.clearIconSize,
       textStyle: textStyle,
       fontSize: fontSize,
       hintStyle: hintStyle,
@@ -508,7 +500,8 @@ class _ResolvedInputStyle {
           (disabled
               ? (dark ? colors.surfaceHeader : colors.bgInputDisabled)
               : colors.bgInput),
-      borderColor: borderColor,
+      borderColor: trigger.border,
+      glow: trigger.glow,
       cursorColor: merged.cursorColor ?? colors.text,
       clearIconColor: merged.clearIconColor ?? colors.textSecondary,
       borderWidth: merged.borderWidth ?? 1.8,

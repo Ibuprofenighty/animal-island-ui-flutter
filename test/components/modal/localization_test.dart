@@ -18,7 +18,7 @@ void main() {
           builder: (context) => Scaffold(
             body: TextButton(
               onPressed: () {
-                AnimalModal.show<void>(
+                AnimalModal.confirm(
                   context: context,
                   title: const Text('Caller title'),
                   content: const Text('Caller content'),
@@ -35,11 +35,13 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Confirm'), findsOneWidget);
     expect(find.bySemanticsLabel('Dismiss'), findsOneWidget);
+    expect(find.bySemanticsLabel('Dialog'), findsOneWidget);
 
     controller.locale = const Locale('zh', 'CN');
     await tester.pumpAndSettle();
     expect(find.text('确认'), findsOneWidget);
     expect(find.bySemanticsLabel('关闭'), findsOneWidget);
+    expect(find.bySemanticsLabel('对话框'), findsOneWidget);
     expect(find.text('Caller content'), findsOneWidget);
 
     await tester.tap(find.text('确认'));

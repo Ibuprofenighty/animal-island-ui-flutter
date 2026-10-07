@@ -471,11 +471,115 @@ void main() {
             tester.getRect(find.byIcon(Icons.calendar_today_rounded)).right,
         11,
       );
-      expect(icon(tester, Icons.cancel_rounded).size, 22);
-      expect(icon(tester, Icons.cancel_rounded).color, const Color(0xFF00AA00));
+      final AnimalIcon clear = tester.widget(
+        find.byWidgetPredicate(
+          (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+        ),
+      );
+      expect(clear.size, 22);
+      expect(clear.color, const Color(0xFF00AA00));
       final TextStyle text = triggerText(tester).style!;
       expect(text.fontSize, 18);
       expect(text.color, const Color(0xFFAA0000));
+    });
+
+    testWidgets('trigger clear fields change the rendered clear control', (
+      tester,
+    ) async {
+      BoxDecoration clearFill(WidgetTester tester) =>
+          tester
+                  .widget<AnimatedContainer>(
+                    find
+                        .ancestor(
+                          of: find.byWidgetPredicate(
+                            (w) =>
+                                w is AnimalIcon && w.data == AnimalIcons.close,
+                          ),
+                          matching: find.byType(AnimatedContainer),
+                        )
+                        .first,
+                  )
+                  .decoration!
+              as BoxDecoration;
+
+      await pumpPopover(
+        tester,
+        selection: AnimalDateSelection.date(AnimalDate(2026, 5, 14)),
+        style: AnimalDatePickerStyle(
+          triggerClearButtonPadding: const EdgeInsets.all(5),
+          triggerClearButtonBorderRadius: const BorderRadius.all(
+            Radius.circular(3),
+          ),
+          triggerClearButtonBackgroundColor:
+              const WidgetStatePropertyAll<Color>(Color(0xFF0000AA)),
+        ),
+      );
+      expect(clearFill(tester).color, const Color(0xFF0000AA));
+      expect(
+        clearFill(tester).borderRadius,
+        const BorderRadius.all(Radius.circular(3)),
+      );
+      expect(
+        tester
+            .widget<AnimatedContainer>(
+              find
+                  .ancestor(
+                    of: find.byWidgetPredicate(
+                      (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+                    ),
+                    matching: find.byType(AnimatedContainer),
+                  )
+                  .first,
+            )
+            .padding,
+        const EdgeInsets.all(5),
+      );
+    });
+
+    testWidgets('a wide clear control still fits the bounded trigger row', (
+      tester,
+    ) async {
+      await pumpPopover(
+        tester,
+        selection: AnimalDateSelection.date(AnimalDate(2026, 5, 14)),
+        style: AnimalDatePickerStyle(
+          triggerIconSize: 24,
+          triggerClearButtonPadding: const EdgeInsets.symmetric(horizontal: 40),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      final Finder clear = find.byWidgetPredicate(
+        (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+      );
+      final Rect row = tester.getRect(
+        find.byWidgetPredicate((w) => w is SizedBox && w.width == 300),
+      );
+      final Rect action = tester.getRect(
+        find
+            .ancestor(of: clear, matching: find.byType(InteractiveRegion))
+            .first,
+      );
+      expect(action.width, closeTo(104, 1e-6));
+      expect(action.right, lessThanOrEqualTo(row.right + 1e-6));
+    });
+
+    testWidgets('the glow color is themed per state', (tester) async {
+      final AnimalIslandTheme theme = themed(
+        AnimalDatePickerStyle(
+          glowColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.error)
+                ? const Color(0xFFEE00EE)
+                : null,
+          ),
+        ),
+      );
+      await pumpPopover(tester, theme: theme, status: AnimalInputStatus.error);
+      expect(
+        trigger(tester).extraShadows!.single.color,
+        const Color(0xFFEE00EE),
+      );
+      await pumpPopover(tester, theme: theme);
+      expect(trigger(tester).extraShadows, isNull);
     });
 
     testWidgets('placeholder, warning, error and focused colors are themed', (
@@ -694,12 +798,14 @@ void main() {
           .extraShadows!
           .single;
       expect(glow.blurRadius, 4);
-      expect(glow.spreadRadius, 1);
+      expect(glow.spreadRadius, 2);
       expect(
         tester.getSize(
           find
               .ancestor(
-                of: find.byIcon(Icons.cancel_rounded),
+                of: find.byWidgetPredicate(
+                  (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+                ),
                 matching: find.byType(InteractiveRegion),
               )
               .first,

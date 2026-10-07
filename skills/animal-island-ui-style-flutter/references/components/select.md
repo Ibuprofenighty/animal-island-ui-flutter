@@ -48,8 +48,26 @@ uses the library focus color.
 Trigger colors resolve against `WidgetState.disabled`, `focused` (focused or
 menu open), `error` (error status or an unknown value) and `selected` (the value
 matches an option). Option colors resolve against `disabled`, `selected`,
-`hovered` and `focused`. The warning status has no select visuals. Option rows
-keep the 48 logical-pixel minimum extent and hit target whatever the style says.
+`hovered` and `focused`. `glowColor` resolves against the trigger states and
+`warningColor` is the warning status border. Option rows keep the 48
+logical-pixel minimum extent and hit target whatever the style says.
+
+The trigger border and glow follow the one rule shared by Input, Select,
+DatePicker and TimePicker. A disabled trigger uses the styled border, otherwise
+`borderLight` in light themes or `border` at 30% opacity in dark themes, and
+has no glow. The warning status uses `warningColor`, otherwise `warningText`;
+an error wins over a warning. Otherwise the styled border applies, then
+`errorText` for an error, the focus-ring color when focused and `border` at
+rest. An idle trigger without a status has no glow; otherwise the glow is the
+styled glow color, or the border color at 45% opacity when only focused and
+35% for an error or warning, with blur 4 and spread 2.
+
+The clear action is the package's shared icon action: a 48 logical-pixel target
+with a focus ring, the localized clear label as its accessible name and a hover
+fill from `clearButtonBackgroundColor`, resolved against `WidgetState.hovered`;
+under reduced motion the fill changes instantly. `clearIconSize` defaults to 16,
+`clearIconColor` to `textSecondary`, `clearButtonPadding` to zero, `clearButtonBorderRadius` to a pill and `clearButtonBackgroundColor` to
+transparent.
 
 ## Example
 See [`select_story.dart`](../../../../example/lib/stories/select_story.dart) in the example Gallery.

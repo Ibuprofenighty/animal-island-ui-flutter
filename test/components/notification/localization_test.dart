@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/src/components/notification/notification_card.dart';
-import 'package:animal_island_ui/src/components/notification/notification_queue.dart';
+import 'package:animal_island_ui/src/components/notification/notification_model.dart';
 
 import '../../support/localization_app.dart';
 
@@ -13,7 +13,7 @@ void main() {
       final controller = LocalizationTestController(
         initialLocale: const Locale('en'),
       );
-      var timeoutCount = 0;
+      var closeCount = 0;
       await tester.pumpWidget(
         AnimalLocalizationTestApp(
           controller: controller,
@@ -23,8 +23,8 @@ void main() {
                 message: const Text('Caller-owned notification'),
                 duration: const Duration(minutes: 1),
               ),
-              onDismiss: () {},
-              onTimeout: () => timeoutCount++,
+              onClose: () => closeCount++,
+              onPausedChanged: (_) {},
             ),
           ),
         ),
@@ -53,7 +53,7 @@ void main() {
 
       tester.semantics.tap(chineseDismiss);
       await tester.pumpAndSettle();
-      expect(timeoutCount, 1);
+      expect(closeCount, 1);
 
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();

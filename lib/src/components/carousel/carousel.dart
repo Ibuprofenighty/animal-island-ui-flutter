@@ -330,7 +330,6 @@ class _DotIndicator extends StatelessWidget {
       selected: isSelected,
       semanticLabel: AnimalLocalizations.of(context)!
           .carouselSlidePosition(index + 1, total),
-      minimumHitSize: 48,
       child: Center(
         child: AnimatedContainer(
           duration: theme.motion.fast,

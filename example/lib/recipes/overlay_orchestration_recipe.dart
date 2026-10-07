@@ -20,7 +20,7 @@ class _OverlayOrchestrationRecipeState
     setState(() => _notificationCount++);
     final count = _notificationCount;
 
-    AnimalNotification.open(
+    final AnimalNotificationHandle handle = AnimalNotification.open(
       context,
       message: Text('Island Broadcast #$count'),
       description: const Text(
@@ -28,38 +28,46 @@ class _OverlayOrchestrationRecipeState
       ),
       type: type,
       duration: const Duration(seconds: 4),
-      key: 'bulletin_$count',
       onClose: () {
         if (mounted) {
           setState(() => _lastActionStatus = 'Notification #$count dismissed');
         }
       },
     );
+    // A full placement queue (3 shown + 50 waiting) rejects the newest
+    // notification instead of dropping an older one.
+    if (handle.status == AnimalNotificationStatus.rejected) {
+      setState(() => _lastActionStatus = 'Notice queue full: #$count rejected');
+    }
   }
 
-  void _showModalDialogue() {
-    AnimalModal.show(
+  void _closeAllNotifications() {
+    AnimalNotification.closeAll(context);
+    setState(() => _lastActionStatus = 'All notices closed');
+  }
+
+  Future<void> _showModalDialogue() async {
+    final bool reserved = await AnimalModal.showDialogue(
       context: context,
       title: const Text('Island Mayor Dialogue'),
-      content: const Text(
-        'Hello island resident! The annual fireworks festival is taking place tonight at 8 PM. Would you like to reserve a front-row lawn chair?',
-      ),
-      typewriter: true,
-      okText: 'Reserve Chair',
+      dialogue: 'Hello island resident! The annual fireworks festival is taking place tonight at 8 PM. Would you like to reserve a front-row lawn chair?',
+      continueText: 'Reserve Chair',
       cancelText: 'Maybe Later',
-      onOk: () {
-        setState(() => _lastActionStatus = 'Lawn chair successfully reserved!');
-        return true;
-      },
+    );
+    if (!mounted) return;
+    setState(
+      () => _lastActionStatus = reserved
+          ? 'Lawn chair successfully reserved!'
+          : 'Lawn chair reservation skipped',
     );
   }
 
-  void _openDrawer() {
-    AnimalDrawer.show(
+  Future<void> _openDrawer() async {
+    final bool? saved = await AnimalDrawer.show<bool>(
       context: context,
       title: const Text('Island Preferences'),
       placement: AnimalDrawerPlacement.right,
-      child: Column(
+      builder: (context, close) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Sound Effects: Enabled'),
@@ -70,11 +78,17 @@ class _OverlayOrchestrationRecipeState
           const Spacer(),
           AnimalButton(
             variant: AnimalButtonVariant.filled,
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => close(true),
             child: const Text('Close Preferences'),
           ),
         ],
       ),
+    );
+    if (!mounted) return;
+    setState(
+      () => _lastActionStatus = saved == true
+          ? 'Preferences closed'
+          : 'Preferences dismissed',
     );
   }
 
@@ -170,6 +184,11 @@ class _OverlayOrchestrationRecipeState
                       onPressed: () =>
                           _showNotification(AnimalNotificationType.warning),
                       child: const Text('Trigger Warning Notice'),
+                    ),
+                    AnimalButton(
+                      variant: AnimalButtonVariant.outlined,
+                      onPressed: _closeAllNotifications,
+                      child: const Text('Close All Notices'),
                     ),
                   ],
                 ),

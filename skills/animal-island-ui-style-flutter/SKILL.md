@@ -40,6 +40,25 @@ widths use two decimal places; zero and negative widths canonicalize to `0`.
    resources your code owns.
 5. `AnimalModal` and `AnimalDrawer` are shown as routes; `AnimalNotification` and
    `AnimalLoading` are displayed in an overlay. Use each through its own API.
+   `AnimalModal.confirm` returns `Future<bool>` (`true` only when confirmed);
+   `AnimalModal.show<T>` and `AnimalDrawer.show<T>` return `Future<T?>`: the value
+   passed to the `close` callback their builders receive, or `null` when
+   dismissed. Both open on the nearest `Navigator`; while an `onConfirm` is
+   pending, every close request is ignored.
+   `AnimalLoading.show` needs an `AnimalOverlayHost` above the context and returns
+   a handle whose idempotent `close()` is the only way to remove the loading.
+   `AnimalNotification.open` also needs a host and returns an
+   `AnimalNotificationHandle` (`status`, idempotent `close()`); a full placement
+   queue (3 shown, 50 waiting) returns it `rejected`. A live business `key` updates
+   its notification in place; `AnimalNotification.closeAll(context)` closes that
+   host's notifications.
+   For a custom overlay, `AnimalOverlayHost.of(context)` returns the host's
+   `AnimalOverlayController`: `show(builder:, onClose:)` returns an
+   `AnimalOverlayEntryHandle` with an idempotent `close()` and `isClosed`;
+   `close(handle)` closes one occurrence of this controller (a handle of
+   another controller throws an `ArgumentError`), and `closeAll()` closes every
+   occurrence of that host. A controller you pass to
+   the host stays yours; dispose it only after the host is removed.
 6. Follow each component's own geometry and states; for example, the stacked depth
    shadow belongs to filled primary and danger buttons, not to every widget.
 7. When customizing colors, keep readable foreground/background pairs and use the

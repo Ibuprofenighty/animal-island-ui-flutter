@@ -32,5 +32,8 @@ message. The tag's `child` content remains caller supplied.
 
 When both actions are present, the tag body and the close control are separate targets; activating the close control does not activate the body. Each has its own focus, a 48 logical-pixel hit target, and the two do not overlap. A pending activation is cancelled when the tag loses focus, is disabled, is hidden or is unmounted.
 
+The close control is the package's shared icon action, with a focus ring and the
+localized `tagRemoveLabel` as its accessible name.
+
 ## Example
 See [`tag_story.dart`](../../../../example/lib/stories/tag_story.dart) in the example Gallery.

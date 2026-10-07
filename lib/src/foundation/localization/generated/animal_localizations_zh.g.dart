@@ -116,7 +116,10 @@ class AnimalLocalizationsZh extends AnimalLocalizations {
   String get modalCloseLabel => '关闭对话框';
 
   @override
-  String get drawerSemanticsLabel => '抽屉';
+  String get modalRouteLabel => '对话框';
+
+  @override
+  String get drawerRouteLabel => '抽屉';
 
   @override
   String get drawerCloseLabel => '关闭抽屉';
@@ -172,6 +175,9 @@ class AnimalLocalizationsZh extends AnimalLocalizations {
 
   @override
   String get imagePreviewCloseLabel => '关闭预览';
+
+  @override
+  String get imagePreviewRouteLabel => '图片预览';
 
   @override
   String imagePreviewSemanticLabel(String label) {

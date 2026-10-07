@@ -5,6 +5,9 @@ import '../../foundation/models/clock.dart';
 import '../../foundation/models/time.dart';
 import '../../foundation/theme/components/time_picker_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../icons/icon.dart';
+import '../../icons/icons.g.dart';
+import '../../internal/interaction/icon_action.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../input/input.dart';
 import 'time_picker_panel.dart';
@@ -192,21 +195,11 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
     );
 
     final canInteract = !widget.disabled;
-    final bool error = widget.status == AnimalInputStatus.error;
-    final bool warning = widget.status == AnimalInputStatus.warning;
-    final bool focused = _menuController.isOpen || _isFocused;
-    final Color borderColor = resolved.triggerBorderColor(
-      focused: focused,
-      error: error,
-      warning: warning,
+    final trigger = resolved.trigger(
+      focused: _menuController.isOpen || _isFocused,
+      error: widget.status == AnimalInputStatus.error,
+      warning: widget.status == AnimalInputStatus.warning,
     );
-    // The glow follows the resolved border: 35% alpha for a status and 45%
-    // for focus.
-    final Color? glowColor = error || warning
-        ? borderColor.withValues(alpha: 0.35)
-        : focused
-        ? borderColor.withValues(alpha: 0.45)
-        : null;
 
     final displayText = _displayText(localizations);
 
@@ -220,7 +213,10 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
             borderRadius: resolved.borderRadius,
-            side: BorderSide(color: borderColor, width: resolved.borderWidth),
+            side: BorderSide(
+              color: trigger.border,
+              width: resolved.borderWidth,
+            ),
           ),
         ),
       ),
@@ -260,18 +256,13 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
               borderRadius: resolved.triggerBorderRadius,
               surfaceColor: resolved.triggerBackgroundColor,
               border: Border.all(
-                color: borderColor,
+                color: trigger.border,
                 width: resolved.triggerBorderWidth,
               ),
-              extraShadows: glowColor == null
-                  ? null
-                  : [
-                      BoxShadow(
-                        color: glowColor,
-                        blurRadius: 4.0,
-                        spreadRadius: 1.0,
-                      ),
-                    ],
+              extraShadows: switch (trigger.glow) {
+                final BoxShadow glow => <BoxShadow>[glow],
+                null => null,
+              },
               padding: resolved.triggerPadding,
               onFocusChanged: (focused) => setState(() => _isFocused = focused),
               child: Row(
@@ -291,14 +282,14 @@ class _AnimalTimePickerPopoverState extends State<_AnimalTimePickerPopover> {
               ),
             ),
             if (widget.allowClear && hasValue && canInteract)
-              InteractiveRegion(
+              AnimalIconAction(
                 onPressed: () => widget.onChanged?.call(null),
-                enableHaptics: false,
                 semanticLabel: localizations.clearTime,
-                surfaceColor: Colors.transparent,
-                borderRadius: BorderRadius.circular(24),
-                child: Icon(
-                  Icons.cancel_rounded,
+                padding: resolved.triggerClearButtonPadding,
+                borderRadius: resolved.triggerClearButtonBorderRadius,
+                backgroundColor: resolved.triggerClearButtonBackgroundColor,
+                icon: AnimalIcon(
+                  data: AnimalIcons.close,
                   size: resolved.triggerIconSize,
                   color: resolved.triggerIconColor(clearIcon: true),
                 ),

@@ -100,6 +100,9 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: AnimalLocalizations.localizationsDelegates,
       supportedLocales: AnimalLocalizations.supportedLocales,
       localeResolutionCallback: (locale, _) => resolveAnimalLocale(locale),
+      // Notifications and full-screen loading open in the nearest host.
+      builder: (context, child) =>
+          AnimalOverlayHost(child: child ?? const SizedBox.shrink()),
       home: const IslandHomePage(),
     );
   }
@@ -148,7 +151,7 @@ class _IslandHomePageState extends State<IslandHomePage> {
               const SizedBox(height: 12),
               AnimalButton(
                 icon: const AnimalIcon(data: AnimalIcons.apple, size: 18),
-                onPressed: () => AnimalModal.show<void>(
+                onPressed: () => AnimalModal.confirm(
                   context: context,
                   title: const Text('Island Broadcast'),
                   content: const Text('Fireworks at the plaza tonight!'),

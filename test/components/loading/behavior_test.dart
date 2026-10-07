@@ -2,55 +2,58 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+Widget _app(Widget home) => MaterialApp(
+  localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+  supportedLocales: AnimalLocalizations.supportedLocales,
+  theme: AnimalIslandTheme.light.toThemeData(),
+  home: home,
+);
+
 void main() {
   group('AnimalLoading Behavior & F14 Tests (C25 / LOD01-LOD03)', () {
-    tearDown(() {
-      AnimalLoading.hide();
-    });
-
     testWidgets(
-      'LOD02 / F14: releasing handle before first frame cleans up cleanly without orphan',
+      'LOD02 / F14: closing the handle before the first frame leaves no orphan',
       (tester) async {
+        final AnimalOverlayController controller = AnimalOverlayController();
         late BuildContext buildCtx;
 
         await tester.pumpWidget(
-          MaterialApp(
-            localizationsDelegates: AnimalLocalizations.localizationsDelegates,
-            supportedLocales: AnimalLocalizations.supportedLocales,
-
-            theme: AnimalIslandTheme.light.toThemeData(),
-            home: Scaffold(
-              body: Builder(
-                builder: (context) {
-                  buildCtx = context;
-                  return const Text('Loading Host');
-                },
+          _app(
+            AnimalOverlayHost(
+              controller: controller,
+              child: Scaffold(
+                body: Builder(
+                  builder: (context) {
+                    buildCtx = context;
+                    return const Text('Loading Host');
+                  },
+                ),
               ),
             ),
           ),
         );
 
-        // Trigger show
         final handle = AnimalLoading.show(
           buildCtx,
           tip: 'Fetching island mail...',
         );
-
         expect(handle.isClosed, isFalse);
 
-        // Immediately release handle before any frame pumps
+        // Close before any frame shows the occurrence.
+        handle.close();
+        expect(handle.isClosed, isTrue);
+        // A repeated close is ignored.
         handle.close();
         expect(handle.isClosed, isTrue);
 
-        // Duplicate release must be completely safe / idempotent
-        handle.release();
-
-        // Pump frames
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 100));
 
-        // Must not have left an orphan AnimalLoading in the tree
+        expect(find.byType(AnimalLoading), findsNothing);
         expect(find.text('Fetching island mail...'), findsNothing);
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        controller.dispose();
       },
     );
 
@@ -58,21 +61,17 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: AnimalLocalizations.localizationsDelegates,
-          supportedLocales: AnimalLocalizations.supportedLocales,
-
-          theme: AnimalIslandTheme.light.toThemeData(),
-          home: Scaffold(
+        _app(
+          Scaffold(
             body: Column(
               children: [
-                AnimalLoading.spinner(tip: 'Spinning'),
+                const AnimalLoading.spinner(tip: 'Spinning'),
                 AnimalLoading.snowflake(
                   tip: 'Snowing',
                   snowCount: 30,
                   snowSeed: 42,
                 ),
-                AnimalLoading.dots(tip: 'Dotting'),
+                const AnimalLoading.dots(tip: 'Dotting'),
               ],
             ),
           ),
@@ -82,7 +81,17 @@ void main() {
       expect(find.text('Spinning'), findsOneWidget);
       expect(find.text('Snowing'), findsOneWidget);
       expect(find.text('Dotting'), findsOneWidget);
-      expect(find.byType(CustomPaint), findsWidgets);
+      // Spinner and snowflake draw an icon; dots draw three circles.
+      expect(find.byType(AnimalIcon), findsNWidgets(2));
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is Container &&
+              w.decoration is BoxDecoration &&
+              (w.decoration! as BoxDecoration).shape == BoxShape.circle,
+        ),
+        findsNWidgets(3),
+      );
     });
 
     testWidgets(
@@ -92,30 +101,26 @@ void main() {
         int tapCount = 0;
 
         await tester.pumpWidget(
-          MaterialApp(
-            localizationsDelegates: AnimalLocalizations.localizationsDelegates,
-            supportedLocales: AnimalLocalizations.supportedLocales,
-
-            theme: AnimalIslandTheme.light.toThemeData(),
-            home: Scaffold(
-              body: Builder(
-                builder: (context) {
-                  buildCtx = context;
-                  return ElevatedButton(
-                    onPressed: () => tapCount++,
-                    child: const Text('Background Action'),
-                  );
-                },
+          _app(
+            AnimalOverlayHost(
+              child: Scaffold(
+                body: Builder(
+                  builder: (context) {
+                    buildCtx = context;
+                    return ElevatedButton(
+                      onPressed: () => tapCount++,
+                      child: const Text('Background Action'),
+                    );
+                  },
+                ),
               ),
             ),
           ),
         );
 
-        // Initially can tap background button
         await tester.tap(find.text('Background Action'));
         expect(tapCount, 1);
 
-        // Show fullscreen loading
         final handle = AnimalLoading.show(
           buildCtx,
           tip: 'Saving island progress...',
@@ -124,20 +129,49 @@ void main() {
 
         expect(find.text('Saving island progress...'), findsOneWidget);
 
-        // Tapping behind barrier is blocked
+        // Tapping behind the barrier is blocked.
         await tester.tap(find.text('Background Action'), warnIfMissed: false);
         expect(tapCount, 1);
 
-        // Dismiss loading
         handle.close();
         await tester.pumpAndSettle();
 
         expect(find.text('Saving island progress...'), findsNothing);
 
-        // Now background can be tapped again
         await tester.tap(find.text('Background Action'));
         expect(tapCount, 2);
       },
     );
+
+    testWidgets('LOD03: an inline fullScreen loading blocks the controls it '
+        'covers', (tester) async {
+      int tapCount = 0;
+      await tester.pumpWidget(
+        _app(
+          Scaffold(
+            body: Stack(
+              children: [
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () => tapCount++,
+                    child: const Text('Covered Action'),
+                  ),
+                ),
+                Positioned.fill(
+                  child: AnimalLoading(
+                    type: AnimalLoadingType.dots,
+                    fullScreen: true,
+                    tip: 'Inline barrier',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Covered Action'), warnIfMissed: false);
+      expect(tapCount, 0);
+      expect(find.text('Inline barrier'), findsOneWidget);
+    });
   });
 }

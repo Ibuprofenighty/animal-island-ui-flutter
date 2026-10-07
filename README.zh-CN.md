@@ -90,6 +90,9 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: AnimalLocalizations.localizationsDelegates,
       supportedLocales: AnimalLocalizations.supportedLocales,
       localeResolutionCallback: (locale, _) => resolveAnimalLocale(locale),
+      // 通知与全屏 Loading 在最近的 AnimalOverlayHost 中打开。
+      builder: (context, child) =>
+          AnimalOverlayHost(child: child ?? const SizedBox.shrink()),
       home: const IslandHomePage(),
     );
   }
@@ -137,7 +140,7 @@ class _IslandHomePageState extends State<IslandHomePage> {
               const SizedBox(height: 12),
               AnimalButton(
                 icon: const AnimalIcon(data: AnimalIcons.apple, size: 18),
-                onPressed: () => AnimalModal.show<void>(
+                onPressed: () => AnimalModal.confirm(
                   context: context,
                   title: const Text('海岛广播'),
                   content: const Text('今晚广场有烟花大会！'),

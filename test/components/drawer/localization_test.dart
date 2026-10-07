@@ -21,7 +21,7 @@ void main() {
                 AnimalDrawer.show<void>(
                   context: context,
                   title: const Text('Caller title'),
-                  child: const Text('Caller content'),
+                  builder: (context, close) => const Text('Caller content'),
                 );
               },
               child: const Text('Open'),

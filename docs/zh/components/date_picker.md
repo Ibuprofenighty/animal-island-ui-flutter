@@ -39,7 +39,7 @@ inline `AnimalDatePicker` 默认 `mode: AnimalDatePickerMode.date`、空 selecti
 
 Today 在 date 模式提出当前 Civil 日期，在 range 模式提出受控起点草稿，在 month 模式提出当月首日。若目标超出包含式边界或命中 `disabledDate`，Today 会禁用；整个控件禁用时不产生回调。存在选择值时，Clear 只提出一次 null。popover 中 Clear 会关闭菜单并将焦点还给触发器；完整的日期/月选择或范围也会关闭，范围起点草稿则保持打开。
 
-共用 panel 首选宽度为 300 逻辑像素，父级给出更窄宽度时随之收窄；使用 `bgContent`、`cardBorder`、`spacing.md` 内边距及 1.5 像素边框（深色主题使用 `border`，浅色主题使用 `borderLight`）。区块间距使用 `spacing.sm`，紧凑网格/页脚间距使用 `spacing.xs`。日期和月份文字使用 `typography.body` 乘以 13/14（标准字体下为 13 像素）；星期与页脚文字使用 caption 字体；标题使用 `typography.heading` 乘以 15/20（15 像素）。单日期选择使用 `primary`/`onPrimary`；月份选择使用同色，并以 `primaryActive` 作边框。范围端点使用 `warning`/`onWarning`，范围内部使用 18% 透明度的范围色。日期列宽至少为 48 逻辑像素，并按最宽日期文字（另加两倍 6 像素单元格内缩）或星期文字扩展；日期格高度为 `max(48, 实测日期排版高度 + 2 × 单元格内缩)`，星期行高度为 `max(24, 实测 caption 排版高度)`。唯一测量使用解析后的文字样式和 `MediaQuery` 文字缩放，同时纳入 paragraph 尺寸与居中 selection box 外伸，使字体排版保持在单元格内。月份格至少为 86×48 逻辑像素，并按最宽本地化月份文字（宽度另加两倍单元格内缩）和实测排版高度（另加上下各一个月份边框宽度，默认 1 像素）扩展。默认文字尺寸下，日期格为 48×48、星期格为 48×24、月份格为 86×48。panel 过窄、无法在一行放下导航按钮和 48 像素标题位时，标题移到导航上方，导航按钮换行且保持 48 像素目标；日期与月份网格可横向滚动，大字号放不下时 Today 与 Clear 分行显示。popover trigger 使用 `bgInput`；禁用时深色主题使用 `surfaceHeader`，浅色主题使用 `bgInputDisabled`。正常状态使用主题暗/浅边框；error/warning 分别使用对应颜色和 35% 光晕，focus 使用 45% 光晕的库统一焦点色。日历布局仍共用同一 panel。
+共用 panel 首选宽度为 300 逻辑像素，父级给出更窄宽度时随之收窄；使用 `bgContent`、`cardBorder`、`spacing.md` 内边距及 1.5 像素边框（深色主题使用 `border`，浅色主题使用 `borderLight`）。区块间距使用 `spacing.sm`，紧凑网格/页脚间距使用 `spacing.xs`。日期和月份文字使用 `typography.body` 乘以 13/14（标准字体下为 13 像素）；星期与页脚文字使用 caption 字体；标题使用 `typography.heading` 乘以 15/20（15 像素）。单日期选择使用 `primary`/`onPrimary`；月份选择使用同色，并以 `primaryActive` 作边框。范围端点使用 `warning`/`onWarning`，范围内部使用 18% 透明度的范围色。日期列宽至少为 48 逻辑像素，并按最宽日期文字（另加两倍 6 像素单元格内缩）或星期文字扩展；日期格高度为 `max(48, 实测日期排版高度 + 2 × 单元格内缩)`，星期行高度为 `max(24, 实测 caption 排版高度)`。唯一测量使用解析后的文字样式和 `MediaQuery` 文字缩放，同时纳入 paragraph 尺寸与居中 selection box 外伸，使字体排版保持在单元格内。月份格至少为 86×48 逻辑像素，并按最宽本地化月份文字（宽度另加两倍单元格内缩）和实测排版高度（另加上下各一个月份边框宽度，默认 1 像素）扩展。默认文字尺寸下，日期格为 48×48、星期格为 48×24、月份格为 86×48。panel 过窄、无法在一行放下导航按钮和 48 像素标题位时，标题移到导航上方，导航按钮换行且保持 48 像素目标；日期与月份网格可横向滚动，大字号放不下时 Today 与 Clear 分行显示。popover trigger 使用 `bgInput`；禁用时深色主题使用 `surfaceHeader`，浅色主题使用 `bgInputDisabled`。其边框与光晕遵循“定制”一节所述的字段触发器规则。日历布局仍共用同一 panel。
 
 ## 本地化
 默认提示和底部操作使用生成的 AnimalLocalizations；日期显示、月份名称、星期标签、导航标签和日期单元格语义遵循当前 Material 语言。传入的 placeholder 仍由调用方提供。
@@ -77,8 +77,21 @@ Clear 内部，`spacing.sm`）。文字字段为 `headerTextStyle`、`weekdayTex
 解析。选中填充为 `selectedBackgroundColor`；范围端点使用 `rangeBackgroundColor`
 与 `rangeTextColor`，非本月日期使用 `outsideMonthTextColor`，星期文字使用
 `weekdayTextColor`，空触发器使用 `placeholderTextColor`，warning 状态使用
-`warningColor`。状态光晕跟随解析后的边框颜色。48 像素目标、86 像素月份最小宽度、
-24 像素星期行、三列月份网格和 18% 范围填充保持固定。
+`warningColor`，触发器光晕使用按 `focused` 与 `error` 解析的 `glowColor`。48 像素目标、
+86 像素月份最小宽度、24 像素星期行、三列月份网格和 18% 范围填充保持固定。
+
+触发器边框与光晕遵循 Input、Select、DatePicker、TimePicker 共用的同一规则。禁用的
+触发器使用样式边框，否则浅色主题使用 `borderLight`、深色主题使用 30% 透明度的
+`border`，且没有光晕。warning 状态使用 `warningColor`，否则使用 `warningText`；error
+优先于 warning。其余情况使用样式边框，否则 error 使用 `errorText`，聚焦时使用焦点环
+颜色，静止时使用 `border`。没有状态的静止触发器没有光晕；其余情况的光晕为样式光晕色，
+否则仅聚焦时为 45% 透明度的边框色，error 或 warning 时为 35%，模糊半径 4、扩散半径 2。
+
+清除控件是包内共用的图标操作：48 逻辑像素目标、焦点环、本地化的清除标签作为无障碍名称，
+关闭图标使用 `triggerIconSize` 与 `triggerIconColor`，悬停填充来自按 `WidgetState.hovered`
+解析的 `triggerClearButtonBackgroundColor`；减少动态效果时填充立即切换。
+`triggerClearButtonPadding` 默认为零，`triggerClearButtonBorderRadius` 默认为胶囊形，
+`triggerClearButtonBackgroundColor` 默认为透明。
 
 ## 示例
 参见示例 Gallery 中的 [`date_picker_story.dart`](../../../example/lib/stories/date_picker_story.dart)。

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../internal/painting/blob_path.dart';
-import '../../foundation/theme/theme.dart';
 
 /// Painter that renders the organic smooth border around the blob modal.
 class BlobModalPainter extends CustomPainter {
@@ -12,7 +11,7 @@ class BlobModalPainter extends CustomPainter {
   const BlobModalPainter({
     required this.fillColor,
     required this.borderColor,
-    this.borderWidth = 2.0,
+    required this.borderWidth,
   });
 
   @override
@@ -43,29 +42,34 @@ class BlobModalPainter extends CustomPainter {
       oldDelegate.borderWidth != borderWidth;
 }
 
-/// Organic blob surface container for [AnimalModal].
+/// Organic blob surface container for `AnimalModal`.
+///
+/// Every visual value is resolved by the modal; the surface reads no theme.
 class AnimalModalSurface extends StatelessWidget {
   final Widget child;
   final Color fillColor;
   final Color borderColor;
   final double borderWidth;
   final double width;
+  final List<BoxShadow> shadows;
+  final EdgeInsetsGeometry padding;
 
   const AnimalModalSurface({
     super.key,
     required this.child,
     required this.fillColor,
     required this.borderColor,
-    this.borderWidth = 2.0,
+    required this.borderWidth,
     required this.width,
+    required this.shadows,
+    required this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = AnimalIslandTheme.of(context);
     return Container(
       width: width,
-      decoration: BoxDecoration(boxShadow: theme.shadows.modal),
+      decoration: BoxDecoration(boxShadow: shadows),
       child: CustomPaint(
         painter: BlobModalPainter(
           fillColor: fillColor,
@@ -74,13 +78,7 @@ class AnimalModalSurface extends StatelessWidget {
         ),
         child: ClipPath(
           clipper: const AnimalBlobClipper(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: theme.spacing.xxl + theme.spacing.xs,
-              vertical: theme.spacing.xxl,
-            ),
-            child: child,
-          ),
+          child: Padding(padding: padding, child: child),
         ),
       ),
     );

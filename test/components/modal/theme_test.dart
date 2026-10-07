@@ -98,7 +98,7 @@ void main() {
           home: Builder(
             builder: (context) => Scaffold(
               body: TextButton(
-                onPressed: () => AnimalModal.showDialogue<void>(
+                onPressed: () => AnimalModal.showDialogue(
                   context: context,
                   avatar: const Icon(Icons.person),
                   dialogue: 'Welcome, islander.',

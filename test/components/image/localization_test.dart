@@ -55,12 +55,14 @@ void main() {
 
       expect(find.bySemanticsLabel('Close preview'), findsOneWidget);
       expect(find.bySemanticsLabel('Dismiss'), findsOneWidget);
+      expect(find.bySemanticsLabel('Image preview'), findsOneWidget);
 
       controller.locale = const Locale('zh');
       await tester.pumpAndSettle();
 
       expect(find.bySemanticsLabel('关闭预览'), findsOneWidget);
       expect(find.bySemanticsLabel('关闭'), findsOneWidget);
+      expect(find.bySemanticsLabel('图片预览'), findsOneWidget);
 
       await tester.tap(find.bySemanticsLabel('关闭预览'));
       await tester.pumpAndSettle();

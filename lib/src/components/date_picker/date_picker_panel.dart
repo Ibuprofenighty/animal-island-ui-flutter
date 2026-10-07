@@ -10,7 +10,8 @@ import '../../foundation/models/clock.dart';
 import '../../foundation/models/date.dart';
 import '../../foundation/theme/components/date_picker_theme.dart';
 import '../../foundation/theme/theme.dart';
-import '../../internal/interaction/focus_ring.dart';
+import '../../internal/interaction/field_status.dart';
+import '../../internal/interaction/icon_action.dart';
 import '../../internal/interaction/interactive_region.dart';
 import 'calendar_model.dart';
 
@@ -61,9 +62,8 @@ class AnimalDatePickerPanel extends StatefulWidget {
 class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
   static const int _monthColumnCount = 3;
 
-  /// Registered layout floors: the 48dp interactive target, the narrowest
-  /// month cell and the weekday header row.
-  static const double _minimumTarget = 48.0;
+  /// Registered layout floors besides the shared interactive target: the
+  /// narrowest month cell and the weekday header row.
   static const double _monthMinimumWidth = 86.0;
   static const double _weekdayMinimumHeight = 24.0;
 
@@ -790,7 +790,7 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
     // Navigation targets keep 48dp. When the panel is too narrow for them and
     // a 48dp label slot on one line, the label moves above the navigation.
     return _DatePickerHeaderLayout(
-      minimumLabelWidth: _minimumTarget,
+      minimumLabelWidth: kAnimalMinimumTarget,
       start: Wrap(
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -836,7 +836,7 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
       monthMetrics.width + 2 * resolved.cellInset,
     );
     final monthItemHeight = _atLeast(
-      _minimumTarget,
+      kAnimalMinimumTarget,
       monthMetrics.height + 2 * monthBorderWidth,
     );
     final monthGridWidth =
@@ -946,11 +946,11 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
       emphasizedDayStyle,
     );
     final columnWidth = _atLeast(
-      _minimumTarget,
+      kAnimalMinimumTarget,
       _atLeast(dayMetrics.width + 2 * cellInset, weekdayMetrics.width),
     );
     final dayCellHeight = _atLeast(
-      _minimumTarget,
+      kAnimalMinimumTarget,
       dayMetrics.height + 2 * cellInset,
     );
     final weekdayRowHeight = _atLeast(
@@ -996,7 +996,6 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
             date.toDateTime(),
           ),
           surfaceColor: Colors.transparent,
-          minimumHitSize: _minimumTarget,
           child: Padding(
             padding: EdgeInsets.all(cellInset),
             child: Container(
@@ -1366,6 +1365,9 @@ class ResolvedDatePickerStyle {
   final BorderRadius triggerBorderRadius;
   final double triggerHorizontalPadding;
   final double triggerIconGap;
+  final EdgeInsetsGeometry triggerClearButtonPadding;
+  final BorderRadius triggerClearButtonBorderRadius;
+  final WidgetStateProperty<Color> triggerClearButtonBackgroundColor;
   final double sectionGap;
   final double footerGap;
   final double cellGap;
@@ -1408,6 +1410,9 @@ class ResolvedDatePickerStyle {
     required this.triggerBorderRadius,
     required this.triggerHorizontalPadding,
     required this.triggerIconGap,
+    required this.triggerClearButtonPadding,
+    required this.triggerClearButtonBorderRadius,
+    required this.triggerClearButtonBackgroundColor,
     required this.sectionGap,
     required this.footerGap,
     required this.cellGap,
@@ -1453,6 +1458,15 @@ class ResolvedDatePickerStyle {
       triggerHorizontalPadding:
           merged.triggerHorizontalPadding ?? theme.spacing.md,
       triggerIconGap: merged.triggerIconGap ?? theme.spacing.sm,
+      triggerClearButtonPadding:
+          merged.triggerClearButtonPadding ?? EdgeInsets.zero,
+      triggerClearButtonBorderRadius:
+          merged.triggerClearButtonBorderRadius ?? theme.radii.pillBorder,
+      triggerClearButtonBackgroundColor: resolveIconActionBackground(
+        merged.triggerClearButtonBackgroundColor,
+        idle: const Color(0x00000000),
+        hovered: const Color(0x00000000),
+      ),
       sectionGap: merged.sectionGap ?? theme.spacing.sm,
       footerGap: merged.footerGap ?? theme.spacing.xs,
       cellGap: merged.cellGap ?? theme.spacing.xs,
@@ -1585,37 +1599,22 @@ class ResolvedDatePickerStyle {
       style.triggerIconColor?.resolve(_states(disabled: disabled)) ??
       (disabled ? theme.colors.textDisabled : theme.colors.textSecondary);
 
-  /// Trigger and popover menu border, with its glow.
-  ///
-  /// Error and warning statuses glow at a registered 35% opacity of their
-  /// border, the focused or open trigger at 45%; the idle trigger has none.
-  ({Color border, Color? glow}) triggerBorder({
+  /// Trigger border and glow; see [resolveFieldTriggerStatus].
+  AnimalFieldTriggerStatus trigger({
     required bool disabled,
     required bool focused,
     required bool error,
     required bool warning,
-  }) {
-    final colors = theme.colors;
-    if (warning) {
-      final Color color = style.warningColor ?? colors.warning;
-      return (border: color, glow: color.withValues(alpha: 0.35));
-    }
-    final Set<WidgetState> states = <WidgetState>{
+  }) => resolveFieldTriggerStatus(
+    theme: theme,
+    states: <WidgetState>{
       if (disabled) WidgetState.disabled,
       if (focused) WidgetState.focused,
       if (error) WidgetState.error,
-    };
-    final Color border =
-        style.borderColor?.resolve(states) ??
-        (error
-            ? colors.error
-            : focused
-            ? resolveFocusRing(theme).color
-            : panelBorderColor);
-    final double? glowAlpha = error ? 0.35 : (focused ? 0.45 : null);
-    return (
-      border: border,
-      glow: glowAlpha == null ? null : border.withValues(alpha: glowAlpha),
-    );
-  }
+    },
+    warning: warning,
+    borderColor: style.borderColor,
+    warningColor: style.warningColor,
+    glowColor: style.glowColor,
+  );
 }

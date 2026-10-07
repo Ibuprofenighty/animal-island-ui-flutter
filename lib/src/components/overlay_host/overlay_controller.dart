@@ -1,180 +1,222 @@
-import 'dart:async';
+part of 'overlay_host.dart';
 
-import 'package:flutter/widgets.dart';
+/// Returns the resource [controller] holds under [key], creating it with
+/// [create] on first use.
+///
+/// Package-internal and not exported from the package root. The notification
+/// queue keeps its per-host state here so the host remains its single owner:
+/// the controller releases every resource, through [release], when its host
+/// unbinds or the controller is disposed, before it closes the remaining
+/// occurrences. The next use after a release creates a fresh resource.
+T animalOverlayHostResource<T extends Object>(
+  AnimalOverlayController controller,
+  Object key, {
+  required T Function() create,
+  void Function(T resource)? release,
+}) => controller._resource<T>(key, create, release);
 
-/// Lifecycle state machine for an overlay entry in Animal Island UI.
-enum AnimalOverlayEntryState { created, inserting, active, closing, disposed }
+// Lifecycle of one occurrence. It only moves forward: created (registered,
+// not yet in the overlay) → inserted → closing (removed; its onClose is
+// running) → closed. A close before insertion, an error and a host detach
+// all pass through closing.
+enum _EntryState { created, inserted, closing, closed }
 
-/// Handle to an active overlay entry, allowing controlled dismissal and lifecycle tracking.
-class AnimalOverlayEntryHandle {
-  final String id;
-  final VoidCallback _onCloseRequest;
-  AnimalOverlayEntryState _state = AnimalOverlayEntryState.created;
-  VoidCallback? _onDisposed;
+/// Owner-bound handle to one overlay occurrence.
+///
+/// Only the [AnimalOverlayController] that created it can close it. Closing
+/// is idempotent and runs the occurrence's `onClose` exactly once.
+final class AnimalOverlayEntryHandle {
+  AnimalOverlayEntryHandle._(this._owner, this._onClose);
 
-  AnimalOverlayEntryHandle._({
-    required this.id,
-    required this._onCloseRequest,
-    this._onDisposed,
-  });
+  final AnimalOverlayController _owner;
+  VoidCallback? _onClose;
+  OverlayEntry? _entry;
+  _EntryState _state = _EntryState.created;
 
-  AnimalOverlayEntryState get state => _state;
-  bool get isActive => _state == AnimalOverlayEntryState.active;
-  bool get isClosing => _state == AnimalOverlayEntryState.closing;
-  bool get isDisposed => _state == AnimalOverlayEntryState.disposed;
+  /// Whether this occurrence has finished closing: it has left the overlay
+  /// and its `onClose` has returned.
+  ///
+  /// While `onClose` runs the occurrence is already removed but not yet
+  /// closed, so this is false and every further close request is ignored.
+  bool get isClosed => _state == _EntryState.closed;
 
-  /// Requests the overlay entry to dismiss and play its exit transition.
-  void close() {
-    if (_state == AnimalOverlayEntryState.active ||
-        _state == AnimalOverlayEntryState.inserting) {
-      _state = AnimalOverlayEntryState.closing;
-      _onCloseRequest();
-    }
-  }
-
-  void _markDisposed() {
-    if (_state != AnimalOverlayEntryState.disposed) {
-      _state = AnimalOverlayEntryState.disposed;
-      _onDisposed?.call();
-      _onDisposed = null;
-    }
-  }
+  /// Closes this occurrence. Repeated calls are ignored.
+  void close() => _owner.close(this);
 }
 
-/// Scoped controller managing overlay resources, entries, and queues for a specific [AnimalOverlayHost].
+/// Scoped owner of the overlay occurrences of one [AnimalOverlayHost].
 ///
-/// Prevents cross-app interference and static singleton leaks (resolving F07 and F14).
+/// The controller registers an occurrence synchronously in [show] and inserts
+/// it once its host's overlay is attached, so an occurrence shown before the
+/// host's first frame is neither lost nor inserted after it was closed. When
+/// the host detaches, every live occurrence is closed.
+///
+/// A caller-supplied controller stays owned by the caller: the host never
+/// disposes it, and it can be bound to only one host at a time.
 class AnimalOverlayController {
-  OverlayState? _overlayState;
-  final Map<String, AnimalOverlayEntryHandle> _activeHandles = {};
-  final Map<String, OverlayEntry> _overlayEntries = {};
-  final Map<String, Timer> _entryTimers = {};
+  final List<AnimalOverlayEntryHandle> _live = <AnimalOverlayEntryHandle>[];
+  final Map<Object, ({Object value, void Function()? release})> _resources =
+      <Object, ({Object value, void Function()? release})>{};
+  OverlayState? _overlay;
   bool _disposed = false;
 
-  bool get isDisposed => _disposed;
-  int get activeCount => _activeHandles.length;
-  List<AnimalOverlayEntryHandle> get activeHandles =>
-      _activeHandles.values.toList();
-
-  void attachOverlay(OverlayState state) {
-    _overlayState = state;
-  }
-
-  void detachOverlay() {
-    _overlayState = null;
-  }
-
-  /// Shows a custom overlay entry managed by this host.
+  /// Registers an occurrence built by [builder] and inserts it when the host
+  /// overlay is attached.
   ///
-  /// [id]: Unique identifier for the entry. If an entry with the same [id] already exists,
-  /// it is updated or replaced cleanly.
-  /// [duration]: Optional auto-dismiss duration.
-  /// [onClose]: Callback executed exactly once when this entry is fully removed/disposed.
+  /// [onClose] runs exactly once when the occurrence closes for any reason.
+  /// Throws a [StateError] on a disposed controller.
   AnimalOverlayEntryHandle show({
-    required String id,
     required Widget Function(
       BuildContext context,
       AnimalOverlayEntryHandle handle,
     )
     builder,
-    Duration? duration,
     VoidCallback? onClose,
   }) {
     if (_disposed) {
-      throw StateError(
-        'Cannot show overlay on a disposed AnimalOverlayController',
-      );
+      throw StateError('Cannot show an overlay on a disposed controller.');
     }
-
-    // Dismiss existing entry with the same ID if present
-    if (_activeHandles.containsKey(id)) {
-      close(id);
-    }
-
-    late final AnimalOverlayEntryHandle handle;
-    late final OverlayEntry entry;
-
-    handle = AnimalOverlayEntryHandle._(
-      id: id,
-      onCloseRequest: () => _removeEntry(id),
-      onDisposed: onClose,
+    final AnimalOverlayEntryHandle handle = AnimalOverlayEntryHandle._(
+      this,
+      onClose,
     );
-
-    entry = OverlayEntry(builder: (context) => builder(context, handle));
-
-    _activeHandles[id] = handle;
-    _overlayEntries[id] = entry;
-
-    if (_overlayState != null) {
-      handle._state = AnimalOverlayEntryState.inserting;
-      _overlayState!.insert(entry);
-      handle._state = AnimalOverlayEntryState.active;
-    }
-
-    if (duration != null && duration > Duration.zero) {
-      _entryTimers[id] = Timer(duration, () {
-        if (!handle.isDisposed) {
-          handle.close();
-        }
-      });
-    }
-
+    handle._entry = OverlayEntry(
+      builder: (BuildContext context) => builder(context, handle),
+    );
+    _live.add(handle);
+    final OverlayState? overlay = _overlay;
+    if (overlay != null) _insert(handle, overlay);
     return handle;
   }
 
-  /// Closes the entry with [id] if active.
-  void close(String id) {
-    final handle = _activeHandles[id];
-    handle?.close();
+  /// Closes [handle], which must belong to this controller; a handle of
+  /// another controller throws an [ArgumentError] and stays untouched.
+  ///
+  /// Closing an occurrence that is already closing or closed is a no-op. An
+  /// exception thrown by its `onClose` is reported through
+  /// [FlutterError.reportError]; the occurrence is closed either way.
+  void close(AnimalOverlayEntryHandle handle) {
+    if (!identical(handle._owner, this)) {
+      throw ArgumentError.value(
+        handle,
+        'handle',
+        'belongs to a different AnimalOverlayController',
+      );
+    }
+    _settle(handle);
   }
 
-  /// Closes all active entries managed by this controller.
+  /// Closes every occurrence that is live when the call starts.
+  ///
+  /// An `onClose` may show or close occurrences re-entrantly: an occurrence it
+  /// shows stays open, and one failing callback never leaves the others live.
   void closeAll() {
-    final ids = _activeHandles.keys.toList();
-    for (final id in ids) {
-      close(id);
+    for (final AnimalOverlayEntryHandle handle in _live.toList()) {
+      _settle(handle);
     }
   }
 
-  void _removeEntry(String id) {
-    _entryTimers.remove(id)?.cancel();
-    final entry = _overlayEntries.remove(id);
-    final handle = _activeHandles.remove(id);
-
-    if (entry != null) {
-      try {
-        entry.remove();
-      } catch (_) {
-        // OverlayEntry may already be removed if parent overlay unmounted
-      }
-      entry.dispose();
-    }
-
-    handle?._markDisposed();
-  }
-
-  /// Disposes this controller and tears down all active overlay entries safely.
+  /// Closes every live occurrence and rejects further use.
+  ///
+  /// Only the controller's owner disposes it, after its host is removed; a
+  /// host disposes only the controller it created itself.
   void dispose() {
     if (_disposed) return;
+    if (_overlay != null) {
+      throw StateError(
+        'Dispose an AnimalOverlayController only after its host is removed.',
+      );
+    }
+    // Mark disposed first: an onClose that calls show during this
+    // settlement is rejected instead of registering a new occurrence.
     _disposed = true;
+    _releaseResources();
+    closeAll();
+  }
 
-    for (final timer in _entryTimers.values) {
-      timer.cancel();
+  void _attach(OverlayState overlay) {
+    if (_disposed) {
+      throw StateError('A disposed AnimalOverlayController cannot attach.');
     }
-    _entryTimers.clear();
+    final OverlayState? current = _overlay;
+    if (identical(current, overlay)) return;
+    if (current != null) {
+      throw StateError(
+        'This AnimalOverlayController is already bound to another '
+        'AnimalOverlayHost.',
+      );
+    }
+    _overlay = overlay;
+    for (final AnimalOverlayEntryHandle handle in _live.toList()) {
+      if (handle._state == _EntryState.created) _insert(handle, overlay);
+    }
+  }
 
-    for (final entry in _overlayEntries.values) {
-      try {
-        entry.remove();
-      } catch (_) {}
-      entry.dispose();
+  void _detach(OverlayState overlay) {
+    final OverlayState? current = _overlay;
+    if (current == null) return;
+    if (!identical(current, overlay)) {
+      throw StateError('Only the bound AnimalOverlayHost can detach it.');
     }
-    _overlayEntries.clear();
+    // Unbind before settling: an occurrence shown by an onClose during this
+    // detach stays created on the unbound controller instead of entering
+    // a host that is going away.
+    _overlay = null;
+    _releaseResources();
+    closeAll();
+  }
 
-    for (final handle in _activeHandles.values) {
-      handle._markDisposed();
+  T _resource<T extends Object>(
+    Object key,
+    T Function() create,
+    void Function(T resource)? release,
+  ) {
+    if (_disposed) {
+      throw StateError('A disposed AnimalOverlayController has no resources.');
     }
-    _activeHandles.clear();
-    _overlayState = null;
+    final existing = _resources[key];
+    if (existing != null) return existing.value as T;
+    final T value = create();
+    _resources[key] = (
+      value: value,
+      release: release == null ? null : () => release(value),
+    );
+    return value;
+  }
+
+  void _releaseResources() {
+    final releases = _resources.values.toList();
+    _resources.clear();
+    for (final resource in releases) {
+      final void Function()? release = resource.release;
+      if (release != null) {
+        runOverlayCallback(release, 'releasing an overlay resource');
+      }
+    }
+  }
+
+  void _insert(AnimalOverlayEntryHandle handle, OverlayState overlay) {
+    overlay.insert(handle._entry!);
+    handle._state = _EntryState.inserted;
+  }
+
+  void _settle(AnimalOverlayEntryHandle handle) {
+    if (handle._state == _EntryState.closing ||
+        handle._state == _EntryState.closed) {
+      return;
+    }
+    final bool wasInserted = handle._state == _EntryState.inserted;
+    handle._state = _EntryState.closing;
+    _live.remove(handle);
+    final OverlayEntry entry = handle._entry!;
+    handle._entry = null;
+    if (wasInserted) entry.remove();
+    entry.dispose();
+    final VoidCallback? onClose = handle._onClose;
+    handle._onClose = null;
+    if (onClose != null) {
+      runOverlayCallback(onClose, 'running an overlay onClose callback');
+    }
+    handle._state = _EntryState.closed;
   }
 }

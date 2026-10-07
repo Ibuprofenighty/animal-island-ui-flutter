@@ -55,8 +55,21 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 聚焦的触发器边框使用库统一的焦点色。
 
 面板颜色按 `WidgetState.disabled` 解析，滚轮标签还按 `WidgetState.selected` 解析。
-触发器边框按 `focused`（菜单打开时同样适用）和 `error` 解析；warning 状态使用
-`warningColor`，状态或焦点光晕跟随解析后的边框颜色。
+`triggerBorderColor` 与 `triggerGlowColor` 按 `disabled`、`focused`（菜单打开时
+同样适用）和 `error` 解析；warning 状态使用 `warningColor`。
+
+触发器边框与光晕遵循 Input、Select、DatePicker、TimePicker 共用的同一规则。禁用的
+触发器使用样式边框，否则浅色主题使用 `borderLight`、深色主题使用 30% 透明度的
+`border`，且没有光晕。warning 状态使用 `warningColor`，否则使用 `warningText`；error
+优先于 warning。其余情况使用样式边框，否则 error 使用 `errorText`，聚焦时使用焦点环
+颜色，静止时使用 `border`。没有状态的静止触发器没有光晕；其余情况的光晕为样式光晕色，
+否则仅聚焦时为 45% 透明度的边框色，error 或 warning 时为 35%，模糊半径 4、扩散半径 2。
+
+清除控件是包内共用的图标操作：48 逻辑像素目标、焦点环、本地化的清除标签作为无障碍名称，
+关闭图标使用 `triggerIconSize` 与 `triggerIconColor`，悬停填充来自按 `WidgetState.hovered`
+解析的 `triggerClearButtonBackgroundColor`；减少动态效果时填充立即切换。
+`triggerClearButtonPadding` 默认为零，`triggerClearButtonBorderRadius` 默认为胶囊形，
+`triggerClearButtonBackgroundColor` 默认为透明。
 
 `minItemExtent`（默认 36）是最小值：每个滚轮项和选中带会增长到环境文字缩放下较大滚轮标签的
 实际渲染高度，`wheelHeight`（默认 160）会增长到至少显示三项，因此大字号或 200% 文字缩放下

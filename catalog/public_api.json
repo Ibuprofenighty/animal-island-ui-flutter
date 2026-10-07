@@ -389,6 +389,7 @@
             "height",
             "onClose",
             "placement",
+            "style",
             "title",
             "width"
           ]
@@ -652,12 +653,13 @@
             "AnimalLoading.spinner"
           ],
           "fields": [
-            "barrierColor",
-            "color",
             "fullScreen",
+            "maxSnowCount",
+            "minSnowCount",
             "size",
             "snowCount",
             "snowSeed",
+            "style",
             "tip",
             "tipWidget",
             "type"
@@ -687,15 +689,11 @@
             "AnimalModal"
           ],
           "fields": [
-            "cancelText",
             "content",
             "footer",
-            "okText",
             "onClose",
-            "onOk",
+            "style",
             "title",
-            "typeSpeed",
-            "typewriter",
             "width"
           ]
         }
@@ -710,7 +708,17 @@
           "constructors": [
             "AnimalNotification"
           ],
-          "fields": []
+          "fields": [
+            "defaultDuration"
+          ]
+        },
+        "AnimalNotificationHandle": {
+          "constructors": [
+            "AnimalNotificationHandle"
+          ],
+          "fields": [
+            "status"
+          ]
         }
       },
       "enums": {
@@ -721,6 +729,12 @@
           "top",
           "topLeft",
           "topRight"
+        ],
+        "AnimalNotificationStatus": [
+          "active",
+          "closed",
+          "rejected",
+          "waiting"
         ],
         "AnimalNotificationType": [
           "error",
@@ -738,20 +752,12 @@
           "constructors": [
             "AnimalOverlayController"
           ],
-          "fields": [
-            "activeCount",
-            "activeHandles",
-            "isDisposed"
-          ]
+          "fields": []
         },
         "AnimalOverlayEntryHandle": {
           "constructors": [],
           "fields": [
-            "id",
-            "isActive",
-            "isClosing",
-            "isDisposed",
-            "state"
+            "isClosed"
           ]
         },
         "AnimalOverlayHost": {
@@ -764,15 +770,7 @@
           ]
         }
       },
-      "enums": {
-        "AnimalOverlayEntryState": [
-          "active",
-          "closing",
-          "created",
-          "disposed",
-          "inserting"
-        ]
-      },
+      "enums": {},
       "topLevelVariables": {},
       "functions": {}
     },
@@ -1378,7 +1376,7 @@
             "delegate",
             "dismiss",
             "drawerCloseLabel",
-            "drawerSemanticsLabel",
+            "drawerRouteLabel",
             "empty",
             "footerDefaultText",
             "galleryAppTitle",
@@ -1479,6 +1477,7 @@
             "galleryWelcomeTitle",
             "imagePreviewCloseLabel",
             "imagePreviewDefaultSemanticLabel",
+            "imagePreviewRouteLabel",
             "inputClearLabel",
             "loading",
             "localeName",
@@ -1486,6 +1485,7 @@
             "modalCloseLabel",
             "modalConfirm",
             "modalContinue",
+            "modalRouteLabel",
             "notificationDismissLabel",
             "now",
             "paginationNext",
@@ -1742,10 +1742,14 @@
           "fields": [
             "checkbox",
             "datePicker",
+            "drawer",
             "focusRing",
             "formItem",
             "hashCode",
             "input",
+            "loading",
+            "modal",
+            "notification",
             "radio",
             "select",
             "switchControl",
@@ -1816,6 +1820,7 @@
             "cellTextStyle",
             "clearTextColor",
             "footerGap",
+            "glowColor",
             "hashCode",
             "headerTextColor",
             "headerTextStyle",
@@ -1834,6 +1839,9 @@
             "todayTextColor",
             "triggerBackgroundColor",
             "triggerBorderRadius",
+            "triggerClearButtonBackgroundColor",
+            "triggerClearButtonBorderRadius",
+            "triggerClearButtonPadding",
             "triggerHorizontalPadding",
             "triggerIconColor",
             "triggerIconGap",
@@ -1844,6 +1852,39 @@
             "weekdayTextColor",
             "weekdayTextStyle",
             "width"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/drawer_theme.dart": {
+      "classes": {
+        "AnimalDrawerStyle": {
+          "constructors": [
+            "AnimalDrawerStyle"
+          ],
+          "fields": [
+            "backgroundColor",
+            "barrierColor",
+            "bodyPadding",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "closeButtonBackgroundColor",
+            "closeButtonBorderRadius",
+            "closeButtonPadding",
+            "closeIconColor",
+            "closeIconSize",
+            "dividerColor",
+            "dividerThickness",
+            "footerPadding",
+            "hashCode",
+            "headerPadding",
+            "shadow",
+            "titleTextColor",
+            "titleTextStyle"
           ]
         }
       },
@@ -1905,13 +1946,16 @@
             "borderColor",
             "borderRadius",
             "borderWidth",
+            "clearButtonBackgroundColor",
+            "clearButtonBorderRadius",
             "clearButtonPadding",
             "clearIconColor",
+            "clearIconSize",
             "cursorColor",
             "depthShadow",
+            "glowColor",
             "hashCode",
             "horizontalPadding",
-            "iconSize",
             "minHeight",
             "multilineBorderRadius",
             "multilineVerticalPadding",
@@ -1932,6 +1976,111 @@
             "middleStyle",
             "smallStyle",
             "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/loading_theme.dart": {
+      "classes": {
+        "AnimalLoadingStyle": {
+          "constructors": [
+            "AnimalLoadingStyle"
+          ],
+          "fields": [
+            "barrierColor",
+            "color",
+            "hashCode",
+            "snowflakeColor",
+            "tipBackgroundColor",
+            "tipBorderColor",
+            "tipBorderRadius",
+            "tipBorderWidth",
+            "tipGap",
+            "tipPadding",
+            "tipShadow",
+            "tipTextColor",
+            "tipTextStyle"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/modal_theme.dart": {
+      "classes": {
+        "AnimalModalStyle": {
+          "constructors": [
+            "AnimalModalStyle"
+          ],
+          "fields": [
+            "actionGap",
+            "avatarGap",
+            "backgroundColor",
+            "barrierBlurSigma",
+            "barrierColor",
+            "borderColor",
+            "borderWidth",
+            "closeButtonBackgroundColor",
+            "closeButtonBorderRadius",
+            "closeButtonPadding",
+            "closeIconColor",
+            "closeIconSize",
+            "errorGap",
+            "errorTextColor",
+            "errorTextStyle",
+            "footerGap",
+            "hashCode",
+            "headerGap",
+            "horizontalMargin",
+            "padding",
+            "shadow",
+            "textColor",
+            "textStyle",
+            "titleTextColor",
+            "titleTextStyle"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/notification_theme.dart": {
+      "classes": {
+        "AnimalNotificationStyle": {
+          "constructors": [
+            "AnimalNotificationStyle"
+          ],
+          "fields": [
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "closeButtonBackgroundColor",
+            "closeButtonBorderRadius",
+            "closeButtonGap",
+            "closeButtonMargin",
+            "closeButtonPadding",
+            "closeIconColor",
+            "closeIconSize",
+            "descriptionGap",
+            "descriptionTextColor",
+            "descriptionTextStyle",
+            "gap",
+            "hashCode",
+            "iconColor",
+            "iconGap",
+            "iconPadding",
+            "iconSize",
+            "maxWidth",
+            "padding",
+            "shadow",
+            "textColor",
+            "textStyle"
           ]
         }
       },
@@ -1995,6 +2144,9 @@
             "checkIconColor",
             "checkIconGap",
             "checkIconSize",
+            "clearButtonBackgroundColor",
+            "clearButtonBorderRadius",
+            "clearButtonPadding",
             "clearIconColor",
             "clearIconSize",
             "glowColor",
@@ -2016,7 +2168,8 @@
             "optionTextStyle",
             "selectedOptionTextStyle",
             "textColor",
-            "textStyle"
+            "textStyle",
+            "warningColor"
           ]
         }
       },
@@ -2109,6 +2262,10 @@
             "triggerBorderColor",
             "triggerBorderRadius",
             "triggerBorderWidth",
+            "triggerClearButtonBackgroundColor",
+            "triggerClearButtonBorderRadius",
+            "triggerClearButtonPadding",
+            "triggerGlowColor",
             "triggerIconColor",
             "triggerIconGap",
             "triggerIconSize",
@@ -2429,5 +2586,5 @@
       "functions": {}
     }
   },
-  "sha256": "860bc3ada279119a290a9646a05be468020c744d9a87a57ed8dcb9197e289fdf"
+  "sha256": "8c365b8e6c50a8d7c82dcf839e82eec3daf6f1f9d5f1a0cafd21d417e8f03438"
 }

@@ -135,20 +135,26 @@ void main() {
 
         final BuildContext context = tester.element(find.text('Overlay Host'));
 
-        // Rapidly fire 30 notifications with mixed keys
+        // Rapidly fire 30 notifications with mixed keys: five live keys are
+        // updated in place, so only five occurrences exist.
+        final Set<AnimalNotificationHandle> handles =
+            <AnimalNotificationHandle>{};
         for (var i = 1; i <= 30; i++) {
-          AnimalNotification.open(
-            context,
-            key: 'notif_${i % 5}', // test key collision / reuse
-            message: Text('Notification $i'),
-            description: Text('Message content for item $i'),
-            duration: const Duration(milliseconds: 100),
+          handles.add(
+            AnimalNotification.open(
+              context,
+              key: 'notif_${i % 5}', // test key collision / reuse
+              message: Text('Notification $i'),
+              description: Text('Message content for item $i'),
+              duration: const Duration(milliseconds: 100),
+            ),
           );
         }
 
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 50));
 
+        expect(handles, hasLength(5));
         // Notification cards render cleanly without overflow
         expect(find.byType(AnimalNotificationCard), findsWidgets);
 
@@ -158,7 +164,10 @@ void main() {
 
         // Zero unhandled timer or overlay entry errors
         expect(find.byType(AnimalNotificationCard), findsNothing);
-        AnimalNotification.reset();
+        expect(
+          handles.map((handle) => handle.status).toSet(),
+          <AnimalNotificationStatus>{AnimalNotificationStatus.closed},
+        );
       },
     );
 

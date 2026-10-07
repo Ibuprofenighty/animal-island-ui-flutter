@@ -361,7 +361,11 @@ void main() {
       final Icon clock = tester.widget(find.byIcon(Icons.access_time_rounded));
       expect(clock.size, 22);
       expect(clock.color, const Color(0xFFAAAA00));
-      final Icon clear = tester.widget(find.byIcon(Icons.cancel_rounded));
+      final AnimalIcon clear = tester.widget(
+        find.byWidgetPredicate(
+          (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+        ),
+      );
       expect(clear.size, 22);
       expect(clear.color, const Color(0xFFAAAA00));
       expect(
@@ -386,6 +390,88 @@ void main() {
         ),
       );
       expect(textStyle(tester, 'Pick').color, const Color(0xFF00AAAA));
+    });
+
+    testWidgets('trigger clear fields change the rendered clear control', (
+      tester,
+    ) async {
+      BoxDecoration clearFill(WidgetTester tester) =>
+          tester
+                  .widget<AnimatedContainer>(
+                    find
+                        .ancestor(
+                          of: find.byWidgetPredicate(
+                            (w) =>
+                                w is AnimalIcon && w.data == AnimalIcons.close,
+                          ),
+                          matching: find.byType(AnimatedContainer),
+                        )
+                        .first,
+                  )
+                  .decoration!
+              as BoxDecoration;
+
+      await pump(
+        tester,
+        AnimalTimePicker.popover(
+          value: AnimalTimeValue(hour: 9, minute: 30),
+          onChanged: (_) {},
+        ),
+        theme: themed(
+          AnimalTimePickerStyle(
+            triggerClearButtonPadding: const EdgeInsets.all(5),
+            triggerClearButtonBorderRadius: const BorderRadius.all(
+              Radius.circular(3),
+            ),
+            triggerClearButtonBackgroundColor:
+                const WidgetStatePropertyAll<Color>(Color(0xFF0000AA)),
+          ),
+        ),
+      );
+      expect(clearFill(tester).color, const Color(0xFF0000AA));
+      expect(
+        clearFill(tester).borderRadius,
+        const BorderRadius.all(Radius.circular(3)),
+      );
+      expect(
+        tester
+            .widget<AnimatedContainer>(
+              find
+                  .ancestor(
+                    of: find.byWidgetPredicate(
+                      (w) => w is AnimalIcon && w.data == AnimalIcons.close,
+                    ),
+                    matching: find.byType(AnimatedContainer),
+                  )
+                  .first,
+            )
+            .padding,
+        const EdgeInsets.all(5),
+      );
+    });
+
+    testWidgets('the trigger glow color is themed per state', (tester) async {
+      await pump(
+        tester,
+        AnimalTimePicker.popover(
+          placeholder: 'Pick',
+          status: AnimalInputStatus.error,
+          onChanged: (_) {},
+        ),
+        theme: themed(
+          AnimalTimePickerStyle(
+            triggerGlowColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.error)
+                  ? const Color(0xFFEE00EE)
+                  : null,
+            ),
+          ),
+        ),
+      );
+      expect(
+        region(tester, 'Pick').extraShadows!.single.color,
+        const Color(0xFFEE00EE),
+      );
     });
 
     testWidgets('warning color and status glow are themed', (tester) async {

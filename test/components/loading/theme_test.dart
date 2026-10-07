@@ -17,7 +17,7 @@ void main() {
 
           key: ValueKey(theme),
           theme: theme.toThemeData(),
-          home: const Scaffold(body: AnimalLoading(tip: 'Preparing island')),
+          home: Scaffold(body: AnimalLoading(tip: 'Preparing island')),
         ),
       );
 

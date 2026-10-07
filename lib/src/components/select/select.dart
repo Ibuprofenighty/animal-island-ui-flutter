@@ -8,9 +8,10 @@ import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/models/option.dart';
 import '../../foundation/theme/components/select_theme.dart';
 import '../../foundation/theme/theme.dart';
-import '../../internal/interaction/focus_ring.dart';
+import '../../internal/interaction/icon_action.dart';
 import '../../internal/interaction/interactive_region.dart';
 import '../../internal/interaction/option_group_focus.dart';
+import '../../internal/interaction/field_status.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
 import '../input/input.dart';
@@ -383,7 +384,12 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
               if (invalid) WidgetState.error,
               if (hasKnownValue) WidgetState.selected,
             };
-            final bool showGlow = focusActive || (invalid && !_cannotActivate);
+            final bool warning =
+                !invalid && widget.status == AnimalInputStatus.warning;
+            final AnimalFieldTriggerStatus trigger = resolved.trigger(
+              states,
+              warning: warning,
+            );
 
             return Row(
               children: <Widget>[
@@ -409,20 +415,13 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
                     borderRadius: resolved.borderRadius,
                     surfaceColor: resolved.backgroundColor(states),
                     border: Border.all(
-                      color: resolved.borderColor(states),
+                      color: trigger.border,
                       width: resolved.borderWidth,
                     ),
-                    extraShadows: showGlow
-                        ? <BoxShadow>[
-                            BoxShadow(
-                              color: resolved.glowColor(states),
-                              offset: Offset.zero,
-                              blurRadius: _ResolvedSelectStyle.glowBlurRadius,
-                              spreadRadius:
-                                  _ResolvedSelectStyle.glowSpreadRadius,
-                            ),
-                          ]
-                        : null,
+                    extraShadows: switch (trigger.glow) {
+                      final BoxShadow glow => <BoxShadow>[glow],
+                      null => null,
+                    },
                     padding: EdgeInsets.symmetric(
                       horizontal: resolved.horizontalPadding,
                     ),
@@ -456,12 +455,13 @@ class _AnimalSelectState<T> extends State<AnimalSelect<T>> {
                   ),
                 ),
                 if (widget.allowClear && widget.value != null && _canOpen)
-                  InteractiveRegion(
+                  AnimalIconAction(
                     onPressed: _handleClear,
-                    enableHaptics: false,
                     semanticLabel: localizations.selectClearLabel,
-                    surfaceColor: Colors.transparent,
-                    child: AnimalIcon(
+                    padding: resolved.clearButtonPadding,
+                    borderRadius: resolved.clearButtonBorderRadius,
+                    backgroundColor: resolved.clearButtonBackgroundColor,
+                    icon: AnimalIcon(
                       data: AnimalIcons.close,
                       size: resolved.clearIconSize,
                       color: resolved.clearIconColor,
@@ -520,7 +520,6 @@ class _SelectMenuOptionState<T> extends State<_SelectMenuOption<T>> {
       enableHaptics: false,
       semanticButton: false,
       selected: widget.selected,
-      minimumHitSize: 48,
       semanticsBuilder: (bool enabled, bool visible, VoidCallback? activate) =>
           SemanticsProperties(
             role: SemanticsRole.menuItem,
@@ -574,21 +573,13 @@ class _SelectMenuOptionState<T> extends State<_SelectMenuOption<T>> {
 /// build from the merged style.
 class _ResolvedSelectStyle {
   /// Accessibility floor for each option row; not a style field.
-  static const double minimumOptionExtent = 48;
+  static const double minimumOptionExtent = kAnimalMinimumTarget;
 
   /// Space the menu keeps from the viewport edges combined.
   static const double viewportMargin = 24;
 
-  /// Geometry of the focus and validation glow around the trigger.
-  static const double glowBlurRadius = 4;
-  static const double glowSpreadRadius = 2;
-
-  /// Opacity of the default glow relative to the border color it follows.
-  static const double _glowAlpha = 0.45;
-
   final AnimalIslandTheme theme;
   final AnimalSelectStyle style;
-  final Color focusColor;
 
   final TextStyle textStyle;
   final double borderWidth;
@@ -597,6 +588,9 @@ class _ResolvedSelectStyle {
   final double arrowIconSize;
   final double clearIconSize;
   final Color clearIconColor;
+  final EdgeInsetsGeometry clearButtonPadding;
+  final BorderRadius clearButtonBorderRadius;
+  final WidgetStateProperty<Color> clearButtonBackgroundColor;
   final Color menuBackgroundColor;
   final Color menuBorderColor;
   final double menuBorderWidth;
@@ -619,7 +613,6 @@ class _ResolvedSelectStyle {
   const _ResolvedSelectStyle._({
     required this.theme,
     required this.style,
-    required this.focusColor,
     required this.textStyle,
     required this.borderWidth,
     required this.borderRadius,
@@ -627,6 +620,9 @@ class _ResolvedSelectStyle {
     required this.arrowIconSize,
     required this.clearIconSize,
     required this.clearIconColor,
+    required this.clearButtonPadding,
+    required this.clearButtonBorderRadius,
+    required this.clearButtonBackgroundColor,
     required this.menuBackgroundColor,
     required this.menuBorderColor,
     required this.menuBorderWidth,
@@ -678,7 +674,6 @@ class _ResolvedSelectStyle {
     return _ResolvedSelectStyle._(
       theme: theme,
       style: merged,
-      focusColor: resolveFocusRing(theme).color,
       textStyle: textStyle,
       borderWidth: merged.borderWidth ?? 1.8,
       borderRadius: merged.borderRadius ?? theme.radii.pillBorder,
@@ -686,6 +681,14 @@ class _ResolvedSelectStyle {
       arrowIconSize: merged.arrowIconSize ?? 18,
       clearIconSize: merged.clearIconSize ?? 16,
       clearIconColor: merged.clearIconColor ?? colors.textSecondary,
+      clearButtonPadding: merged.clearButtonPadding ?? EdgeInsets.zero,
+      clearButtonBorderRadius:
+          merged.clearButtonBorderRadius ?? theme.radii.pillBorder,
+      clearButtonBackgroundColor: resolveIconActionBackground(
+        merged.clearButtonBackgroundColor,
+        idle: const Color(0x00000000),
+        hovered: const Color(0x00000000),
+      ),
       menuBackgroundColor: merged.menuBackgroundColor ?? colors.bgContent,
       menuBorderColor: merged.menuBorderColor ?? colors.border,
       menuBorderWidth: merged.menuBorderWidth ?? 1.5,
@@ -722,28 +725,18 @@ class _ResolvedSelectStyle {
             : colors.bgInput);
   }
 
-  Color borderColor(Set<WidgetState> states) {
-    final Color? custom = style.borderColor?.resolve(states);
-    if (custom != null) return custom;
-    final colors = theme.colors;
-    if (states.contains(WidgetState.disabled)) {
-      return _dark ? colors.border.withValues(alpha: 0.3) : colors.borderLight;
-    }
-    if (states.contains(WidgetState.error)) return colors.errorText;
-    if (states.contains(WidgetState.focused)) return focusColor;
-    return colors.border;
-  }
-
-  Color glowColor(Set<WidgetState> states) {
-    final Color? custom = style.glowColor?.resolve(states);
-    if (custom != null) return custom;
-    final bool invalid =
-        states.contains(WidgetState.error) &&
-        !states.contains(WidgetState.disabled);
-    return (invalid ? theme.colors.errorText : focusColor).withValues(
-      alpha: _glowAlpha,
-    );
-  }
+  /// Trigger border and glow; see [resolveFieldTriggerStatus].
+  AnimalFieldTriggerStatus trigger(
+    Set<WidgetState> states, {
+    required bool warning,
+  }) => resolveFieldTriggerStatus(
+    theme: theme,
+    states: states,
+    warning: warning,
+    borderColor: style.borderColor,
+    warningColor: style.warningColor,
+    glowColor: style.glowColor,
+  );
 
   Color textColor(Set<WidgetState> states) {
     final Color? custom = style.textColor?.resolve(states);

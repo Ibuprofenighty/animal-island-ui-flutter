@@ -1,264 +1,281 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import '../../foundation/theme/theme.dart';
-import 'notification_card.dart';
+import 'package:flutter/widgets.dart';
 
-/// Semantic types for notifications matching animal-island-ui.
-enum AnimalNotificationType { info, success, warning, error }
+import '../../internal/overlay/overlay_callback.dart';
+import '../overlay_host/overlay_host.dart'
+    show AnimalOverlayController, AnimalOverlayEntryHandle;
+import 'notification_model.dart';
 
-/// Screen placement positions for notifications.
-enum AnimalNotificationPlacement {
-  topRight,
-  topLeft,
-  top,
-  bottomRight,
-  bottomLeft,
-  bottom;
+/// Builds the widget that renders one placement lane in the host overlay.
+typedef AnimalNotificationLaneBuilder = Widget Function(
+  AnimalNotificationLane lane,
+);
 
-  bool get isTop =>
-      this == AnimalNotificationPlacement.topRight ||
-      this == AnimalNotificationPlacement.topLeft ||
-      this == AnimalNotificationPlacement.top;
-
-  Alignment get alignment {
-    switch (this) {
-      case AnimalNotificationPlacement.topRight:
-        return Alignment.topRight;
-      case AnimalNotificationPlacement.topLeft:
-        return Alignment.topLeft;
-      case AnimalNotificationPlacement.top:
-        return Alignment.topCenter;
-      case AnimalNotificationPlacement.bottomRight:
-        return Alignment.bottomRight;
-      case AnimalNotificationPlacement.bottomLeft:
-        return Alignment.bottomLeft;
-      case AnimalNotificationPlacement.bottom:
-        return Alignment.bottomCenter;
-    }
-  }
-}
-
-/// Configuration data model for an individual notification.
-class AnimalNotificationConfig {
-  final String key;
-  final Widget message;
-  final Widget? description;
-  final AnimalNotificationType type;
-  final Duration duration;
-  final AnimalNotificationPlacement placement;
-  final Widget? icon;
-  final VoidCallback? onClose;
-  final VoidCallback? onClick;
-
-  AnimalNotificationConfig({
-    String? key,
-    required this.message,
-    this.description,
-    this.type = AnimalNotificationType.info,
-    this.duration = const Duration(milliseconds: 4500),
-    this.placement = AnimalNotificationPlacement.topRight,
-    this.icon,
-    this.onClose,
-    this.onClick,
-  }) : key = key ?? UniqueKey().toString();
-}
-
-/// Internal queue container rendered into an [OverlayEntry] for a specific placement.
-class AnimalNotificationQueueContainer extends StatefulWidget {
-  final AnimalNotificationPlacement placement;
-  final ValueChanged<AnimalNotificationQueueState> onStateReady;
-  final VoidCallback onEmpty;
-
-  const AnimalNotificationQueueContainer({
-    super.key,
-    required this.placement,
-    required this.onStateReady,
-    required this.onEmpty,
-  });
-
-  @override
-  State<AnimalNotificationQueueContainer> createState() =>
-      AnimalNotificationQueueState();
-}
-
-class AnimalNotificationQueueState
-    extends State<AnimalNotificationQueueContainer> {
-  final List<AnimalNotificationConfig> _items = [];
-  final Map<String, GlobalKey<AnimalNotificationCardState>> _cardKeys = {};
-  final Set<String> _closedKeys = {};
-
-  @override
-  void initState() {
-    super.initState();
-    widget.onStateReady(this);
-  }
-
-  void add(AnimalNotificationConfig config) {
-    if (!mounted) return;
-    setState(() {
-      final existingIndex = _items.indexWhere((item) => item.key == config.key);
-      if (existingIndex != -1) {
-        // In-place update without reshuffling or re-animating entrance
-        _items[existingIndex] = config;
-      } else {
-        _cardKeys[config.key] = GlobalKey<AnimalNotificationCardState>();
-        _items.add(config);
-        // Bounded limit: max 5 notifications per placement stack
-        if (_items.length > 5) {
-          final removed = _items.removeAt(0);
-          _cardKeys.remove(removed.key);
-          _triggerOnClose(removed);
-        }
-      }
-    });
-  }
-
-  void dismiss(String? key) {
-    if (!mounted) return;
-    if (key == null) {
-      for (final cardKey in _cardKeys.values) {
-        cardKey.currentState?.close();
-      }
-    } else {
-      final cardKey = _cardKeys[key];
-      cardKey?.currentState?.close();
-    }
-  }
-
-  void remove(String key) {
-    if (!mounted) return;
-    final index = _items.indexWhere((item) => item.key == key);
-    if (index != -1) {
-      final removed = _items.removeAt(index);
-      _cardKeys.remove(key);
-      _triggerOnClose(removed);
-      setState(() {});
-      if (_items.isEmpty) {
-        widget.onEmpty();
-      }
-    }
-  }
-
-  void _triggerOnClose(AnimalNotificationConfig config) {
-    if (!_closedKeys.contains(config.key)) {
-      _closedKeys.add(config.key);
-      config.onClose?.call();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = AnimalIslandTheme.of(context);
-    final mq = MediaQuery.maybeOf(context);
-    final topPadding = (mq?.padding.top ?? 0) + theme.spacing.lg;
-    final bottomPadding = (mq?.padding.bottom ?? 0) + theme.spacing.lg;
-
-    return Positioned.fill(
-      child: IgnorePointer(
-        ignoring: false,
-        child: Align(
-          alignment: widget.placement.alignment,
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: widget.placement.isTop ? topPadding : 0.0,
-              bottom: !widget.placement.isTop ? bottomPadding : 0.0,
-              left: theme.spacing.lg,
-              right: theme.spacing.lg,
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 380),
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                reverse: !widget.placement.isTop,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (final item in _items)
-                      Padding(
-                        key: ValueKey(item.key),
-                        padding: EdgeInsets.only(
-                          bottom: theme.spacing.sm + theme.spacing.xxs / 2,
-                        ),
-                        child: AnimalNotificationCard(
-                          key: _cardKeys[item.key],
-                          config: item,
-                          onDismiss: () => remove(item.key),
-                          onTimeout: () => remove(item.key),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Host-scoped notification manager bound to an [OverlayState].
+/// One notification occurrence of a placement lane.
 ///
-/// Defect F07 resolution: Each overlay / host maintains its own isolated queues.
-/// No global static maps or cross-host contamination.
-class AnimalNotificationHostManager {
-  final OverlayState overlayState;
-  final Map<AnimalNotificationPlacement, AnimalNotificationQueueState>
-  _activeQueues = {};
-  final Map<AnimalNotificationPlacement, OverlayEntry> _activeEntries = {};
-  bool _disposed = false;
+/// Its business [key] may repeat across occurrences; the occurrence itself is
+/// never reused. Every transition is synchronous, so registering, updating and
+/// closing never wait for a frame or a mounted widget.
+final class AnimalNotificationOccurrence extends AnimalNotificationHandle {
+  AnimalNotificationOccurrence._(
+    this._lane,
+    this.key,
+    this._config,
+    this._onClose,
+    this._status,
+  ) : _remaining = _config.duration;
 
-  AnimalNotificationHostManager(this.overlayState);
+  final AnimalNotificationLane _lane;
 
-  bool get isDisposed => _disposed;
+  /// Business key; a live occurrence with this key is updated in place.
+  final String? key;
 
-  void dispatch(AnimalNotificationConfig config) {
-    if (_disposed) return;
-    final placement = config.placement;
+  AnimalNotificationConfig _config;
+  VoidCallback? _onClose;
+  AnimalNotificationStatus _status;
+  Timer? _timer;
+  Duration? _remaining;
+  final Stopwatch _elapsed = Stopwatch();
+  bool _paused = false;
 
-    final existingQueue = _activeQueues[placement];
-    if (existingQueue != null && existingQueue.mounted) {
-      existingQueue.add(config);
+  AnimalNotificationConfig get config => _config;
+
+  @override
+  AnimalNotificationStatus get status => _status;
+
+  @override
+  void close() => _lane._settle(<AnimalNotificationOccurrence>[this]);
+
+  /// Pauses the duration timer while [paused]; resuming continues with the
+  /// time that was left.
+  void setPaused(bool paused) {
+    if (_paused == paused) return;
+    _paused = paused;
+    if (paused) {
+      final Timer? timer = _timer;
+      final Duration? remaining = _remaining;
+      if (timer == null || remaining == null) return;
+      timer.cancel();
+      _timer = null;
+      final Duration left = remaining - _elapsed.elapsed;
+      _remaining = left < Duration.zero ? Duration.zero : left;
+    } else {
+      _startTimer();
+    }
+  }
+
+  void _startTimer() {
+    _cancelTimer();
+    final Duration? remaining = _remaining;
+    if (remaining == null ||
+        _paused ||
+        _status != AnimalNotificationStatus.active) {
       return;
     }
+    _elapsed
+      ..reset()
+      ..start();
+    _timer = Timer(remaining, close);
+  }
 
-    late OverlayEntry entry;
-    entry = OverlayEntry(
-      builder: (ctx) {
-        return AnimalNotificationQueueContainer(
-          placement: placement,
-          onStateReady: (state) {
-            _activeQueues[placement] = state;
-            state.add(config);
-          },
-          onEmpty: () {
-            _activeQueues.remove(placement);
-            final activeEntry = _activeEntries.remove(placement);
-            activeEntry?.remove();
-          },
+  void _restartTimer() {
+    _remaining = _config.duration;
+    _startTimer();
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel();
+    _timer = null;
+    _elapsed.stop();
+  }
+}
+
+/// The synchronous queue of one placement in one host.
+///
+/// At most [maxActive] occurrences are shown and [maxWaiting] wait behind
+/// them. A new occurrence beyond that is rejected; an older one is never
+/// dropped to make room.
+class AnimalNotificationLane extends ChangeNotifier {
+  AnimalNotificationLane._(this.placement, this._onChanged);
+
+  /// Most occurrences shown at once per placement.
+  static const int maxActive = 3;
+
+  /// Most occurrences waiting behind the shown ones per placement.
+  static const int maxWaiting = 50;
+
+  final AnimalNotificationPlacement placement;
+  final void Function(AnimalNotificationLane lane) _onChanged;
+  final List<AnimalNotificationOccurrence> _active =
+      <AnimalNotificationOccurrence>[];
+  final List<AnimalNotificationOccurrence> _waiting =
+      <AnimalNotificationOccurrence>[];
+  AnimalOverlayEntryHandle? _container;
+
+  /// The shown occurrences, oldest first.
+  List<AnimalNotificationOccurrence> get active =>
+      List<AnimalNotificationOccurrence>.unmodifiable(_active);
+
+  bool get _isEmpty => _active.isEmpty && _waiting.isEmpty;
+
+  AnimalNotificationOccurrence _open(
+    AnimalNotificationConfig config,
+    String? key,
+    VoidCallback? onClose,
+  ) {
+    if (key != null) {
+      for (final AnimalNotificationOccurrence live
+          in <AnimalNotificationOccurrence>[..._active, ..._waiting]) {
+        if (live.key != key) continue;
+        live._config = config;
+        live._onClose = onClose;
+        live._restartTimer();
+        _changed();
+        return live;
+      }
+    }
+    final AnimalNotificationStatus status;
+    if (_active.length < maxActive) {
+      status = AnimalNotificationStatus.active;
+    } else if (_waiting.length < maxWaiting) {
+      status = AnimalNotificationStatus.waiting;
+    } else {
+      return AnimalNotificationOccurrence._(
+        this,
+        key,
+        config,
+        onClose,
+        AnimalNotificationStatus.rejected,
+      );
+    }
+    final AnimalNotificationOccurrence occurrence =
+        AnimalNotificationOccurrence._(this, key, config, onClose, status);
+    if (status == AnimalNotificationStatus.active) {
+      _active.add(occurrence);
+      occurrence._startTimer();
+    } else {
+      _waiting.add(occurrence);
+    }
+    _changed();
+    return occurrence;
+  }
+
+  // The single settlement of occurrences: every close path (close button,
+  // swipe, handle, closeAll, timeout, host release) ends here. The status
+  // check runs each onClose exactly once; the lane changes once per batch,
+  // before any onClose runs.
+  void _settle(List<AnimalNotificationOccurrence> occurrences) {
+    final List<AnimalNotificationOccurrence> settled =
+        <AnimalNotificationOccurrence>[];
+    for (final AnimalNotificationOccurrence occurrence in occurrences) {
+      final AnimalNotificationStatus status = occurrence._status;
+      if (status == AnimalNotificationStatus.closed ||
+          status == AnimalNotificationStatus.rejected) {
+        continue;
+      }
+      occurrence._status = AnimalNotificationStatus.closed;
+      occurrence._cancelTimer();
+      if (status == AnimalNotificationStatus.active) {
+        _active.remove(occurrence);
+      } else {
+        _waiting.remove(occurrence);
+      }
+      settled.add(occurrence);
+    }
+    if (settled.isEmpty) return;
+    _promote();
+    _changed();
+    for (final AnimalNotificationOccurrence occurrence in settled) {
+      final VoidCallback? onClose = occurrence._onClose;
+      if (onClose != null) {
+        runOverlayCallback(
+          onClose,
+          'running an AnimalNotification onClose callback',
         );
-      },
+      }
+    }
+  }
+
+  void _promote() {
+    while (_active.length < maxActive && _waiting.isNotEmpty) {
+      final AnimalNotificationOccurrence next = _waiting.removeAt(0);
+      next._status = AnimalNotificationStatus.active;
+      _active.add(next);
+      next._startTimer();
+    }
+  }
+
+  /// Closes the occurrences present now; ones opened by an onClose survive.
+  void _closeAll() =>
+      _settle(<AnimalNotificationOccurrence>[..._waiting, ..._active]);
+
+  void _changed() {
+    _onChanged(this);
+    notifyListeners();
+  }
+}
+
+/// The notification queues of one overlay host, one lane per placement.
+///
+/// `AnimalNotification` keeps it as a host resource: the host's controller
+/// owns it and calls [closeAll] when the host unbinds, which closes every
+/// queued occurrence once. Each non-empty lane is rendered by exactly one
+/// host occurrence, shown when the lane gets its first item and closed when
+/// it empties.
+class AnimalNotificationQueue {
+  AnimalNotificationQueue(this._controller, this._buildLane);
+
+  final AnimalOverlayController _controller;
+
+  /// Renders one lane inside the lane's host occurrence.
+  final AnimalNotificationLaneBuilder _buildLane;
+  final Map<AnimalNotificationPlacement, AnimalNotificationLane> _lanes =
+      <AnimalNotificationPlacement, AnimalNotificationLane>{};
+
+  /// Opens or updates an occurrence; see `AnimalNotification.open`.
+  AnimalNotificationHandle open(
+    AnimalNotificationConfig config, {
+    String? key,
+    VoidCallback? onClose,
+  }) => _laneFor(config.placement)._open(config, key, onClose);
+
+  /// Closes the occurrences of [placement], or of every placement.
+  void closeAll({AnimalNotificationPlacement? placement}) {
+    for (final AnimalNotificationLane lane in _lanes.values.toList()) {
+      if (placement == null || lane.placement == placement) lane._closeAll();
+    }
+  }
+
+  AnimalNotificationLane _laneFor(AnimalNotificationPlacement placement) {
+    final AnimalNotificationLane? existing = _lanes[placement];
+    if (existing != null) return existing;
+    final AnimalNotificationLane lane = AnimalNotificationLane._(
+      placement,
+      _sync,
     );
-
-    _activeEntries[placement] = entry;
-    overlayState.insert(entry);
+    _lanes[placement] = lane;
+    return lane;
   }
 
-  void dismiss([String? key]) {
-    if (_disposed) return;
-    final queues = _activeQueues.values.toList();
-    for (final queue in queues) {
-      queue.dismiss(key);
+  // Keeps exactly one host occurrence per non-empty lane.
+  void _sync(AnimalNotificationLane lane) {
+    final AnimalOverlayEntryHandle? container = lane._container;
+    if (lane._isEmpty) {
+      lane._container = null;
+      container?.close();
+    } else if (container == null) {
+      lane._container = _controller.show(
+        builder: (_, _) => _buildLane(lane),
+        onClose: () => _containerClosed(lane),
+      );
     }
   }
 
-  void dispose() {
-    _disposed = true;
-    for (final entry in _activeEntries.values) {
-      entry.remove();
-    }
-    _activeEntries.clear();
-    _activeQueues.clear();
+  // The lane's host occurrence closed. When something other than the lane
+  // emptying closed it, its occurrences close with it.
+  void _containerClosed(AnimalNotificationLane lane) {
+    lane._container = null;
+    lane._closeAll();
   }
 }

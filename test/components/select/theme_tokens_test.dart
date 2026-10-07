@@ -44,6 +44,14 @@ void main() {
                 ),
                 const SizedBox(height: 8),
                 AnimalSelect<String>(
+                  key: const ValueKey('warning'),
+                  value: 'a',
+                  options: const [AnimalOption(value: 'a', label: 'Warned')],
+                  onChanged: (_) {},
+                  status: AnimalInputStatus.warning,
+                ),
+                const SizedBox(height: 8),
+                AnimalSelect<String>(
                   key: ValueKey('disabled'),
                   value: 'locked',
                   options: [AnimalOption(value: 'locked', label: 'Disabled')],
@@ -139,12 +147,19 @@ void main() {
       expect(errorDecoration.border!.top.color, theme.colors.errorText);
       expect(
         errorDecoration.boxShadow!.single.color,
-        theme.colors.errorText.withValues(alpha: 0.45),
+        theme.colors.errorText.withValues(alpha: 0.35),
       );
       expect(
         themeContrastRatio(theme.colors.errorText, theme.colors.bgInput),
         greaterThanOrEqualTo(4.5),
         reason: '${theme.colors.brightness.name} select validation stroke pair',
+      );
+
+      final warningDecoration = triggerDecoration('warning');
+      expect(warningDecoration.border!.top.color, theme.colors.warningText);
+      expect(
+        warningDecoration.boxShadow!.single.color,
+        theme.colors.warningText.withValues(alpha: 0.35),
       );
 
       final disabledDecoration = triggerDecoration('disabled');

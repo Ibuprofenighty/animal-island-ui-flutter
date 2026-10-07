@@ -55,9 +55,27 @@ label `typography.subheading`, other wheel labels and the trigger text
 ratio 1. The focused trigger border uses the library focus color.
 
 Panel colors resolve against `WidgetState.disabled`; wheel labels also against
-`WidgetState.selected`. The trigger border resolves against `focused` (also
-while the menu is open) and `error`; the warning status uses `warningColor`,
-and the status or focus glow follows the resolved border color.
+`WidgetState.selected`. `triggerBorderColor` and `triggerGlowColor` resolve
+against `disabled`, `focused` (also while the menu is open) and `error`; the
+warning status uses `warningColor`.
+
+The trigger border and glow follow the one rule shared by Input, Select,
+DatePicker and TimePicker. A disabled trigger uses the styled border, otherwise
+`borderLight` in light themes or `border` at 30% opacity in dark themes, and
+has no glow. The warning status uses `warningColor`, otherwise `warningText`;
+an error wins over a warning. Otherwise the styled border applies, then
+`errorText` for an error, the focus-ring color when focused and `border` at
+rest. An idle trigger without a status has no glow; otherwise the glow is the
+styled glow color, or the border color at 45% opacity when only focused and
+35% for an error or warning, with blur 4 and spread 2.
+
+The clear control is the package's shared icon action: a 48 logical-pixel
+target with a focus ring, the localized clear label as its accessible name, the
+close icon in `triggerIconSize` and `triggerIconColor`, and a hover fill from
+`triggerClearButtonBackgroundColor`, resolved against `WidgetState.hovered`;
+under reduced motion the fill changes instantly. `triggerClearButtonPadding`
+defaults to zero, `triggerClearButtonBorderRadius` to a pill and
+`triggerClearButtonBackgroundColor` to transparent.
 
 `minItemExtent` (36 by default) is a minimum: each wheel item and the selection
 band grow to the rendered height of the larger wheel label under the ambient
