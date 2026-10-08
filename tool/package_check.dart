@@ -78,6 +78,10 @@ dev_dependencies:
 ''';
 
   File('${consumerDir.path}/pubspec.yaml').writeAsStringSync(consumerPubspec);
+  // A clean consumer uses the default analysis, not this repository's lints,
+  // which it would otherwise inherit from the enclosing directory.
+  File('${consumerDir.path}/analysis_options.yaml')
+      .writeAsStringSync('analyzer:\n  language:\n    strict-casts: true\n');
 
   final consumerLibDir = Directory('${consumerDir.path}/lib')
     ..createSync(recursive: true);
