@@ -16,6 +16,7 @@ class AnimalTableColumn {
   /// Content alignment for both header and data cells in this column.
   final Alignment alignment;
 
+  /// Creates a column specification; [flex] must be greater than 0.
   const AnimalTableColumn({
     required this.title,
     this.width,

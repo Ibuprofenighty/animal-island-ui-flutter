@@ -54,6 +54,16 @@ it in `build`. Ordinary rebuilds and a `GlobalKey` reparent keep the same
 registration generation, current value, and baseline. A newly mounted item gets
 a new generation and captures the current typed initial value as its baseline.
 
+## Field binding
+
+A custom field receives an `AnimalFieldBinding<T>` in `builder`: the current
+`value`, `onChanged` and `onBlur` to report edits and focus loss, the
+`focusNode` its control must use, `dirty` and `touched`, the validation
+`status` (an `AnimalValidationStatus`: `idle`, `validating`, `valid` or
+`invalid`) and the current `error`. An error is an `AnimalValidationIssue`
+whose `kind` (an `AnimalValidationIssueKind`) identifies the failed rule
+independent of the locale.
+
 ## Customization
 
 `style` takes an `AnimalFormItemStyle` and overrides the theme for this item.

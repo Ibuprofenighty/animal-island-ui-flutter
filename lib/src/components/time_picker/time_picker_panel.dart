@@ -23,15 +23,44 @@ import 'wheel_model.dart';
 /// its intermediate items; a newer batch or a user drag supersedes an older
 /// one, and a value the parent does not accept is not kept on the wheels.
 class AnimalTimePickerPanel extends StatefulWidget {
+  /// Current controlled time, or null when no time is selected.
+  ///
+  /// The wheels show it snapped to the configured steps.
   final AnimalTimeValue? value;
+
+  /// Called with the proposed time, or null when the user clears it.
+  ///
+  /// The picker does not store the value; rebuild with the new [value]. A
+  /// value the parent does not accept is not kept on the wheels.
   final ValueChanged<AnimalTimeValue?>? onChanged;
+
+  /// Time mask; one containing `ss` adds the seconds wheel. Defaults to
+  /// `'HH:mm'`.
   final String format;
+
+  /// Interval between hour wheel items. Defaults to 1; must be at least 1.
   final int hourStep;
+
+  /// Interval between minute wheel items. Defaults to 1; must be at least 1.
   final int minuteStep;
+
+  /// Interval between second wheel items. Defaults to 1; must be at least 1.
   final int secondStep;
+
+  /// Whether the footer shows a button that selects the current time, snapped
+  /// to the steps. Defaults to true.
   final bool showNow;
+
+  /// Whether the footer shows a button that clears the time. Defaults to true.
   final bool allowClear;
+
+  /// Whether the wheels and actions are inert and no change is proposed.
+  /// Defaults to false.
   final bool disabled;
+
+  /// Focus node for the wheel panel, or null to use an internal one.
+  ///
+  /// The caller owns and disposes a supplied node.
   final FocusNode? focusNode;
 
   /// Overrides for this panel, taking precedence over the theme.
@@ -40,6 +69,10 @@ class AnimalTimePickerPanel extends StatefulWidget {
   /// Canonical clock for Now; tests and hosts inject a deterministic clock.
   final AnimalClock clock;
 
+  /// Creates a controlled wheel panel.
+  ///
+  /// Throws an [ArgumentError] when [hourStep], [minuteStep] or [secondStep]
+  /// is less than 1.
   AnimalTimePickerPanel({
     super.key,
     this.value,
@@ -640,30 +673,58 @@ class ResolvedTimePickerStyle {
 
   // Panel.
 
+  /// Panel width with hour and minute wheels. Defaults to 250.
   double get width => _style.width ?? 250;
+
+  /// Panel width when the format shows a seconds wheel. Defaults to 300.
   double get widthWithSeconds => _style.widthWithSeconds ?? 300;
+
+  /// Padding inside the panel border. Defaults to `spacing.lg` horizontally and
+  /// `spacing.md` vertically.
   EdgeInsetsGeometry get padding =>
       _style.padding ??
       EdgeInsets.symmetric(
         horizontal: _theme.spacing.lg,
         vertical: _theme.spacing.md,
       );
+
+  /// Panel surface color. Defaults to `colors.bgContent`.
   Color get backgroundColor => _style.backgroundColor ?? _colors.bgContent;
+
+  /// Panel border color.
   Color get borderColor => _style.borderColor ?? _defaultBorder;
+
+  /// Panel border width. Defaults to 1.5.
   double get borderWidth => _style.borderWidth ?? 1.5;
+
+  /// Panel corner radius. Defaults to `radii.cardBorder`.
   BorderRadius get borderRadius =>
       _style.borderRadius ?? _theme.radii.cardBorder;
+
+  /// Size of the clock icon in the panel header. Defaults to 18.
   double get headerIconSize => _style.headerIconSize ?? 18;
+
+  /// Color of the clock icon in the panel header.
   Color get headerIconColor => _style.headerIconColor ?? _colors.primaryText;
+
+  /// Gap between the header icon and the title. Defaults to `spacing.sm`.
   double get headerGap => _style.headerGap ?? _theme.spacing.sm;
+
+  /// Panel title style, with its color resolved for the disabled state.
   TextStyle get titleTextStyle => _text(
     _theme.typography.heading,
     _style.titleTextStyle,
     _style.titleTextColor?.resolve(_states) ??
         (_disabled ? _colors.textDisabled : _colors.text),
   );
+
+  /// Gap between the header and the wheels. Defaults to `spacing.md`.
   double get wheelGap => _style.wheelGap ?? _theme.spacing.md;
+
+  /// Minimum height of the wheel viewport. Defaults to 160.
   double get wheelHeight => _style.wheelHeight ?? 160;
+
+  /// Lower bound of [itemExtent]. Defaults to 36.
   double get minItemExtent => _style.minItemExtent ?? 36;
 
   /// Wheel label style; the selected label uses `typography.subheading` at
@@ -708,35 +769,58 @@ class ResolvedTimePickerStyle {
     return math.max(minItemExtent, labelHeight);
   }
 
+  /// Style of the colon between wheels, with its color.
   TextStyle get separatorStyle => _text(
     _theme.typography.heading.copyWith(fontWeight: FontWeight.bold),
     _style.separatorTextStyle,
     _style.separatorTextColor ?? _colors.text,
   );
+
+  /// Fill of the selection band behind the selected items.
   Color get selectionBackgroundColor =>
       _style.selectionBackgroundColor ??
       _colors.primary.withValues(alpha: 0.15);
+
+  /// Border color of the selection band.
   Color get selectionBorderColor =>
       _style.selectionBorderColor ??
       _colors.primaryActive.withValues(alpha: 0.4);
+
+  /// Border width of the selection band. Defaults to 1.2.
   double get selectionBorderWidth => _style.selectionBorderWidth ?? 1.2;
+
+  /// Corner radius of the selection band. Defaults to `radii.pillBorder`.
   BorderRadius get selectionBorderRadius =>
       _style.selectionBorderRadius ?? _theme.radii.pillBorder;
+
+  /// Horizontal inset of the selection band. Defaults to `spacing.xs`.
   double get selectionInset => _style.selectionInset ?? _theme.spacing.xs;
+
+  /// Color of the divider above the footer actions.
   Color get dividerColor => _style.dividerColor ?? _defaultBorder;
+
+  /// Thickness of the divider above the footer actions. Defaults to 1.
   double get dividerThickness => _style.dividerThickness ?? 1;
+
+  /// Space above and below the footer divider.
   EdgeInsetsGeometry get dividerPadding =>
       _style.dividerPadding ??
       EdgeInsets.only(top: _theme.spacing.sm, bottom: _theme.spacing.xs);
+
+  /// Padding inside the Now and Clear actions.
   EdgeInsetsGeometry get actionPadding =>
       _style.actionPadding ??
       EdgeInsets.symmetric(horizontal: _theme.spacing.sm);
+
+  /// Now action label style, with its color resolved for the disabled state.
   TextStyle get nowStyle => _text(
     _theme.typography.caption.copyWith(fontWeight: FontWeight.w700),
     _style.nowTextStyle,
     _style.nowTextColor?.resolve(_states) ??
         (_disabled ? _colors.textDisabled : _colors.primaryText),
   );
+
+  /// Clear action label style, with its color resolved for the disabled state.
   TextStyle get clearStyle => _text(
     _theme.typography.caption.copyWith(fontWeight: FontWeight.w600),
     _style.clearTextStyle,
@@ -764,14 +848,21 @@ class ResolvedTimePickerStyle {
     glowColor: _style.triggerGlowColor,
   );
 
+  /// Popover trigger surface, resolved for the disabled state.
   Color get triggerBackgroundColor =>
       _style.triggerBackgroundColor?.resolve(_states) ??
       (_disabled
           ? (_dark ? _colors.surfaceHeader : _colors.bgInputDisabled)
           : _colors.bgInput);
+
+  /// Popover trigger border width. Defaults to 1.5.
   double get triggerBorderWidth => _style.triggerBorderWidth ?? 1.5;
+
+  /// Popover trigger corner radius. Defaults to `radii.pillBorder`.
   BorderRadius get triggerBorderRadius =>
       _style.triggerBorderRadius ?? _theme.radii.pillBorder;
+
+  /// Padding inside the popover trigger. Defaults to `spacing.md` horizontally.
   EdgeInsetsGeometry get triggerPadding =>
       _style.triggerPadding ??
       EdgeInsets.symmetric(horizontal: _theme.spacing.md);
@@ -785,6 +876,8 @@ class ResolvedTimePickerStyle {
               (_disabled ? _colors.textDisabled : _colors.text)
         : _style.placeholderTextColor ?? _colors.textSecondary,
   );
+
+  /// Size of the trigger clock icon and clear icon. Defaults to 16.
   double get triggerIconSize => _style.triggerIconSize ?? 16;
 
   /// Color of the trigger clock icon, or of the clear icon when
@@ -797,12 +890,18 @@ class ResolvedTimePickerStyle {
             : _colors.textSecondary);
   }
 
+  /// Gap between the trigger icon and its text. Defaults to `spacing.sm`.
   double get triggerIconGap => _style.triggerIconGap ?? _theme.spacing.sm;
 
+  /// Padding around the clear icon inside its target. Defaults to zero.
   EdgeInsetsGeometry get triggerClearButtonPadding =>
       _style.triggerClearButtonPadding ?? EdgeInsets.zero;
+
+  /// Corner radius of the clear control. Defaults to `radii.pillBorder`.
   BorderRadius get triggerClearButtonBorderRadius =>
       _style.triggerClearButtonBorderRadius ?? _theme.radii.pillBorder;
+
+  /// Fill behind the clear icon; transparent unless the style resolves a color.
   WidgetStateProperty<Color> get triggerClearButtonBackgroundColor =>
       resolveIconActionBackground(
         _style.triggerClearButtonBackgroundColor,

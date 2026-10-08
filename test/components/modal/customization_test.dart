@@ -324,6 +324,16 @@ void main() {
 
   group('API06 AnimalModal boundary', () {
     test('styles reject values components cannot render', () {
+      expect(
+        () => AnimalModalStyle(padding: const EdgeInsets.only(left: -1)),
+        throwsArgumentError,
+      );
+      expect(
+        () => AnimalModalStyle(
+          closeButtonBorderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalModalStyle(borderWidth: -1), throwsArgumentError);
       expect(
         () => AnimalModalStyle(headerGap: double.nan),

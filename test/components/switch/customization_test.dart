@@ -392,6 +392,12 @@ void main() {
 
   group('API06 AnimalSwitch boundary', () {
     test('styles reject values components cannot render', () {
+      expect(
+        () => AnimalSwitchStyle(
+          borderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalSwitchStyle(width: -1), throwsArgumentError);
       expect(
         () => AnimalSwitchStyle(thumbSize: double.nan),

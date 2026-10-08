@@ -276,6 +276,16 @@ void main() {
 
   group('API06 AnimalLoading boundary', () {
     test('styles reject values components cannot render', () {
+      expect(
+        () => AnimalLoadingStyle(tipPadding: const EdgeInsets.only(left: -1)),
+        throwsArgumentError,
+      );
+      expect(
+        () => AnimalLoadingStyle(
+          tipBorderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalLoadingStyle(tipGap: -1), throwsArgumentError);
       expect(
         () => AnimalLoadingStyle(tipBorderWidth: double.nan),

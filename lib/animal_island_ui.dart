@@ -56,7 +56,7 @@ export 'src/foundation/forms/animal_form_values.dart'
 export 'src/foundation/localization/animal_locale_resolution.dart'
     show resolveAnimalLocale;
 export 'src/foundation/localization/generated/animal_localizations.g.dart'
-    show AnimalLocalizations, lookupAnimalLocalizations;
+    show AnimalLocalizations;
 export 'src/foundation/models/option.dart' show AnimalOption;
 export 'src/foundation/models/date.dart'
     show
@@ -120,13 +120,9 @@ export 'src/components/time_picker/time_picker.dart' show AnimalTimePicker;
 // Category 4: Form Container (Form, FormItem, Controller, Bindings, Validation)
 export 'src/components/form/form.dart' show AnimalForm;
 export 'src/components/form/form_controller.dart'
-    show
-        AnimalFormController,
-        AnimalFieldRegistration,
-        AnimalSubmitResult,
-        AnimalSubmitStatus;
+    show AnimalFormController, AnimalSubmitResult, AnimalSubmitStatus;
 export 'src/components/form/form_item.dart' show AnimalFormItem;
-export 'src/components/form/validation.dart' show AnimalRule, AnimalRuleType;
+export 'src/components/form/validation.dart' show AnimalRule;
 
 // Category 5: Overlays (Modal, Drawer, Tooltip)
 export 'src/components/modal/modal.dart' show AnimalModal;

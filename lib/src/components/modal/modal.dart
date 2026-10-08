@@ -59,6 +59,7 @@ class AnimalModal extends StatelessWidget {
   /// Message of a failed confirmation, shown by the confirmation route only.
   final String? _errorText;
 
+  /// Creates a modal surface with the given [content].
   const AnimalModal({
     super.key,
     this.title,

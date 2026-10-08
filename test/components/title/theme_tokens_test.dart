@@ -1,4 +1,6 @@
 import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:animal_island_ui/src/components/title/title.dart'
+    show AnimalTitleSizeMetrics;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

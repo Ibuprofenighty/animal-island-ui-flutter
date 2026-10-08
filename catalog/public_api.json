@@ -450,24 +450,13 @@
     },
     "lib/src/components/form/form_controller.dart": {
       "classes": {
-        "AnimalFieldRegistration": {
-          "constructors": [],
-          "fields": [
-            "generation",
-            "key"
-          ]
-        },
         "AnimalFormController": {
           "constructors": [
             "AnimalFormController"
           ],
           "fields": [
-            "defaultSubmitHandler",
-            "epoch",
             "isDirty",
-            "isDisposed",
             "isSubmitting",
-            "isValid",
             "values"
           ]
         },
@@ -480,7 +469,6 @@
             "changedDuringValidation",
             "error",
             "invalid",
-            "isSuccess",
             "rejected",
             "status",
             "success"
@@ -540,30 +528,11 @@
             "AnimalRule.url"
           ],
           "fields": [
-            "customValidator",
-            "hashCode",
-            "max",
-            "maxLength",
-            "message",
-            "min",
-            "minLength",
-            "pattern",
-            "type"
+            "hashCode"
           ]
         }
       },
-      "enums": {
-        "AnimalRuleType": [
-          "custom",
-          "email",
-          "length",
-          "max",
-          "min",
-          "pattern",
-          "required",
-          "url"
-        ]
-      },
+      "enums": {},
       "topLevelVariables": {},
       "functions": {}
     },
@@ -713,9 +682,7 @@
           ]
         },
         "AnimalNotificationHandle": {
-          "constructors": [
-            "AnimalNotificationHandle"
-          ],
+          "constructors": [],
           "fields": [
             "status"
           ]
@@ -1030,7 +997,6 @@
           "fields": [
             "disabled",
             "icon",
-            "id",
             "label"
           ]
         },
@@ -1209,17 +1175,11 @@
     "lib/src/foundation/forms/animal_field_binding.dart": {
       "classes": {
         "AnimalFieldBinding": {
-          "constructors": [
-            "AnimalFieldBinding"
-          ],
+          "constructors": [],
           "fields": [
             "dirty",
             "error",
             "focusNode",
-            "generation",
-            "hasError",
-            "isValid",
-            "isValidating",
             "key",
             "onBlur",
             "onChanged",
@@ -1248,8 +1208,7 @@
           ],
           "fields": [
             "debugLabel",
-            "hashCode",
-            "valueType"
+            "hashCode"
           ]
         }
       },
@@ -1357,7 +1316,6 @@
             "clear",
             "clearDate",
             "clearTime",
-            "close",
             "codeCopiedSemanticLabel",
             "codeCopyLabel",
             "codeCopySemanticLabel",
@@ -1379,102 +1337,6 @@
             "drawerRouteLabel",
             "empty",
             "footerDefaultText",
-            "galleryAppTitle",
-            "galleryBrandName",
-            "galleryCategoryDataDisplay",
-            "galleryCategoryDecorative",
-            "galleryCategoryExplore",
-            "galleryCategoryFeedback",
-            "galleryCategoryFormControls",
-            "galleryCategoryFormEngine",
-            "galleryCategoryGeneral",
-            "galleryCategoryLayout",
-            "galleryCategoryNavigation",
-            "galleryCategoryNotifications",
-            "galleryCategoryOverlays",
-            "galleryCategoryRecipes",
-            "galleryChipButton",
-            "galleryChipCodeBlock",
-            "galleryChipDateTime",
-            "galleryChipIcons",
-            "galleryChipImage",
-            "galleryChipInputForms",
-            "galleryChipModal",
-            "galleryChipNotifications",
-            "galleryChipPagination",
-            "galleryChipTable",
-            "galleryChipTabs",
-            "galleryChipTypewriter",
-            "galleryComponentC01",
-            "galleryComponentC02",
-            "galleryComponentC03",
-            "galleryComponentC04",
-            "galleryComponentC05",
-            "galleryComponentC06",
-            "galleryComponentC07",
-            "galleryComponentC08",
-            "galleryComponentC09",
-            "galleryComponentC10",
-            "galleryComponentC11",
-            "galleryComponentC12",
-            "galleryComponentC13",
-            "galleryComponentC14",
-            "galleryComponentC15",
-            "galleryComponentC16",
-            "galleryComponentC17",
-            "galleryComponentC18",
-            "galleryComponentC19",
-            "galleryComponentC20",
-            "galleryComponentC21",
-            "galleryComponentC22",
-            "galleryComponentC23",
-            "galleryComponentC24",
-            "galleryComponentC25",
-            "galleryComponentC26",
-            "galleryComponentC27",
-            "galleryComponentC28",
-            "galleryComponentC29",
-            "galleryComponentC30",
-            "galleryComponentC31",
-            "galleryComponentC32",
-            "galleryComponentC33",
-            "galleryComponentC34",
-            "galleryComponentC35",
-            "galleryComponentC36",
-            "galleryDemoBadge",
-            "galleryDevelopmentCandidateBadge",
-            "galleryExploreCategoriesTitle",
-            "galleryIconsNav",
-            "galleryLaunchRecipe",
-            "galleryLocaleSwitch",
-            "galleryLocaleSwitchValue",
-            "galleryMetricComponents",
-            "galleryMetricIcons",
-            "galleryNotFoundTitle",
-            "galleryOverviewNav",
-            "galleryProvenanceNav",
-            "galleryRecipeBadge",
-            "galleryRecipeFormDescription",
-            "galleryRecipeFormNav",
-            "galleryRecipeFormTitle",
-            "galleryRecipeOverlayDescription",
-            "galleryRecipeOverlayNav",
-            "galleryRecipeOverlayTitle",
-            "galleryRecipeTableDescription",
-            "galleryRecipeTableNav",
-            "galleryRecipeTableTitle",
-            "galleryRecipesTitle",
-            "galleryReducedMotionOff",
-            "galleryReducedMotionOn",
-            "galleryReturnOverview",
-            "gallerySearchAction",
-            "gallerySearchTooltip",
-            "galleryTextScaleTooltip",
-            "galleryThemeDark",
-            "galleryThemeLight",
-            "galleryThemeTooltip",
-            "galleryWelcomeSubtitle",
-            "galleryWelcomeTitle",
             "imagePreviewCloseLabel",
             "imagePreviewDefaultSemanticLabel",
             "imagePreviewRouteLabel",
@@ -1493,17 +1355,6 @@
             "paginationSkipBackward",
             "paginationSkipForward",
             "progressLabel",
-            "provenanceApiHash",
-            "provenanceBuildSdk",
-            "provenanceDescription",
-            "provenanceLicense",
-            "provenancePackageIdentity",
-            "provenanceReleaseIdentity",
-            "provenanceSourceCommit",
-            "provenanceTitle",
-            "provenanceUnavailable",
-            "provenanceUpstream",
-            "provenanceUpstreamValue",
             "requiredField",
             "selectClearLabel",
             "selectPlaceholder",
@@ -1523,14 +1374,7 @@
       },
       "enums": {},
       "topLevelVariables": {},
-      "functions": {
-        "lookupAnimalLocalizations": {
-          "returnType": "AnimalLocalizations",
-          "parameters": [
-            "Locale locale"
-          ]
-        }
-      }
+      "functions": {}
     },
     "lib/src/foundation/models/clock.dart": {
       "classes": {
@@ -1636,7 +1480,6 @@
         "AnimalTimeValue": {
           "constructors": [
             "AnimalTimeValue",
-            "AnimalTimeValue.fromTimeOfDay",
             "AnimalTimeValue.now"
           ],
           "fields": [
@@ -2586,5 +2429,5 @@
       "functions": {}
     }
   },
-  "sha256": "8c365b8e6c50a8d7c82dcf839e82eec3daf6f1f9d5f1a0cafd21d417e8f03438"
+  "sha256": "d150705ab569b717ea792eea9efb9cb46773798e8124a71e23c9c472fc5bfd91"
 }

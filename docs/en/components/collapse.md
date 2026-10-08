@@ -20,6 +20,12 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 <!-- generated:api:end -->
 
+## Items
+
+Each panel is an `AnimalCollapseItem`: a stable `id`, a `title` and
+`content` widget, an optional trailing `extra` widget in the header, and
+`disabled` to keep it from expanding or collapsing.
+
 ## Localization
 Collapse item titles, content, and extras are caller-owned widgets. Localize them in the caller; the component only adds expanded/enabled semantics.
 

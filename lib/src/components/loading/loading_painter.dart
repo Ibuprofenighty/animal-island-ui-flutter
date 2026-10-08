@@ -4,15 +4,31 @@ import 'package:flutter/material.dart';
 
 /// Particle model representing a single snowflake.
 class SnowflakeParticle {
+  /// Starting horizontal position as a fraction of the painted width.
   final double x;
+
+  /// Starting vertical position as a fraction of the painted height.
   final double y;
+
+  /// Fraction of the painted height the flake falls per unit of progress.
   final double speed;
+
+  /// Radius of the flake in logical pixels.
   final double radius;
+
+  /// Horizontal sway as a fraction of the painted width.
   final double swayAmplitude;
+
+  /// Sway cycles per unit of progress.
   final double swayFrequency;
+
+  /// Phase offset of the sway, in radians.
   final double swayPhase;
+
+  /// Opacity applied to the painter color for this flake.
   final double opacity;
 
+  /// Creates a particle with the given position, motion and appearance.
   const SnowflakeParticle({
     required this.x,
     required this.y,
@@ -44,10 +60,17 @@ class SnowflakeParticle {
 
 /// Fullscreen or local snowflake particle system painter.
 class SnowflakeOverlayPainter extends CustomPainter {
+  /// Particles to paint; positions wrap around the painted area.
   final List<SnowflakeParticle> snowflakes;
+
+  /// Animation progress that drives the fall and sway of every particle.
   final double progress;
+
+  /// Base color of the particles; its alpha is multiplied by each particle's
+  /// opacity.
   final Color color;
 
+  /// Creates a painter for [snowflakes] at [progress].
   const SnowflakeOverlayPainter({
     required this.snowflakes,
     required this.progress,
@@ -66,7 +89,7 @@ class SnowflakeOverlayPainter extends CustomPainter {
       final currentX = (flake.x + sway) % 1.0;
 
       final paint = Paint()
-        ..color = color.withValues(alpha: flake.opacity)
+        ..color = color.withValues(alpha: color.a * flake.opacity)
         ..style = PaintingStyle.fill;
 
       canvas.drawCircle(
@@ -79,15 +102,21 @@ class SnowflakeOverlayPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant SnowflakeOverlayPainter oldDelegate) {
-    return oldDelegate.progress != progress || oldDelegate.color != color;
+    return !identical(oldDelegate.snowflakes, snowflakes) ||
+        oldDelegate.progress != progress ||
+        oldDelegate.color != color;
   }
 }
 
 /// Custom painter for spinning leaf or circular arc.
 class SpinnerArcPainter extends CustomPainter {
+  /// Color of the arc; the full-circle track uses it at 20% opacity.
   final Color color;
+
+  /// Rotation of the arc in turns; 1.0 is one full turn.
   final double progress;
 
+  /// Creates a spinner painter at [progress].
   const SpinnerArcPainter({required this.color, required this.progress});
 
   @override

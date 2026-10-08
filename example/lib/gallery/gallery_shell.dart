@@ -10,6 +10,7 @@ import '../recipes/form_workflow_recipe.dart';
 import '../recipes/overlay_orchestration_recipe.dart';
 import '../recipes/data_table_recipe.dart';
 import '../stories/stories_registry.dart';
+import '../l10n/generated/gallery_localizations.g.dart';
 
 class GalleryShell extends StatefulWidget {
   final String activeRoute;
@@ -52,7 +53,7 @@ class _GalleryShellState extends State<GalleryShell> {
   }
 
   Widget _buildContent(String route) {
-    final localizations = AnimalLocalizations.of(context)!;
+    final localizations = GalleryLocalizations.of(context);
     if (route == '/' || route.isEmpty) {
       return OverviewView(onNavigate: widget.onNavigate);
     }

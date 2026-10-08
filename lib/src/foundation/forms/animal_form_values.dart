@@ -5,9 +5,16 @@ import 'animal_field_key.dart';
 /// One typed value supplied to an [AnimalFormValues] snapshot.
 @immutable
 class AnimalFieldValue<T> {
+  /// Field identity the value belongs to.
   final AnimalFieldKey<T> key;
+
+  /// Value for [key]; null means no value.
   final T? value;
 
+  /// Creates an entry pairing [key] with [value].
+  ///
+  /// The value is type-checked and snapshotted when the entry is passed to
+  /// [AnimalFormValues.fromEntries].
   const AnimalFieldValue(this.key, this.value);
 
   AnimalFieldValue<T> _snapshot() {
@@ -70,9 +77,7 @@ class AnimalFormValues {
   /// Reads a value using the actual generic type carried by [key].
   T? valueFor<T>(AnimalFieldKey<T> key) {
     key.requireRequestedType(T);
-    if (!_values.containsKey(key)) return null;
-    final value = _values[key];
-    key.requireValueType(value);
-    return value as T?;
+    // Every stored value passed its key's value check when it was captured.
+    return _values[key] as T?;
   }
 }

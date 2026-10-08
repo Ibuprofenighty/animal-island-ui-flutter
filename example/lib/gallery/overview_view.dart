@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import '../l10n/generated/gallery_localizations.g.dart';
+
 class OverviewView extends StatelessWidget {
   final ValueChanged<String> onNavigate;
 
@@ -9,7 +11,7 @@ class OverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
-    final localizations = AnimalLocalizations.of(context)!;
+    final localizations = GalleryLocalizations.of(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -226,7 +228,7 @@ class OverviewView extends StatelessWidget {
     AnimalTileColor color,
   ) {
     final theme = AnimalIslandTheme.of(context);
-    final localizations = AnimalLocalizations.of(context)!;
+    final localizations = GalleryLocalizations.of(context);
     return AnimalCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +271,7 @@ class OverviewView extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     final theme = AnimalIslandTheme.of(context);
-    final localizations = AnimalLocalizations.of(context)!;
+    final localizations = GalleryLocalizations.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),

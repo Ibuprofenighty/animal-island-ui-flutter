@@ -125,6 +125,11 @@ class AnimalSelectStyle {
   /// Color of the selected option's check icon.
   final Color? checkIconColor;
 
+  /// Creates a select style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension, inset or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalSelectStyle({
     this.textStyle,
     this.textColor,
@@ -179,22 +184,21 @@ class AnimalSelectStyle {
       'selectedOptionTextStyle',
       selectedOptionTextStyle,
     );
-    final EdgeInsetsGeometry? padding = optionPadding;
-    if (padding != null &&
-        (!padding.isNonNegative ||
-            !padding.horizontal.isFinite ||
-            !padding.vertical.isFinite)) {
-      throw ArgumentError.value(
-        padding,
-        'optionPadding',
-        'every side must be finite and at least 0',
-      );
-    }
     AnimalStyleValues.checkDimension('optionIconGap', optionIconGap);
     AnimalStyleValues.checkDimension('checkIconGap', checkIconGap);
     AnimalStyleValues.checkDimension('checkIconSize', checkIconSize);
+    AnimalStyleValues.checkRadius('borderRadius', borderRadius);
+    AnimalStyleValues.checkInsets('clearButtonPadding', clearButtonPadding);
+    AnimalStyleValues.checkRadius(
+      'clearButtonBorderRadius',
+      clearButtonBorderRadius,
+    );
+    AnimalStyleValues.checkRadius('menuBorderRadius', menuBorderRadius);
+    AnimalStyleValues.checkRadius('optionBorderRadius', optionBorderRadius);
+    AnimalStyleValues.checkInsets('optionPadding', optionPadding);
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalSelectStyle copyWith({
     TextStyle? textStyle,
     WidgetStateProperty<Color?>? textColor,
@@ -320,6 +324,12 @@ class AnimalSelectStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalSelectStyle? lerp(
     AnimalSelectStyle? a,
     AnimalSelectStyle? b,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:example/l10n/generated/gallery_localizations.g.dart';
 import 'package:example/app.dart';
 
 void main() {
@@ -17,9 +17,9 @@ void main() {
     await tester.pumpWidget(const AnimalIslandGalleryApp());
     await tester.pumpAndSettle();
 
-    final localizations = AnimalLocalizations.of(
+    final localizations = GalleryLocalizations.of(
       tester.element(find.text('Animal Island UI')),
-    )!;
+    );
     expect(find.text(localizations.galleryWelcomeTitle), findsOneWidget);
     expect(find.text(localizations.galleryCount(36)), findsOneWidget);
     expect(find.text(localizations.galleryMetricComponents), findsOneWidget);
@@ -120,9 +120,9 @@ void main() {
     await tester.tap(provenanceItem);
     await tester.pumpAndSettle();
 
-    final localizations = AnimalLocalizations.of(
+    final localizations = GalleryLocalizations.of(
       tester.element(provenanceItem),
-    )!;
+    );
     expect(find.text(localizations.provenanceReleaseIdentity), findsOneWidget);
     // Widget tests run unstamped builds, which must say so.
     expect(find.text(localizations.provenanceUnavailable), findsOneWidget);

@@ -18,10 +18,17 @@ import 'notification_model.dart';
 /// hovers the card or focus is inside it. With reduced motion the card
 /// appears in place without sliding or fading.
 class AnimalNotificationCard extends StatefulWidget {
+  /// Content, type and style of the notification shown.
   final AnimalNotificationConfig config;
+
+  /// Called when the close button is activated or the card is swiped away.
   final VoidCallback onClose;
+
+  /// Called with true while the card is hovered or holds focus, and with
+  /// false when neither holds.
   final ValueChanged<bool> onPausedChanged;
 
+  /// Creates a card that presents [config].
   const AnimalNotificationCard({
     super.key,
     required this.config,

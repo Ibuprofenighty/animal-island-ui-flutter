@@ -3,15 +3,38 @@ import 'package:flutter/widgets.dart';
 import '../../foundation/theme/components/notification_theme.dart';
 
 /// Semantic types for notifications.
-enum AnimalNotificationType { info, success, warning, error }
+enum AnimalNotificationType {
+  /// Neutral information.
+  info,
+
+  /// A completed or successful action.
+  success,
+
+  /// A condition that needs attention.
+  warning,
+
+  /// A failure.
+  error,
+}
 
 /// Screen placement of a notification stack inside its host.
 enum AnimalNotificationPlacement {
+  /// Top-right corner; the stack grows downward.
   topRight,
+
+  /// Top-left corner; the stack grows downward.
   topLeft,
+
+  /// Top edge, centered; the stack grows downward.
   top,
+
+  /// Bottom-right corner; the stack grows upward.
   bottomRight,
+
+  /// Bottom-left corner; the stack grows upward.
   bottomLeft,
+
+  /// Bottom edge, centered; the stack grows upward.
   bottom,
 }
 
@@ -70,32 +93,59 @@ enum AnimalNotificationStatus {
 /// The occurrence belongs to the `AnimalOverlayHost` it was opened in.
 /// [close] is idempotent; closing a waiting occurrence removes it from the
 /// queue, and closing a rejected occurrence does nothing.
-abstract base class AnimalNotificationHandle {
-  const AnimalNotificationHandle();
+final class AnimalNotificationHandle {
+  AnimalNotificationHandle._(this._status, this._close);
+
+  final ValueGetter<AnimalNotificationStatus> _status;
+  final VoidCallback _close;
 
   /// Current position of the occurrence in its queue.
-  AnimalNotificationStatus get status;
+  AnimalNotificationStatus get status => _status();
 
   /// Closes the occurrence. Repeated calls are ignored.
-  void close();
+  void close() => _close();
 }
+
+/// Creates the handle of one occurrence; package-internal, not exported.
+AnimalNotificationHandle createAnimalNotificationHandle({
+  required ValueGetter<AnimalNotificationStatus> status,
+  required VoidCallback close,
+}) => AnimalNotificationHandle._(status, close);
 
 /// The content and timing of one notification occurrence.
 ///
 /// A same-key update replaces the whole configuration of the live occurrence.
 @immutable
 class AnimalNotificationConfig {
+  /// Main message, styled with the notification text style.
   final Widget message;
+
+  /// Optional secondary text below [message].
   final Widget? description;
+
+  /// Semantic type that selects the default icon and colors. Defaults to
+  /// [AnimalNotificationType.info].
   final AnimalNotificationType type;
 
   /// Time the notification stays shown; null keeps it until it is closed.
   final Duration? duration;
+
+  /// Placement stack the notification joins. Defaults to
+  /// [AnimalNotificationPlacement.topRight].
   final AnimalNotificationPlacement placement;
+
+  /// Leading icon; null shows the default icon of [type].
   final Widget? icon;
+
+  /// Called when the notification body is activated; null leaves the body
+  /// inactive.
   final VoidCallback? onClick;
+
+  /// Visual overrides for this notification; see [AnimalNotificationStyle].
   final AnimalNotificationStyle? style;
 
+  /// Creates a notification configuration.
+  ///
   /// Throws an [ArgumentError] for a [duration] that is not positive.
   AnimalNotificationConfig({
     required this.message,

@@ -46,6 +46,14 @@ Controller 在注册时冻结该值作为 baseline。文本字段必须显式传
 普通重建和通过 `GlobalKey` 移动同一个 State 都会保留 registration generation、当前值和 baseline。
 重新挂载的新 item 会取得新 generation，并以当前类型化初始值捕获 baseline。
 
+## 字段绑定
+
+自定义字段在 `builder` 中得到 `AnimalFieldBinding<T>`：当前 `value`、报告编辑与失焦的
+`onChanged` 和 `onBlur`、控件必须使用的 `focusNode`、`dirty` 与 `touched`、校验状态
+`status`（`AnimalValidationStatus`：`idle`、`validating`、`valid` 或 `invalid`）以及当前
+`error`。错误是 `AnimalValidationIssue`，其 `kind`（`AnimalValidationIssueKind`）以与语言
+无关的方式标明失败的规则。
+
 ## 定制
 
 `style` 接受 `AnimalFormItemStyle`，只覆盖当前表单项。主题的

@@ -35,7 +35,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and glow rule (`errorText`/`warningText` borders, 45% focus and 35% status
   glow) with a styleable glow color (`glowColor`, `triggerGlowColor` on
   TimePicker); Select supports the warning status.
-
+- **Validation of styles**: a style rejects negative or non-finite padding and
+  corner radii when it is built, like its other dimensions. Style
+  interpolation clamps `t` to 0..1, so an overshooting theme animation curve
+  stays between the two styles.
+- **Option groups**: `AnimalCheckboxGroup` and `AnimalRadioGroup` show an
+  option's `icon` and announce its `semanticLabel`, as Select does.
+- **Snowflake loading**: the alpha of the snowflake color scales each
+  particle's opacity instead of being replaced by it.
+- **Notification handle**: `AnimalNotificationHandle` is a final class
+  returned by `AnimalNotification`; it can no longer be subclassed.
+- **Documentation**: every public member of the package is documented.
+- **Form controller**: after `dispose`, starting new work (`setValue`,
+  `validate`, `validateField`, `submit`, `reset`, `clear`, `focusFirstError`)
+  throws a `StateError`; `validate` takes named `fieldKeys` and `autoFocus`.
+  `reset` and `clear` are not re-entrant: form work started by a listener
+  while they write the fields throws a `StateError`.
 - **Button API**: `AnimalButton` is configured with `variant`
   (`filled`, `outlined`, `dashed`, ...), `tone` and `size`.
 - **Runtime dependencies**: `flutter_svg`, `characters`, `intl` and
@@ -49,6 +64,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AnimalLoading.color` and `AnimalLoading.barrierColor`: use
   `AnimalLoadingStyle.color` and `AnimalLoadingStyle.barrierColor`.
 - `AnimalInputStyle.iconSize`: use `clearIconSize`.
+- Form internals: `AnimalFieldRegistration`, the controller's field registration
+  methods (`registerField`, `bindingFor`, ...), `epoch`, `isDisposed`, `isValid`
+  and `touchField`; register fields by placing an `AnimalFormItem` in an
+  `AnimalForm`. `AnimalFieldBinding` has no public constructor and no
+  `generation`, `hasError`, `isValid` or `isValidating`; read `status` and
+  `error`. `AnimalSubmitResult.isSuccess`: read `status`.
+- `AnimalRuleType` and the `AnimalRule` configuration fields; build rules with
+  the `AnimalRule` factories.
+- `AnimalDate.isLeapYear` and `AnimalDate.isAtSameMomentAs` (use
+  `daysInMonth` and `compareTo`), `AnimalTimeValue.fromTimeOfDay` and
+  `toTimeOfDay`, and the root export of `lookupAnimalLocalizations`.
+- The pixel metrics of `AnimalButtonSize`, `AnimalTitleSize` and
+  `AnimalTagSize`; the enums select a size.
+- The `AnimalFieldKey` type guards (`valueType`, `acceptsRequestedType`,
+  `requireRequestedType`, `requireValueType`, `snapshotValue`) and
+  `AnimalFormController.defaultSubmitHandler`; pass `onSubmit` to
+  `AnimalForm` or to `submit`.
+- The Gallery's `gallery*` and `provenance*` strings from
+  `AnimalLocalizations`; the example app owns them.
+- `AnimalLocalizations.close`, which no component read; components use their
+  own close labels such as `modalCloseLabel`.
+- `AnimalTabItem.id`, which no tab read.
 
 ## [1.0.0] - 2026-09-14
 

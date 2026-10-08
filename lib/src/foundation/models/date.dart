@@ -9,7 +9,10 @@ import 'clock.dart';
 /// the number of calendar days moved.
 @immutable
 final class AnimalDate implements Comparable<AnimalDate> {
+  /// Earliest supported year.
   static const int minimumYear = 1;
+
+  /// Latest supported year.
   static const int maximumYear = 9999;
 
   static const List<int> _daysBeforeMonth = <int>[
@@ -27,10 +30,19 @@ final class AnimalDate implements Comparable<AnimalDate> {
     334,
   ];
 
+  /// Year, from [minimumYear] to [maximumYear].
   final int year;
+
+  /// Month of the year, from 1 to 12.
   final int month;
+
+  /// Day of the month, from 1 to [daysInMonth] for [year] and [month].
   final int day;
 
+  /// Creates the civil date [year]-[month]-[day].
+  ///
+  /// Throws an [ArgumentError] when the year is outside [minimumYear] to
+  /// [maximumYear] or the month or day does not exist.
   AnimalDate(this.year, this.month, this.day) {
     _validateYear(year);
     if (month < 1 || month > 12) {
@@ -46,9 +58,8 @@ final class AnimalDate implements Comparable<AnimalDate> {
     }
   }
 
-  /// Returns whether [year] is a leap year in the Gregorian calendar.
-  static bool isLeapYear(int year) {
-    _validateYear(year);
+  // Whether [year] is a leap year in the Gregorian calendar.
+  static bool _isLeapYear(int year) {
     return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
   }
 
@@ -59,7 +70,7 @@ final class AnimalDate implements Comparable<AnimalDate> {
       throw ArgumentError.value(month, 'month', 'Expected a month in 1..12');
     }
     return switch (month) {
-      2 => isLeapYear(year) ? 29 : 28,
+      2 => _isLeapYear(year) ? 29 : 28,
       4 || 6 || 9 || 11 => 30,
       _ => 31,
     };
@@ -103,7 +114,7 @@ final class AnimalDate implements Comparable<AnimalDate> {
   }
 
   int get _ordinal {
-    final leapAdjustment = month > 2 && isLeapYear(year) ? 1 : 0;
+    final leapAdjustment = month > 2 && _isLeapYear(year) ? 1 : 0;
     return _daysBeforeYear(year) +
         _daysBeforeMonth[month - 1] +
         leapAdjustment +
@@ -164,11 +175,11 @@ final class AnimalDate implements Comparable<AnimalDate> {
   String toIso8601String() =>
       '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
 
+  /// Whether this date is strictly earlier than [other].
   bool isBefore(AnimalDate other) => compareTo(other) < 0;
 
+  /// Whether this date is strictly later than [other].
   bool isAfter(AnimalDate other) => compareTo(other) > 0;
-
-  bool isAtSameMomentAs(AnimalDate other) => compareTo(other) == 0;
 
   @override
   int compareTo(AnimalDate other) {
@@ -193,7 +204,16 @@ final class AnimalDate implements Comparable<AnimalDate> {
 }
 
 /// The only selection modes supported by `AnimalDatePicker`.
-enum AnimalDatePickerMode { date, range, month }
+enum AnimalDatePickerMode {
+  /// Selects one date with an [AnimalDateSingleSelection].
+  date,
+
+  /// Selects a start and end date with an [AnimalDateRangeSelection].
+  range,
+
+  /// Selects a month with an [AnimalDateSingleSelection] on its first day.
+  month,
+}
 
 /// A controlled, discriminated date-picker selection.
 ///
@@ -202,11 +222,17 @@ enum AnimalDatePickerMode { date, range, month }
 /// month.
 @immutable
 sealed class AnimalDateSelection {
+  /// Base constructor for the sealed selection variants.
   const AnimalDateSelection();
 
+  /// Creates a single-date selection of [date].
   const factory AnimalDateSelection.date(AnimalDate date) =
       AnimalDateSingleSelection;
 
+  /// Creates a range selection from [start] to [end]; a null [end] is the
+  /// first-endpoint draft.
+  ///
+  /// Throws an [ArgumentError] when [end] is before [start].
   factory AnimalDateSelection.range({
     required AnimalDate start,
     AnimalDate? end,
@@ -219,8 +245,11 @@ sealed class AnimalDateSelection {
 /// A single selected civil date, also used for a first-of-month selection.
 @immutable
 final class AnimalDateSingleSelection extends AnimalDateSelection {
+  /// Creates a selection of [date].
   const AnimalDateSingleSelection(this.date);
 
+  /// Selected date; the first day of the month in
+  /// [AnimalDatePickerMode.month].
   final AnimalDate date;
 
   @override
@@ -241,6 +270,9 @@ final class AnimalDateSingleSelection extends AnimalDateSelection {
 /// proposed and accepted by the parent.
 @immutable
 final class AnimalDateRangeSelection extends AnimalDateSelection {
+  /// Creates a range from [start] to [end].
+  ///
+  /// Throws an [ArgumentError] when [end] is before [start].
   AnimalDateRangeSelection({required this.start, this.end}) {
     if (end != null && start.isAfter(end!)) {
       throw ArgumentError.value(
@@ -251,7 +283,10 @@ final class AnimalDateRangeSelection extends AnimalDateSelection {
     }
   }
 
+  /// First date of the range.
   final AnimalDate start;
+
+  /// Last date of the range, inclusive; null while only [start] is chosen.
   final AnimalDate? end;
 
   @override

@@ -68,6 +68,11 @@ class AnimalDrawerStyle {
   /// Color of the mask behind the drawer.
   final Color? barrierColor;
 
+  /// Creates a drawer style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension, inset or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalDrawerStyle({
     this.backgroundColor,
     this.borderColor,
@@ -92,8 +97,18 @@ class AnimalDrawerStyle {
     AnimalStyleValues.checkTextStyle('titleTextStyle', titleTextStyle);
     AnimalStyleValues.checkDimension('dividerThickness', dividerThickness);
     AnimalStyleValues.checkDimension('closeIconSize', closeIconSize);
+    AnimalStyleValues.checkRadius('borderRadius', borderRadius);
+    AnimalStyleValues.checkInsets('headerPadding', headerPadding);
+    AnimalStyleValues.checkInsets('bodyPadding', bodyPadding);
+    AnimalStyleValues.checkInsets('footerPadding', footerPadding);
+    AnimalStyleValues.checkInsets('closeButtonPadding', closeButtonPadding);
+    AnimalStyleValues.checkRadius(
+      'closeButtonBorderRadius',
+      closeButtonBorderRadius,
+    );
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalDrawerStyle copyWith({
     Color? backgroundColor,
     Color? borderColor,
@@ -167,6 +182,12 @@ class AnimalDrawerStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalDrawerStyle? lerp(
     AnimalDrawerStyle? a,
     AnimalDrawerStyle? b,

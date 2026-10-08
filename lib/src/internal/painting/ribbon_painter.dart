@@ -8,12 +8,23 @@ import 'package:flutter/rendering.dart';
 ///   2. Folded triangle shadows underneath
 ///   3. Front elevated banner
 class AnimalRibbonPainter extends CustomPainter {
+  /// Fill of the front banner.
   final Color frontColor;
+
+  /// Fill of the two swallowtail wings.
   final Color backColor;
+
+  /// Fill of the fold triangles between the banner and the wings.
   final Color foldColor;
+
+  /// Width of each wing in logical pixels. Defaults to 24.
   final double wingWidth;
+
+  /// Vertical offset of the wings below the banner, and the size of each
+  /// fold triangle, in logical pixels. Defaults to 8.
   final double foldDrop;
 
+  /// Creates a ribbon painter with the given colors and geometry.
   const AnimalRibbonPainter({
     required this.frontColor,
     required this.backColor,

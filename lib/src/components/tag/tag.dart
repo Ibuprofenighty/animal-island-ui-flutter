@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
 import '../../foundation/theme/colors.dart';
+import '../../foundation/theme/spacing.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/interaction/icon_action.dart';
 import '../../internal/interaction/interactive_region.dart';
@@ -9,17 +10,67 @@ import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
 
 /// Presentation variants for [AnimalTag].
-enum AnimalTagVariant { primary, success, warning, error, neutral }
+enum AnimalTagVariant {
+  /// Primary accent colors.
+  primary,
 
-/// Sizing scale for [AnimalTag].
+  /// Success colors.
+  success,
+
+  /// Warning colors.
+  warning,
+
+  /// Error colors.
+  error,
+
+  /// Neutral content surface with the body text color.
+  neutral,
+}
+
+/// Size of an [AnimalTag].
 enum AnimalTagSize {
-  small(10.0),
-  middle(12.0),
-  large(14.0);
+  /// Compact tag: caption text at 10/12 and a 10 logical-pixel remove icon.
+  small,
 
-  final double iconSize;
+  /// Default tag: caption text and a 12 logical-pixel remove icon.
+  middle,
 
-  const AnimalTagSize(this.iconSize);
+  /// Large tag: caption text at 14/12 and a 14 logical-pixel remove icon.
+  large,
+}
+
+/// Metrics of each [AnimalTagSize]. Package-internal: the root library
+/// exports the enum without this extension.
+extension AnimalTagSizeMetrics on AnimalTagSize {
+  /// Size of the remove icon.
+  double get iconSize => switch (this) {
+    AnimalTagSize.small => 10,
+    AnimalTagSize.middle => 12,
+    AnimalTagSize.large => 14,
+  };
+
+  /// Scale of the caption typography for the label.
+  double get fontSizeFactor => switch (this) {
+    AnimalTagSize.small => 10 / 12,
+    AnimalTagSize.middle => 1,
+    AnimalTagSize.large => 14 / 12,
+  };
+
+  /// Padding inside the tag, from the theme spacing.
+  EdgeInsets padding(AnimalThemeSpacing spacing) => switch (this) {
+    AnimalTagSize.small => EdgeInsets.symmetric(
+      horizontal: spacing.sm,
+      vertical: spacing.xxs,
+    ),
+    AnimalTagSize.middle => EdgeInsets.symmetric(
+      horizontal: spacing.md,
+      vertical: spacing.xs,
+    ),
+    AnimalTagSize.large => EdgeInsets.symmetric(
+      horizontal: spacing.lg,
+      vertical: spacing.xs + spacing.xxs,
+    ),
+  };
 }
 
 /// Animal Island Pill Tag component.
@@ -59,6 +110,7 @@ class AnimalTag extends StatelessWidget {
   /// Focus node for the primary tag action.
   final FocusNode? focusNode;
 
+  /// Creates a tag showing [child].
   const AnimalTag({
     super.key,
     required this.child,
@@ -144,13 +196,7 @@ class AnimalTag extends StatelessWidget {
         if (icon != null) ...[icon!, SizedBox(width: theme.spacing.xs)],
         DefaultTextStyle(
           style: theme.typography.caption
-              .apply(
-                fontSizeFactor: switch (size) {
-                  AnimalTagSize.small => 10 / 12,
-                  AnimalTagSize.middle => 1,
-                  AnimalTagSize.large => 14 / 12,
-                },
-              )
+              .apply(fontSizeFactor: size.fontSizeFactor)
               .copyWith(color: text, fontWeight: FontWeight.w700),
           child: child,
         ),
@@ -174,20 +220,7 @@ class AnimalTag extends StatelessWidget {
     return Opacity(
       opacity: disabled ? 0.6 : 1.0,
       child: Container(
-        padding: switch (size) {
-          AnimalTagSize.small => EdgeInsets.symmetric(
-            horizontal: theme.spacing.sm,
-            vertical: theme.spacing.xxs,
-          ),
-          AnimalTagSize.middle => EdgeInsets.symmetric(
-            horizontal: theme.spacing.md,
-            vertical: theme.spacing.xs,
-          ),
-          AnimalTagSize.large => EdgeInsets.symmetric(
-            horizontal: theme.spacing.lg,
-            vertical: theme.spacing.xs + theme.spacing.xxs,
-          ),
-        },
+        padding: size.padding(theme.spacing),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: theme.radii.pillBorder,

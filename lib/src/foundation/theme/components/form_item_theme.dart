@@ -37,6 +37,11 @@ class AnimalFormItemStyle {
   /// Duration of the help/error feedback transition.
   final Duration? feedbackDuration;
 
+  /// Creates a form item style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension is negative or not finite,
+  /// a given text style has a font size that is not finite and positive, or
+  /// [feedbackDuration] is negative.
   AnimalFormItemStyle({
     this.labelTextStyle,
     this.requiredMarkTextStyle,
@@ -67,6 +72,7 @@ class AnimalFormItemStyle {
     }
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalFormItemStyle copyWith({
     TextStyle? labelTextStyle,
     TextStyle? requiredMarkTextStyle,
@@ -109,6 +115,12 @@ class AnimalFormItemStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalFormItemStyle? lerp(
     AnimalFormItemStyle? a,
     AnimalFormItemStyle? b,

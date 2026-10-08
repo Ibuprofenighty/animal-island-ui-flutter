@@ -38,6 +38,12 @@ The trigger label uses the theme body style scaled by 15/14 (15 logical pixels a
 
 All option rows share one adaptive extent: at least 48 logical pixels and large enough for two lines of the resolved option text style at the active `TextScaler`, plus the option's vertical padding. Labels show at most two lines with ellipsis, and each option keeps a minimum 48×48 logical-pixel hit target. Theme tokens supply the default menu surface, border, row text and state colors, typography, radii, and spacing. The menu width and list viewport height are capped by `menuMaxWidth` and `menuMaxHeight` (320 logical pixels by default); width also fits the available viewport minus 24 logical pixels, and height fits the option rows up to that cap. The bounded list remains lazy with 1,000 options.
 
+## Options
+
+Each option is an `AnimalOption<T>`: a `value` that identifies it, a visible
+`label`, an optional `icon` and `semanticLabel`, and `disabled` to keep it
+visible but not selectable.
+
 ## Customization
 
 `style` takes an `AnimalSelectStyle` and overrides the theme for this select.

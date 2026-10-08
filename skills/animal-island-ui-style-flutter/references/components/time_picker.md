@@ -27,6 +27,11 @@
 
 `AnimalTimeValue` is an immutable time of day with hour 0–23, minute 0–59 and second 0–59; an out-of-range field throws `ArgumentError.value`. The picker keeps all three fields: a hidden seconds wheel (`format: 'HH:mm'`) still carries the value's seconds, so changing the hour or minute, Now, Clear, a reset and form submission never drop them. `AnimalTimeValue.now()` reads the canonical `AnimalClock` (`SystemClock` by default), and both presentations take the same `clock`.
 
+`AnimalTimeValue` members: `hour`, `minute`, `second`, `copyWith`,
+`AnimalTimeValue.now({clock})`, `format({includeSeconds})` (`HH:mm:ss` or
+`HH:mm`, also its `toString`) and `compareTo`; two values are equal when
+their hour, minute and second are.
+
 `value` is the only committed time and `onChanged` proposes a new one. The parent accepts a proposal by passing it back; a value it does not accept is not kept on the wheels, which return to `value` once the scroll settles. A value off the configured steps is shown on the nearest step. `hourStep`, `minuteStep` and `secondStep` must be at least 1 (`ArgumentError` otherwise). Inline and popover presentations use one panel.
 
 Programmatic wheel moves (a new `value`, Now, Clear or a reset to null) run as one batch that never reports its intermediate items: Now proposes its final time once and Clear proposes null once, while an external change proposes nothing. A newer value or a user drag supersedes a running batch, so an earlier Now animation can never land after a later value. User scrolling still proposes each item it settles on.

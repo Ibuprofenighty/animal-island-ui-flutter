@@ -27,6 +27,15 @@
 
 `AnimalDate` is a Gregorian civil date from year 1 through 9999. Its arithmetic uses calendar ordinals, so advancing a day never depends on a local 24-hour interval. `AnimalDate.fromDateTime()` reads the input object's year, month, and day fields as supplied; `toDateTime()` returns those fields at UTC midnight. Invalid year, month, or day construction throws `ArgumentError.value`; arithmetic that leaves the supported year range throws `RangeError` in debug and release builds. Calendar cells beyond the supported years are inert placeholders.
 
+`AnimalDate` members: `year`, `month`, `day`, `weekday` (1 = Monday),
+`AnimalDate.minimumYear`/`maximumYear`, `AnimalDate.daysInMonth(year, month)`,
+`AnimalDate.today({clock})`, `AnimalDate.fromDateTime`, `toDateTime()`,
+`addDays`/`subtractDays`, `isBefore`/`isAfter`/`compareTo` and
+`toIso8601String()` (also its `toString`); two dates are equal when their
+year, month and day are. `AnimalDateSingleSelection.date` and
+`AnimalDateRangeSelection.start`/`end` hold a selection, and
+`isCompatibleWith(mode)` tells whether it fits a picker mode.
+
 `AnimalDatePickerMode.date`, `.range`, and `.month` are selected through `mode`, which defaults to `.date`. They share one controlled `AnimalDateSelection? selection` and one `ValueChanged<AnimalDateSelection?>? onChanged` proposal callback. `AnimalDateSelection.date(...)` creates `AnimalDateSingleSelection`; `AnimalDateSelection.range(start:, end:)` creates `AnimalDateRangeSelection`. In range mode, `end == null` represents the externally controlled start-date draft. A complete range is proposed after its end date is chosen. The range constructor rejects an end before its start with `ArgumentError.value`. Month mode reuses the single-date variant and requires day 1 of the chosen month. A mode/selection mismatch throws `ArgumentError.value`, and `firstDate` after `lastDate` throws `ArgumentError`.
 
 The parent remains the only owner of the committed selection. It accepts a proposal by passing the resulting selection back; if it leaves `selection` unchanged, the picker continues to display that external value without retaining an optimistic second value. Inline and popover presentations use the same calendar model and panel. `CalendarModel` receives `today` explicitly; `AnimalDate.today()` and both presentations use the canonical `AnimalClock`/`SystemClock` path.

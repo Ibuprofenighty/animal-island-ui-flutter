@@ -67,6 +67,9 @@ class AnimalCountdown extends StatefulWidget {
   /// Callback triggered once when the countdown reaches zero.
   final VoidCallback? onFinish;
 
+  /// Creates a countdown to [targetTime] or over [remaining].
+  ///
+  /// At least one of [targetTime] and [remaining] must be non-null.
   const AnimalCountdown({
     super.key,
     this.targetTime,

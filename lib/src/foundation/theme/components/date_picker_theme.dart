@@ -150,6 +150,11 @@ class AnimalDatePickerStyle {
   /// Fill behind the clear icon, resolved against [WidgetState.hovered].
   final WidgetStateProperty<Color?>? triggerClearButtonBackgroundColor;
 
+  /// Creates a date picker style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension, inset or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalDatePickerStyle({
     this.width,
     this.padding,
@@ -196,14 +201,6 @@ class AnimalDatePickerStyle {
     this.triggerClearButtonBackgroundColor,
   }) {
     AnimalStyleValues.checkDimension('width', width);
-    // Resolving covers start/end insets as well as left/right ones.
-    final EdgeInsets? insets = padding?.resolve(TextDirection.ltr);
-    if (insets != null) {
-      AnimalStyleValues.checkDimension('padding.left', insets.left);
-      AnimalStyleValues.checkDimension('padding.top', insets.top);
-      AnimalStyleValues.checkDimension('padding.right', insets.right);
-      AnimalStyleValues.checkDimension('padding.bottom', insets.bottom);
-    }
     AnimalStyleValues.checkDimension('borderWidth', borderWidth);
     AnimalStyleValues.checkDimension('cellInset', cellInset);
     AnimalStyleValues.checkDimension('monthBorderWidth', monthBorderWidth);
@@ -226,8 +223,22 @@ class AnimalDatePickerStyle {
     AnimalStyleValues.checkTextStyle('cellTextStyle', cellTextStyle);
     AnimalStyleValues.checkTextStyle('actionTextStyle', actionTextStyle);
     AnimalStyleValues.checkTextStyle('triggerTextStyle', triggerTextStyle);
+    AnimalStyleValues.checkInsets('padding', padding);
+    AnimalStyleValues.checkRadius('borderRadius', borderRadius);
+    AnimalStyleValues.checkRadius('rangeBorderRadius', rangeBorderRadius);
+    AnimalStyleValues.checkRadius('monthBorderRadius', monthBorderRadius);
+    AnimalStyleValues.checkRadius('triggerBorderRadius', triggerBorderRadius);
+    AnimalStyleValues.checkInsets(
+      'triggerClearButtonPadding',
+      triggerClearButtonPadding,
+    );
+    AnimalStyleValues.checkRadius(
+      'triggerClearButtonBorderRadius',
+      triggerClearButtonBorderRadius,
+    );
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalDatePickerStyle copyWith({
     double? width,
     EdgeInsetsGeometry? padding,
@@ -393,6 +404,12 @@ class AnimalDatePickerStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalDatePickerStyle? lerp(
     AnimalDatePickerStyle? a,
     AnimalDatePickerStyle? b,

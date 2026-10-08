@@ -12,7 +12,19 @@ import '../../internal/overlay/animal_route.dart';
 import '../../internal/timing/motion_policy.dart';
 
 /// Placement edge for [AnimalDrawer].
-enum AnimalDrawerPlacement { left, right, top, bottom }
+enum AnimalDrawerPlacement {
+  /// Slides in from the left edge.
+  left,
+
+  /// Slides in from the right edge.
+  right,
+
+  /// Slides in from the top edge.
+  top,
+
+  /// Slides in from the bottom edge.
+  bottom,
+}
 
 /// Animal Island slide-out drawer sheet with four placements (C22).
 ///
@@ -55,6 +67,7 @@ class AnimalDrawer extends StatelessWidget {
   /// Visual overrides for this drawer; see [AnimalDrawerStyle].
   final AnimalDrawerStyle? style;
 
+  /// Creates a drawer sheet around [child].
   const AnimalDrawer({
     super.key,
     this.title,

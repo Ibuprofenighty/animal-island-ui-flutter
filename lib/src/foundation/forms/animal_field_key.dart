@@ -8,9 +8,14 @@ import 'package:flutter/foundation.dart';
 /// semantics by extending or implementing it.
 @immutable
 final class AnimalFieldKey<T> {
+  /// Diagnostic label shown by [toString]; never used for identity.
   final String? debugLabel;
   final T? Function(T?)? _snapshot;
 
+  /// Creates a key for scalar (non-collection) values.
+  ///
+  /// Snapshotting a List, Set or Map value through this key throws a
+  /// [StateError]; use [list], [set], [map] or [withSnapshot] for collections.
   // A const constructor would canonicalize keys and collapse owner identity.
   // ignore: prefer_const_constructors_in_immutables
   AnimalFieldKey({this.debugLabel}) : _snapshot = null;
@@ -57,32 +62,24 @@ final class AnimalFieldKey<T> {
             : Map<K, V>.unmodifiable(_requireFlatMap(value)),
       );
 
-  /// The actual generic value type carried by this key instance.
-  Type get valueType => T;
-
-  /// Returns whether [requestedType] matches the key's actual generic type.
-  bool acceptsRequestedType(Type requestedType) => requestedType == T;
-
-  /// Fails if a caller has widened this key to a different static type.
-  void requireRequestedType(Type requestedType) {
-    if (!acceptsRequestedType(requestedType)) {
+  // The guards read the key's runtime generic type, so they stay instance
+  // members; [AnimalFieldKeyContract] exposes them inside the package.
+  void _requireRequestedType(Type requestedType) {
+    if (requestedType != T) {
       throw StateError(
         'The requested field type does not match this key instance.',
       );
     }
   }
 
-  /// Fails if [value] does not have this key instance's actual value type.
-  void requireValueType(Object? value) {
+  void _requireValueType(Object? value) {
     if (value != null && value is! T) {
       throw StateError('The value does not match the field key type.');
     }
   }
 
-  /// Returns a defensive immutable snapshot with the type selected by this key.
-  T? snapshotValue(T? value) {
-    requireRequestedType(T);
-    requireValueType(value);
+  // The runtime parameter type T? already rejects a value of another type.
+  T? _snapshotValue(T? value) {
     if (value == null) return null;
     final snapshot = _snapshot;
     if (snapshot == null && (value is List || value is Set || value is Map)) {
@@ -90,9 +87,7 @@ final class AnimalFieldKey<T> {
         'Collection field keys require a typed immutable snapshot strategy.',
       );
     }
-    final result = snapshot == null ? value : snapshot(value);
-    requireValueType(result);
-    return result;
+    return snapshot == null ? value : snapshot(value);
   }
 
   static Iterable<E> _requireFlatCollection<E>(Iterable<E> values) {
@@ -130,4 +125,21 @@ final class AnimalFieldKey<T> {
 
   @override
   String toString() => 'AnimalFieldKey<$T>(${debugLabel ?? 'opaque identity'})';
+}
+
+/// Runtime type guards of [AnimalFieldKey] for the form controller and value
+/// snapshots.
+///
+/// Package-internal: the root library exports [AnimalFieldKey] without this
+/// extension.
+extension AnimalFieldKeyContract<T> on AnimalFieldKey<T> {
+  /// Fails if a caller has widened this key to a different static type.
+  void requireRequestedType(Type requestedType) =>
+      _requireRequestedType(requestedType);
+
+  /// Fails if [value] does not have this key instance's actual value type.
+  void requireValueType(Object? value) => _requireValueType(value);
+
+  /// Returns a defensive immutable snapshot with the type selected by this key.
+  T? snapshotValue(T? value) => _snapshotValue(value);
 }

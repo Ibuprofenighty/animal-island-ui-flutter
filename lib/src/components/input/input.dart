@@ -14,13 +14,31 @@ import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
 
 /// Semantic status for [AnimalInput].
-enum AnimalInputStatus { normal, warning, error }
+enum AnimalInputStatus {
+  /// No validation emphasis.
+  normal,
+
+  /// Warning emphasis on the border.
+  warning,
+
+  /// Error emphasis; resolves style values against [WidgetState.error].
+  error,
+}
 
 /// Size presets for [AnimalInput].
 ///
 /// A preset names a step; its metrics come from the active theme. See
 /// [AnimalInputStyle] for the values a theme or a single input can override.
-enum AnimalInputSize { small, middle, large }
+enum AnimalInputSize {
+  /// Smallest step: at least 34 logical pixels high by default.
+  small,
+
+  /// Default step: at least 44 logical pixels high by default.
+  middle,
+
+  /// Largest step: at least 52 logical pixels high by default.
+  large,
+}
 
 /// Animal Island Pill Input Field (C12).
 ///
@@ -97,6 +115,7 @@ class AnimalInput extends StatefulWidget {
   /// Input formatters applied to typed text.
   final List<TextInputFormatter>? inputFormatters;
 
+  /// Creates a pill input bound to [controller].
   const AnimalInput({
     super.key,
     required this.controller,

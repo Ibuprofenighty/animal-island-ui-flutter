@@ -2,6 +2,7 @@ import '../../foundation/models/time.dart';
 
 /// Pure computation model for TimePicker wheels and steps.
 class TimeWheelModel {
+  /// Throws an [ArgumentError] naming [name] when [step] is less than 1.
   static void validateStep(int step, String name) {
     if (step <= 0) {
       throw ArgumentError.value(step, name, '$name must be >= 1');

@@ -16,12 +16,30 @@ import '../../internal/interaction/interactive_region.dart';
 /// - Hit-test protection: uses [IgnorePointer] and zero opacity when below threshold (BTP01).
 /// - Safe lifecycle: detaches listeners cleanly without disposing external controllers (BTP02).
 class AnimalBackTop extends StatefulWidget {
+  /// Scroll position that is watched and scrolled back to zero.
+  ///
+  /// The caller owns this controller; the button only adds and removes its
+  /// listener and never disposes it.
   final ScrollController scrollController;
+
+  /// Scroll offset at or beyond which the button becomes visible.
+  ///
+  /// Defaults to 400.
   final double visibilityHeight;
+
+  /// Duration of the scroll back to the top. Defaults to 500 milliseconds.
   final Duration duration;
+
+  /// Content shown in the button; null shows the rocket icon.
   final Widget? icon;
+
+  /// Called when the button is activated, before the scroll starts.
+  ///
+  /// Not called while the controller has no attached position or while a
+  /// launch animation is still running.
   final VoidCallback? onClick;
 
+  /// Creates a button that scrolls [scrollController] back to the top.
   const AnimalBackTop({
     super.key,
     required this.scrollController,

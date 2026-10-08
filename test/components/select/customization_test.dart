@@ -452,6 +452,18 @@ void main() {
 
   group('API06 AnimalSelect boundary', () {
     test('styles reject values the select cannot render', () {
+      expect(
+        () => AnimalSelectStyle(
+          clearButtonPadding: const EdgeInsets.only(left: -1),
+        ),
+        throwsArgumentError,
+      );
+      expect(
+        () => AnimalSelectStyle(
+          borderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalSelectStyle(borderWidth: -1), throwsArgumentError);
       expect(
         () => AnimalSelectStyle(menuMaxHeight: double.nan),

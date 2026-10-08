@@ -9,8 +9,6 @@ import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
 import 'pagination_model.dart';
 
-export 'pagination_model.dart';
-
 /// Animal Island 3D sinking pill Pagination component.
 ///
 /// Features:
@@ -38,6 +36,10 @@ class AnimalPagination extends StatelessWidget {
   /// Whether the pagination control is completely disabled.
   final bool disabled;
 
+  /// Creates a pagination control for page [current] of [total] items.
+  ///
+  /// [pageSize] must be positive, [total] non-negative and [current] at
+  /// least 1.
   const AnimalPagination({
     super.key,
     required this.current,

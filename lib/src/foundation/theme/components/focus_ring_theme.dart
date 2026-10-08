@@ -13,6 +13,7 @@ class AnimalFocusRingStyle {
   /// The narrowest ring width this library will draw.
   static const double minimumWidth = 2;
 
+  /// Stroke width of the ring; at least [minimumWidth]. Defaults to 2.5.
   final double? width;
 
   /// Gap between the component edge and the ring.
@@ -21,11 +22,16 @@ class AnimalFocusRingStyle {
   /// Ring color. Choose one with at least 3:1 contrast against its surface.
   final Color? color;
 
+  /// Creates a focus ring style.
+  ///
+  /// Throws an [ArgumentError] if [width] is not finite or is below
+  /// [minimumWidth], or if [offset] is negative or not finite.
   AnimalFocusRingStyle({this.width, this.offset, this.color}) {
     AnimalStyleValues.checkDimension('width', width, minimum: minimumWidth);
     AnimalStyleValues.checkDimension('offset', offset);
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalFocusRingStyle copyWith({
     double? width,
     double? offset,
@@ -36,6 +42,12 @@ class AnimalFocusRingStyle {
     color: color ?? this.color,
   );
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalFocusRingStyle? lerp(
     AnimalFocusRingStyle? a,
     AnimalFocusRingStyle? b,

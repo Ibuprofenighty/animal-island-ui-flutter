@@ -313,6 +313,16 @@ void main() {
 
   group('API06 AnimalNotification boundary', () {
     test('styles reject values components cannot render', () {
+      expect(
+        () => AnimalNotificationStyle(padding: const EdgeInsets.only(left: -1)),
+        throwsArgumentError,
+      );
+      expect(
+        () => AnimalNotificationStyle(
+          closeButtonBorderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalNotificationStyle(maxWidth: -1), throwsArgumentError);
       expect(
         () => AnimalNotificationStyle(borderWidth: double.nan),

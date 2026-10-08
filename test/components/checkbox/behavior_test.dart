@@ -91,6 +91,46 @@ void main() {
       },
     );
 
+    testWidgets(
+      'N15 group options show their icon and announce their semantic label',
+      (tester) async {
+        final SemanticsHandle semantics = tester.ensureSemantics();
+        AnimalOption<String> option(String id) => AnimalOption<String>(
+          value: id,
+          label: 'Apple',
+          semanticLabel: 'Red apple $id',
+          icon: SizedBox(key: ValueKey<String>('icon-$id'), width: 8),
+        );
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AnimalIslandTheme.light.toThemeData(),
+            home: Scaffold(
+              body: Column(
+                children: <Widget>[
+                  AnimalCheckboxGroup<String>(
+                    value: const <String>[],
+                    options: <AnimalOption<String>>[option('checkbox')],
+                    onChanged: (_) {},
+                  ),
+                  AnimalRadioGroup<String>(
+                    value: null,
+                    options: <AnimalOption<String>>[option('radio')],
+                    onChanged: (_) {},
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        for (final String id in <String>['checkbox', 'radio']) {
+          expect(find.byKey(ValueKey<String>('icon-$id')), findsOneWidget);
+          expect(find.bySemanticsLabel('Red apple $id'), findsOneWidget);
+        }
+        expect(find.bySemanticsLabel('Apple'), findsNothing);
+        semantics.dispose();
+      },
+    );
+
     testWidgets('CHK03: Indeterminate checkbox shows dash', (tester) async {
       final SemanticsHandle semantics = tester.ensureSemantics();
       try {

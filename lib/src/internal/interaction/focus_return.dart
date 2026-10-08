@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 /// [restore] gives focus back to it after the frame in which the surface
 /// leaves, when that control is still mounted and focusable.
 final class AnimalFocusReturn {
+  /// Creates a focus return that records the current primary focus.
   AnimalFocusReturn.capture() : _target = FocusManager.instance.primaryFocus;
 
   FocusNode? _target;

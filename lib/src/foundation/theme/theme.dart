@@ -11,16 +11,30 @@ import 'typography.dart';
 /// The single immutable theme value consumed by Animal Island components.
 @immutable
 class AnimalIslandTheme extends ThemeExtension<AnimalIslandTheme> {
+  /// Semantic colors and tile swatches.
   final AnimalThemeColors colors;
+
+  /// Font families and text styles.
   final AnimalThemeTypography typography;
+
+  /// Corner radii.
   final AnimalThemeRadii radii;
+
+  /// Spacing scale.
   final AnimalThemeSpacing spacing;
+
+  /// Depth and elevation shadows.
   final AnimalThemeShadows shadows;
+
+  /// Transition curves and durations.
   final AnimalThemeMotion motion;
 
   /// Component-level overrides; empty in the presets.
   final AnimalComponentThemes components;
 
+  /// Creates a theme from its token families.
+  ///
+  /// [components] defaults to an empty [AnimalComponentThemes].
   const AnimalIslandTheme({
     required this.colors,
     required this.typography,

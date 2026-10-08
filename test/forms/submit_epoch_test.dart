@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:animal_island_ui/src/components/form/form_controller.dart'
+    show AnimalFieldRegistration, AnimalFormFieldProtocol;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
@@ -12,10 +14,17 @@ import '../support/locked_dart_process.dart';
 
 class _NotificationGuardController extends AnimalFormController {
   int notificationsAfterDispose = 0;
+  bool disposed = false;
+
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
+  }
 
   @override
   void notifyListeners() {
-    if (isDisposed) {
+    if (disposed) {
       notificationsAfterDispose++;
       return;
     }
@@ -375,7 +384,7 @@ void main() {
       final validation = Completer<String?>();
       var handlerCalls = 0;
       var moveField = false;
-      var generation = 0;
+      ValueChanged<String?>? originalOnChanged;
       late StateSetter rebuildParent;
 
       Widget field() => AnimalFormItem<String>(
@@ -389,7 +398,7 @@ void main() {
           }),
         ],
         builder: (_, binding) {
-          generation = binding.generation;
+          originalOnChanged ??= binding.onChanged;
           return Text(binding.value ?? 'null');
         },
       );
@@ -416,7 +425,6 @@ void main() {
       Future<AnimalSubmitResult>? pendingSubmit;
       try {
         await tester.pumpWidget(tree());
-        final originalGeneration = generation;
         pendingSubmit = controller.submit(
           onSubmit: (_) {
             handlerCalls++;
@@ -431,7 +439,6 @@ void main() {
           (await pendingSubmit).status,
           AnimalSubmitStatus.changedDuringValidation,
         );
-        expect(generation, originalGeneration);
         expect(controller.isSubmitting, isFalse);
         validation.complete('late after reparent');
         await tester.pump();
@@ -442,13 +449,17 @@ void main() {
           AnimalValidationStatus.idle,
         );
         expect(handlerCalls, 0);
+        // The reparented item kept its registration: the binding captured
+        // before the move still writes the field.
+        expect(() => originalOnChanged!('moved'), returnsNormally);
+        expect(controller.valueFor(fieldKey), 'moved');
       } finally {
         if (!validation.isCompleted) validation.complete(null);
         if (pendingSubmit != null) await pendingSubmit;
         try {
           await tester.pumpWidget(const SizedBox.shrink());
         } finally {
-          if (!controller.isDisposed) controller.dispose();
+          controller.dispose();
         }
       }
     });
@@ -472,7 +483,7 @@ void main() {
           (await pendingSubmit).status,
           AnimalSubmitStatus.changedDuringValidation,
         );
-        expect(controller.isDisposed, isTrue);
+        expect(controller.disposed, isTrue);
         expect(controller.notificationsAfterDispose, 0);
         handlerResult.complete(true);
         await Future<void>.delayed(Duration.zero);
@@ -582,7 +593,7 @@ void main() {
       final controller = AnimalFormController();
       final rejected = await controller.submit(onSubmit: (_) => false);
       expect(rejected.status, AnimalSubmitStatus.rejected);
-      expect(rejected.isSuccess, isFalse);
+      expect(rejected.status == AnimalSubmitStatus.success, isFalse);
 
       final failure = StateError('server detail');
       final failed = await controller.submit(onSubmit: (_) => throw failure);

@@ -1,14 +1,22 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import 'clock.dart';
 
 /// An immutable representation of a wall clock time (hour, minute, second).
 @immutable
 class AnimalTimeValue implements Comparable<AnimalTimeValue> {
+  /// Hour of the day, from 0 to 23.
   final int hour;
+
+  /// Minute of the hour, from 0 to 59.
   final int minute;
+
+  /// Second of the minute, from 0 to 59.
   final int second;
 
+  /// Creates a time of day; [second] defaults to 0.
+  ///
+  /// Throws an [ArgumentError] when a component is out of range.
   AnimalTimeValue({required this.hour, required this.minute, this.second = 0}) {
     if (hour < 0 || hour > 23) {
       throw ArgumentError.value(hour, 'hour', 'Hour must be between 0 and 23');
@@ -47,13 +55,6 @@ class AnimalTimeValue implements Comparable<AnimalTimeValue> {
       second: now.second,
     );
   }
-
-  /// Creates an [AnimalTimeValue] from a standard Flutter [TimeOfDay].
-  factory AnimalTimeValue.fromTimeOfDay(TimeOfDay tod, [int second = 0]) =>
-      AnimalTimeValue(hour: tod.hour, minute: tod.minute, second: second);
-
-  /// Converts this time value to a Flutter [TimeOfDay].
-  TimeOfDay toTimeOfDay() => TimeOfDay(hour: hour, minute: minute);
 
   /// Formats this time value as `HH:mm:ss` or `HH:mm` if [includeSeconds] is false.
   String format({bool includeSeconds = true}) {

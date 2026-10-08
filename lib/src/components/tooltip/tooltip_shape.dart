@@ -14,6 +14,7 @@ class AnimalIslandBubbleShapeBorder extends ShapeBorder {
   /// Height / size of the arrow beak.
   final double arrowSize;
 
+  /// Creates a bubble border with a bottom arrow.
   const AnimalIslandBubbleShapeBorder({
     required this.borderColor,
     this.borderWidth = 1.5,

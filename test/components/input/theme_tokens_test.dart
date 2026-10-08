@@ -7,6 +7,35 @@ import '../../support/theme_contrast.dart';
 import '../theme_fixtures.dart';
 
 void main() {
+  test('style interpolation stays between its endpoints for any t', () {
+    final AnimalInputStyle from = AnimalInputStyle(
+      clearButtonPadding: EdgeInsets.zero,
+      borderRadius: BorderRadius.zero,
+      horizontalPadding: 0,
+    );
+    final AnimalInputStyle to = AnimalInputStyle(
+      clearButtonPadding: EdgeInsets.all(8),
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+      horizontalPadding: 8,
+    );
+    // An overshooting animation curve leaves 0..1 on both sides.
+    expect(
+      AnimalInputStyle.lerp(from, to, -0.5)!.clearButtonPadding,
+      EdgeInsets.zero,
+    );
+    expect(
+      AnimalInputStyle.lerp(from, to, -0.5)!.borderRadius,
+      BorderRadius.zero,
+    );
+    expect(AnimalInputStyle.lerp(from, to, -0.5)!.horizontalPadding, 0);
+    expect(
+      AnimalInputStyle.lerp(from, to, 1.5)!.clearButtonPadding,
+      const EdgeInsets.all(8),
+    );
+    expect(AnimalInputStyle.lerp(from, to, 1.5)!.horizontalPadding, 8);
+    expect(AnimalInputStyle.lerp(from, to, 0.5)!.horizontalPadding, 4);
+  });
+
   testWidgets('input surface, typography, radius, shadow and timing are themed', (
     tester,
   ) async {

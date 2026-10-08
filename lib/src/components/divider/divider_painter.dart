@@ -19,10 +19,16 @@ enum AnimalDividerType {
 
 /// Unified painter for all [AnimalDivider] line types.
 class AnimalDividerLinePainter extends CustomPainter {
+  /// Line style to paint.
   final AnimalDividerType type;
+
+  /// Color of the line.
   final Color color;
+
+  /// Stroke width of the line; a non-positive value paints nothing.
   final double thickness;
 
+  /// Creates a painter for one divider line.
   const AnimalDividerLinePainter({
     required this.type,
     required this.color,

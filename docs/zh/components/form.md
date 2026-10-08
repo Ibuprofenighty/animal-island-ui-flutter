@@ -65,9 +65,18 @@ false 会让 `submit()` 返回 typed `rejected` 结果。handler 抛出的异常
 `AnimalSubmitResult.error` 中，由调用者呈现。未安装 handler 时，合法表单仍按现有行为在
 校验成功后完成 validation-only submit。字段校验 issue 由 `AnimalFormItem` 本地化；handler
 结果由调用者负责呈现。
-handler 等待期间发生值、规则或字段集合变化、字段注销/同名重注册、reset 或默认 handler
-替换时，会取消本地 submit。晚到的 handler 完成不能改变替代 submit；handler 已启动的外部副作用
+提交校验期间或 handler 等待期间发生值、规则或字段集合变化、字段注销/同名重注册、表单 handler 替换、新的校验
+（包括字段失焦时的校验）、reset、clear 或 dispose 时，会取消本地 submit。晚到的 handler 完成不能改变替代 submit；handler 已启动的外部副作用
 不由表单取消。
+
+`submit()` 以 `AnimalSubmitResult` 完成，其 `status` 为以下之一：
+
+- `success`：所有字段校验通过且 handler 接受快照，或未安装 handler。
+- `invalid`：至少一个字段校验失败。
+- `rejected`：handler 返回 false。
+- `busy`：已有提交在进行，本次未做任何校验。
+- `changedDuringValidation`：提交被上述任一变化取消。
+- `error`：handler 抛出异常，异常保存在 `AnimalSubmitResult.error`。
 
 Controller 在注册字段时捕获 baseline。`dirty` 比较当前值与冻结的 baseline；值恢复为
 baseline 后 `dirty` 会清除。`reset()` 恢复 baseline，并清除 touched 状态与验证问题。
@@ -77,6 +86,22 @@ baseline 后 `dirty` 会清除。`reset()` 恢复 baseline，并清除 touched �
 标量 key 直接快照值。平面集合使用 `AnimalFieldKey.list<E>`、`AnimalFieldKey.set<E>` 或
 `AnimalFieldKey.map<K, V>`；它们保留泛型、复制外层集合，并拒绝嵌套集合。嵌套集合需要
 `AnimalFieldKey.withSnapshot<T>`，并由调用者提供深拷贝且冻结所有嵌套集合的策略。
+
+## 控制器
+
+`AnimalFormController` 读取并驱动已登记的字段：
+
+- `valueFor(key)`、`getFieldError(key)` 与 `getFieldStatus(key)` 读取单个字段；`values` 是所有字段的
+  不可变快照；`isDirty` 表示是否有字段偏离基线；`isSubmitting` 在 `submit` 运行期间为 true。
+- `setValue(key, value, validate: true)` 写入字段；`validateField(key)` 与
+  `validate(fieldKeys:, autoFocus:)` 以“最新优先”运行规则；`focusFirstError()` 聚焦第一个无效字段。
+- `submit(onSubmit:)`、`reset()` 与 `clear()` 见上文。
+
+值、校验或提交状态变化时控制器通知其监听者。控制器归创建者所有：表单不再使用时由创建者 dispose。
+dispose 之后，发起新的工作（`setValue`、`validate`、`validateField`、`submit`、`reset`、`clear`、
+`focusFirstError`）抛出 `StateError`，进行中的工作安静结束且不产生效果，读取得到空表单。
+`reset` 与 `clear` 不可重入：写入字段期间，监听者（例如借用的 `TextEditingController` 的监听者）发起表单工作会得到 `StateError`；
+仍可注销字段（该字段退出本次写入）或 dispose 表单（调用结束且不发通知）。字段与表单监听者在写入完成后收到一次通知，看到最终状态，可以发起新工作。
 
 ## 示例
 参见示例 Gallery 中的 [`form_story.dart`](../../../example/lib/stories/form_story.dart)。

@@ -60,6 +60,7 @@ class AnimalSkeleton extends StatefulWidget {
   final Widget? child;
   final _AnimalSkeletonRadius _defaultRadius;
 
+  /// Creates a skeleton placeholder shown while [loading] is true.
   const AnimalSkeleton({
     super.key,
     this.loading = true,

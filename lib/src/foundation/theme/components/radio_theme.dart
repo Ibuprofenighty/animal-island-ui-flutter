@@ -37,17 +37,26 @@ class AnimalRadioStyle {
   /// Style of the label. Its color is resolved from [labelTextColor].
   final TextStyle? labelTextStyle;
 
+  /// Fill of the radio control.
   final WidgetStateProperty<Color?>? fillColor;
+
+  /// Border color of the radio control.
   final WidgetStateProperty<Color?>? borderColor;
 
   /// Color of the selected check glyph.
   final WidgetStateProperty<Color?>? checkColor;
 
+  /// Color of the label.
   final WidgetStateProperty<Color?>? labelTextColor;
 
   /// Elevation shadow of an enabled radio control.
   final BoxShadow? shadow;
 
+  /// Creates a radio style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalRadioStyle({
     this.boxSize,
     this.iconSize,
@@ -70,8 +79,10 @@ class AnimalRadioStyle {
     AnimalStyleValues.checkDimension('groupGap', groupGap);
     AnimalStyleValues.checkDimension('groupRunGap', groupRunGap);
     AnimalStyleValues.checkTextStyle('labelTextStyle', labelTextStyle);
+    AnimalStyleValues.checkRadius('borderRadius', borderRadius);
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalRadioStyle copyWith({
     double? boxSize,
     double? iconSize,
@@ -126,6 +137,12 @@ class AnimalRadioStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalRadioStyle? lerp(
     AnimalRadioStyle? a,
     AnimalRadioStyle? b,
@@ -217,11 +234,19 @@ class AnimalRadioStyle {
 /// it. A component's own `style` parameter takes precedence over both.
 @immutable
 class AnimalRadioThemeData {
+  /// Style applied to radios of every size.
   final AnimalRadioStyle? style;
+
+  /// Style for small radios; wins over [style].
   final AnimalRadioStyle? smallStyle;
+
+  /// Style for middle radios; wins over [style].
   final AnimalRadioStyle? middleStyle;
+
+  /// Style for large radios; wins over [style].
   final AnimalRadioStyle? largeStyle;
 
+  /// Creates theme-wide radio overrides; every style defaults to null.
   const AnimalRadioThemeData({
     this.style,
     this.smallStyle,
@@ -229,6 +254,7 @@ class AnimalRadioThemeData {
     this.largeStyle,
   });
 
+  /// Returns a copy of this theme data with the given fields replaced.
   AnimalRadioThemeData copyWith({
     AnimalRadioStyle? style,
     AnimalRadioStyle? smallStyle,
@@ -241,6 +267,7 @@ class AnimalRadioThemeData {
     largeStyle: largeStyle ?? this.largeStyle,
   );
 
+  /// Linearly interpolates between two theme data values, style by style.
   static AnimalRadioThemeData? lerp(
     AnimalRadioThemeData? a,
     AnimalRadioThemeData? b,

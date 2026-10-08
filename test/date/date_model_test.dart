@@ -13,9 +13,9 @@ void main() {
     test(
       'Gregorian construction accepts leap days and years 1 through 9999',
       () {
-        expect(AnimalDate.isLeapYear(2024), isTrue);
-        expect(AnimalDate.isLeapYear(1900), isFalse);
-        expect(AnimalDate.isLeapYear(2000), isTrue);
+        // Leap years follow the Gregorian century rule.
+        expect(AnimalDate.daysInMonth(1900, 2), 28);
+        expect(AnimalDate.daysInMonth(2000, 2), 29);
         expect(AnimalDate.daysInMonth(2024, 2), 29);
         expect(AnimalDate.daysInMonth(2025, 2), 28);
 
@@ -92,10 +92,7 @@ void main() {
         );
         expect(AnimalDate(2026, 1, 1).compareTo(AnimalDate(2026, 1, 2)), -1);
         expect(AnimalDate(2026, 1, 2).isAfter(AnimalDate(2026, 1, 1)), isTrue);
-        expect(
-          AnimalDate(2026, 1, 2).isAtSameMomentAs(AnimalDate(2026, 1, 2)),
-          isTrue,
-        );
+        expect(AnimalDate(2026, 1, 2).compareTo(AnimalDate(2026, 1, 2)), 0);
 
         expect(() => AnimalDate(1, 1, 1).subtractDays(1), throwsRangeError);
         expect(() => AnimalDate(9999, 12, 31).addDays(1), throwsRangeError);

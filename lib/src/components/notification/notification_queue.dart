@@ -17,7 +17,7 @@ typedef AnimalNotificationLaneBuilder = Widget Function(
 /// Its business [key] may repeat across occurrences; the occurrence itself is
 /// never reused. Every transition is synchronous, so registering, updating and
 /// closing never wait for a frame or a mounted widget.
-final class AnimalNotificationOccurrence extends AnimalNotificationHandle {
+final class AnimalNotificationOccurrence {
   AnimalNotificationOccurrence._(
     this._lane,
     this.key,
@@ -39,13 +39,17 @@ final class AnimalNotificationOccurrence extends AnimalNotificationHandle {
   final Stopwatch _elapsed = Stopwatch();
   bool _paused = false;
 
+  /// Current configuration; a same-key update replaces it.
   AnimalNotificationConfig get config => _config;
 
-  @override
-  AnimalNotificationStatus get status => _status;
-
-  @override
+  /// Closes the occurrence. Repeated calls are ignored.
   void close() => _lane._settle(<AnimalNotificationOccurrence>[this]);
+
+  /// The caller-facing handle of this occurrence.
+  late final AnimalNotificationHandle handle = createAnimalNotificationHandle(
+    status: () => _status,
+    close: close,
+  );
 
   /// Pauses the duration timer while [paused]; resuming continues with the
   /// time that was left.
@@ -105,6 +109,7 @@ class AnimalNotificationLane extends ChangeNotifier {
   /// Most occurrences waiting behind the shown ones per placement.
   static const int maxWaiting = 50;
 
+  /// Placement whose occurrences this lane queues.
   final AnimalNotificationPlacement placement;
   final void Function(AnimalNotificationLane lane) _onChanged;
   final List<AnimalNotificationOccurrence> _active =
@@ -224,6 +229,8 @@ class AnimalNotificationLane extends ChangeNotifier {
 /// host occurrence, shown when the lane gets its first item and closed when
 /// it empties.
 class AnimalNotificationQueue {
+  /// Creates the queues of the host that owns the given controller; the
+  /// lane builder renders each non-empty lane.
   AnimalNotificationQueue(this._controller, this._buildLane);
 
   final AnimalOverlayController _controller;
@@ -238,7 +245,7 @@ class AnimalNotificationQueue {
     AnimalNotificationConfig config, {
     String? key,
     VoidCallback? onClose,
-  }) => _laneFor(config.placement)._open(config, key, onClose);
+  }) => _laneFor(config.placement)._open(config, key, onClose).handle;
 
   /// Closes the occurrences of [placement], or of every placement.
   void closeAll({AnimalNotificationPlacement? placement}) {

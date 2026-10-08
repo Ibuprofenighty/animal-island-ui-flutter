@@ -40,6 +40,7 @@ class AnimalTypewriter extends StatefulWidget {
   /// Owner-provided visibility for periodic work; it does not hide layout.
   final bool visible;
 
+  /// Creates a typewriter that reveals [text].
   const AnimalTypewriter({
     super.key,
     required this.text,

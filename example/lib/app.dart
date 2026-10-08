@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import 'gallery/gallery_shell.dart';
+import 'l10n/generated/gallery_localizations.g.dart';
 import 'router.dart';
 
 class AnimalIslandGalleryApp extends StatefulWidget {
@@ -46,11 +47,14 @@ class _AnimalIslandGalleryAppState extends State<AnimalIslandGalleryApp> {
 
     return MaterialApp(
       onGenerateTitle: (context) =>
-          AnimalLocalizations.of(context)!.galleryAppTitle,
+          GalleryLocalizations.of(context).galleryAppTitle,
       debugShowCheckedModeBanner: false,
       locale: _locale,
       supportedLocales: AnimalLocalizations.supportedLocales,
-      localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        GalleryLocalizations.delegate,
+        ...AnimalLocalizations.localizationsDelegates,
+      ],
       localeResolutionCallback: (locale, supportedLocales) =>
           resolveAnimalLocale(locale),
       theme: themeExtension.toThemeData(),

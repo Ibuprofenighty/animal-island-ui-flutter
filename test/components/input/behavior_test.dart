@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:animal_island_ui/src/components/form/form_controller.dart'
+    show AnimalFieldRegistration, AnimalFormFieldProtocol;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
@@ -850,7 +852,7 @@ void main() {
         final secondKey = AnimalFieldKey<String>(debugLabel: 'no-validate');
         final secondBuffer = TextEditingController(text: 'waiting');
         addTearDown(secondBuffer.dispose);
-        final secondRegistration = form.registerTextField(
+        form.registerTextField(
           key: secondKey,
           textController: secondBuffer,
           focusNode: secondFocus,
@@ -863,11 +865,7 @@ void main() {
         );
         final Future<bool> pending = form.validateField(secondKey);
         await nextStarted.future;
-        form.setRegistrationValue<String>(
-          secondRegistration,
-          'quiet',
-          validate: false,
-        );
+        form.setValue(secondKey, 'quiet', validate: false);
         expect(form.getFieldStatus(secondKey), AnimalValidationStatus.idle);
         nextResult.complete('must not apply');
         expect(await pending, isFalse);
@@ -889,7 +887,6 @@ void main() {
         addTearDown(form.dispose);
         TextEditingController active = first;
         late StateSetter updateHarness;
-        var generation = 0;
         AnimalFieldBinding<String>? firstBinding;
 
         Widget tree() => _localizedApp(
@@ -902,7 +899,6 @@ void main() {
                   fieldKey: key,
                   textController: active,
                   builder: (context, binding) {
-                    generation = binding.generation;
                     firstBinding ??= binding;
                     return AnimalInput(
                       controller: active,
@@ -916,10 +912,8 @@ void main() {
         );
 
         await tester.pumpWidget(tree());
-        final int firstGeneration = generation;
         updateHarness(() => active = second);
         await tester.pumpWidget(tree());
-        expect(generation, greaterThan(firstGeneration));
         expect(form.valueFor(key), 'second baseline');
         expect(
           () => firstBinding!.onChanged('stale old binding'),
@@ -951,14 +945,14 @@ void main() {
         addTearDown(form.dispose);
         var moveField = false;
         late StateSetter updateHarness;
-        var generation = 0;
+        AnimalFieldBinding<String>? originalBinding;
 
         Widget field() => AnimalFormItem<String>(
           key: mountKey,
           fieldKey: key,
           textController: buffer,
           builder: (context, binding) {
-            generation = binding.generation;
+            originalBinding ??= binding;
             return AnimalInput(
               controller: buffer,
               focusNode: binding.focusNode,
@@ -989,10 +983,13 @@ void main() {
         );
 
         await tester.pumpWidget(tree());
-        final int originalGeneration = generation;
         updateHarness(() => moveField = true);
         await tester.pumpWidget(tree());
-        expect(generation, originalGeneration);
+        expect(
+          () => originalBinding!.onChanged('through original binding'),
+          returnsNormally,
+        );
+        expect(form.valueFor(key), 'through original binding');
         buffer.text = 'after reparent';
         expect(form.valueFor(key), 'after reparent');
       },

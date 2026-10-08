@@ -5,15 +5,34 @@ import '../../foundation/models/date.dart';
 /// A single civil-date grid position. A null [date] is an inert boundary cell.
 @immutable
 final class CalendarDayCell {
+  /// Civil date shown in this position, or null for an inert boundary cell.
   final AnimalDate? date;
+
+  /// Whether [date] belongs to the month the grid was built for.
   final bool isCurrentMonth;
+
+  /// Whether [date] equals the grid's explicit `today`.
   final bool isToday;
+
+  /// Whether this cell cannot be chosen; always true when [date] is null.
   final bool isDisabled;
+
+  /// Whether this cell matches the current selection for the grid's mode.
+  ///
+  /// In range mode only the start and end cells are selected; in month mode
+  /// every cell in the selected date's month is selected.
   final bool isSelected;
+
+  /// Whether [date] lies within a completed range, endpoints included.
   final bool isInRange;
+
+  /// Whether [date] is the start of the selected range.
   final bool isRangeStart;
+
+  /// Whether [date] is the end of the selected range.
   final bool isRangeEnd;
 
+  /// Creates a grid cell; the selection flags default to false.
   const CalendarDayCell({
     required this.date,
     required this.isCurrentMonth,
@@ -171,6 +190,10 @@ abstract final class CalendarModel {
     );
   }
 
+  /// Returns whether [date] is outside [firstDate]..[lastDate] or rejected by
+  /// [disabledDate].
+  ///
+  /// Throws an [ArgumentError] when [firstDate] is after [lastDate].
   static bool isDateDisabled({
     required AnimalDate date,
     AnimalDate? firstDate,

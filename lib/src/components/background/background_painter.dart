@@ -1,14 +1,29 @@
 import 'package:flutter/widgets.dart';
 
 /// Background pattern types for [AnimalBackground].
-enum AnimalBackgroundType { parchment, dots, grid }
+enum AnimalBackgroundType {
+  /// Plain fill with no pattern.
+  parchment,
+
+  /// Staggered dots on a 24 logical-pixel step.
+  dots,
+
+  /// Square grid lines on a 24 logical-pixel step.
+  grid,
+}
 
 /// Unified painter for Animal Island container wallpapers and background textures.
 class AnimalBackgroundPainter extends CustomPainter {
+  /// Pattern drawn over the fill.
   final AnimalBackgroundType type;
+
+  /// Fill of the whole canvas.
   final Color bgColor;
+
+  /// Color of the dots or grid lines.
   final Color patternColor;
 
+  /// Creates a painter that fills with [bgColor] and draws [type].
   const AnimalBackgroundPainter({
     required this.type,
     required this.bgColor,

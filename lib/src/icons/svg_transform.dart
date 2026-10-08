@@ -20,6 +20,8 @@ const int maxSvgDepth = 64;
 /// render differently cannot alias in the cache.
 @immutable
 final class SvgTransformKey {
+  /// Creates the key of [rawSvg] tinted with [strokeColor] and stroked with
+  /// [strokeWidth]; a null value leaves that attribute untransformed.
   SvgTransformKey({
     required this.rawSvg,
     Color? strokeColor,
@@ -58,6 +60,7 @@ final class SvgTransformKey {
 
 /// One least-recently-used cache for transformed SVG markup.
 final class SvgTransformCache {
+  /// Maximum number of cached results.
   static const int maxEntries = 128;
   static final LinkedHashMap<SvgTransformKey, String> _cache =
       LinkedHashMap<SvgTransformKey, String>();

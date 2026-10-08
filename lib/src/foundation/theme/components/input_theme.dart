@@ -83,6 +83,11 @@ class AnimalInputStyle {
   /// Depth shadow drawn when the input's `shadow` flag is set.
   final BoxShadow? depthShadow;
 
+  /// Creates an input style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension, inset or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalInputStyle({
     this.minHeight,
     this.horizontalPadding,
@@ -121,8 +126,19 @@ class AnimalInputStyle {
       placeholderTextStyle,
     );
     AnimalStyleValues.checkDimension('clearIconSize', clearIconSize);
+    AnimalStyleValues.checkInsets('clearButtonPadding', clearButtonPadding);
+    AnimalStyleValues.checkRadius(
+      'clearButtonBorderRadius',
+      clearButtonBorderRadius,
+    );
+    AnimalStyleValues.checkRadius('borderRadius', borderRadius);
+    AnimalStyleValues.checkRadius(
+      'multilineBorderRadius',
+      multilineBorderRadius,
+    );
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalInputStyle copyWith({
     double? minHeight,
     double? horizontalPadding,
@@ -212,6 +228,12 @@ class AnimalInputStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalInputStyle? lerp(
     AnimalInputStyle? a,
     AnimalInputStyle? b,
@@ -391,6 +413,7 @@ class AnimalInputThemeData {
   /// Style for large inputs; wins over [style].
   final AnimalInputStyle? largeStyle;
 
+  /// Creates theme-wide input overrides; every style defaults to null.
   const AnimalInputThemeData({
     this.style,
     this.smallStyle,
@@ -398,6 +421,7 @@ class AnimalInputThemeData {
     this.largeStyle,
   });
 
+  /// Returns a copy of this theme data with the given fields replaced.
   AnimalInputThemeData copyWith({
     AnimalInputStyle? style,
     AnimalInputStyle? smallStyle,
@@ -410,6 +434,7 @@ class AnimalInputThemeData {
     largeStyle: largeStyle ?? this.largeStyle,
   );
 
+  /// Linearly interpolates between two theme data values, style by style.
   static AnimalInputThemeData? lerp(
     AnimalInputThemeData? a,
     AnimalInputThemeData? b,

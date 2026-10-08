@@ -7,11 +7,20 @@ import '../../foundation/theme/theme.dart';
 /// Addresses defect F26: dynamic geometry updates driven by actual layout Rects,
 /// smoothly tracking tab position across text changes, window resize, and font scaling.
 class AnimalTabIndicator extends StatelessWidget {
+  /// Bounds of the selected tab within the tab stack; null hides the
+  /// indicator.
   final Rect? targetRect;
+
+  /// Theme that supplies the indicator color, radius, shadow and motion.
   final AnimalIslandTheme theme;
+
+  /// Duration of the slide; null uses the theme normal motion duration.
   final Duration? duration;
+
+  /// Curve of the slide; null uses the theme spring curve.
   final Curve? curve;
 
+  /// Creates an indicator that slides to [targetRect].
   const AnimalTabIndicator({
     super.key,
     required this.targetRect,

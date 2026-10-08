@@ -3,15 +3,24 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:animal_island_ui/src/components/form/form_controller.dart'
+    show AnimalFieldRegistration, AnimalFormFieldProtocol;
 
 import '../support/localization_app.dart';
 
 class _NotificationGuardController extends AnimalFormController {
   int notificationsAfterDispose = 0;
+  bool disposed = false;
+
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
+  }
 
   @override
   void notifyListeners() {
-    if (isDisposed) {
+    if (disposed) {
       notificationsAfterDispose++;
       return;
     }
@@ -76,9 +85,7 @@ void main() {
 
         final pendingValidation = controller.validateField(key);
         await started.future;
-        final revisionBeforeReset = controller.epoch;
         controller.reset();
-        expect(controller.epoch, revisionBeforeReset + 1);
         result.complete('must be discarded');
 
         expect(await pendingValidation, isFalse);
@@ -333,7 +340,7 @@ void main() {
 
       expect(await controller.validateField(key), isFalse);
       expect(validatorCalls, 0);
-      expect(controller.isDisposed, isTrue);
+      expect(controller.disposed, isTrue);
       expect(controller.notificationsAfterDispose, 0);
     });
 

@@ -5,35 +5,68 @@ import 'package:flutter/material.dart';
 /// The swatch colors belong to [AnimalThemeColors], so changing a theme changes
 /// every consumer of one of these identities.
 enum AnimalTileColor {
+  /// Neutral content-surface swatch; the default tile color.
   def,
+
+  /// Pink app-tile swatch.
   appPink,
+
+  /// Purple app-tile swatch.
   purple,
+
+  /// Blue app-tile swatch.
   appBlue,
+
+  /// Yellow app-tile swatch.
   appYellow,
+
+  /// Orange app-tile swatch.
   appOrange,
+
+  /// Teal app-tile swatch.
   appTeal,
+
+  /// Green app-tile swatch.
   appGreen,
+
+  /// Red app-tile swatch.
   appRed,
+
+  /// Lime-green app-tile swatch.
   limeGreen,
+
+  /// Yellow-green app-tile swatch.
   yellowGreen,
+
+  /// Brown app-tile swatch.
   brown,
+
+  /// Warm peach-pink app-tile swatch.
   warmPeachPink,
 }
 
 /// A foreground/background pair for a themed island tile.
 @immutable
 class AnimalTileColors {
+  /// Fill color of the tile.
   final Color background;
+
+  /// Text and icon color drawn on [background].
   final Color foreground;
 
+  /// Creates a tile color pair.
   const AnimalTileColors({required this.background, required this.foreground});
 
+  /// Returns a copy of this pair with the given fields replaced.
   AnimalTileColors copyWith({Color? background, Color? foreground}) =>
       AnimalTileColors(
         background: background ?? this.background,
         foreground: foreground ?? this.foreground,
       );
 
+  /// Linearly interpolates between two tile color pairs.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`.
   static AnimalTileColors lerp(
     AnimalTileColors a,
     AnimalTileColors b,
@@ -64,55 +97,131 @@ class AnimalTileColors {
 /// copied and frozen at construction, and must contain every [AnimalTileColor].
 @immutable
 class AnimalThemeColors {
+  /// Whether this palette is meant for light or dark surfaces.
   final Brightness brightness;
 
+  /// Brand accent used to fill primary surfaces and controls.
   final Color primary;
+
+  /// Pressed or selected variant of [primary].
   final Color primaryActive;
+
+  /// Tinted background for primary-toned surfaces.
   final Color primaryBg;
+
+  /// Foreground drawn on a [primary] fill.
   final Color onPrimary;
+
+  /// Primary-toned text and icons on ordinary surfaces.
   final Color primaryText;
 
+  /// Fill color for success states.
   final Color success;
+
+  /// Tinted background for success-toned surfaces.
   final Color successBg;
+
+  /// Foreground drawn on a [success] fill.
   final Color onSuccess;
+
+  /// Success-toned text and icons on ordinary surfaces.
   final Color successText;
 
+  /// Fill color for warning states.
   final Color warning;
+
+  /// Tinted background for warning-toned surfaces.
   final Color warningBg;
+
+  /// Foreground drawn on a [warning] fill.
   final Color onWarning;
+
+  /// Warning-toned text and icons on ordinary surfaces.
+  ///
+  /// The input warning stroke also uses this color.
   final Color warningText;
 
+  /// Fill color for error and danger states.
   final Color error;
+
+  /// Tinted background for error-toned surfaces.
   final Color errorBg;
+
+  /// Foreground drawn on an [error] fill.
   final Color onError;
+
+  /// Error-toned text and icons on ordinary surfaces.
   final Color errorText;
 
+  /// Fill color for informational states.
   final Color info;
+
+  /// Tinted background for informational surfaces.
   final Color infoBg;
+
+  /// Informational text and icons on ordinary surfaces.
   final Color infoText;
 
+  /// Strongest text color, used for headings and emphasized labels.
   final Color text;
+
+  /// Body text color.
   final Color textBody;
+
+  /// Secondary text color for supporting labels.
   final Color textSecondary;
+
+  /// Muted text color for low-emphasis captions.
   final Color textMuted;
+
+  /// Text color for disabled or unavailable content.
   final Color textDisabled;
 
+  /// Page background color.
   final Color bg;
+
+  /// Background of raised content surfaces such as cards.
   final Color bgContent;
+
+  /// Background of enabled input fields.
   final Color bgInput;
+
+  /// Secondary background for alternate regions and inactive tracks.
   final Color bgSecondary;
+
+  /// Background of disabled controls.
   final Color bgDisabled;
+
+  /// Background of disabled input fields.
   final Color bgInputDisabled;
+
+  /// Default border and outline color.
   final Color border;
+
+  /// Lighter border color for subtle separators and outlines.
   final Color borderLight;
+
+  /// Focus-indicator color used by focus rings.
   final Color focusYellow;
 
+  /// Surface color for headers and title bars.
   final Color surfaceHeader;
+
+  /// Alternate surface color for secondary panels and controls.
   final Color surfaceAlt;
+
+  /// Low-contrast surface color, used for example by the footer.
   final Color surfaceSubtle;
 
+  /// Tile swatches keyed by identity.
+  ///
+  /// The map is unmodifiable and contains every [AnimalTileColor].
   final Map<AnimalTileColor, AnimalTileColors> tileColors;
 
+  /// Creates a palette.
+  ///
+  /// Throws an [ArgumentError] unless `tileColors` defines every
+  /// [AnimalTileColor] exactly once.
   AnimalThemeColors({
     required this.brightness,
     required this.primary,
@@ -358,8 +467,10 @@ class AnimalThemeColors {
     },
   );
 
+  /// Returns the swatch for [color].
   AnimalTileColors tile(AnimalTileColor color) => tileColors[color]!;
 
+  /// Returns a copy of this palette with the given fields replaced.
   AnimalThemeColors copyWith({
     Brightness? brightness,
     Color? primary,
@@ -442,6 +553,9 @@ class AnimalThemeColors {
     tileColors: tileColors ?? this.tileColors,
   );
 
+  /// Linearly interpolates between this palette and [other].
+  ///
+  /// Colors and tile swatches interpolate; [brightness] switches at `t == 0.5`.
   AnimalThemeColors lerp(AnimalThemeColors other, double t) {
     if (t == 0) return this;
     if (t == 1) return other;

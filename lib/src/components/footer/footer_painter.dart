@@ -11,8 +11,10 @@ enum AnimalFooterType {
 
 /// Painter for gentle wave shoreline silhouette on [AnimalFooter].
 class AnimalShorelineWavePainter extends CustomPainter {
+  /// Fill of the wave silhouette.
   final Color color;
 
+  /// Creates a wave painter filled with [color].
   const AnimalShorelineWavePainter({required this.color});
 
   @override
@@ -58,8 +60,10 @@ class AnimalShorelineWavePainter extends CustomPainter {
 
 /// Painter for island forest canopy silhouette on [AnimalFooter].
 class AnimalTreeCanopyPainter extends CustomPainter {
+  /// Fill of the canopy silhouette.
   final Color color;
 
+  /// Creates a canopy painter filled with [color].
   const AnimalTreeCanopyPainter({required this.color});
 
   @override

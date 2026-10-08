@@ -24,6 +24,31 @@ List<AnimalOption<T>> snapshotUniqueOptions<T>(
   return snapshot;
 }
 
+/// Builds the label of a group option the way Select presents an option: its
+/// icon (excluded from semantics) before its text, announced by its
+/// [AnimalOption.semanticLabel] when one is given.
+Widget optionGroupLabel(
+  AnimalOption<dynamic> option, {
+  required double iconGap,
+}) {
+  final Widget? icon = option.icon;
+  final Widget content = icon == null
+      ? Text(option.label)
+      : Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ExcludeSemantics(child: icon),
+            SizedBox(width: iconGap),
+            Flexible(child: Text(option.label)),
+          ],
+        );
+  final String? semanticLabel = option.semanticLabel;
+  return semanticLabel == null
+      ? content
+      : Semantics(label: semanticLabel, excludeSemantics: true, child: content);
+}
+
+/// Builds the item of an option attached to the focus node the group owns.
 typedef OptionGroupItemBuilder<T> = Widget Function(
   BuildContext context,
   AnimalOption<T> option,
@@ -37,6 +62,8 @@ class _OptionGroupFocusNode extends FocusNode {
     : super(debugLabel: 'OptionGroupFocus($identity)');
 }
 
+/// Forwards [event] to the group navigation of an option focus node created
+/// by [OptionGroupFocus]; returns [KeyEventResult.ignored] for any other node.
 KeyEventResult optionGroupKeyEvent(FocusNode node, KeyEvent event) {
   if (node is _OptionGroupFocusNode) {
     return node.groupKeyHandler?.call(node, event) ?? KeyEventResult.ignored;
@@ -46,17 +73,43 @@ KeyEventResult optionGroupKeyEvent(FocusNode node, KeyEvent event) {
 
 /// Owns option-keyed focus identity and group navigation, never selection.
 class OptionGroupFocus<T> extends StatefulWidget {
+  /// Options of the group, keyed by their values.
   final List<AnimalOption<T>> options;
+
+  /// Layout and arrow-key axis: horizontal wraps items and uses Left/Right
+  /// (mirrored in right-to-left text), vertical stacks them and uses
+  /// Up/Down. Home and End work on both.
   final Axis direction;
+
+  /// Whether only one item is in the tab order and arrow navigation reports
+  /// the newly focused value through [onNavigate].
   final bool roving;
+
+  /// Value of the selected option, focused first when it is enabled.
   final T? selectedValue;
+
+  /// Whether every option is disabled and unfocusable.
   final bool disabled;
+
+  /// Gap between items along [direction]. Defaults to 0.
   final double spacing;
+
+  /// Gap between wrapped runs of a horizontal group. Defaults to 0.
   final double runSpacing;
+
+  /// Group focus node owned by the caller; when it gains focus the group
+  /// moves focus to the selected or first enabled option. Null omits the
+  /// group focus.
   final FocusNode? focusNode;
+
+  /// Called with the value focused by arrow, Home or End navigation in a
+  /// [roving] group.
   final ValueChanged<T>? onNavigate;
+
+  /// Builds each option's item.
   final OptionGroupItemBuilder<T> itemBuilder;
 
+  /// Creates a focus group for [options].
   const OptionGroupFocus({
     super.key,
     required this.options,

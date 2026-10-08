@@ -21,14 +21,10 @@ void main() {
             width: 88,
             child: AnimalTabs(
               tabs: const [
-                AnimalTabItem(label: 'Unselected', id: 'unselected'),
-                AnimalTabItem(
-                  label: 'Disabled',
-                  id: 'disabled',
-                  disabled: true,
-                ),
-                AnimalTabItem(label: 'Third', id: 'third'),
-                AnimalTabItem(label: 'Selected', id: 'selected'),
+                AnimalTabItem(label: 'Unselected'),
+                AnimalTabItem(label: 'Disabled', disabled: true),
+                AnimalTabItem(label: 'Third'),
+                AnimalTabItem(label: 'Selected'),
               ],
               selectedIndex: selectedIndex,
               onChanged: (_) {},

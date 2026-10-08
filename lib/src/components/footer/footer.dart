@@ -28,6 +28,7 @@ class AnimalFooter extends StatelessWidget {
   /// Fallback text when [content] is null. If null, resolves from [AnimalLocalizations].
   final String? defaultText;
 
+  /// Creates a footer with a decorative top edge.
   const AnimalFooter({
     super.key,
     this.type = AnimalFooterType.sea,

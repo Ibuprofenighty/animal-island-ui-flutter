@@ -16,13 +16,30 @@ export 'collapse_item.dart';
 /// - Full keyboard accessibility (`Enter` / `Space`) and screen-reader semantics.
 /// - Inactive content is completely isolated from keyboard focus and semantics tree.
 class AnimalCollapse extends StatefulWidget {
+  /// Items shown in order; an item with an empty id is identified as
+  /// `collapse_item_<index>`.
   final List<AnimalCollapseItem> items;
+
+  /// Whether expanding an item collapses every other item. Defaults to false.
   final bool accordion;
+
+  /// Whether every item ignores activation. Defaults to false.
   final bool disabled;
+
+  /// Ids of the expanded items when the parent controls expansion.
+  ///
+  /// When non-null, the collapse only reports changes through [onChanged];
+  /// null lets the collapse track expansion itself, starting from
+  /// [defaultActiveIds].
   final Set<String>? activeIds;
+
+  /// Initially expanded ids when [activeIds] is null; null expands none.
   final Set<String>? defaultActiveIds;
+
+  /// Called with the complete set of expanded ids after an item is toggled.
   final ValueChanged<Set<String>>? onChanged;
 
+  /// Creates a collapse of [items].
   const AnimalCollapse({
     super.key,
     required this.items,

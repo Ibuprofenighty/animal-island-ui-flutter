@@ -6,10 +6,16 @@ import 'card_style.dart';
 
 /// Painter for organic decorative patterns on [AnimalCard].
 class AnimalCardPatternPainter extends CustomPainter {
+  /// Pattern to draw; [AnimalCardPattern.none] paints nothing.
   final AnimalCardPattern pattern;
+
+  /// Color of the pattern marks.
   final Color patternColor;
+
+  /// Corner radius of the clip applied to the pattern. Defaults to 20.
   final double radius;
 
+  /// Creates a painter for [pattern].
   const AnimalCardPatternPainter({
     required this.pattern,
     required this.patternColor,
@@ -104,12 +110,22 @@ class AnimalCardPatternPainter extends CustomPainter {
 
 /// Dashed border painter for [AnimalCardType.dashed].
 class AnimalCardDashedBorderPainter extends CustomPainter {
+  /// Color of the dashes.
   final Color color;
+
+  /// Stroke width of the dashes. Defaults to 1.8.
   final double strokeWidth;
+
+  /// Corner radius of the outer border edge. Defaults to 20.
   final double radius;
+
+  /// Length of each dash along the border. Defaults to 7.
   final double dashLength;
+
+  /// Space between consecutive dashes. Defaults to 5.
   final double gapLength;
 
+  /// Creates a dashed rounded-rectangle border painter.
   const AnimalCardDashedBorderPainter({
     required this.color,
     this.strokeWidth = 1.8,

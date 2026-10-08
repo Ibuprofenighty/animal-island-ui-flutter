@@ -13,6 +13,7 @@ import 'interactive_region.dart';
 /// name and the hover fill. The owning component resolves every visual value
 /// through its own style resolver and passes the icon it draws.
 class AnimalIconAction extends StatefulWidget {
+  /// Creates an icon action that calls [onPressed] when activated.
   const AnimalIconAction({
     super.key,
     required this.onPressed,
@@ -23,11 +24,14 @@ class AnimalIconAction extends StatefulWidget {
     required this.backgroundColor,
   });
 
+  /// Called when the action is activated by pointer, keyboard or
+  /// accessibility tap.
   final VoidCallback onPressed;
 
   /// Accessible name of the action.
   final String semanticLabel;
 
+  /// Icon drawn inside the fill.
   final Widget icon;
 
   /// Space between the icon and the edge of its fill.

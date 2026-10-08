@@ -27,7 +27,6 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
   );
 
   String? _submissionResult;
-  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -38,10 +37,7 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
   }
 
   Future<void> _handleSubmit() async {
-    setState(() {
-      _isSubmitting = true;
-      _submissionResult = null;
-    });
+    setState(() => _submissionResult = null);
 
     late AnimalFormValues submittedValues;
     final result = await _formController.submit(
@@ -66,10 +62,7 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
       AnimalSubmitStatus.busy => 'A registration is already in progress.',
       AnimalSubmitStatus.error => 'Submission failed: ${result.error}',
     };
-    setState(() {
-      _isSubmitting = false;
-      _submissionResult = message;
-    });
+    setState(() => _submissionResult = message);
   }
 
   @override
@@ -295,18 +288,25 @@ class _FormWorkflowRecipeState extends State<FormWorkflowRecipe> {
                   // Action Buttons
                   Row(
                     children: [
-                      AnimalButton(
-                        variant: AnimalButtonVariant.filled,
-                        tone: AnimalButtonTone.primary,
-                        icon: const AnimalIcon(
-                          data: AnimalIcons.check,
-                          size: 18,
-                        ),
-                        onPressed: _isSubmitting ? null : _handleSubmit,
-                        child: Text(
-                          _isSubmitting
-                              ? 'Registering...'
-                              : 'Submit Application',
+                      // The controller notifies when a submission starts
+                      // and ends, so the button follows isSubmitting.
+                      ListenableBuilder(
+                        listenable: _formController,
+                        builder: (context, _) => AnimalButton(
+                          variant: AnimalButtonVariant.filled,
+                          tone: AnimalButtonTone.primary,
+                          icon: const AnimalIcon(
+                            data: AnimalIcons.check,
+                            size: 18,
+                          ),
+                          onPressed: _formController.isSubmitting
+                              ? null
+                              : _handleSubmit,
+                          child: Text(
+                            _formController.isSubmitting
+                                ? 'Registering...'
+                                : 'Submit Application',
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),

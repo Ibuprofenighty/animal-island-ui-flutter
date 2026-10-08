@@ -301,6 +301,16 @@ void main() {
 
   group('API06 AnimalDrawer boundary', () {
     test('styles reject values components cannot render', () {
+      expect(
+        () => AnimalDrawerStyle(headerPadding: const EdgeInsets.only(left: -1)),
+        throwsArgumentError,
+      );
+      expect(
+        () => AnimalDrawerStyle(
+          borderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalDrawerStyle(borderWidth: -1), throwsArgumentError);
       expect(
         () => AnimalDrawerStyle(dividerThickness: double.nan),

@@ -26,6 +26,7 @@ class AnimalCodeBlock extends StatefulWidget {
   /// Optional programming language descriptor (e.g. 'dart', 'json'). Defaults to 'dart'.
   final String? language;
 
+  /// Creates a code block showing [code] with a copy action.
   const AnimalCodeBlock({super.key, required this.code, this.language});
 
   @override

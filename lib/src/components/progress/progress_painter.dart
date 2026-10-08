@@ -4,11 +4,19 @@ import 'package:flutter/widgets.dart';
 
 /// Custom painter for signature 45° diagonal candy-cane stripes on [AnimalProgress].
 class AnimalCandyStripePainter extends CustomPainter {
+  /// Fill of the progress bar.
   final Color fillColor;
+
+  /// Whether translucent diagonal stripes are drawn over the fill.
   final bool striped;
+
+  /// Stripe offset as a fraction of one stripe period, from 0 to 1.
   final double phase;
+
+  /// Corner radius of the clipped bar.
   final double radius;
 
+  /// Creates a painter for a filled, optionally striped bar.
   const AnimalCandyStripePainter({
     required this.fillColor,
     required this.striped,
@@ -83,11 +91,19 @@ class AnimalCandyStripePainter extends CustomPainter {
 
 /// Custom painter for circular progress ring on [AnimalProgress.circle].
 class AnimalCircularProgressPainter extends CustomPainter {
+  /// Completed fraction of the ring, where 1 is a full circle.
   final double percent;
+
+  /// Stroke width of the track and the arc.
   final double strokeWidth;
+
+  /// Color of the progress arc.
   final Color fillColor;
+
+  /// Color of the full background ring.
   final Color trackColor;
 
+  /// Creates a painter for a circular progress ring.
   const AnimalCircularProgressPainter({
     required this.percent,
     required this.strokeWidth,

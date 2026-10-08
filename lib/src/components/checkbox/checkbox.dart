@@ -13,18 +13,42 @@ import '../../icons/icons.g.dart';
 /// A preset names a step; its metrics come from the active theme. See
 /// [AnimalCheckboxStyle] for the values a theme or a single checkbox can
 /// override.
-enum AnimalCheckboxSize { small, middle, large }
+enum AnimalCheckboxSize {
+  /// Smallest step: an 18 logical-pixel box by default.
+  small,
+
+  /// Default step: a 22 logical-pixel box by default.
+  middle,
+
+  /// Largest step: a 26 logical-pixel box by default.
+  large,
+}
 
 /// Animal Island rounded Checkbox component (C14).
 ///
 /// Visual overrides come from [style] and
 /// `AnimalIslandTheme.components.checkbox`.
 class AnimalCheckbox extends StatefulWidget {
+  /// Whether the checkbox is checked.
   final bool value;
+
+  /// Called with the toggled value when the user activates the checkbox.
+  ///
+  /// Null disables the checkbox unless [readOnly] is true.
   final ValueChanged<bool>? onChanged;
+
+  /// Content shown after the box, styled with the label text style.
   final Widget? label;
+
+  /// Whether the checkbox is disabled and unfocusable. Defaults to false.
   final bool disabled;
+
+  /// Whether the checkbox stays focusable but ignores activation.
+  /// Defaults to false.
   final bool readOnly;
+
+  /// Whether an unchecked checkbox shows the mixed mark. Ignored while
+  /// [value] is true. Defaults to false.
   final bool indeterminate;
 
   /// Visual size tier.
@@ -33,8 +57,11 @@ class AnimalCheckbox extends StatefulWidget {
   /// Overrides for this checkbox, taking precedence over the theme.
   final AnimalCheckboxStyle? style;
 
+  /// Focus node owned by the caller; null uses an internal node that the
+  /// checkbox creates and disposes.
   final FocusNode? focusNode;
 
+  /// Creates a controlled checkbox showing [value].
   const AnimalCheckbox({
     super.key,
     required this.value,
@@ -206,15 +233,7 @@ class _ResolvedCheckboxStyle {
     required bool disabled,
     required bool focused,
   }) {
-    final AnimalCheckboxThemeData? themed = theme.components.checkbox;
-    final AnimalCheckboxStyle? sized = switch (size) {
-      AnimalCheckboxSize.small => themed?.smallStyle,
-      AnimalCheckboxSize.middle => themed?.middleStyle,
-      AnimalCheckboxSize.large => themed?.largeStyle,
-    };
-    final AnimalCheckboxStyle merged = (style ?? AnimalCheckboxStyle())
-        .merge(sized)
-        .merge(themed?.style);
+    final AnimalCheckboxStyle merged = _mergedCheckboxStyle(theme, size, style);
 
     final colors = theme.colors;
     final bool dark = colors.brightness == Brightness.dark;
@@ -279,19 +298,27 @@ class _ResolvedCheckboxStyle {
   required AnimalCheckboxStyle? style,
   required Axis direction,
 }) {
-  final AnimalCheckboxThemeData? themed = theme.components.checkbox;
-  final AnimalCheckboxStyle? sized = switch (size) {
-    AnimalCheckboxSize.small => themed?.smallStyle,
-    AnimalCheckboxSize.middle => themed?.middleStyle,
-    AnimalCheckboxSize.large => themed?.largeStyle,
-  };
-  final AnimalCheckboxStyle merged = (style ?? AnimalCheckboxStyle())
-      .merge(sized)
-      .merge(themed?.style);
+  final AnimalCheckboxStyle merged = _mergedCheckboxStyle(theme, size, style);
   return (
     gap:
         merged.groupGap ??
         (direction == Axis.horizontal ? theme.spacing.lg : theme.spacing.sm),
     runGap: merged.groupRunGap ?? theme.spacing.sm,
   );
+}
+
+// The single layering of checkbox styles: the instance style, then the theme's
+// size-specific style, then its general style.
+AnimalCheckboxStyle _mergedCheckboxStyle(
+  AnimalIslandTheme theme,
+  AnimalCheckboxSize size,
+  AnimalCheckboxStyle? style,
+) {
+  final AnimalCheckboxThemeData? themed = theme.components.checkbox;
+  final AnimalCheckboxStyle? sized = switch (size) {
+    AnimalCheckboxSize.small => themed?.smallStyle,
+    AnimalCheckboxSize.middle => themed?.middleStyle,
+    AnimalCheckboxSize.large => themed?.largeStyle,
+  };
+  return (style ?? AnimalCheckboxStyle()).merge(sized).merge(themed?.style);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 // The particle painter is package-internal; tests observe it directly.
@@ -14,6 +15,39 @@ List<int> _particleCounts(WidgetTester tester) => tester
 
 void main() {
   group('AnimalLoading State & Clamp Tests (C25 / LOD01)', () {
+    testWidgets('reduced-motion snowfall repaints when its seed changes', (
+      tester,
+    ) async {
+      Widget app(int seed) => MaterialApp(
+        localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+        supportedLocales: AnimalLocalizations.supportedLocales,
+        theme: AnimalIslandTheme.light.toThemeData(),
+        home: Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: true),
+            child: AnimalLoading.snowflake(
+              fullScreen: true,
+              snowCount: 5,
+              snowSeed: seed,
+            ),
+          ),
+        ),
+      );
+      RenderCustomPaint render() => tester.renderObject<RenderCustomPaint>(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is CustomPaint &&
+              widget.painter is SnowflakeOverlayPainter,
+        ),
+      );
+      await tester.pumpWidget(app(1));
+      expect(render().debugNeedsPaint, isFalse);
+      await tester.pumpWidget(app(2), phase: EnginePhase.layout);
+      // Without motion nothing else schedules a paint for the new particles.
+      expect(render().debugNeedsPaint, isTrue);
+      await tester.pump();
+    });
+
     test('snowCount accepts 1..100 and rejects values outside it', () {
       expect(AnimalLoading.snowflake(snowCount: 1).snowCount, 1);
       expect(AnimalLoading.snowflake(snowCount: 100).snowCount, 100);

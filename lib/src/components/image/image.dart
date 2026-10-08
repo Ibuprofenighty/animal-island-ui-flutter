@@ -61,6 +61,7 @@ class AnimalImage extends StatelessWidget {
   /// Accessibility description of the image content.
   final String? semanticLabel;
 
+  /// Creates an image that displays [image].
   const AnimalImage({
     super.key,
     required this.image,

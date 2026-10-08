@@ -817,6 +817,16 @@ void main() {
 
   group('API06 AnimalDatePicker boundary', () {
     test('styles reject values the picker cannot render', () {
+      expect(
+        () => AnimalDatePickerStyle(padding: const EdgeInsets.only(left: -1)),
+        throwsArgumentError,
+      );
+      expect(
+        () => AnimalDatePickerStyle(
+          borderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalDatePickerStyle(width: -1), throwsArgumentError);
       expect(
         () => AnimalDatePickerStyle(borderWidth: double.nan),

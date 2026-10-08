@@ -404,6 +404,12 @@ void main() {
 
   group('API06 AnimalCheckbox boundary', () {
     test('styles reject values components cannot render', () {
+      expect(
+        () => AnimalCheckboxStyle(
+          borderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalCheckboxStyle(boxSize: -1), throwsArgumentError);
       expect(() => AnimalCheckboxStyle(iconSize: -0.5), throwsArgumentError);
       expect(

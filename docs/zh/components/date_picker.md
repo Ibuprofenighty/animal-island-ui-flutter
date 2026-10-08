@@ -29,6 +29,11 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 `AnimalDate` 表示公历 1–9999 年的 Civil 日期，日历序数负责日期运算，因此加一天不依赖本机时区的 24 小时长度。`AnimalDate.fromDateTime()` 保留输入对象提供的年、月、日字段；`toDateTime()` 返回相同年月日的 UTC 零点。非法年份、月份或日构造抛出 `ArgumentError.value`；算术超出支持年份范围时在 debug/release 模式下均抛出 `RangeError`。支持范围之外的日历格是不可操作的占位格。
 
+`AnimalDate` 成员：`year`、`month`、`day`、`weekday`（1 为周一）、`AnimalDate.minimumYear`/`maximumYear`、
+`AnimalDate.daysInMonth(year, month)`、`AnimalDate.today({clock})`、`AnimalDate.fromDateTime`、`toDateTime()`、
+`addDays`/`subtractDays`、`isBefore`/`isAfter`/`compareTo` 与 `toIso8601String()`（也是其 `toString`）；年月日相同的两个日期相等。
+`AnimalDateSingleSelection.date` 与 `AnimalDateRangeSelection.start`/`end` 保存选择值，`isCompatibleWith(mode)` 判断其是否适用于某个选择模式。
+
 `AnimalDatePickerMode.date`、`.range`、`.month` 通过 `mode` 选择，默认值为 `.date`。三种模式共用一个受控的 `AnimalDateSelection? selection` 和一个 `ValueChanged<AnimalDateSelection?>? onChanged` 提议回调。`AnimalDateSelection.date(...)` 创建 `AnimalDateSingleSelection`；`AnimalDateSelection.range(start:, end:)` 创建 `AnimalDateRangeSelection`。范围模式中 `end == null` 表示由外部 owner 持有的起点草稿；选择结束日期后才提出完整范围。范围构造器拒绝早于起点的终点，并抛出 `ArgumentError.value`。月份模式复用单日期变体，所选日期必须是当月 1 日。`mode` 与 `selection` 不匹配时抛出 `ArgumentError.value`；`firstDate` 晚于 `lastDate` 时抛出 `ArgumentError`。
 
 父级始终是已提交选择值的唯一 owner。父级将接受的提议回传为 `selection` 后，面板才显示该值；如果 `selection` 保持不变，选择器继续显示原外部值，不保留乐观的第二当前值。inline 与 popover 共用同一 calendar model 和 panel。`CalendarModel` 显式接收 `today`；`AnimalDate.today()` 与两种呈现均使用 package 的规范 `AnimalClock`/`SystemClock` 路径。

@@ -67,7 +67,7 @@ host 卸载时会关闭它的加载，此时 `isClosed` 同样变为 true。两�
 由当前 token 推导的默认值：指示器使用 `colors.primaryText`，提示文字为粗体
 `typography.caption`，置于带 `shadows.softElevation` 的胶囊表面上，遮罩为半透明页面
 背景，雪花粒子使用 `colors.info`。指示器 `size` 与圆点比例仍是构造参数；`size` 默认
-spinner 为 40、snowflake 为 48、dots 为 32。
+无名构造器与 `spinner` 为 40、`snowflake` 为 48、`dots` 为 32。
 
 ## 示例
 参见示例 Gallery 中的 [`loading_story.dart`](../../../example/lib/stories/loading_story.dart)。

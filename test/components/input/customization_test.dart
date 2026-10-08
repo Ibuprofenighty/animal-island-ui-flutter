@@ -435,6 +435,18 @@ void main() {
 
   group('API06 AnimalInput boundary', () {
     test('styles reject values components cannot render', () {
+      expect(
+        () => AnimalInputStyle(
+          clearButtonPadding: const EdgeInsets.only(left: -1),
+        ),
+        throwsArgumentError,
+      );
+      expect(
+        () => AnimalInputStyle(
+          clearButtonBorderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalInputStyle(minHeight: -1), throwsArgumentError);
       expect(
         () => AnimalInputStyle(borderWidth: double.nan),

@@ -45,9 +45,15 @@ class AnimalLoadingStyle {
   /// Color of the full-screen barrier behind the indicator.
   final Color? barrierColor;
 
-  /// Color of the falling particles of a full-screen snowflake loading.
+  /// Color of the falling particles of a full-screen snowflake loading; its
+  /// alpha scales each particle's own opacity.
   final Color? snowflakeColor;
 
+  /// Creates a loading indicator style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension, inset or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalLoadingStyle({
     this.color,
     this.tipGap,
@@ -65,8 +71,11 @@ class AnimalLoadingStyle {
     AnimalStyleValues.checkDimension('tipGap', tipGap);
     AnimalStyleValues.checkDimension('tipBorderWidth', tipBorderWidth);
     AnimalStyleValues.checkTextStyle('tipTextStyle', tipTextStyle);
+    AnimalStyleValues.checkInsets('tipPadding', tipPadding);
+    AnimalStyleValues.checkRadius('tipBorderRadius', tipBorderRadius);
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalLoadingStyle copyWith({
     Color? color,
     double? tipGap,
@@ -117,6 +126,12 @@ class AnimalLoadingStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalLoadingStyle? lerp(
     AnimalLoadingStyle? a,
     AnimalLoadingStyle? b,

@@ -45,9 +45,16 @@ class AnimalSwitchStyle {
   /// Style of the in-track labels. Its color is resolved from [labelTextColor].
   final TextStyle? labelTextStyle;
 
+  /// Fill of the track.
   final WidgetStateProperty<Color?>? trackColor;
+
+  /// Border color of the track.
   final WidgetStateProperty<Color?>? trackBorderColor;
+
+  /// Fill of the thumb.
   final WidgetStateProperty<Color?>? thumbColor;
+
+  /// Border color of the thumb.
   final WidgetStateProperty<Color?>? thumbBorderColor;
 
   /// Label color. The checked label resolves with [WidgetState.selected].
@@ -59,6 +66,11 @@ class AnimalSwitchStyle {
   /// Shadow painted inside the track, under its border.
   final BoxShadow? trackInsetShadow;
 
+  /// Creates a switch style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalSwitchStyle({
     this.width,
     this.height,
@@ -87,8 +99,10 @@ class AnimalSwitchStyle {
     AnimalStyleValues.checkDimension('focusBorderWidth', focusBorderWidth);
     AnimalStyleValues.checkDimension('loadingStrokeWidth', loadingStrokeWidth);
     AnimalStyleValues.checkTextStyle('labelTextStyle', labelTextStyle);
+    AnimalStyleValues.checkRadius('borderRadius', borderRadius);
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalSwitchStyle copyWith({
     double? width,
     double? height,
@@ -156,6 +170,12 @@ class AnimalSwitchStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalSwitchStyle? lerp(
     AnimalSwitchStyle? a,
     AnimalSwitchStyle? b,
@@ -280,16 +300,23 @@ class AnimalSwitchStyle {
 /// precedence over both.
 @immutable
 class AnimalSwitchThemeData {
+  /// Style applied to switches of every size.
   final AnimalSwitchStyle? style;
+
+  /// Style for small switches; wins over [style].
   final AnimalSwitchStyle? smallStyle;
+
+  /// Style for default-size switches; wins over [style].
   final AnimalSwitchStyle? defaultSizeStyle;
 
+  /// Creates theme-wide switch overrides; every style defaults to null.
   const AnimalSwitchThemeData({
     this.style,
     this.smallStyle,
     this.defaultSizeStyle,
   });
 
+  /// Returns a copy of this theme data with the given fields replaced.
   AnimalSwitchThemeData copyWith({
     AnimalSwitchStyle? style,
     AnimalSwitchStyle? smallStyle,
@@ -300,6 +327,7 @@ class AnimalSwitchThemeData {
     defaultSizeStyle: defaultSizeStyle ?? this.defaultSizeStyle,
   );
 
+  /// Linearly interpolates between two theme data values, style by style.
   static AnimalSwitchThemeData? lerp(
     AnimalSwitchThemeData? a,
     AnimalSwitchThemeData? b,

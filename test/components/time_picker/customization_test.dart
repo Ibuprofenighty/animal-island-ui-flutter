@@ -713,6 +713,16 @@ void main() {
 
   group('API06 AnimalTimePicker boundary', () {
     test('styles reject values the picker cannot render', () {
+      expect(
+        () => AnimalTimePickerStyle(padding: const EdgeInsets.only(left: -1)),
+        throwsArgumentError,
+      );
+      expect(
+        () => AnimalTimePickerStyle(
+          borderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalTimePickerStyle(width: -1), throwsArgumentError);
       expect(
         () => AnimalTimePickerStyle(minItemExtent: double.nan),

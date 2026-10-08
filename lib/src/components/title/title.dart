@@ -4,23 +4,48 @@ import '../../foundation/theme/colors.dart';
 import '../../foundation/theme/theme.dart';
 import '../../internal/painting/ribbon_painter.dart';
 
-/// Dimensions for [AnimalTitle] ribbon component.
+/// Size of an [AnimalTitle] ribbon.
 enum AnimalTitleSize {
-  small(height: 36.0, fontSize: 16.0, wingWidth: 16.0, foldDrop: 6.0),
-  middle(height: 48.0, fontSize: 22.0, wingWidth: 24.0, foldDrop: 8.0),
-  large(height: 64.0, fontSize: 30.0, wingWidth: 32.0, foldDrop: 10.0);
+  /// 36 logical pixels high.
+  small,
 
-  final double height;
-  final double fontSize;
-  final double wingWidth;
-  final double foldDrop;
+  /// 48 logical pixels high.
+  middle,
 
-  const AnimalTitleSize({
-    required this.height,
-    required this.fontSize,
-    required this.wingWidth,
-    required this.foldDrop,
-  });
+  /// 64 logical pixels high.
+  large,
+}
+
+/// Metrics of each [AnimalTitleSize]. Package-internal: the root library
+/// exports the enum without this extension.
+extension AnimalTitleSizeMetrics on AnimalTitleSize {
+  /// Height of the ribbon.
+  double get height => switch (this) {
+    AnimalTitleSize.small => 36,
+    AnimalTitleSize.middle => 48,
+    AnimalTitleSize.large => 64,
+  };
+
+  /// Font size of the title.
+  double get fontSize => switch (this) {
+    AnimalTitleSize.small => 16,
+    AnimalTitleSize.middle => 22,
+    AnimalTitleSize.large => 30,
+  };
+
+  /// Width of each swallowtail wing.
+  double get wingWidth => switch (this) {
+    AnimalTitleSize.small => 16,
+    AnimalTitleSize.middle => 24,
+    AnimalTitleSize.large => 32,
+  };
+
+  /// Depth of the folded corner below the ribbon.
+  double get foldDrop => switch (this) {
+    AnimalTitleSize.small => 6,
+    AnimalTitleSize.middle => 8,
+    AnimalTitleSize.large => 10,
+  };
 }
 
 /// Swallowtail ribbon Title banner (C06).
@@ -32,13 +57,27 @@ enum AnimalTitleSize {
 /// - Supports 13 Island app-tile color themes or dynamic [AnimalIslandTheme]
 /// - Protected against narrow/infinite constraint overflows
 class AnimalTitle extends StatelessWidget {
+  /// Content shown on the ribbon.
   final Widget child;
+
+  /// Size step of the ribbon. Defaults to [AnimalTitleSize.middle].
   final AnimalTitleSize size;
+
+  /// Island tile color for the ribbon and text; null uses the theme primary
+  /// colors.
   final AnimalTileColor? color;
+
+  /// Front ribbon color; takes precedence over [color]. The back and fold
+  /// shades are derived from it.
   final Color? customFrontColor;
+
+  /// Text color; takes precedence over [color].
   final Color? customTextColor;
+
+  /// Label of the heading semantics node; null adds no label.
   final String? semanticLabel;
 
+  /// Creates a ribbon title around [child].
   const AnimalTitle({
     super.key,
     required this.child,

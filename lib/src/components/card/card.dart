@@ -20,6 +20,7 @@ export 'card_style.dart';
 /// - Full keyboard accessibility when interactive (Tab to focus, Space / Enter to activate when [onTap] is provided)
 /// - No button semantics if non-interactive
 class AnimalCard extends StatefulWidget {
+  /// Body content of the card.
   final Widget child;
 
   /// Optional header widget rendered above [child], separated by a subtle divider.
@@ -61,6 +62,7 @@ class AnimalCard extends StatefulWidget {
   /// Optional accessible label for screen readers.
   final String? semanticLabel;
 
+  /// Creates a card around [child].
   const AnimalCard({
     super.key,
     required this.child,

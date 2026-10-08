@@ -158,6 +158,7 @@ abstract final class AnimalBlobPath {
 
 /// CustomClipper utilizing [AnimalBlobPath].
 class AnimalBlobClipper extends CustomClipper<Path> {
+  /// Creates a clipper that clips to the blob shape of the clipped size.
   const AnimalBlobClipper();
 
   @override

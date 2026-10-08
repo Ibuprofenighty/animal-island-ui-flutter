@@ -22,20 +22,46 @@ import 'components/time_picker_theme.dart';
 /// style and one style per size; other components take their style directly.
 @immutable
 class AnimalComponentThemes {
+  /// Overrides for the focus ring drawn by focusable components.
   final AnimalFocusRingStyle? focusRing;
+
+  /// Overrides for `AnimalInput`.
   final AnimalInputThemeData? input;
+
+  /// Overrides for `AnimalSwitch`.
   final AnimalSwitchThemeData? switchControl;
+
+  /// Overrides for `AnimalCheckbox`.
   final AnimalCheckboxThemeData? checkbox;
+
+  /// Overrides for `AnimalRadio`.
   final AnimalRadioThemeData? radio;
+
+  /// Overrides for `AnimalSelect`.
   final AnimalSelectStyle? select;
+
+  /// Overrides for `AnimalDatePicker`.
   final AnimalDatePickerStyle? datePicker;
+
+  /// Overrides for `AnimalTimePicker`.
   final AnimalTimePickerStyle? timePicker;
+
+  /// Overrides for `AnimalFormItem`.
   final AnimalFormItemStyle? formItem;
+
+  /// Overrides for notifications shown through `AnimalNotification`.
   final AnimalNotificationStyle? notification;
+
+  /// Overrides for `AnimalLoading`.
   final AnimalLoadingStyle? loading;
+
+  /// Overrides for `AnimalModal`.
   final AnimalModalStyle? modal;
+
+  /// Overrides for `AnimalDrawer`.
   final AnimalDrawerStyle? drawer;
 
+  /// Creates component overrides; every entry defaults to null.
   const AnimalComponentThemes({
     this.focusRing,
     this.input,
@@ -52,6 +78,7 @@ class AnimalComponentThemes {
     this.drawer,
   });
 
+  /// Returns a copy of these overrides with the given fields replaced.
   AnimalComponentThemes copyWith({
     AnimalFocusRingStyle? focusRing,
     AnimalInputThemeData? input,
@@ -82,6 +109,7 @@ class AnimalComponentThemes {
     drawer: drawer ?? this.drawer,
   );
 
+  /// Linearly interpolates each entry between these overrides and [other].
   AnimalComponentThemes lerp(AnimalComponentThemes other, double t) {
     if (t == 0) return this;
     if (t == 1) return other;

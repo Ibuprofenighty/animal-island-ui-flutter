@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import '../l10n/generated/gallery_localizations.g.dart';
+
 class GalleryToolbar extends StatelessWidget implements PreferredSizeWidget {
   final bool isDarkMode;
   final VoidCallback onToggleTheme;
@@ -31,7 +33,7 @@ class GalleryToolbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
-    final localizations = AnimalLocalizations.of(context)!;
+    final localizations = GalleryLocalizations.of(context);
     final isZh = currentLocale.languageCode == 'zh';
 
     return Container(

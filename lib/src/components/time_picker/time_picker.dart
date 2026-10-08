@@ -13,28 +13,55 @@ import '../input/input.dart';
 import 'time_picker_panel.dart';
 import 'wheel_model.dart';
 
-export 'time_picker_panel.dart';
-export 'wheel_model.dart';
-
-/// Animal Island time picker card with 3-column scroll wheels.
+/// Animal Island time picker card with one scroll wheel per field of its
+/// [format].
 ///
 /// Features:
-/// - Three smooth scroll columns for hours, minutes, and optional seconds
+/// - Scroll wheels for hours and minutes, plus seconds when [format] has them
 /// - Supports [hourStep], [minuteStep], and [secondStep]
 /// - Supports [format] masks (e.g. 'HH:mm' or 'HH:mm:ss')
 /// - Inline panel or Popover trigger with [AnimalTimePicker.popover]
 /// - Unified [AnimalTimeValue] model with full hour, minute, and second support
 /// - Visual overrides through [style] and `AnimalIslandTheme.components.timePicker`
 class AnimalTimePicker extends StatelessWidget {
+  /// Current controlled time, or null when no time is selected.
+  ///
+  /// The wheels show it snapped to the configured steps.
   final AnimalTimeValue? value;
+
+  /// Called with the proposed time, or null when the user clears it.
+  ///
+  /// The picker does not store the value; rebuild with the new [value]. A
+  /// value the parent does not accept is not kept on the wheels.
   final ValueChanged<AnimalTimeValue?>? onChanged;
+
+  /// Time mask; one containing `ss` adds the seconds wheel. Defaults to
+  /// `'HH:mm'`.
   final String format;
+
+  /// Interval between hour wheel items. Defaults to 1; must be at least 1.
   final int hourStep;
+
+  /// Interval between minute wheel items. Defaults to 1; must be at least 1.
   final int minuteStep;
+
+  /// Interval between second wheel items. Defaults to 1; must be at least 1.
   final int secondStep;
+
+  /// Whether the footer shows a button that selects the current time, snapped
+  /// to the steps. Defaults to true.
   final bool showNow;
+
+  /// Whether the footer shows a button that clears the time. Defaults to true.
   final bool allowClear;
+
+  /// Whether the wheels and actions are inert and no change is proposed.
+  /// Defaults to false.
   final bool disabled;
+
+  /// Focus node for the wheel panel, or null to use an internal one.
+  ///
+  /// The caller owns and disposes a supplied node.
   final FocusNode? focusNode;
 
   /// Overrides for this picker, taking precedence over the theme.
@@ -43,6 +70,10 @@ class AnimalTimePicker extends StatelessWidget {
   /// Canonical clock for Now.
   final AnimalClock clock;
 
+  /// Creates a controlled inline time picker.
+  ///
+  /// Throws an [ArgumentError] when [hourStep], [minuteStep] or [secondStep]
+  /// is less than 1.
   AnimalTimePicker({
     super.key,
     this.value,

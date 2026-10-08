@@ -20,19 +20,49 @@ import '../input/input.dart';
 ///
 /// Visual overrides come from [style] and `AnimalIslandTheme.components.select`.
 class AnimalSelect<T> extends StatefulWidget {
+  /// Selected value; null selects none.
+  ///
+  /// A non-null value that matches no option is kept, shown with the
+  /// placeholder and marked invalid.
   final T? value;
+
+  /// Options of the menu in order, stored as an unmodifiable copy.
   final List<AnimalOption<T>> options;
+
+  /// Called with the chosen option value, or with null when cleared.
+  ///
+  /// Null disables the select unless [readOnly] is true.
   final ValueChanged<T?>? onChanged;
+
+  /// Text shown when no known option is selected; null uses the localized
+  /// select placeholder.
   final String? placeholder;
+
+  /// Whether the select is disabled. Defaults to false.
   final bool disabled;
+
+  /// Whether the select stays focusable but cannot open its menu.
+  /// Defaults to false.
   final bool readOnly;
+
+  /// Whether a clear action is shown while a value is selected and the menu
+  /// can open. Defaults to false.
   final bool allowClear;
+
+  /// Validation emphasis of the trigger. Defaults to
+  /// [AnimalInputStatus.normal].
   final AnimalInputStatus status;
 
   /// Overrides for this select, taking precedence over the theme.
   final AnimalSelectStyle? style;
+
+  /// Focus node of the trigger owned by the caller; null uses an internal
+  /// node that the select creates and disposes.
   final FocusNode? focusNode;
 
+  /// Creates a controlled select over [options].
+  ///
+  /// Throws an [ArgumentError] when two options share a value.
   AnimalSelect({
     super.key,
     required this.value,

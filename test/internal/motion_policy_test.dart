@@ -143,8 +143,9 @@ void main() {
           onTick: (_, _) => tickCount++,
         );
 
-        expect(scheduler.registrationCount, 2);
-        expect(scheduler.activeRegistrationCount, 0);
+        // Ineligible registrations do not tick.
+        await tester.pump(const Duration(milliseconds: 10));
+        expect(tickCount, 0);
         functional.setEligible(true);
         decorative.setEligible(true);
 
@@ -152,7 +153,6 @@ void main() {
         tester.binding.handleAppLifecycleStateChanged(
           AppLifecycleState.resumed,
         );
-        expect(scheduler.activeRegistrationCount, 2);
         expect(resumeCount, 1);
         expect(lastWallRead, clock.now());
 
@@ -162,7 +162,6 @@ void main() {
         expect(elapsedTicks, <Duration>[const Duration(milliseconds: 1)]);
 
         tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
-        expect(scheduler.activeRegistrationCount, 0);
         final int beforeBackground = tickCount;
         clock.advanceWall(const Duration(seconds: 5));
         clock.advanceMonotonic(const Duration(seconds: 5));
@@ -172,7 +171,6 @@ void main() {
         tester.binding.handleAppLifecycleStateChanged(
           AppLifecycleState.resumed,
         );
-        expect(scheduler.activeRegistrationCount, 2);
         expect(resumeCount, 2);
         expect(lastWallRead, clock.now());
         clock.advanceMonotonic(const Duration(milliseconds: 1));
@@ -181,36 +179,35 @@ void main() {
         expect(elapsedTicks.last, const Duration(milliseconds: 1));
 
         decorative.setEligible(false);
-        expect(scheduler.activeRegistrationCount, 1);
         clock.advanceWall(const Duration(seconds: 5));
         await tester.pump(const Duration(milliseconds: 10));
         expect(tickCount, beforeBackground + 12);
 
         functional.setEligible(false);
-        expect(scheduler.activeRegistrationCount, 0);
         final int whileTickerDisabled = tickCount;
         await tester.pump(const Duration(milliseconds: 10));
         expect(tickCount, whileTickerDisabled);
 
         functional.setEligible(true);
         decorative.setEligible(true);
-        expect(scheduler.activeRegistrationCount, 2);
         expect(resumeCount, 3);
         expect(lastWallRead, clock.now());
         final FakeClock replacement = FakeClock(DateTime(2027, 1, 1));
         activeClock = replacement;
         scheduler.updateClock(replacement);
-        expect(scheduler.registrationCount, 2);
-        expect(scheduler.activeRegistrationCount, 2);
         expect(resumeCount, 4);
         expect(lastWallRead, replacement.now());
 
+        // A disposed scheduler keeps no registration: nothing ticks or
+        // resumes any more.
         scheduler.dispose();
-        expect(scheduler.registrationCount, 0);
-        expect(scheduler.activeRegistrationCount, 0);
+        final int afterDispose = tickCount;
+        await tester.pump(const Duration(milliseconds: 10));
+        expect(tickCount, afterDispose);
         tester.binding.handleAppLifecycleStateChanged(
           AppLifecycleState.resumed,
         );
+        expect(resumeCount, 4);
       },
     );
 

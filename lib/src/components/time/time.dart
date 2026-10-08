@@ -32,6 +32,7 @@ class AnimalTime extends StatefulWidget {
   /// Owner-provided visibility for periodic updates; it does not hide layout.
   final bool visible;
 
+  /// Creates a time display.
   const AnimalTime({
     super.key,
     this.time,

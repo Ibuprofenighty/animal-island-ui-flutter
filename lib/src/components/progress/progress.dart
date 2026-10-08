@@ -5,8 +5,6 @@ import '../../foundation/theme/theme.dart';
 import '../../internal/timing/motion_policy.dart';
 import 'progress_painter.dart';
 
-export 'progress_painter.dart';
-
 /// Preset sizes for [AnimalProgress].
 enum AnimalProgressSize {
   /// Compact 8px height.
@@ -83,6 +81,7 @@ class AnimalProgress extends StatefulWidget {
   /// Custom formatter for percentage text.
   final String Function(double percent)? format;
 
+  /// Creates a linear progress bar showing [percent].
   const AnimalProgress({
     super.key,
     required this.percent,

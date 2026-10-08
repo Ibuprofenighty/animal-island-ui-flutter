@@ -38,36 +38,75 @@ enum AnimalButtonTone {
   danger,
 }
 
-/// Standard button dimensions and metrics.
+/// Size of an [AnimalButton].
 enum AnimalButtonSize {
-  small(height: 34.0, fontSize: 13.0, horizontalPadding: 16.0, iconSize: 16.0),
-  middle(height: 44.0, fontSize: 15.0, horizontalPadding: 22.0, iconSize: 20.0),
-  large(height: 52.0, fontSize: 17.0, horizontalPadding: 28.0, iconSize: 24.0);
+  /// 34 logical pixels high.
+  small,
 
-  final double height;
-  final double fontSize;
-  final double horizontalPadding;
-  final double iconSize;
+  /// 44 logical pixels high.
+  middle,
 
-  const AnimalButtonSize({
-    required this.height,
-    required this.fontSize,
-    required this.horizontalPadding,
-    required this.iconSize,
-  });
+  /// 52 logical pixels high.
+  large,
+}
+
+/// Metrics of each [AnimalButtonSize]. Package-internal: the root library
+/// exports the enum without this extension.
+extension AnimalButtonSizeMetrics on AnimalButtonSize {
+  /// Height of the button.
+  double get height => switch (this) {
+    AnimalButtonSize.small => 34,
+    AnimalButtonSize.middle => 44,
+    AnimalButtonSize.large => 52,
+  };
+
+  /// Font size of the label.
+  double get fontSize => switch (this) {
+    AnimalButtonSize.small => 13,
+    AnimalButtonSize.middle => 15,
+    AnimalButtonSize.large => 17,
+  };
+
+  /// Horizontal padding inside the button.
+  double get horizontalPadding => switch (this) {
+    AnimalButtonSize.small => 16,
+    AnimalButtonSize.middle => 22,
+    AnimalButtonSize.large => 28,
+  };
+
+  /// Size of the leading icon and the loading indicator.
+  double get iconSize => switch (this) {
+    AnimalButtonSize.small => 16,
+    AnimalButtonSize.middle => 20,
+    AnimalButtonSize.large => 24,
+  };
 }
 
 /// Resolved visual style attributes for [AnimalButton].
 @immutable
 class ResolvedAnimalButtonStyle {
+  /// Fill of the button surface; transparent for surface-less variants.
   final Color surfaceColor;
+
+  /// Shadow under the raised surface; null when the button has no depth.
   final BoxShadow? depthShadow;
+
+  /// Color of the label and icon.
   final Color textColor;
+
+  /// Press travel of the raised surface in logical pixels; 0 when flat.
   final double depth;
+
+  /// Outline of the surface; null when the variant draws none.
   final Border? border;
+
+  /// Additional shadows painted under the surface; null when none.
   final List<BoxShadow>? extraShadows;
+
+  /// Style of the label, sized for the button size.
   final TextStyle textStyle;
 
+  /// Creates a resolved style from already computed values.
   const ResolvedAnimalButtonStyle({
     required this.surfaceColor,
     this.depthShadow,

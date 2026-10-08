@@ -6,14 +6,31 @@ import 'package:flutter/foundation.dart';
 /// non-negative gap from the difference of two steps.
 @immutable
 class AnimalThemeSpacing {
+  /// Smallest spacing step.
   final double xxs;
+
+  /// Extra-small spacing step.
   final double xs;
+
+  /// Small spacing step.
   final double sm;
+
+  /// Medium spacing step.
   final double md;
+
+  /// Large spacing step.
   final double lg;
+
+  /// Extra-large spacing step.
   final double xl;
+
+  /// Largest spacing step.
   final double xxl;
 
+  /// Creates a spacing scale.
+  ///
+  /// Throws an [ArgumentError] if any step is negative or not finite, or if
+  /// the steps are not ordered from [xxs] to [xxl].
   AnimalThemeSpacing({
     required this.xxs,
     required this.xs,
@@ -50,6 +67,7 @@ class AnimalThemeSpacing {
     }
   }
 
+  /// Default scale: 2, 4, 8, 12, 16, 24 and 32 logical pixels.
   static final AnimalThemeSpacing standard = AnimalThemeSpacing(
     xxs: 2,
     xs: 4,
@@ -60,6 +78,7 @@ class AnimalThemeSpacing {
     xxl: 32,
   );
 
+  /// Returns a copy of this scale with the given fields replaced.
   AnimalThemeSpacing copyWith({
     double? xxs,
     double? xs,
@@ -78,6 +97,7 @@ class AnimalThemeSpacing {
     xxl: xxl ?? this.xxl,
   );
 
+  /// Linearly interpolates between this scale and [other].
   AnimalThemeSpacing lerp(AnimalThemeSpacing other, double t) {
     if (t == 0) return this;
     if (t == 1) return other;

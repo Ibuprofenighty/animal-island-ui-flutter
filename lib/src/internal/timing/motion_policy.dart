@@ -5,8 +5,18 @@ import 'package:flutter/widgets.dart';
 import '../../foundation/models/clock.dart';
 import 'lifecycle_observer.dart';
 
-enum AnimalScheduledWork { decorative, functionalTime }
+/// Kind of periodic work an [AnimalMotionScheduler] runs.
+enum AnimalScheduledWork {
+  /// Decorative motion that simply stops while ineligible.
+  decorative,
 
+  /// A functional time readout whose resume callback runs each time its
+  /// task starts again.
+  functionalTime,
+}
+
+/// Called on each tick with the clock's wall time and the monotonic time
+/// elapsed since the previous tick, or since the task last started.
 typedef AnimalScheduledCallback = void Function(
   DateTime wallTime,
   Duration monotonicElapsed,
@@ -18,6 +28,8 @@ typedef AnimalScheduledCallback = void Function(
 /// updates each registration's eligibility from [AnimalMotionPolicy], and
 /// disposes the instance with its other resources.
 class AnimalMotionScheduler {
+  /// Creates a scheduler driven by [clock] that observes the app lifecycle
+  /// until [dispose].
   factory AnimalMotionScheduler({required AnimalClock clock}) =>
       AnimalMotionScheduler._(clock);
 
@@ -33,14 +45,15 @@ class AnimalMotionScheduler {
       <AnimalMotionRegistration>{};
   bool _disposed = false;
 
-  int get registrationCount => _registrations.length;
-
-  int get activeRegistrationCount => _registrations
-      .where((AnimalMotionRegistration task) => task.isActive)
-      .length;
-
+  /// Whether the app is resumed, or its lifecycle state is not yet known.
   bool get isForeground => _lifecycleObserver.isForeground;
 
+  /// Registers [onTick] to run every [interval] while [eligible] and the app
+  /// is in the foreground.
+  ///
+  /// [onResume] runs for [AnimalScheduledWork.functionalTime] work whenever
+  /// the task starts other than at registration. Throws a [StateError] after [dispose] and an
+  /// [ArgumentError] for a negative [interval].
   AnimalMotionRegistration schedulePeriodic({
     required Duration interval,
     required AnimalScheduledWork work,
@@ -86,6 +99,8 @@ class AnimalMotionScheduler {
     _registrations.remove(task);
   }
 
+  /// Stops observing the lifecycle and disposes every registration.
+  /// Repeated calls do nothing.
   void dispose() {
     if (_disposed) return;
     _disposed = true;
@@ -98,6 +113,8 @@ class AnimalMotionScheduler {
   }
 }
 
+/// One periodic task of an [AnimalMotionScheduler], owned by the component
+/// state that created it.
 class AnimalMotionRegistration {
   AnimalMotionRegistration._(
     this._scheduler,
@@ -123,8 +140,12 @@ class AnimalMotionRegistration {
   bool _waitingForForeground = false;
   bool _disposed = false;
 
+  /// Whether the task's timer is running.
   bool get isActive => _timer != null;
 
+  /// Updates whether the task may run; becoming eligible starts it, or
+  /// resumes it when the app is in the foreground. Throws a [StateError]
+  /// after [dispose].
   void setEligible(bool eligible) {
     if (_disposed) throw StateError('motion registration is disposed');
     if (_eligible == eligible) return;
@@ -197,6 +218,8 @@ class AnimalMotionRegistration {
     _lastMonotonic = null;
   }
 
+  /// Stops the task and removes it from its scheduler. Repeated calls do
+  /// nothing.
   void dispose() {
     if (_disposed) return;
     _disposed = true;
@@ -234,6 +257,8 @@ abstract final class AnimalMotionPolicy {
     bool visible = true,
   }) => visible && TickerMode.valuesOf(context).enabled;
 
+  /// Whether decorative motion should run now: the app is resumed (or its
+  /// state is unknown) and [decorativeContextEligible] holds.
   static bool shouldAnimate(
     BuildContext context, {
     bool focused = false,

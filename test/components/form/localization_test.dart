@@ -38,7 +38,7 @@ void main() {
       ),
     );
 
-    expect(await controller.validate(null, false), isFalse);
+    expect(await controller.validate(autoFocus: false), isFalse);
     expect(customRuleRuns, 1);
     final issueBeforeLocaleChange = controller.getFieldError(key);
     expect(
@@ -90,7 +90,7 @@ void main() {
         ),
       );
 
-      expect(await controller.validate(null, false), isFalse);
+      expect(await controller.validate(autoFocus: false), isFalse);
       await tester.pumpAndSettle();
       expect(customRuleRuns, 1);
       expect(find.text('This field is required'), findsOneWidget);
@@ -256,7 +256,7 @@ void main() {
         ),
       );
 
-      expect(await controller.validate(null, false), isFalse);
+      expect(await controller.validate(autoFocus: false), isFalse);
       await tester.pumpAndSettle();
       const englishMessages = [
         'This field is required',

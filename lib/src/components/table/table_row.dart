@@ -7,21 +7,32 @@ import 'table_column.dart';
 ///
 /// Ensures exact matching column geometry and alignment between header and body.
 class AnimalTableRow extends StatelessWidget {
+  /// Columns that supply each cell's alignment.
   final List<AnimalTableColumn> columns;
+
+  /// Resolved width of each column, one entry per column.
   final List<double> columnWidths;
+
+  /// Cell content in column order; a missing cell renders empty.
   final List<Widget> cells;
+
+  /// Whether the row is the header, which uses heading text and header
+  /// semantics. Defaults to false.
   final bool isHeader;
-  final bool isEven;
+
+  /// Fill of the row.
   final Color backgroundColor;
+
+  /// Color of the 1 logical-pixel top border; null draws no border.
   final Color? borderColor;
 
+  /// Creates a row; [columns] and [columnWidths] must have equal lengths.
   const AnimalTableRow({
     super.key,
     required this.columns,
     required this.columnWidths,
     required this.cells,
     this.isHeader = false,
-    this.isEven = false,
     required this.backgroundColor,
     this.borderColor,
   }) : assert(columns.length == columnWidths.length);

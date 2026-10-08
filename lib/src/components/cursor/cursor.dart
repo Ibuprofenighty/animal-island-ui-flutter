@@ -26,6 +26,7 @@ enum AnimalCursorType {
 /// - Only renders custom graphics on mouse pointer devices (never dangles on touch screens)
 /// - Single MouseRegion overlay without duplicating focus trees
 class AnimalCursor extends StatefulWidget {
+  /// Content over which the cursor is shown.
   final Widget child;
 
   /// The cursor style variant. Default is [AnimalCursorType.defaultCursor].
@@ -37,6 +38,7 @@ class AnimalCursor extends StatefulWidget {
   /// Custom cursor widget if custom overlay is desired.
   final Widget? customCursor;
 
+  /// Creates a cursor region around [child].
   const AnimalCursor({
     super.key,
     required this.child,

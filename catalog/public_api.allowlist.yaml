@@ -41,7 +41,6 @@ symbols:
   - AnimalDrawerStyle
   - AnimalFieldBinding
   - AnimalFieldKey
-  - AnimalFieldRegistration
   - AnimalFieldValue
   - AnimalFocusRingStyle
   - AnimalFooter
@@ -90,7 +89,6 @@ symbols:
   - AnimalRadioStyle
   - AnimalRadioThemeData
   - AnimalRule
-  - AnimalRuleType
   - AnimalSelect
   - AnimalSelectStyle
   - AnimalSkeleton
@@ -131,5 +129,4 @@ symbols:
   - AnimalValidationIssueKind
   - AnimalValidationStatus
   - SystemClock
-  - lookupAnimalLocalizations
   - resolveAnimalLocale

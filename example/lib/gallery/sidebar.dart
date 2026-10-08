@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import '../l10n/generated/gallery_localizations.g.dart';
+
 class NavItem {
   final String title;
   final String route;
@@ -32,7 +34,7 @@ class GallerySidebar extends StatelessWidget {
     required this.onNavigate,
   });
 
-  static List<NavCategory> _categories(AnimalLocalizations localizations) => [
+  static List<NavCategory> _categories(GalleryLocalizations localizations) => [
     NavCategory(
       name: localizations.galleryCategoryExplore,
       items: [
@@ -312,7 +314,7 @@ class GallerySidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
-    final localizations = AnimalLocalizations.of(context)!;
+    final localizations = GalleryLocalizations.of(context);
     final categories = _categories(localizations);
 
     return Container(

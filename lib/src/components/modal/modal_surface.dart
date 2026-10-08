@@ -4,10 +4,16 @@ import '../../internal/painting/blob_path.dart';
 
 /// Painter that renders the organic smooth border around the blob modal.
 class BlobModalPainter extends CustomPainter {
+  /// Fill of the blob shape.
   final Color fillColor;
+
+  /// Color of the blob outline; a transparent color skips the outline.
   final Color borderColor;
+
+  /// Width of the blob outline in logical pixels; zero or less skips it.
   final double borderWidth;
 
+  /// Creates a painter for the blob fill and outline.
   const BlobModalPainter({
     required this.fillColor,
     required this.borderColor,
@@ -25,7 +31,7 @@ class BlobModalPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
     canvas.drawPath(path, fillPaint);
 
-    if (borderWidth > 0 && borderColor != Colors.transparent) {
+    if (borderWidth > 0 && borderColor.a > 0) {
       final borderPaint = Paint()
         ..color = borderColor
         ..strokeWidth = borderWidth
@@ -46,14 +52,28 @@ class BlobModalPainter extends CustomPainter {
 ///
 /// Every visual value is resolved by the modal; the surface reads no theme.
 class AnimalModalSurface extends StatelessWidget {
+  /// Content clipped to the blob shape.
   final Widget child;
+
+  /// Fill of the blob shape.
   final Color fillColor;
+
+  /// Color of the blob outline.
   final Color borderColor;
+
+  /// Width of the blob outline in logical pixels.
   final double borderWidth;
+
+  /// Width of the surface in logical pixels.
   final double width;
+
+  /// Shadows painted under the surface's bounding box.
   final List<BoxShadow> shadows;
+
+  /// Space between the blob edge and [child].
   final EdgeInsetsGeometry padding;
 
+  /// Creates a blob surface around [child].
   const AnimalModalSurface({
     super.key,
     required this.child,

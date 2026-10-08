@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import '../l10n/generated/gallery_localizations.g.dart';
+
 // The identity of this build, written by `dart run tool/build_info.dart`
 // and passed to `flutter build` with --dart-define-from-file. Every value is
 // empty when the build was not stamped.
@@ -26,7 +28,7 @@ class ProvenanceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AnimalIslandTheme.of(context);
-    final localizations = AnimalLocalizations.of(context)!;
+    final localizations = GalleryLocalizations.of(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),

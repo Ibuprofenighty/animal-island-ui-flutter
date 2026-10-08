@@ -4,11 +4,21 @@ import 'package:flutter/painting.dart';
 /// Shadow values owned by one Animal Island theme.
 @immutable
 class AnimalThemeShadows {
+  /// Hard, unblurred depth shadow beneath tactile buttons and tabs.
   final BoxShadow button3d;
+
+  /// Hard, unblurred depth shadow beneath inputs and digit tiles.
   final BoxShadow input3d;
+
+  /// Soft, blurred shadow for slightly raised surfaces.
   final BoxShadow softElevation;
+
+  /// Layered shadows for modals and drawers; unmodifiable.
   final List<BoxShadow> modal;
 
+  /// Creates a shadow configuration.
+  ///
+  /// The [modal] list is copied into an unmodifiable list.
   AnimalThemeShadows({
     required this.button3d,
     required this.input3d,
@@ -16,6 +26,7 @@ class AnimalThemeShadows {
     required List<BoxShadow> modal,
   }) : modal = List<BoxShadow>.unmodifiable(modal);
 
+  /// Default shadows for light palettes.
   static final AnimalThemeShadows light = AnimalThemeShadows(
     button3d: const BoxShadow(
       color: Color(0xFFBDAEA0),
@@ -46,6 +57,7 @@ class AnimalThemeShadows {
     ],
   );
 
+  /// Default shadows for dark palettes.
   static final AnimalThemeShadows dark = AnimalThemeShadows(
     button3d: const BoxShadow(
       color: Color(0xFF16120E),
@@ -76,6 +88,7 @@ class AnimalThemeShadows {
     ],
   );
 
+  /// Returns a copy of these shadows with the given fields replaced.
   AnimalThemeShadows copyWith({
     BoxShadow? button3d,
     BoxShadow? input3d,
@@ -88,6 +101,7 @@ class AnimalThemeShadows {
     modal: modal ?? this.modal,
   );
 
+  /// Linearly interpolates between these shadows and [other].
   AnimalThemeShadows lerp(AnimalThemeShadows other, double t) => t == 0
       ? this
       : t == 1

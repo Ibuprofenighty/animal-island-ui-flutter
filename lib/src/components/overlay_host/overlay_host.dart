@@ -33,9 +33,14 @@ class _AnimalOverlayHostScope extends InheritedWidget {
 /// In the latter case the old controller's `onClose` callbacks run during the
 /// host's rebuild, so they must not synchronously rebuild an ancestor.
 class AnimalOverlayHost extends StatefulWidget {
+  /// Subtree that can show overlays in this host.
   final Widget child;
+
+  /// Controller bound while the host is mounted; null makes the host create
+  /// and dispose its own.
   final AnimalOverlayController? controller;
 
+  /// Creates an overlay host around [child].
   const AnimalOverlayHost({super.key, required this.child, this.controller});
 
   /// Returns the controller of the nearest [AnimalOverlayHost].
@@ -67,8 +72,8 @@ class AnimalOverlayHost extends StatefulWidget {
 class _AnimalOverlayHostState extends State<AnimalOverlayHost> {
   final GlobalKey<OverlayState> _overlayKey = GlobalKey<OverlayState>();
   AnimalOverlayController? _ownedController;
-  AnimalOverlayController? _boundController;
-  OverlayState? _boundOverlay;
+  // The controller and overlay attached together by _bind.
+  (AnimalOverlayController, OverlayState)? _binding;
 
   AnimalOverlayController get _controller =>
       widget.controller ?? (_ownedController ??= AnimalOverlayController());
@@ -100,16 +105,15 @@ class _AnimalOverlayHostState extends State<AnimalOverlayHost> {
     if (overlay == null) return;
     final AnimalOverlayController controller = _controller;
     controller._attach(overlay);
-    _boundController = controller;
-    _boundOverlay = overlay;
+    _binding = (controller, overlay);
   }
 
   void _unbind() {
-    final AnimalOverlayController? controller = _boundController;
-    final OverlayState? overlay = _boundOverlay;
-    _boundController = null;
-    _boundOverlay = null;
-    if (controller != null && overlay != null) controller._detach(overlay);
+    final (AnimalOverlayController, OverlayState)? binding = _binding;
+    _binding = null;
+    if (binding == null) return;
+    final (AnimalOverlayController controller, OverlayState overlay) = binding;
+    controller._detach(overlay);
   }
 
   @override

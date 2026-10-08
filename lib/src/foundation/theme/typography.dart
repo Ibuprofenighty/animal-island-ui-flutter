@@ -10,19 +10,47 @@ import 'package:flutter/painting.dart';
 /// reverse dependency cycle.
 @immutable
 class AnimalThemeTypography {
+  /// Primary font family applied by [resolve] to styles without one.
   final String fontFamily;
+
+  /// Fallback font families, in order; unmodifiable.
   final List<String> fontFamilyFallback;
+
+  /// Style of modal and drawer titles.
   final TextStyle title;
+
+  /// Style of section headings.
   final TextStyle heading;
+
+  /// Style of subheadings.
   final TextStyle subheading;
+
+  /// Style of button labels.
   final TextStyle button;
+
+  /// Style of body text.
   final TextStyle body;
+
+  /// Style of secondary, supporting text.
   final TextStyle secondary;
+
+  /// Style of captions and small labels.
   final TextStyle caption;
+
+  /// Monospace style of code blocks.
   final TextStyle code;
+
+  /// Style of countdown digits.
   final TextStyle countdown;
+
+  /// Style of large numeric readouts such as progress percentages.
   final TextStyle digitLarge;
 
+  /// Creates a typography configuration.
+  ///
+  /// Throws an [ArgumentError] if a font family is blank, or if any style lacks
+  /// a finite positive font size or has a non-finite or non-positive height or
+  /// a non-finite letter or word spacing.
   AnimalThemeTypography({
     required this.fontFamily,
     required List<String> fontFamilyFallback,
@@ -157,6 +185,7 @@ class AnimalThemeTypography {
     fontFamilyFallback: style.fontFamilyFallback ?? fontFamilyFallback,
   );
 
+  /// Returns a copy of this typography with the given fields replaced.
   AnimalThemeTypography copyWith({
     String? fontFamily,
     List<String>? fontFamilyFallback,
@@ -185,6 +214,9 @@ class AnimalThemeTypography {
     digitLarge: digitLarge ?? this.digitLarge,
   );
 
+  /// Linearly interpolates between this typography and [other].
+  ///
+  /// Text styles interpolate; font families switch at `t == 0.5`.
   AnimalThemeTypography lerp(AnimalThemeTypography other, double t) {
     if (t == 0) return this;
     if (t == 1) return other;

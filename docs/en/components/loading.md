@@ -75,8 +75,8 @@ from the active tokens: the indicator uses `colors.primaryText`, the tip uses
 bold `typography.caption` on a pill surface with `shadows.softElevation`, the
 barrier is the translucent page background and the snow particles use
 `colors.info`. The indicator `size` and the dot proportions stay constructor
-parameters; `size` defaults to 40 for the spinner, 48 for the snowflake and 32
-for the dots.
+parameters; `size` defaults to 40 for the unnamed and `spinner` constructors,
+48 for `snowflake` and 32 for `dots`.
 
 ## Example
 See [`loading_story.dart`](../../../example/lib/stories/loading_story.dart) in the example Gallery.

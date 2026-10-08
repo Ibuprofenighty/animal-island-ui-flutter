@@ -11,10 +11,6 @@ import 'table_column.dart';
 import 'table_layout.dart';
 import 'table_row.dart';
 
-export 'table_column.dart';
-export 'table_layout.dart';
-export 'table_row.dart';
-
 /// Signature for building cells in an [AnimalTable] row at a given [index].
 typedef AnimalTableRowBuilder = List<Widget> Function(
   BuildContext context,
@@ -68,6 +64,7 @@ class AnimalTable extends StatelessWidget {
   /// Optional scroll controller for vertical row scrolling.
   final ScrollController? verticalScrollController;
 
+  /// Creates a table of [rowCount] rows built by [rowBuilder].
   const AnimalTable({
     super.key,
     required this.columns,
@@ -184,7 +181,6 @@ class AnimalTable extends StatelessWidget {
                 columns: columns,
                 columnWidths: solvedWidths,
                 cells: cells,
-                isEven: isEven,
                 backgroundColor: isEven ? rowBgEven : rowBgOdd,
                 borderColor: borderColor.withValues(alpha: 0.4),
               );

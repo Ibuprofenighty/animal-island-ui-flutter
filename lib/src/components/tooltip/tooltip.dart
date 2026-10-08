@@ -43,6 +43,7 @@ class AnimalTooltip extends StatelessWidget {
   /// Duration for which tooltip remains visible after trigger.
   final Duration showDuration;
 
+  /// Creates a tooltip that shows [message] for [child].
   const AnimalTooltip({
     super.key,
     required this.child,

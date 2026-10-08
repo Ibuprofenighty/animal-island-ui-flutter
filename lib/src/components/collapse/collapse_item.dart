@@ -23,6 +23,7 @@ class AnimalCollapseItem {
   /// Optional trailing widget in the header (e.g. badge, tag, extra action).
   final Widget? extra;
 
+  /// Creates an item; a null [id] is stored as the empty string.
   const AnimalCollapseItem({
     String? id,
     required this.title,

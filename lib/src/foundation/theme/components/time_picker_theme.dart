@@ -172,6 +172,11 @@ class AnimalTimePickerStyle {
   /// Gap between the trigger icon and its text.
   final double? triggerIconGap;
 
+  /// Creates a time picker style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension, inset or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalTimePickerStyle({
     this.width,
     this.widthWithSeconds,
@@ -250,8 +255,27 @@ class AnimalTimePickerStyle {
     AnimalStyleValues.checkTextStyle('nowTextStyle', nowTextStyle);
     AnimalStyleValues.checkTextStyle('clearTextStyle', clearTextStyle);
     AnimalStyleValues.checkTextStyle('triggerTextStyle', triggerTextStyle);
+    AnimalStyleValues.checkInsets('padding', padding);
+    AnimalStyleValues.checkRadius('borderRadius', borderRadius);
+    AnimalStyleValues.checkRadius(
+      'selectionBorderRadius',
+      selectionBorderRadius,
+    );
+    AnimalStyleValues.checkInsets('dividerPadding', dividerPadding);
+    AnimalStyleValues.checkInsets('actionPadding', actionPadding);
+    AnimalStyleValues.checkRadius('triggerBorderRadius', triggerBorderRadius);
+    AnimalStyleValues.checkInsets('triggerPadding', triggerPadding);
+    AnimalStyleValues.checkInsets(
+      'triggerClearButtonPadding',
+      triggerClearButtonPadding,
+    );
+    AnimalStyleValues.checkRadius(
+      'triggerClearButtonBorderRadius',
+      triggerClearButtonBorderRadius,
+    );
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalTimePickerStyle copyWith({
     double? width,
     double? widthWithSeconds,
@@ -434,6 +458,12 @@ class AnimalTimePickerStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalTimePickerStyle? lerp(
     AnimalTimePickerStyle? a,
     AnimalTimePickerStyle? b,

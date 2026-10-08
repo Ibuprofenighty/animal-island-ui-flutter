@@ -17,15 +17,34 @@ enum _PresetType { none, leaf, star, flower }
 /// - RTL-aware start/end indents
 /// - Decorative semantics filtering (suppresses meaningless reader output unless child text is present)
 class AnimalDivider extends StatelessWidget {
+  /// Line style. Defaults to [AnimalDividerType.dashed].
   final AnimalDividerType type;
+
+  /// Color of the line; null uses a subtle theme border color.
   final Color? color;
+
+  /// Stroke width of the line; must be non-negative. Defaults to 2.
   final double thickness;
+
+  /// Ornament shown in the middle of the line when [child] is null.
   final Widget? icon;
+
+  /// Text or content shown in the middle of the line, styled as a caption.
+  ///
+  /// Takes precedence over [icon]. A divider with neither is excluded from
+  /// semantics.
   final Widget? child;
+
+  /// Space before the line at the start edge; must be non-negative.
+  /// Defaults to 0.
   final double indent;
+
+  /// Space after the line at the end edge; must be non-negative.
+  /// Defaults to 0.
   final double endIndent;
   final _PresetType _preset;
 
+  /// Creates a divider with an optional [child] or [icon] in the middle.
   const AnimalDivider({
     super.key,
     this.type = AnimalDividerType.dashed,

@@ -15,22 +15,66 @@ import 'date_picker_panel.dart';
 
 /// Controlled civil-date selection with one inline or popover calendar panel.
 class AnimalDatePicker extends StatelessWidget {
+  /// Current controlled selection, or null when nothing is selected.
+  ///
+  /// It must be compatible with [mode]; the constructor throws an
+  /// [ArgumentError] otherwise.
   final AnimalDateSelection? selection;
+
+  /// Whether the panel picks a single date, a date range, or a month.
+  ///
+  /// Defaults to [AnimalDatePickerMode.date]. In month mode a selection is the
+  /// first day of the chosen month.
   final AnimalDatePickerMode mode;
+
+  /// Called with the proposed selection, or null when the user clears it.
+  ///
+  /// The panel does not store the value; rebuild with the new [selection].
+  /// In range mode the first tap proposes an open range and the second tap
+  /// proposes the completed range.
   final ValueChanged<AnimalDateSelection?>? onChanged;
+
+  /// Earliest selectable date, inclusive, or null for no lower bound.
+  ///
+  /// The constructor throws an [ArgumentError] when it is after [lastDate].
   final AnimalDate? firstDate;
+
+  /// Latest selectable date, inclusive, or null for no upper bound.
   final AnimalDate? lastDate;
+
+  /// Returns true for additional dates that cannot be selected.
+  ///
+  /// A range that contains a disabled date cannot be completed.
   final bool Function(AnimalDate date)? disabledDate;
+
+  /// Whether the footer shows a button that selects today. Defaults to true.
   final bool showToday;
+
+  /// Whether the footer shows a button that clears the selection. Defaults to
+  /// true.
   final bool allowClear;
+
+  /// Whether every control is inert and no change is proposed. Defaults to
+  /// false.
   final bool disabled;
+
+  /// Focus node for the calendar's root, or null to use an internal one.
+  ///
+  /// The caller owns and disposes a supplied node.
   final FocusNode? focusNode;
+
+  /// Source of the current instant used to determine today. Defaults to
+  /// [SystemClock].
   final AnimalClock clock;
 
   /// Visual overrides; precedence is this style, then
   /// `AnimalIslandTheme.components.datePicker`, then token defaults.
   final AnimalDatePickerStyle? style;
 
+  /// Creates a controlled inline date picker.
+  ///
+  /// Throws an [ArgumentError] when [firstDate] is after [lastDate] or
+  /// [selection] does not match [mode].
   AnimalDatePicker({
     super.key,
     this.selection,

@@ -90,6 +90,11 @@ class AnimalNotificationStyle {
   /// Card shadow.
   final BoxShadow? shadow;
 
+  /// Creates a notification style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension, inset or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalNotificationStyle({
     this.maxWidth,
     this.gap,
@@ -129,8 +134,18 @@ class AnimalNotificationStyle {
       'descriptionTextStyle',
       descriptionTextStyle,
     );
+    AnimalStyleValues.checkInsets('padding', padding);
+    AnimalStyleValues.checkInsets('iconPadding', iconPadding);
+    AnimalStyleValues.checkInsets('closeButtonMargin', closeButtonMargin);
+    AnimalStyleValues.checkInsets('closeButtonPadding', closeButtonPadding);
+    AnimalStyleValues.checkRadius(
+      'closeButtonBorderRadius',
+      closeButtonBorderRadius,
+    );
+    AnimalStyleValues.checkRadius('borderRadius', borderRadius);
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalNotificationStyle copyWith({
     double? maxWidth,
     double? gap,
@@ -223,6 +238,12 @@ class AnimalNotificationStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalNotificationStyle? lerp(
     AnimalNotificationStyle? a,
     AnimalNotificationStyle? b,

@@ -435,6 +435,12 @@ void main() {
 
   group('API06 AnimalRadio boundary', () {
     test('styles reject values components cannot render', () {
+      expect(
+        () => AnimalRadioStyle(
+          borderRadius: const BorderRadius.all(Radius.circular(-2)),
+        ),
+        throwsArgumentError,
+      );
       expect(() => AnimalRadioStyle(boxSize: -1), throwsArgumentError);
       expect(() => AnimalRadioStyle(iconSize: -0.5), throwsArgumentError);
       expect(

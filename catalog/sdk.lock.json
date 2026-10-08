@@ -36,7 +36,7 @@
     },
     "example": {
       "path": "example/pubspec.lock",
-      "sha256": "f97ac1b0e449c6d258675b0cd54659d45af959aad31fa4f2f2c6b95fda8f9463"
+      "sha256": "e74141214389c9554506e34a92b34b1bfaced9f0b19297d6d7ae0383db538c46"
     },
     "web": {
       "path": "tool/web/package-lock.json",

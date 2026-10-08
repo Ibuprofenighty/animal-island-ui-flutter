@@ -13,7 +13,15 @@ import '../../internal/interaction/focus_ring.dart';
 ///
 /// A preset names a step; its metrics come from the active theme. See
 /// [AnimalSwitchStyle] for the values a theme or a single switch can override.
-enum AnimalSwitchSize { small, defaultSize }
+enum AnimalSwitchSize {
+  /// Compact step: a track of at least 46 by 26 logical pixels by default;
+  /// labels may widen it.
+  small,
+
+  /// Default step: a track of at least 58 by 32 logical pixels by default;
+  /// labels may widen it.
+  defaultSize,
+}
 
 class _SwitchTrackDecoration extends BoxDecoration {
   const _SwitchTrackDecoration({
@@ -177,19 +185,45 @@ class _SwitchTrackPainter extends BoxPainter {
 /// - Visual overrides through [style] and
 ///   `AnimalIslandTheme.components.switchControl`
 class AnimalSwitch extends StatefulWidget {
+  /// Whether the switch is on.
   final bool value;
+
+  /// Called with the toggled value when the user activates the switch.
+  ///
+  /// Null disables the switch unless [readOnly] is true.
   final ValueChanged<bool>? onChanged;
+
+  /// Size step. Defaults to [AnimalSwitchSize.defaultSize].
   final AnimalSwitchSize size;
 
   /// Visual overrides for this switch; they take precedence over the theme.
   final AnimalSwitchStyle? style;
+
+  /// Whether the switch is disabled. Defaults to false.
   final bool disabled;
+
+  /// Whether the switch stays focusable but ignores activation.
+  /// Defaults to false.
   final bool readOnly;
+
+  /// Whether a loading indicator is shown in the thumb; a loading switch is
+  /// disabled. Defaults to false.
   final bool loading;
+
+  /// Content shown inside the track while the switch is on.
   final Widget? checkedChildren;
+
+  /// Content shown inside the track while the switch is off.
   final Widget? unCheckedChildren;
+
+  /// Focus node owned by the caller; null uses an internal node that the
+  /// switch creates and disposes.
   final FocusNode? focusNode;
 
+  /// Creates a controlled switch showing [value].
+  ///
+  /// The switch requires a finite maximum width and throws a [FlutterError]
+  /// during layout under an unbounded horizontal constraint.
   const AnimalSwitch({
     super.key,
     required this.value,

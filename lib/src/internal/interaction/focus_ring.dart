@@ -26,10 +26,16 @@ resolveFocusRing(AnimalIslandTheme theme) {
 /// in the active theme's focus color when [focused] is true, eliminating
 /// platform-default blue focus rectangles.
 class AnimalFocusRing extends StatelessWidget {
+  /// Widget the ring is drawn around.
   final Widget child;
+
+  /// Whether the ring is drawn; when false [child] is returned unchanged.
   final bool focused;
+
+  /// Corner radius of the ring; null uses the theme's pill radius.
   final BorderRadius? borderRadius;
 
+  /// Creates a focus ring around [child].
   const AnimalFocusRing({
     super.key,
     required this.child,

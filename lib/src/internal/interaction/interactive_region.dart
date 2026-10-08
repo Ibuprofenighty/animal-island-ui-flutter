@@ -8,6 +8,9 @@ import 'focus_ring.dart';
 /// Smallest hit target of every activatable control, in logical pixels.
 const double kAnimalMinimumTarget = 48;
 
+/// Builds the semantics of an [InteractiveRegion] from whether it is
+/// enabled, whether it is visible and its activation callback (null when it
+/// cannot be activated).
 typedef InteractiveSemanticsBuilder = SemanticsProperties Function(
   bool enabled,
   bool visible,
@@ -20,38 +23,111 @@ typedef InteractiveSemanticsBuilder = SemanticsProperties Function(
 /// widget only owns activation, focus lifecycle, hit-target sizing, and focus
 /// presentation.
 class InteractiveRegion extends StatefulWidget {
+  /// Content of the target.
   final Widget child;
-  final VoidCallback? onPressed;
-  final double depth;
-  final Color? surfaceColor;
-  final BoxShadow? depthShadow;
-  final BorderRadius? borderRadius;
-  final Border? border;
-  final List<BoxShadow>? extraShadows;
-  final EdgeInsetsGeometry? padding;
-  final bool enableHaptics;
-  final bool disabled;
-  final bool readOnly;
-  final bool busy;
-  final bool visible;
-  final bool focusOnHover;
-  final FocusNode? focusNode;
-  final String? semanticLabel;
-  final bool semanticButton;
-  final bool semanticContainer;
-  final bool invalid;
-  final bool? selected;
-  final bool? checked;
-  final bool? mixed;
-  final bool? toggled;
-  final bool? expanded;
-  final bool inMutuallyExclusiveGroup;
-  final String? semanticValue;
-  final InteractiveSemanticsBuilder? semanticsBuilder;
-  final FocusOnKeyEventCallback? onKeyEvent;
-  final ValueChanged<bool>? onFocusChanged;
-  final double minimumHitSize;
 
+  /// Called on activation; null makes the region inactive.
+  final VoidCallback? onPressed;
+
+  /// Raised depth in logical pixels; the surface moves down by this amount
+  /// while pressed. Ignored while the region cannot be activated. Defaults
+  /// to 0.
+  final double depth;
+
+  /// Fill of the surface.
+  final Color? surfaceColor;
+
+  /// Shadow shown under the raised surface while it is not pressed and
+  /// [depth] is positive.
+  final BoxShadow? depthShadow;
+
+  /// Corner radius of the surface and focus ring; null uses the theme's
+  /// pill radius.
+  final BorderRadius? borderRadius;
+
+  /// Border of the surface.
+  final Border? border;
+
+  /// Shadows always painted under the surface, before [depthShadow].
+  final List<BoxShadow>? extraShadows;
+
+  /// Space between the surface edge and [child].
+  final EdgeInsetsGeometry? padding;
+
+  /// Whether pointer, keyboard and accessibility presses play a light
+  /// haptic. Defaults to true.
+  final bool enableHaptics;
+
+  /// Whether the region is disabled: neither focusable nor activatable.
+  final bool disabled;
+
+  /// Whether the region is read-only: never activatable, but focusable even
+  /// without [onPressed].
+  final bool readOnly;
+
+  /// Whether the region is busy: neither focusable nor activatable.
+  final bool busy;
+
+  /// Whether the region is shown; when false it ignores pointers, drops
+  /// focus and is marked hidden for accessibility. Defaults to true.
+  final bool visible;
+
+  /// Whether hovering an activatable region requests focus. Defaults to
+  /// false.
+  final bool focusOnHover;
+
+  /// Focus node of the region; null uses an internal node that the region
+  /// owns and disposes. A provided node is owned by the caller.
+  final FocusNode? focusNode;
+
+  /// Accessible name of the target.
+  final String? semanticLabel;
+
+  /// Whether the default semantics mark the target as a button. Defaults
+  /// to true.
+  final bool semanticButton;
+
+  /// Whether the region forms its own semantics node with explicit child
+  /// nodes. Defaults to false.
+  final bool semanticContainer;
+
+  /// Whether the default semantics report an invalid value.
+  final bool invalid;
+
+  /// Selected state reported by the default semantics; null omits it.
+  final bool? selected;
+
+  /// Checked state reported by the default semantics; null omits it.
+  final bool? checked;
+
+  /// Mixed (indeterminate) state reported by the default semantics; null
+  /// omits it.
+  final bool? mixed;
+
+  /// Toggled state reported by the default semantics; null omits it.
+  final bool? toggled;
+
+  /// Expanded state reported by the default semantics; null omits it.
+  final bool? expanded;
+
+  /// Whether the default semantics place the target in a mutually exclusive
+  /// group.
+  final bool inMutuallyExclusiveGroup;
+
+  /// Value reported by the default semantics.
+  final String? semanticValue;
+
+  /// Replaces the default semantics properties when non-null.
+  final InteractiveSemanticsBuilder? semanticsBuilder;
+
+  /// Handles key events other than Enter, numpad Enter and Space, which the
+  /// region always consumes for activation.
+  final FocusOnKeyEventCallback? onKeyEvent;
+
+  /// Called when the region gains or loses focus.
+  final ValueChanged<bool>? onFocusChanged;
+
+  /// Creates an interactive region around [child].
   const InteractiveRegion({
     super.key,
     required this.child,
@@ -84,8 +160,7 @@ class InteractiveRegion extends StatefulWidget {
     this.semanticsBuilder,
     this.onKeyEvent,
     this.onFocusChanged,
-    this.minimumHitSize = kAnimalMinimumTarget,
-  }) : assert(minimumHitSize >= kAnimalMinimumTarget);
+  });
 
   @override
   State<InteractiveRegion> createState() => _InteractiveRegionState();
@@ -355,8 +430,8 @@ class _InteractiveRegionState extends State<InteractiveRegion> {
       duration: theme.motion.fast,
       curve: theme.motion.ease,
       constraints: BoxConstraints(
-        minWidth: widget.minimumHitSize,
-        minHeight: widget.minimumHitSize,
+        minWidth: kAnimalMinimumTarget,
+        minHeight: kAnimalMinimumTarget,
       ),
       margin: EdgeInsets.only(top: top, bottom: bottom),
       padding: widget.padding,

@@ -16,24 +16,60 @@ import 'validation.dart';
 /// Visual overrides come from [style] and `AnimalIslandTheme.components.formItem`;
 /// see [AnimalFormItemStyle].
 class AnimalFormItem<T> extends StatefulWidget {
+  /// Identity under which this field registers with the enclosing form.
+  ///
+  /// Changing it replaces the registration with a new one.
   final AnimalFieldKey<T> fieldKey;
+
+  /// Label text shown above the field; ignored when [labelWidget] is set.
   final String? label;
+
+  /// Custom label widget that replaces [label] and the required mark.
   final Widget? labelWidget;
+
+  /// Help text shown below the field while it has no validation error.
   final String? help;
+
+  /// Whether the text [label] shows a required mark.
+  ///
+  /// Visual only; add [AnimalRule.required] to [rules] to enforce it.
+  /// Defaults to false.
   final bool required;
+
+  /// Validation rules evaluated in order; the first failure is reported.
   final List<AnimalRule<T>>? rules;
+
+  /// Initial value for a non-text field.
+  ///
+  /// An entry for [fieldKey] in `AnimalForm.initialValues` takes precedence.
+  /// Must be null when [textController] is set.
   final T? initialValue;
 
   /// Explicit text-field opt-in. The caller retains ownership of this buffer.
+  ///
+  /// Requires `AnimalFormItem<String>`; the field's value is the controller's
+  /// text, with empty text read as null.
   final TextEditingController? textController;
+
+  /// Focus node used to focus this field on validation errors.
+  ///
+  /// When null, the item creates and disposes its own node. A supplied node
+  /// stays owned by the caller.
   final FocusNode? focusNode;
+
+  /// Builds the field control from the current [AnimalFieldBinding].
   final Widget Function(BuildContext context, AnimalFieldBinding<T> binding)
   builder;
+
+  /// Outer spacing around the item; when null, only a bottom margin from
+  /// [style] or the theme is applied.
   final EdgeInsetsGeometry? margin;
 
   /// Visual overrides for this item; they take precedence over the theme.
   final AnimalFormItemStyle? style;
 
+  /// Creates a form field wrapper that registers under the enclosing
+  /// `AnimalForm`.
   const AnimalFormItem({
     super.key,
     required this.fieldKey,
@@ -85,9 +121,9 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
     super.didUpdateWidget(oldWidget);
     final scope = AnimalFormScope.maybeOf<AnimalFormController>(context);
     if (scope != null) _validateTextConfiguration(scope);
-    final keyChanged =
-        oldWidget.fieldKey != widget.fieldKey ||
-        oldWidget.fieldKey.runtimeType != widget.fieldKey.runtimeType;
+    // Field keys compare by identity, so a different key type is a different
+    // key.
+    final keyChanged = oldWidget.fieldKey != widget.fieldKey;
     final textControllerChanged = !identical(
       oldWidget.textController,
       widget.textController,
@@ -127,7 +163,6 @@ class _AnimalFormItemState<T> extends State<AnimalFormItem<T>> {
     widget.fieldKey.requireRequestedType(T);
     final textController = widget.textController;
     if (textController != null) {
-      _validateTextConfiguration(scope);
       _registration = controller.registerTextField(
         key: widget.fieldKey as AnimalFieldKey<String>,
         textController: textController,

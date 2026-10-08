@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:animal_island_ui/src/components/form/form_controller.dart'
+    show AnimalFormFieldProtocol;
 
 import 'package:animal_island_ui/src/components/date_picker/date_picker_panel.dart';
 import 'package:animal_island_ui/src/components/time_picker/time_picker_panel.dart';

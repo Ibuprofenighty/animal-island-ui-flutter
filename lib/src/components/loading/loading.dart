@@ -13,8 +13,6 @@ import '../../internal/timing/motion_policy.dart';
 import '../overlay_host/overlay_host.dart';
 import 'loading_painter.dart';
 
-export 'loading_painter.dart';
-
 /// Supported animation types for [AnimalLoading].
 enum AnimalLoadingType {
   /// Rotating island leaf indicator.
@@ -59,8 +57,8 @@ class AnimalLoading extends StatefulWidget {
   /// Indicator animation.
   final AnimalLoadingType type;
 
-  /// Indicator size: 40 for the spinner, 48 for the snowflake and 32 for the
-  /// dots by default.
+  /// Indicator size. Defaults to 40 for the unnamed and `spinner`
+  /// constructors, 48 for `snowflake` and 32 for `dots`.
   final double size;
 
   /// Text shown in a pill below the indicator and announced as its label.
@@ -73,7 +71,8 @@ class AnimalLoading extends StatefulWidget {
   final bool fullScreen;
 
   /// Number of falling particles of a full-screen snowflake loading, from
-  /// [minSnowCount] to [maxSnowCount]. Other values throw a [RangeError].
+  /// [minSnowCount] to [maxSnowCount]; other values throw a [RangeError]. The
+  /// `spinner` and `dots` constructors, which have no particles, store 0.
   final int snowCount;
 
   /// Seed of the particle layout, for a reproducible snowfall.
@@ -83,6 +82,10 @@ class AnimalLoading extends StatefulWidget {
   /// full-screen barrier color; see [AnimalLoadingStyle].
   final AnimalLoadingStyle? style;
 
+  /// Creates a loading indicator of the given [type].
+  ///
+  /// Throws a [RangeError] when [snowCount] is outside [minSnowCount] to
+  /// [maxSnowCount].
   AnimalLoading({
     super.key,
     this.type = AnimalLoadingType.spinner,

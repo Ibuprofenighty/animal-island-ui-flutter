@@ -12,18 +12,41 @@ import '../../icons/icons.g.dart';
 ///
 /// A preset names a step; its metrics come from the active theme. See
 /// [AnimalRadioStyle] for the values a theme or a single radio can override.
-enum AnimalRadioSize { small, middle, large }
+enum AnimalRadioSize {
+  /// Smallest step: an 18 logical-pixel box by default.
+  small,
+
+  /// Default step: a 22 logical-pixel box by default.
+  middle,
+
+  /// Largest step: a 26 logical-pixel box by default.
+  large,
+}
 
 /// Animal Island Kawaii Radio component (C15).
 ///
 /// Uses the current compact 12/14/16 corner-radius contract and a check glyph.
 /// Visual overrides come from [style] and `AnimalIslandTheme.components.radio`.
 class AnimalRadio<T> extends StatefulWidget {
+  /// Value this radio represents.
   final T value;
+
+  /// Currently selected value; the radio is selected when it equals [value].
   final T? groupValue;
+
+  /// Called with [value] when the user activates the radio.
+  ///
+  /// Null disables the radio unless [readOnly] is true.
   final ValueChanged<T>? onChanged;
+
+  /// Content shown after the box, styled with the label text style.
   final Widget? label;
+
+  /// Whether the radio is disabled and unfocusable. Defaults to false.
   final bool disabled;
+
+  /// Whether the radio stays focusable but ignores activation.
+  /// Defaults to false.
   final bool readOnly;
 
   /// Visual size tier.
@@ -32,6 +55,8 @@ class AnimalRadio<T> extends StatefulWidget {
   /// Overrides for this radio, taking precedence over the theme.
   final AnimalRadioStyle? style;
 
+  /// Focus node owned by the caller; null uses an internal node that the
+  /// radio creates and disposes.
   final FocusNode? focusNode;
 
   /// Selected fill and border tone for this radio, drawn with a white check.
@@ -40,6 +65,7 @@ class AnimalRadio<T> extends StatefulWidget {
   /// it, and it wins over the component theme.
   final Color? activeColor;
 
+  /// Creates a controlled radio for [value] within [groupValue].
   const AnimalRadio({
     super.key,
     required this.value,
@@ -214,15 +240,7 @@ class _ResolvedRadioStyle {
     required bool disabled,
     required bool focused,
   }) {
-    final AnimalRadioThemeData? themed = theme.components.radio;
-    final AnimalRadioStyle? sized = switch (size) {
-      AnimalRadioSize.small => themed?.smallStyle,
-      AnimalRadioSize.middle => themed?.middleStyle,
-      AnimalRadioSize.large => themed?.largeStyle,
-    };
-    final AnimalRadioStyle merged = (style ?? AnimalRadioStyle())
-        .merge(sized)
-        .merge(themed?.style);
+    final AnimalRadioStyle merged = _mergedRadioStyle(theme, size, style);
 
     final colors = theme.colors;
     final bool dark = colors.brightness == Brightness.dark;
@@ -306,19 +324,27 @@ class _ResolvedRadioStyle {
   required AnimalRadioStyle? style,
   required Axis direction,
 }) {
-  final AnimalRadioThemeData? themed = theme.components.radio;
-  final AnimalRadioStyle? sized = switch (size) {
-    AnimalRadioSize.small => themed?.smallStyle,
-    AnimalRadioSize.middle => themed?.middleStyle,
-    AnimalRadioSize.large => themed?.largeStyle,
-  };
-  final AnimalRadioStyle merged = (style ?? AnimalRadioStyle())
-      .merge(sized)
-      .merge(themed?.style);
+  final AnimalRadioStyle merged = _mergedRadioStyle(theme, size, style);
   return (
     gap:
         merged.groupGap ??
         (direction == Axis.horizontal ? theme.spacing.lg : theme.spacing.sm),
     runGap: merged.groupRunGap ?? theme.spacing.sm,
   );
+}
+
+// The single layering of radio styles: the instance style, then the theme's
+// size-specific style, then its general style.
+AnimalRadioStyle _mergedRadioStyle(
+  AnimalIslandTheme theme,
+  AnimalRadioSize size,
+  AnimalRadioStyle? style,
+) {
+  final AnimalRadioThemeData? themed = theme.components.radio;
+  final AnimalRadioStyle? sized = switch (size) {
+    AnimalRadioSize.small => themed?.smallStyle,
+    AnimalRadioSize.middle => themed?.middleStyle,
+    AnimalRadioSize.large => themed?.largeStyle,
+  };
+  return (style ?? AnimalRadioStyle()).merge(sized).merge(themed?.style);
 }

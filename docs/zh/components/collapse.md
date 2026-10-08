@@ -20,6 +20,11 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 <!-- generated:api:end -->
 
+## 面板项
+
+每个面板是一个 `AnimalCollapseItem`：稳定的 `id`、`title` 与 `content` 组件、标题行末尾可选的
+`extra` 组件，以及让它不能展开或收起的 `disabled`。
+
 ## 本地化
 折叠项标题、内容和附加内容均为调用方提供的组件。调用方负责本地化；组件只提供展开和启用状态语义。
 

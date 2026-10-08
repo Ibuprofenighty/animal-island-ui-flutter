@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:yaml/yaml.dart';
 
+import 'src/flutter_arguments.dart';
+
 const String _sdkLockPath = 'catalog/sdk.lock.json';
 const String _licenseMarker = 'Attribution-NonCommercial 4.0 International';
 
@@ -50,10 +52,10 @@ Future<int> _runBuildInfo(List<String> args) async {
     final Map<String, dynamic> lockedFlutter =
         lock['flutter'] as Map<String, dynamic>;
     final Map<String, dynamic> observed = jsonDecode(
-      await _run(Platform.isWindows ? 'flutter.bat' : 'flutter', <String>[
-        '--version',
-        '--machine',
-      ]),
+      await _run(
+        _flutter,
+        scriptedArguments(_flutter, <String>['--version', '--machine']),
+      ),
     ) as Map<String, dynamic>;
     final (:String flutterVersion, :String dartVersion) = lockedSdkVersions(
       observed: observed,
@@ -93,6 +95,8 @@ Future<int> _runBuildInfo(List<String> args) async {
     return 1;
   }
 }
+
+final String _flutter = Platform.isWindows ? 'flutter.bat' : 'flutter';
 
 Future<String> _run(String command, List<String> args) async {
   final ProcessResult result = await Process.run(

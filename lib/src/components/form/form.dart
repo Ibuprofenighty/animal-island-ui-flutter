@@ -8,12 +8,33 @@ import 'form_controller.dart';
 
 /// Animal Island form container and owner-scope composition point.
 class AnimalForm extends StatefulWidget {
+  /// Caller-owned controller for this form.
+  ///
+  /// When null, the form creates and disposes its own controller. The form
+  /// never disposes a controller supplied here.
   final AnimalFormController? controller;
+
+  /// Subtree containing the form's `AnimalFormItem` widgets.
   final Widget child;
+
+  /// Initial values for non-text fields, keyed by field identity.
+  ///
+  /// A value here takes precedence over `AnimalFormItem.initialValue`. Text
+  /// fields take their initial value from their text controller instead and
+  /// reject an entry here. Null means no initial values.
   final AnimalFormValues? initialValues;
+
+  /// Called with a fresh values snapshot whenever the controller notifies its
+  /// listeners.
   final ValueChanged<AnimalFormValues>? onChanged;
+
+  /// Submit handler that [AnimalFormController.submit] uses when it is called
+  /// without its own `onSubmit`.
+  ///
+  /// Returning true accepts the snapshot; false rejects it.
   final FutureOr<bool> Function(AnimalFormValues values)? onSubmit;
 
+  /// Creates a form scope around [child].
   const AnimalForm({
     super.key,
     this.controller,
@@ -62,13 +83,14 @@ class _AnimalFormState extends State<AnimalForm> {
   void didUpdateWidget(AnimalForm oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      final oldController = oldWidget.controller ?? _internalController;
-      oldController?.removeListener(_handleControllerChange);
-      if (oldController?.defaultSubmitHandler == oldWidget.onSubmit) {
-        oldController?.defaultSubmitHandler = null;
+      final AnimalFormController oldController =
+          oldWidget.controller ?? _internalController!;
+      oldController.removeListener(_handleControllerChange);
+      if (oldController.defaultSubmitHandler == oldWidget.onSubmit) {
+        oldController.defaultSubmitHandler = null;
       }
       if (oldWidget.controller == null) {
-        _internalController?.dispose();
+        oldController.dispose();
         _internalController = null;
       }
       final newController = _effectiveController;
@@ -85,10 +107,10 @@ class _AnimalFormState extends State<AnimalForm> {
 
   @override
   void dispose() {
-    final controller = widget.controller ?? _internalController;
-    controller?.removeListener(_handleControllerChange);
-    if (controller?.defaultSubmitHandler == widget.onSubmit) {
-      controller?.defaultSubmitHandler = null;
+    final controller = _effectiveController;
+    controller.removeListener(_handleControllerChange);
+    if (controller.defaultSubmitHandler == widget.onSubmit) {
+      controller.defaultSubmitHandler = null;
     }
     _internalController?.dispose();
     super.dispose();

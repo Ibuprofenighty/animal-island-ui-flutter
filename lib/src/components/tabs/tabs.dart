@@ -6,7 +6,6 @@ import '../../foundation/theme/theme.dart';
 import 'tab_indicator.dart';
 import 'tab_item.dart';
 
-export 'tab_indicator.dart';
 export 'tab_item.dart';
 
 class _PrevTabIntent extends Intent {
@@ -37,11 +36,23 @@ class _LastTabIntent extends Intent {
 ///   is not yet guaranteed.
 /// - Safe boundary handling for 0 tabs, all-disabled tabs, or external index changes.
 class AnimalTabs extends StatefulWidget {
+  /// Tabs shown in order.
   final List<AnimalTabItem> tabs;
+
+  /// Index of the selected tab, owned by the caller.
   final int selectedIndex;
+
+  /// Called with the index of an enabled tab the user activates or reaches
+  /// with arrow, Home or End keys.
   final ValueChanged<int> onChanged;
+
+  /// Whether the tabs keep their natural widths and scroll horizontally.
+  ///
+  /// When false, the tabs share the available width equally. Defaults to
+  /// true.
   final bool scrollable;
 
+  /// Creates a controlled tab bar.
   const AnimalTabs({
     super.key,
     required this.tabs,

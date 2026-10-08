@@ -12,12 +12,25 @@ export 'background_painter.dart';
 /// - Theme color awareness with accessible contrast
 /// - Robust bounded and unbounded constraint layout contracts
 class AnimalBackground extends StatelessWidget {
+  /// Content placed over the background; null paints the background only.
   final Widget? child;
+
+  /// Pattern drawn over the fill. Defaults to [AnimalBackgroundType.dots].
   final AnimalBackgroundType type;
+
+  /// Fill color; null uses the theme background color.
   final Color? backgroundColor;
+
+  /// Color of the dots or grid lines; null derives a subtle color from the
+  /// theme for the active brightness.
   final Color? patternColor;
+
+  /// Whether the background fills the bounded incoming constraints.
+  ///
+  /// Each unbounded axis keeps the child's size. Defaults to true.
   final bool expand;
 
+  /// Creates a themed background behind [child].
   const AnimalBackground({
     super.key,
     this.child,

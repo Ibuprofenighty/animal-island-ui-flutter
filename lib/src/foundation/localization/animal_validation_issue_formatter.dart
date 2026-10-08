@@ -5,6 +5,10 @@ import 'generated/animal_localizations.g.dart';
 class AnimalValidationIssueFormatter {
   const AnimalValidationIssueFormatter._();
 
+  /// Returns the message for [issue] from [localizations].
+  ///
+  /// Built-in kinds use the localized template with the issue's bounds;
+  /// [AnimalValidationIssueKind.literal] returns its text unchanged.
   static String format(
     AnimalValidationIssue issue,
     AnimalLocalizations localizations,

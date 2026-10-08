@@ -87,6 +87,11 @@ class AnimalModalStyle {
   /// Blur applied behind the modal while the mask is shown.
   final double? barrierBlurSigma;
 
+  /// Creates a modal style.
+  ///
+  /// Throws an [ArgumentError] if a given dimension, inset or corner radius is
+  /// negative or not finite, or a given text style has a font size that is not
+  /// finite and positive.
   AnimalModalStyle({
     this.backgroundColor,
     this.borderColor,
@@ -125,8 +130,15 @@ class AnimalModalStyle {
     AnimalStyleValues.checkDimension('avatarGap', avatarGap);
     AnimalStyleValues.checkDimension('closeIconSize', closeIconSize);
     AnimalStyleValues.checkDimension('barrierBlurSigma', barrierBlurSigma);
+    AnimalStyleValues.checkInsets('padding', padding);
+    AnimalStyleValues.checkInsets('closeButtonPadding', closeButtonPadding);
+    AnimalStyleValues.checkRadius(
+      'closeButtonBorderRadius',
+      closeButtonBorderRadius,
+    );
   }
 
+  /// Returns a copy of this style with the given fields replaced.
   AnimalModalStyle copyWith({
     Color? backgroundColor,
     Color? borderColor,
@@ -219,6 +231,12 @@ class AnimalModalStyle {
     );
   }
 
+  /// Linearly interpolates between two styles.
+  ///
+  /// Returns [a] when `t == 0` and [b] when `t == 1`. A field set on only one
+  /// side switches at `t == 0.5` instead of blending from a default.
+  /// `t` is clamped to 0..1, so an overshooting curve stays between [a]
+  /// and [b].
   static AnimalModalStyle? lerp(
     AnimalModalStyle? a,
     AnimalModalStyle? b,

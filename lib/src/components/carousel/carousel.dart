@@ -15,16 +15,49 @@ import '../../internal/timing/motion_policy.dart';
 /// - Controlled and uncontrolled active index support.
 /// - Accessible arrow controls and keyboard-accessible dot indicators.
 class AnimalCarousel extends StatefulWidget {
+  /// Slides shown one at a time; an empty list shows an empty placeholder.
   final List<Widget> items;
+
+  /// Height of the carousel. Defaults to 200.
   final double height;
+
+  /// Slide to show when the parent controls the index.
+  ///
+  /// When non-null, a new value animates to that slide, clamped to the valid
+  /// range. Null leaves the index to the carousel, starting at
+  /// [defaultActiveIndex].
   final int? activeIndex;
+
+  /// Initial slide when [activeIndex] is null. Defaults to 0.
   final int defaultActiveIndex;
+
+  /// Called with the new index after the visible slide changes.
   final ValueChanged<int>? onChange;
+
+  /// Whether slides advance automatically when there is more than one.
+  ///
+  /// Autoplay also pauses while the carousel is focused, hovered (see
+  /// [pauseOnHover]), not [visible], or when animations are disabled.
+  /// Defaults to true.
   final bool autoPlay;
+
+  /// Time between automatic advances. Defaults to 4 seconds.
   final Duration autoPlayInterval;
+
+  /// Whether previous and next arrow controls are shown when there is more
+  /// than one slide. Defaults to true.
   final bool showArrows;
+
+  /// Whether dot indicators are shown when there is more than one slide.
+  /// Defaults to true.
   final bool showDots;
+
+  /// Whether autoplay pauses while the pointer hovers the carousel.
+  /// Defaults to true.
   final bool pauseOnHover;
+
+  /// Whether the arrows and autoplay wrap from the last slide to the first
+  /// and back. Defaults to true.
   final bool loop;
 
   /// Owner-provided visibility for autoplay; it does not hide layout.
@@ -33,6 +66,7 @@ class AnimalCarousel extends StatefulWidget {
   /// Clock used to measure autoplay elapsed time. Defaults to [SystemClock].
   final AnimalClock clock;
 
+  /// Creates a carousel of [items].
   const AnimalCarousel({
     super.key,
     required this.items,

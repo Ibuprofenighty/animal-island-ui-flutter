@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:example/l10n/generated/gallery_localizations.g.dart';
 import 'package:example/app.dart';
 
 void main() {
@@ -19,9 +19,9 @@ void main() {
 
     // Verify title and header
     expect(find.text('Animal Island UI'), findsOneWidget);
-    final localizations = AnimalLocalizations.of(
+    final localizations = GalleryLocalizations.of(
       tester.element(find.text('Animal Island UI')),
-    )!;
+    );
     final appFinder = find.byType(MaterialApp);
     expect(
       tester.widget<MaterialApp>(appFinder).theme!.brightness,

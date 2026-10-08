@@ -17,21 +17,65 @@ import 'calendar_model.dart';
 
 /// The shared calendar surface used by inline and popover date pickers.
 class AnimalDatePickerPanel extends StatefulWidget {
+  /// Current controlled selection, or null when nothing is selected.
+  ///
+  /// It must be compatible with [mode]; the constructor throws an
+  /// [ArgumentError] otherwise.
   final AnimalDateSelection? selection;
+
+  /// Whether the panel picks a single date, a date range, or a month.
+  ///
+  /// Defaults to [AnimalDatePickerMode.date]. In month mode a selection is the
+  /// first day of the chosen month.
   final AnimalDatePickerMode mode;
+
+  /// Called with the proposed selection, or null when the user clears it.
+  ///
+  /// The panel does not store the value; rebuild with the new [selection].
+  /// In range mode the first tap proposes an open range and the second tap
+  /// proposes the completed range.
   final ValueChanged<AnimalDateSelection?>? onChanged;
+
+  /// Earliest selectable date, inclusive, or null for no lower bound.
+  ///
+  /// The constructor throws an [ArgumentError] when it is after [lastDate].
   final AnimalDate? firstDate;
+
+  /// Latest selectable date, inclusive, or null for no upper bound.
   final AnimalDate? lastDate;
+
+  /// Returns true for additional dates that cannot be selected.
+  ///
+  /// A range that contains a disabled date cannot be completed.
   final bool Function(AnimalDate date)? disabledDate;
+
+  /// Whether the footer shows a button that selects today. Defaults to true.
   final bool showToday;
+
+  /// Whether the footer shows a button that clears the selection. Defaults to
+  /// true.
   final bool allowClear;
+
+  /// Whether every control is inert and no change is proposed. Defaults to
+  /// false.
   final bool disabled;
+
+  /// Focus node for the calendar's root, or null to use an internal one.
+  ///
+  /// The caller owns and disposes a supplied node.
   final FocusNode? focusNode;
+
+  /// Source of the current instant used to determine today. Defaults to
+  /// [SystemClock].
   final AnimalClock clock;
 
   /// Visual overrides; see [AnimalDatePickerStyle].
   final AnimalDatePickerStyle? style;
 
+  /// Creates a controlled calendar panel.
+  ///
+  /// Throws an [ArgumentError] when [firstDate] is after [lastDate] or
+  /// [selection] does not match [mode].
   AnimalDatePickerPanel({
     super.key,
     this.selection,
@@ -89,12 +133,6 @@ class _AnimalDatePickerPanelState extends State<AnimalDatePickerPanel> {
   @override
   void didUpdateWidget(covariant AnimalDatePickerPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    CalendarModel.validateInputs(
-      mode: widget.mode,
-      selection: widget.selection,
-      firstDate: widget.firstDate,
-      lastDate: widget.lastDate,
-    );
     final todayChangedWithoutSelection =
         oldWidget.selection == null &&
         widget.selection == null &&
@@ -1349,28 +1387,74 @@ class ResolvedDatePickerStyle {
   /// Registered ratio of the year icons to the month icons (18 of 20).
   static const double yearIconRatio = 18 / 20;
 
+  /// Theme whose tokens supply every default.
   final AnimalIslandTheme theme;
+
+  /// Widget style merged over the theme's date picker style.
   final AnimalDatePickerStyle style;
 
+  /// Preferred panel width. Defaults to 300.
   final double width;
+
+  /// Padding inside the panel border. Defaults to `spacing.md` on every side.
   final EdgeInsetsGeometry padding;
+
+  /// Width of the panel, menu and trigger borders. Defaults to 1.5.
   final double borderWidth;
+
+  /// Corner radius of the panel and popover menu. Defaults to
+  /// `radii.cardBorder`.
   final BorderRadius borderRadius;
+
+  /// Inset between a date cell's target and its selection fill. Defaults to 6.
   final double cellInset;
+
+  /// Corner radius of the fill behind days inside a range. Defaults to 4.
   final BorderRadius rangeBorderRadius;
+
+  /// Border width of month-mode cells. Defaults to 1.
   final double monthBorderWidth;
+
+  /// Corner radius of month-mode cells. Defaults to `radii.pillBorder`.
   final BorderRadius monthBorderRadius;
+
+  /// Size of the previous/next month icons. Defaults to 20.
   final double navigationIconSize;
+
+  /// Size of the trigger's calendar and clear icons. Defaults to 16.
   final double triggerIconSize;
+
+  /// Corner radius of the popover trigger. Defaults to `radii.pillBorder`.
   final BorderRadius triggerBorderRadius;
+
+  /// Horizontal padding inside the popover trigger. Defaults to `spacing.md`.
   final double triggerHorizontalPadding;
+
+  /// Gap between the trigger icon and its text. Defaults to `spacing.sm`.
   final double triggerIconGap;
+
+  /// Padding around the clear icon inside its target. Defaults to zero.
   final EdgeInsetsGeometry triggerClearButtonPadding;
+
+  /// Corner radius of the clear control. Defaults to `radii.pillBorder`.
   final BorderRadius triggerClearButtonBorderRadius;
+
+  /// Fill behind the clear icon; transparent unless the style resolves a color.
   final WidgetStateProperty<Color> triggerClearButtonBackgroundColor;
+
+  /// Gap between the header, the grid and the footer divider. Defaults to
+  /// `spacing.sm`.
   final double sectionGap;
+
+  /// Gap between the footer divider and its actions. Defaults to `spacing.xs`.
   final double footerGap;
+
+  /// Gap between month cells, date rows and below the weekdays. Defaults to
+  /// `spacing.xs`.
   final double cellGap;
+
+  /// Horizontal padding inside the Today and Clear actions. Defaults to
+  /// `spacing.sm`.
   final double actionHorizontalPadding;
 
   /// Heading, without its color.
@@ -1391,7 +1475,10 @@ class ResolvedDatePickerStyle {
   /// Trigger text, without its color.
   final TextStyle triggerTextStyle;
 
+  /// Panel and popover menu surface. Defaults to `colors.bgContent`.
   final Color backgroundColor;
+
+  /// Panel and divider border, resolved for the disabled state.
   final Color panelBorderColor;
 
   ResolvedDatePickerStyle._({
@@ -1427,6 +1514,9 @@ class ResolvedDatePickerStyle {
     required this.panelBorderColor,
   });
 
+  /// Returns the concrete values for [style] layered over [theme].
+  ///
+  /// [disabled] selects the state [panelBorderColor] is resolved against.
   static ResolvedDatePickerStyle resolve({
     required AnimalIslandTheme theme,
     required AnimalDatePickerStyle? style,
@@ -1568,14 +1658,17 @@ class ResolvedDatePickerStyle {
           ? theme.colors.primaryActive
           : theme.colors.border.withValues(alpha: 0.5));
 
+  /// Label color of the Today action.
   Color todayTextColor({required bool disabled}) =>
       style.todayTextColor?.resolve(_states(disabled: disabled)) ??
       (disabled ? theme.colors.textDisabled : theme.colors.primaryText);
 
+  /// Label color of the Clear action.
   Color clearTextColor({required bool disabled}) =>
       style.clearTextColor?.resolve(_states(disabled: disabled)) ??
       (disabled ? theme.colors.textDisabled : theme.colors.textSecondary);
 
+  /// Surface of the popover trigger.
   Color triggerBackgroundColor({required bool disabled}) {
     final colors = theme.colors;
     return style.triggerBackgroundColor?.resolve(_states(disabled: disabled)) ??
@@ -1595,6 +1688,7 @@ class ResolvedDatePickerStyle {
         (disabled ? theme.colors.textDisabled : theme.colors.text);
   }
 
+  /// Color of the trigger's calendar and clear icons.
   Color triggerIconColor({required bool disabled}) =>
       style.triggerIconColor?.resolve(_states(disabled: disabled)) ??
       (disabled ? theme.colors.textDisabled : theme.colors.textSecondary);
