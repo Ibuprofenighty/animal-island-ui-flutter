@@ -18,7 +18,7 @@ void main() {
 
           key: ValueKey(theme),
           theme: theme.toThemeData(),
-          home: const Scaffold(
+          home: Scaffold(
             body: AnimalProgress(
               percent: 0.5,
               status: AnimalProgressStatus.active,
@@ -50,14 +50,7 @@ void main() {
       );
       expect(percentage.style?.shadows, isNull);
       final animation =
-          tester
-                  .widget<AnimatedBuilder>(
-                    find.descendant(
-                      of: progress,
-                      matching: find.byType(AnimatedBuilder),
-                    ),
-                  )
-                  .animation
+          (paint.painter! as AnimalCandyStripePainter).phase
               as AnimationController;
       expect(animation.duration, theme.motion.slow * (1400 / 350));
 
@@ -126,7 +119,10 @@ void main() {
               .ancestor(of: find.text('80%'), matching: find.byType(Padding))
               .first,
         );
-        expect(labelPadding.padding, EdgeInsets.only(right: theme.spacing.sm));
+        expect(
+          labelPadding.padding,
+          EdgeInsetsDirectional.only(end: theme.spacing.sm),
+        );
         expect(actualLabel.style?.color, textColor);
         expect(actualLabel.style?.shadows, [
           Shadow(

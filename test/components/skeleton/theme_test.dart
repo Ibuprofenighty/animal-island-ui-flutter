@@ -18,8 +18,8 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                const AnimalSkeleton(
-                  key: ValueKey('rect-skeleton'),
+                AnimalSkeleton(
+                  key: const ValueKey('rect-skeleton'),
                   width: 120,
                   height: 32,
                   active: true,

@@ -112,11 +112,7 @@ class AnimalImage extends StatelessWidget {
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) return child;
         return placeholder ??
-            SizedBox(
-              width: width,
-              height: height,
-              child: const AnimalSkeleton(),
-            );
+            SizedBox(width: width, height: height, child: AnimalSkeleton());
       },
       errorBuilder: (context, error, stackTrace) {
         return fallback ??

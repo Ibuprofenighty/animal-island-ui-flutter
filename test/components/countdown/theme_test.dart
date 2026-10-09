@@ -18,7 +18,7 @@ void main() {
           key: ValueKey(theme),
           theme: theme.toThemeData(),
           home: const Scaffold(
-            body: AnimalCountdown(remaining: Duration(hours: 12)),
+            body: AnimalCountdown.duration(duration: Duration(hours: 12)),
           ),
         ),
       );

@@ -46,6 +46,15 @@ export 'src/foundation/theme/components/loading_theme.dart'
 export 'src/foundation/theme/components/modal_theme.dart' show AnimalModalStyle;
 export 'src/foundation/theme/components/drawer_theme.dart'
     show AnimalDrawerStyle;
+export 'src/foundation/theme/components/typewriter_theme.dart'
+    show AnimalTypewriterStyle;
+export 'src/foundation/theme/components/progress_theme.dart'
+    show AnimalProgressStyle, AnimalProgressThemeData;
+export 'src/foundation/theme/components/skeleton_theme.dart'
+    show AnimalSkeletonStyle;
+export 'src/foundation/theme/components/countdown_theme.dart'
+    show AnimalCountdownStyle, AnimalCountdownThemeData;
+export 'src/foundation/theme/components/time_theme.dart' show AnimalTimeStyle;
 export 'src/foundation/forms/animal_validation_issue.dart'
     show AnimalValidationIssue, AnimalValidationIssueKind;
 export 'src/foundation/forms/animal_field_key.dart' show AnimalFieldKey;
@@ -144,7 +153,11 @@ export 'src/components/skeleton/skeleton.dart'
     show AnimalSkeleton, AnimalSkeletonVariant;
 export 'src/components/back_top/back_top.dart' show AnimalBackTop;
 export 'src/components/countdown/countdown.dart'
-    show AnimalCountdown, AnimalCountdownSize, AnimalCountdownVariant;
+    show
+        AnimalCountdown,
+        AnimalCountdownFormat,
+        AnimalCountdownSize,
+        AnimalCountdownVariant;
 export 'src/components/time/time.dart' show AnimalTime;
 
 // Category 7: Notification (Notification Imperative API & Portal)

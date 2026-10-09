@@ -14,9 +14,9 @@ void main() {
       AnimalLocalizationTestApp(
         controller: controller,
         child: Scaffold(
-          body: AnimalCountdown(
-            remaining: Duration(days: 1, hours: 2, minutes: 3, seconds: 4),
-            format: 'DD:HH:mm:ss',
+          body: AnimalCountdown.duration(
+            duration: Duration(days: 1, hours: 2, minutes: 3, seconds: 4),
+            format: AnimalCountdownFormat.daysHoursMinutesSeconds,
             prefix: Semantics(
               label: 'Caller prefix',
               child: Text('Caller widget content'),

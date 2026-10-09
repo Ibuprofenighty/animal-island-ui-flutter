@@ -7,22 +7,23 @@ class AnimalCandyStripePainter extends CustomPainter {
   /// Fill of the progress bar.
   final Color fillColor;
 
-  /// Whether translucent diagonal stripes are drawn over the fill.
-  final bool striped;
+  /// Color of the diagonal stripes drawn over the fill; null draws none.
+  final Color? stripeColor;
 
-  /// Stripe offset as a fraction of one stripe period, from 0 to 1.
-  final double phase;
+  /// Stripe offset as a fraction of one stripe period, from 0 to 1. The
+  /// painter repaints whenever it changes.
+  final Animation<double> phase;
 
   /// Corner radius of the clipped bar.
   final double radius;
 
   /// Creates a painter for a filled, optionally striped bar.
-  const AnimalCandyStripePainter({
+  AnimalCandyStripePainter({
     required this.fillColor,
-    required this.striped,
+    required this.stripeColor,
     required this.phase,
     required this.radius,
-  });
+  }) : super(repaint: phase);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -42,14 +43,15 @@ class AnimalCandyStripePainter extends CustomPainter {
     canvas.drawRect(rect, bgPaint);
 
     // 2. Draw 45-degree candy-cane stripes if enabled
-    if (striped) {
+    final Color? stripeColor = this.stripeColor;
+    if (stripeColor != null) {
       final stripePaint = Paint()
-        ..color = const Color(0x38FFFFFF)
+        ..color = stripeColor
         ..style = PaintingStyle.fill;
 
       const stripeWidth = 14.0;
       final period = stripeWidth * 2;
-      final shift = phase * period;
+      final shift = phase.value * period;
 
       final path = Path();
       // Draw diagonal parallel quadrilaterals spanning from -height to width + height
@@ -83,7 +85,7 @@ class AnimalCandyStripePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant AnimalCandyStripePainter oldDelegate) {
     return oldDelegate.fillColor != fillColor ||
-        oldDelegate.striped != striped ||
+        oldDelegate.stripeColor != stripeColor ||
         oldDelegate.radius != radius ||
         oldDelegate.phase != phase;
   }

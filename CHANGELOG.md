@@ -21,8 +21,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Toolchain**: requires Flutter `>=3.47.5` and Dart `>=3.13.4`.
 - **Component styles**: every input, toggle, picker, form item, notification,
-  loading, modal and drawer takes an `Animal*Style` that overrides the theme,
-  and `AnimalIslandTheme.components` restyles them app-wide.
+  loading, modal, drawer, typewriter, progress, skeleton, countdown and time
+  card takes an `Animal*Style` that overrides the theme, and
+  `AnimalIslandTheme.components` restyles them app-wide.
+- **Countdown**: `AnimalCountdown(targetTime: ...)` counts down to a wall-clock
+  time and `AnimalCountdown.duration(duration: ...)` over a duration; `format`
+  is an `AnimalCountdownFormat`. The tiles round up to whole seconds and change
+  exactly at each second, `onFinish` runs once at the deadline (also while
+  hidden or in the background), and a changed target cancels the previous
+  callbacks. Tiles grow to fit long values and wrap instead of overflowing.
+- **Time**: `AnimalTime(time: ...)` shows a fixed time and `AnimalTime.live()`
+  the current time, moving exactly at each wall-clock second; with
+  `liveRegion` the announced value has minute precision.
+- **Typewriter**: the text never reflows while it types and the cursor takes no
+  space; reduced motion shows the whole text at once. `onComplete` runs after
+  the frame for an empty text or under reduced motion and is cancelled when the
+  text changes or the widget is disposed; a non-positive `speed` throws.
+- **Cursor**: exactly one cursor is visible over nested regions; `forceAll`
+  also replaces descendant cursors such as text fields, and the region never
+  takes hover from its child or from regions behind it.
+- **Progress**: a non-finite `percent` throws, the label rounds down to a whole
+  percent, and an inside label sits over the fill. The constructors are no
+  longer `const`.
+- **Skeleton**: `rows` below 1, `rowWidths` entries outside 0..1 and negative
+  or non-finite sizes throw; `rowWidths` are fractions of the paragraph width.
+  The constructors are no longer `const`.
+- **Repeating motion**: progress stripes, skeleton shimmer and loading
+  indicators stop while the app is in the background and start again when it
+  resumes, including when they were created in the background.
 - **Overlays**: notifications and full-screen loadings live in the nearest
   `AnimalOverlayHost`; `AnimalModal.confirm` returns `Future<bool>`, and
   `AnimalModal.show` and `AnimalDrawer.show` return the typed value their
@@ -63,6 +89,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   notification's own `duration` times it).
 - `AnimalLoading.color` and `AnimalLoading.barrierColor`: use
   `AnimalLoadingStyle.color` and `AnimalLoadingStyle.barrierColor`.
+- `AnimalCountdown.remaining` (use `AnimalCountdown.duration`) and string
+  countdown formats (use `AnimalCountdownFormat`); `AnimalTime.live` as a flag
+  and the public `time` and `clock` fields of `AnimalTime` (use the
+  `AnimalTime` and `AnimalTime.live` constructors).
+- `AnimalProgress.color`, `trackColor` and `height` and the `size` and
+  `strokeWidth` of `AnimalProgress.circle`: use `AnimalProgressStyle` and
+  `diameter`. `AnimalSkeleton.borderRadius`: use
+  `AnimalSkeletonStyle.borderRadius`. The `TextStyle` `style` of
+  `AnimalTypewriter`: use `AnimalTypewriterStyle.textStyle`.
 - `AnimalInputStyle.iconSize`: use `clearIconSize`.
 - Form internals: `AnimalFieldRegistration`, the controller's field registration
   methods (`registerField`, `bindingFor`, ...), `epoch`, `isDisposed`, `isValid`

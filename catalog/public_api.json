@@ -262,7 +262,8 @@
       "classes": {
         "AnimalCountdown": {
           "constructors": [
-            "AnimalCountdown"
+            "AnimalCountdown",
+            "AnimalCountdown.duration"
           ],
           "fields": [
             "bordered",
@@ -271,15 +272,20 @@
             "onChange",
             "onFinish",
             "prefix",
-            "remaining",
             "size",
-            "targetTime",
+            "style",
             "variant",
             "visible"
           ]
         }
       },
       "enums": {
+        "AnimalCountdownFormat": [
+          "daysHoursMinutesSeconds",
+          "hoursMinutesSeconds",
+          "minutesSeconds",
+          "seconds"
+        ],
         "AnimalCountdownSize": [
           "large",
           "middle",
@@ -771,15 +777,15 @@
           ],
           "fields": [
             "animated",
-            "color",
+            "diameter",
             "format",
-            "height",
             "infoPosition",
             "percent",
+            "showInfo",
             "size",
             "status",
             "striped",
-            "trackColor"
+            "style"
           ]
         }
       },
@@ -895,12 +901,12 @@
           ],
           "fields": [
             "active",
-            "borderRadius",
             "child",
             "height",
             "loading",
             "rowWidths",
             "rows",
+            "style",
             "variant",
             "width"
           ]
@@ -1056,13 +1062,12 @@
       "classes": {
         "AnimalTime": {
           "constructors": [
-            "AnimalTime"
+            "AnimalTime",
+            "AnimalTime.live"
           ],
           "fields": [
-            "clock",
-            "live",
             "liveRegion",
-            "time",
+            "style",
             "visible"
           ]
         }
@@ -1584,6 +1589,7 @@
           ],
           "fields": [
             "checkbox",
+            "countdown",
             "datePicker",
             "drawer",
             "focusRing",
@@ -1593,10 +1599,14 @@
             "loading",
             "modal",
             "notification",
+            "progress",
             "radio",
             "select",
+            "skeleton",
             "switchControl",
-            "timePicker"
+            "time",
+            "timePicker",
+            "typewriter"
           ]
         }
       },
@@ -1630,6 +1640,47 @@
         "AnimalCheckboxThemeData": {
           "constructors": [
             "AnimalCheckboxThemeData"
+          ],
+          "fields": [
+            "hashCode",
+            "largeStyle",
+            "middleStyle",
+            "smallStyle",
+            "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/countdown_theme.dart": {
+      "classes": {
+        "AnimalCountdownStyle": {
+          "constructors": [
+            "AnimalCountdownStyle"
+          ],
+          "fields": [
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "digitTextColor",
+            "digitTextStyle",
+            "hashCode",
+            "height",
+            "labelGap",
+            "labelTextColor",
+            "labelTextStyle",
+            "prefixGap",
+            "separatorPadding",
+            "shadow",
+            "width"
+          ]
+        },
+        "AnimalCountdownThemeData": {
+          "constructors": [
+            "AnimalCountdownThemeData"
           ],
           "fields": [
             "hashCode",
@@ -1931,6 +1982,45 @@
       "topLevelVariables": {},
       "functions": {}
     },
+    "lib/src/foundation/theme/components/progress_theme.dart": {
+      "classes": {
+        "AnimalProgressStyle": {
+          "constructors": [
+            "AnimalProgressStyle"
+          ],
+          "fields": [
+            "color",
+            "hashCode",
+            "height",
+            "insideLabelTextColor",
+            "insideLabelTextStyle",
+            "labelGap",
+            "labelTextColor",
+            "labelTextStyle",
+            "stripeColor",
+            "strokeWidth",
+            "trackBorderColor",
+            "trackBorderWidth",
+            "trackColor"
+          ]
+        },
+        "AnimalProgressThemeData": {
+          "constructors": [
+            "AnimalProgressThemeData"
+          ],
+          "fields": [
+            "hashCode",
+            "largeStyle",
+            "middleStyle",
+            "smallStyle",
+            "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
     "lib/src/foundation/theme/components/radio_theme.dart": {
       "classes": {
         "AnimalRadioStyle": {
@@ -2013,6 +2103,26 @@
             "textColor",
             "textStyle",
             "warningColor"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/skeleton_theme.dart": {
+      "classes": {
+        "AnimalSkeletonStyle": {
+          "constructors": [
+            "AnimalSkeletonStyle"
+          ],
+          "fields": [
+            "borderRadius",
+            "color",
+            "hashCode",
+            "highlightColor",
+            "rowGap",
+            "rowHeight"
           ]
         }
       },
@@ -2120,6 +2230,50 @@
             "wheelHeight",
             "width",
             "widthWithSeconds"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/time_theme.dart": {
+      "classes": {
+        "AnimalTimeStyle": {
+          "constructors": [
+            "AnimalTimeStyle"
+          ],
+          "fields": [
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "hashCode",
+            "iconColor",
+            "iconGap",
+            "iconSize",
+            "padding",
+            "textColor",
+            "textStyle"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/typewriter_theme.dart": {
+      "classes": {
+        "AnimalTypewriterStyle": {
+          "constructors": [
+            "AnimalTypewriterStyle"
+          ],
+          "fields": [
+            "cursorColor",
+            "cursorWidth",
+            "hashCode",
+            "textColor",
+            "textStyle"
           ]
         }
       },
@@ -2429,5 +2583,5 @@
       "functions": {}
     }
   },
-  "sha256": "d150705ab569b717ea792eea9efb9cb46773798e8124a71e23c9c472fc5bfd91"
+  "sha256": "d8f2a8fad5e15c964e75e8e7e0db1f7ce30299492590869b81cb95c2a23a82b3"
 }

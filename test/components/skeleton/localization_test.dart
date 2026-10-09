@@ -13,7 +13,7 @@ void main() {
     await tester.pumpWidget(
       AnimalLocalizationTestApp(
         controller: controller,
-        child: const AnimalSkeleton(active: false),
+        child: AnimalSkeleton(active: false),
       ),
     );
     expect(find.bySemanticsLabel('Loading...'), findsOneWidget);

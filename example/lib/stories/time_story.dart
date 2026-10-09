@@ -30,7 +30,7 @@ class TimeStory extends StatelessWidget {
           StoryCard(
             title: 'Live Island Clock (F16 Tested)',
             capabilityIds: const ['C29-TIM', 'CLK01', 'F16'],
-            child: const AnimalTime(live: true),
+            child: const AnimalTime.live(),
           ),
         ],
       ),

@@ -96,9 +96,9 @@ void main() {
               return Scaffold(
                 body: Column(
                   children: [
-                    const AnimalCountdown(
-                      remaining: Duration(seconds: 2),
-                      format: 'ss',
+                    const AnimalCountdown.duration(
+                      duration: Duration(seconds: 2),
+                      format: AnimalCountdownFormat.seconds,
                     ),
                     Text(localizations.countdownRemaining(0)),
                     Text(localizations.countdownRemaining(1)),

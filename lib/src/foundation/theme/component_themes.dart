@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'components/checkbox_theme.dart';
+import 'components/countdown_theme.dart';
 import 'components/date_picker_theme.dart';
 import 'components/drawer_theme.dart';
 import 'components/focus_ring_theme.dart';
@@ -9,10 +10,14 @@ import 'components/input_theme.dart';
 import 'components/loading_theme.dart';
 import 'components/modal_theme.dart';
 import 'components/notification_theme.dart';
+import 'components/progress_theme.dart';
 import 'components/radio_theme.dart';
 import 'components/select_theme.dart';
+import 'components/skeleton_theme.dart';
 import 'components/switch_theme.dart';
 import 'components/time_picker_theme.dart';
+import 'components/time_theme.dart';
+import 'components/typewriter_theme.dart';
 
 /// Component-level overrides carried by `AnimalIslandTheme.components`.
 ///
@@ -61,6 +66,21 @@ class AnimalComponentThemes {
   /// Overrides for `AnimalDrawer`.
   final AnimalDrawerStyle? drawer;
 
+  /// Overrides for `AnimalTypewriter`.
+  final AnimalTypewriterStyle? typewriter;
+
+  /// Overrides for `AnimalProgress`.
+  final AnimalProgressThemeData? progress;
+
+  /// Overrides for `AnimalSkeleton`.
+  final AnimalSkeletonStyle? skeleton;
+
+  /// Overrides for `AnimalCountdown`.
+  final AnimalCountdownThemeData? countdown;
+
+  /// Overrides for `AnimalTime`.
+  final AnimalTimeStyle? time;
+
   /// Creates component overrides; every entry defaults to null.
   const AnimalComponentThemes({
     this.focusRing,
@@ -76,6 +96,11 @@ class AnimalComponentThemes {
     this.loading,
     this.modal,
     this.drawer,
+    this.typewriter,
+    this.progress,
+    this.skeleton,
+    this.countdown,
+    this.time,
   });
 
   /// Returns a copy of these overrides with the given fields replaced.
@@ -93,6 +118,11 @@ class AnimalComponentThemes {
     AnimalLoadingStyle? loading,
     AnimalModalStyle? modal,
     AnimalDrawerStyle? drawer,
+    AnimalTypewriterStyle? typewriter,
+    AnimalProgressThemeData? progress,
+    AnimalSkeletonStyle? skeleton,
+    AnimalCountdownThemeData? countdown,
+    AnimalTimeStyle? time,
   }) => AnimalComponentThemes(
     focusRing: focusRing ?? this.focusRing,
     input: input ?? this.input,
@@ -107,6 +137,11 @@ class AnimalComponentThemes {
     loading: loading ?? this.loading,
     modal: modal ?? this.modal,
     drawer: drawer ?? this.drawer,
+    typewriter: typewriter ?? this.typewriter,
+    progress: progress ?? this.progress,
+    skeleton: skeleton ?? this.skeleton,
+    countdown: countdown ?? this.countdown,
+    time: time ?? this.time,
   );
 
   /// Linearly interpolates each entry between these overrides and [other].
@@ -135,6 +170,11 @@ class AnimalComponentThemes {
       loading: AnimalLoadingStyle.lerp(loading, other.loading, t),
       modal: AnimalModalStyle.lerp(modal, other.modal, t),
       drawer: AnimalDrawerStyle.lerp(drawer, other.drawer, t),
+      typewriter: AnimalTypewriterStyle.lerp(typewriter, other.typewriter, t),
+      progress: AnimalProgressThemeData.lerp(progress, other.progress, t),
+      skeleton: AnimalSkeletonStyle.lerp(skeleton, other.skeleton, t),
+      countdown: AnimalCountdownThemeData.lerp(countdown, other.countdown, t),
+      time: AnimalTimeStyle.lerp(time, other.time, t),
     );
   }
 
@@ -154,7 +194,12 @@ class AnimalComponentThemes {
           notification == other.notification &&
           loading == other.loading &&
           modal == other.modal &&
-          drawer == other.drawer;
+          drawer == other.drawer &&
+          typewriter == other.typewriter &&
+          progress == other.progress &&
+          skeleton == other.skeleton &&
+          countdown == other.countdown &&
+          time == other.time;
 
   @override
   int get hashCode => Object.hashAll(<Object?>[
@@ -171,5 +216,10 @@ class AnimalComponentThemes {
     loading,
     modal,
     drawer,
+    typewriter,
+    progress,
+    skeleton,
+    countdown,
+    time,
   ]);
 }

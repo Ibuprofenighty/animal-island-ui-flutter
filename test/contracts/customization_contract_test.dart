@@ -148,6 +148,52 @@ final List<_Subject> _deliveredComponents = <_Subject>[
       child: AnimalOverlayHost(child: _NotificationProbe()),
     ),
   ),
+  (
+    name: 'AnimalTypewriter',
+    build: () => AnimalTypewriter(
+      text: 'Welcome to the island, 欢迎来到小岛!',
+      showCursor: true,
+    ),
+  ),
+  (
+    name: 'AnimalCursor',
+    build: () => const AnimalCursor(child: Text('Cursor region')),
+  ),
+  for (final AnimalProgressSize size in AnimalProgressSize.values)
+    for (final AnimalProgressInfoPosition position
+        in AnimalProgressInfoPosition.values)
+      (
+        name: 'AnimalProgress ${size.name} ${position.name}',
+        build: () => AnimalProgress(
+          percent: 0.8,
+          size: size,
+          infoPosition: position,
+          status: AnimalProgressStatus.active,
+        ),
+      ),
+  (
+    name: 'AnimalProgress circle',
+    build: () => AnimalProgress.circle(percent: 0.4),
+  ),
+  for (final AnimalSkeletonVariant variant in AnimalSkeletonVariant.values)
+    (
+      name: 'AnimalSkeleton ${variant.name}',
+      build: () => AnimalSkeleton(variant: variant),
+    ),
+  for (final AnimalCountdownSize size in AnimalCountdownSize.values)
+    (
+      name: 'AnimalCountdown ${size.name}',
+      build: () => AnimalCountdown.duration(
+        duration: const Duration(days: 2, hours: 3, minutes: 4, seconds: 5),
+        format: AnimalCountdownFormat.daysHoursMinutesSeconds,
+        size: size,
+        prefix: const Text('Prefix'),
+      ),
+    ),
+  (
+    name: 'AnimalTime',
+    build: () => AnimalTime(time: DateTime(2026, 5, 14, 9, 30, 15)),
+  ),
 ];
 
 /// Boundary-valid themes every delivered component must render under.

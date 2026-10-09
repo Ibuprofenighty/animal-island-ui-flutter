@@ -177,6 +177,12 @@ class AnimalLoading extends StatefulWidget {
 class _AnimalLoadingState extends State<AnimalLoading>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(vsync: this);
+  late final AnimalMotionScheduler _scheduler = AnimalMotionScheduler();
+  late final AnimalMotionRegistration _motion = _scheduler.scheduleAnimation(
+    _controller,
+    eligible: false,
+    restValue: 0.5,
+  );
   List<SnowflakeParticle>? _snowflakes;
   final FocusScopeNode _focusScope = FocusScopeNode(
     debugLabel: 'AnimalLoading full-screen scope',
@@ -245,22 +251,22 @@ class _AnimalLoadingState extends State<AnimalLoading>
 
   /// Reuses the state's single controller for every type and motion policy.
   void _syncAnimation() {
-    _controller.duration = _ResolvedLoadingStyle.cycle(
+    final Duration cycle = _ResolvedLoadingStyle.cycle(
       AnimalIslandTheme.of(context),
       widget.type,
     );
-    if (AnimalMotionPolicy.shouldAnimate(context)) {
-      _controller.repeat();
-    } else {
-      _controller.stop();
-      _controller.value = 0.5;
+    if (_controller.duration != cycle) {
+      _controller.duration = cycle;
+      _motion.restart();
     }
+    _motion.setEligible(AnimalMotionPolicy.decorativeContextEligible(context));
   }
 
   @override
   void dispose() {
     if (_ownsFocus) _restoreFocus();
     _focusScope.dispose();
+    _scheduler.dispose();
     _controller.dispose();
     super.dispose();
   }

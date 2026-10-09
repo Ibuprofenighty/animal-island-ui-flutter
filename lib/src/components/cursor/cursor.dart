@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 /// Cursor style variants matching upstream animal-island-ui.
 enum AnimalCursorType {
@@ -19,12 +21,18 @@ enum AnimalCursorType {
   notAllowed,
 }
 
-/// Animal Island custom cursor wrapper with device-aware rendering (C04).
+/// Animal Island cursor region with device-aware rendering (C04).
 ///
-/// Strictly adheres to canonical architecture:
-/// - Transparent hit testing (never intercepts clicks or pointer events)
-/// - Only renders custom graphics on mouse pointer devices (never dangles on touch screens)
-/// - Single MouseRegion overlay without duplicating focus trees
+/// Over [child], a mouse shows the cursor of [type], or [customCursor] when
+/// given. Art cursors ([AnimalCursorType.defaultCursor],
+/// [AnimalCursorType.raindrop] and [customCursor]) hide the system pointer
+/// and draw the art at the mouse position; the other types use a system
+/// cursor. Exactly one cursor is visible at a time: the art is drawn only
+/// where this region decides the cursor, so a nested region or a descendant
+/// with its own cursor shows that cursor alone.
+///
+/// The region never takes pointer events, taps or hover from [child] or from
+/// regions behind it, and touch or stylus input never shows the art.
 class AnimalCursor extends StatefulWidget {
   /// Content over which the cursor is shown.
   final Widget child;
@@ -32,10 +40,14 @@ class AnimalCursor extends StatefulWidget {
   /// The cursor style variant. Default is [AnimalCursorType.defaultCursor].
   final AnimalCursorType type;
 
-  /// Whether to force this cursor across all descendants. Default is true.
+  /// Whether this cursor also replaces the cursors of descendants, including
+  /// nested [AnimalCursor] regions and text fields. Default is true.
+  ///
+  /// When false, a descendant with its own cursor shows that cursor, and this
+  /// cursor applies only where descendants have none.
   final bool forceAll;
 
-  /// Custom cursor widget if custom overlay is desired.
+  /// Art drawn at the mouse position instead of the art of [type].
   final Widget? customCursor;
 
   /// Creates a cursor region around [child].
@@ -51,101 +63,145 @@ class AnimalCursor extends StatefulWidget {
   State<AnimalCursor> createState() => _AnimalCursorState();
 }
 
-class _AnimalCursorState extends State<AnimalCursor> {
-  final ValueNotifier<Offset?> _mousePosNotifier = ValueNotifier<Offset?>(null);
+/// Offset from the mouse position to the top-left corner of the art.
+const Offset _artHotspot = Offset(6, 6);
 
-  bool get _isCustomArtCursor =>
+class _AnimalCursorState extends State<AnimalCursor> {
+  final GlobalKey _regionKey = GlobalKey();
+  final GlobalKey _forcingKey = GlobalKey();
+
+  /// Local mouse position while the art is drawn; null hides it.
+  final ValueNotifier<Offset?> _artPosition = ValueNotifier<Offset?>(null);
+
+  bool get _hasArt =>
+      widget.customCursor != null ||
       widget.type == AnimalCursorType.defaultCursor ||
-      widget.type == AnimalCursorType.raindrop ||
-      widget.customCursor != null;
+      widget.type == AnimalCursorType.raindrop;
+
+  MouseCursor get _systemCursor => widget.customCursor != null
+      ? SystemMouseCursors.none
+      : switch (widget.type) {
+          AnimalCursorType.pointer => SystemMouseCursors.click,
+          AnimalCursorType.text => SystemMouseCursors.text,
+          AnimalCursorType.notAllowed => SystemMouseCursors.forbidden,
+          AnimalCursorType.defaultCursor ||
+          AnimalCursorType.raindrop => SystemMouseCursors.none,
+        };
+
+  @override
+  void didUpdateWidget(AnimalCursor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // The next mouse move draws the art again if it still applies.
+    if (!_hasArt) _artPosition.value = null;
+  }
 
   @override
   void dispose() {
-    _mousePosNotifier.dispose();
+    _artPosition.dispose();
     super.dispose();
+  }
+
+  void _track(PointerEvent event) {
+    _artPosition.value =
+        _hasArt &&
+            event.kind == PointerDeviceKind.mouse &&
+            _decidesCursorAt(event.position)
+        ? event.localPosition
+        : null;
+  }
+
+  /// Whether this region provides the cursor the mouse shows at [position]:
+  /// the first region under it whose cursor does not defer is one of ours.
+  bool _decidesCursorAt(Offset position) {
+    final HitTestResult result = HitTestResult();
+    WidgetsBinding.instance.hitTestInView(
+      result,
+      position,
+      View.of(context).viewId,
+    );
+    final RenderObject? region = _regionKey.currentContext?.findRenderObject();
+    final RenderObject? forcing = _forcingKey.currentContext
+        ?.findRenderObject();
+    for (final HitTestEntry entry in result.path) {
+      final Object target = entry.target;
+      if (target is MouseTrackerAnnotation &&
+          target.validForMouseTracker &&
+          target.cursor != MouseCursor.defer) {
+        return identical(target, region) || identical(target, forcing);
+      }
+    }
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
-    MouseCursor systemCursor;
-    switch (widget.type) {
-      case AnimalCursorType.defaultCursor:
-      case AnimalCursorType.raindrop:
-        // When using custom art cursor, hide the native system cursor while inside
-        systemCursor = SystemMouseCursors.none;
-      case AnimalCursorType.pointer:
-        systemCursor = SystemMouseCursors.click;
-      case AnimalCursorType.text:
-        systemCursor = SystemMouseCursors.text;
-      case AnimalCursorType.notAllowed:
-        systemCursor = SystemMouseCursors.forbidden;
-    }
+    final MouseCursor cursor = _systemCursor;
+    final Widget art =
+        widget.customCursor ??
+        (widget.type == AnimalCursorType.raindrop
+            ? const _RaindropCursor()
+            : const _AnimalPawCursor());
 
-    Widget content = MouseRegion(
-      cursor: systemCursor,
-      opaque: widget.forceAll,
-      onEnter: (event) {
-        if (_isCustomArtCursor && event.kind == PointerDeviceKind.mouse) {
-          _mousePosNotifier.value = event.localPosition;
-        }
-      },
-      onHover: (event) {
-        if (_isCustomArtCursor && event.kind == PointerDeviceKind.mouse) {
-          _mousePosNotifier.value = event.localPosition;
-        }
-      },
-      onExit: (_) {
-        if (_isCustomArtCursor) {
-          _mousePosNotifier.value = null;
-        }
-      },
-      child: widget.child,
-    );
-
-    if (!_isCustomArtCursor) {
-      return content;
-    }
-
-    Widget cursorWidget;
-    if (widget.customCursor != null) {
-      cursorWidget = widget.customCursor!;
-    } else if (widget.type == AnimalCursorType.raindrop) {
-      cursorWidget = Container(
-        width: 20,
-        height: 20,
-        decoration: const BoxDecoration(
-          color: Color(0xFF60A5FA),
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Color(0x663B82F6),
-              offset: Offset(0, 2),
-              blurRadius: 4,
-            ),
-          ],
-        ),
-      );
-    } else {
-      // Default cute animal paw pointer
-      cursorWidget = const _AnimalPawCursor();
-    }
-
+    // The tree shape never changes, so switching cursors keeps the state of
+    // [child].
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        content,
+        MouseRegion(
+          key: _regionKey,
+          opaque: false,
+          cursor: cursor,
+          onEnter: _track,
+          onHover: _track,
+          onExit: (_) => _artPosition.value = null,
+          child: widget.child,
+        ),
+        // Above the child, so its cursor wins over descendant cursors. It
+        // is translucent: hit testing continues to the child below.
+        Positioned.fill(
+          child: MouseRegion(
+            key: _forcingKey,
+            opaque: false,
+            hitTestBehavior: HitTestBehavior.translucent,
+            cursor: widget.forceAll ? cursor : MouseCursor.defer,
+          ),
+        ),
         ValueListenableBuilder<Offset?>(
-          valueListenable: _mousePosNotifier,
-          builder: (context, pos, _) {
-            if (pos == null) return const SizedBox.shrink();
+          valueListenable: _artPosition,
+          builder: (context, position, _) {
+            if (position == null) return const SizedBox.shrink();
+            final Offset topLeft = position - _artHotspot;
             return Positioned(
-              left: pos.dx - 6,
-              top: pos.dy - 6,
-              child: IgnorePointer(child: cursorWidget),
+              left: topLeft.dx,
+              top: topLeft.dy,
+              child: IgnorePointer(child: art),
             );
           },
         ),
       ],
+    );
+  }
+}
+
+class _RaindropCursor extends StatelessWidget {
+  const _RaindropCursor();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: const BoxDecoration(
+        color: Color(0xFF60A5FA),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x663B82F6),
+            offset: Offset(0, 2),
+            blurRadius: 4,
+          ),
+        ],
+      ),
     );
   }
 }

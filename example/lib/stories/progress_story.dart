@@ -31,9 +31,9 @@ class ProgressStory extends StatelessWidget {
             title: 'Progress Indicators',
             capabilityIds: const ['C24-PRO', 'PRO01'],
             child: Column(
-              children: const [
+              children: [
                 AnimalProgress(percent: 0.65),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 AnimalProgress.circle(percent: 0.82),
               ],
             ),

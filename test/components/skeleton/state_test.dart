@@ -27,7 +27,7 @@ void main() {
     );
 
     testWidgets(
-      'SKL02: static mode (active == false) renders without AnimationController',
+      'SKL02: static mode (active == false) renders a plain block without a shimmer',
       (tester) async {
         await tester.pumpWidget(
           MaterialApp(
@@ -45,7 +45,7 @@ void main() {
           ),
         );
 
-        // Verify no AnimatedBuilder is instantiated inside AnimalSkeleton for static shimmer
+        // A static skeleton builds no shimmer animation.
         expect(
           find.descendant(
             of: find.byType(AnimalSkeleton),
@@ -89,7 +89,7 @@ void main() {
           supportedLocales: AnimalLocalizations.supportedLocales,
 
           theme: AnimalIslandTheme.dark.toThemeData(),
-          home: const Scaffold(
+          home: Scaffold(
             body: AnimalSkeleton(
               active: false,
               variant: AnimalSkeletonVariant.rect,

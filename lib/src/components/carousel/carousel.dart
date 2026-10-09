@@ -92,7 +92,7 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
   late PageController _pageController;
   late int _currentIndex;
   late AnimalMotionScheduler _motionScheduler;
-  late AnimalMotionRegistration _autoplay;
+  late AnimalPeriodicRegistration _autoplay;
   bool _isHovered = false;
   bool _isFocused = false;
 
@@ -111,9 +111,8 @@ class _AnimalCarouselState extends State<AnimalCarousel> {
     _motionScheduler = AnimalMotionScheduler(clock: widget.clock);
     _autoplay = _motionScheduler.schedulePeriodic(
       interval: widget.autoPlayInterval,
-      work: AnimalScheduledWork.decorative,
       eligible: false,
-      onTick: (_, _) => _next(),
+      onTick: (_) => _next(),
     );
   }
 

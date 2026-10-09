@@ -193,8 +193,8 @@ void main() {
 
           theme: AnimalIslandTheme.light.toThemeData(),
           home: Scaffold(
-            body: AnimalCountdown(
-              remaining: Duration(hours: 2, minutes: 15, seconds: 30),
+            body: AnimalCountdown.duration(
+              duration: Duration(hours: 2, minutes: 15, seconds: 30),
             ),
           ),
         ),
@@ -941,8 +941,8 @@ void main() {
 
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
-              body: AnimalCountdown(
-                remaining: Duration(seconds: 5),
+              body: AnimalCountdown.duration(
+                duration: Duration(seconds: 5),
                 clock: fakeClock,
               ),
             ),
@@ -1063,9 +1063,9 @@ void main() {
             home: Scaffold(
               body: AnimalModal(
                 title: const Text('Villager Dialogue'),
-                content: const AnimalTypewriter(
+                content: AnimalTypewriter(
                   text: 'Hello Island Resident!',
-                  speed: Duration(milliseconds: 10),
+                  speed: const Duration(milliseconds: 10),
                 ),
               ),
             ),
@@ -2871,7 +2871,7 @@ void main() {
                       ),
                     ],
                   ),
-                  const AnimalSkeleton(loading: true, child: Text('Loaded')),
+                  AnimalSkeleton(loading: true, child: const Text('Loaded')),
                 ],
               ),
             ),
@@ -3064,8 +3064,8 @@ void main() {
             home: Scaffold(
               body: AnimalProgress.circle(
                 percent: 0.75,
-                size: 100.0,
-                strokeWidth: 8.0,
+                diameter: 100.0,
+                style: AnimalProgressStyle(strokeWidth: 8.0),
               ),
             ),
           ),

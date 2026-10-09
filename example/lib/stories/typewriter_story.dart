@@ -53,8 +53,8 @@ class _TypewriterStoryState extends State<TypewriterStory> {
                     text: 'Hello island adventurer! Today is a sunny day on Animal Island. Let us fish and craft tools! 🍎🌟',
                     speed: const Duration(milliseconds: 30),
                     showCursor: true,
-                    style: theme.typography.heading.copyWith(
-                      color: theme.colors.text,
+                    style: AnimalTypewriterStyle(
+                      textStyle: theme.typography.heading,
                     ),
                     onComplete: () => setState(() => _completed = true),
                   ),

@@ -30,8 +30,8 @@ class CountdownStory extends StatelessWidget {
           StoryCard(
             title: 'Island Event Timer (F15 Tested)',
             capabilityIds: const ['C28-CDN', 'CDN01', 'F15'],
-            child: AnimalCountdown(
-              remaining: const Duration(hours: 12, minutes: 45, seconds: 30),
+            child: AnimalCountdown.duration(
+              duration: const Duration(hours: 12, minutes: 45, seconds: 30),
               size: AnimalCountdownSize.middle,
               onFinish: () {},
             ),
