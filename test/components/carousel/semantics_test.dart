@@ -12,9 +12,12 @@ void main() {
 
           theme: AnimalIslandTheme.light.toThemeData(),
           home: Scaffold(
-            body: AnimalCarousel(
+            body: AnimalCarousel.uncontrolled(
               showDots: true,
-              items: [Text('Page 1'), Text('Page 2')],
+              items: [
+                AnimalCarouselItem(id: 'slide-0', child: Text('Page 1')),
+                AnimalCarouselItem(id: 'slide-1', child: Text('Page 2')),
+              ],
             ),
           ),
         ),

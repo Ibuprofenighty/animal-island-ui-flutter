@@ -1,53 +1,42 @@
 import 'package:flutter/widgets.dart';
 
-import '../../foundation/theme/theme.dart';
+import '../../foundation/theme/components/tabs_theme.dart';
+import '../../internal/timing/motion_policy.dart';
 
-/// Animated 3D sliding pill indicator for [AnimalTabs].
-///
-/// Addresses defect F26: dynamic geometry updates driven by actual layout Rects,
-/// smoothly tracking tab position across text changes, window resize, and font scaling.
+/// Selected pill rendered from the same stable-ID geometry as the tab row.
 class AnimalTabIndicator extends StatelessWidget {
-  /// Bounds of the selected tab within the tab stack; null hides the
-  /// indicator.
+  /// Selected tab bounds in the row's coordinate system; null hides the pill.
   final Rect? targetRect;
 
-  /// Theme that supplies the indicator color, radius, shadow and motion.
-  final AnimalIslandTheme theme;
+  /// Fully resolved visual values from the tab owner's single resolver.
+  final AnimalTabsStyle style;
 
-  /// Duration of the slide; null uses the theme normal motion duration.
-  final Duration? duration;
-
-  /// Curve of the slide; null uses the theme spring curve.
-  final Curve? curve;
-
-  /// Creates an indicator that slides to [targetRect].
+  /// Creates the internal pill renderer.
   const AnimalTabIndicator({
     super.key,
     required this.targetRect,
-    required this.theme,
-    this.duration,
-    this.curve,
+    required this.style,
   });
-
   @override
   Widget build(BuildContext context) {
-    if (targetRect == null) {
-      return const SizedBox.shrink();
-    }
-
-    final rect = targetRect!;
+    final rect = targetRect;
+    if (rect == null) return const SizedBox.shrink();
     return AnimatedPositioned(
-      duration: duration ?? theme.motion.normal,
-      curve: curve ?? theme.motion.spring,
+      duration: AnimalMotionPolicy.shouldAnimate(context)
+          ? style.duration!
+          : Duration.zero,
+      curve: style.curve!,
       left: rect.left,
       top: rect.top,
       width: rect.width,
       height: rect.height,
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.colors.primary,
-          borderRadius: theme.radii.pillBorder,
-          boxShadow: [theme.shadows.button3d],
+      child: IgnorePointer(
+        child: Container(
+          decoration: BoxDecoration(
+            color: style.indicatorColor,
+            borderRadius: style.borderRadius,
+            boxShadow: [style.shadow!],
+          ),
         ),
       ),
     );

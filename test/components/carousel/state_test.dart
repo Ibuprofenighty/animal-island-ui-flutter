@@ -11,7 +11,7 @@ void main() {
           supportedLocales: AnimalLocalizations.supportedLocales,
 
           theme: AnimalIslandTheme.light.toThemeData(),
-          home: Scaffold(body: AnimalCarousel(items: [])),
+          home: Scaffold(body: AnimalCarousel.uncontrolled(items: [])),
         ),
       );
 
@@ -25,7 +25,13 @@ void main() {
           supportedLocales: AnimalLocalizations.supportedLocales,
 
           theme: AnimalIslandTheme.light.toThemeData(),
-          home: Scaffold(body: AnimalCarousel(items: [Text('Single Page')])),
+          home: Scaffold(
+            body: AnimalCarousel.uncontrolled(
+              items: [
+                AnimalCarouselItem(id: 'slide-0', child: Text('Single Page')),
+              ],
+            ),
+          ),
         ),
       );
 

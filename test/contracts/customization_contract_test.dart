@@ -17,6 +17,54 @@ typedef _Subject = ({String name, Widget Function() build});
 
 final List<_Subject> _deliveredComponents = <_Subject>[
   (
+    name: 'AnimalCollapse',
+    build: () => AnimalCollapse(
+      defaultActiveIds: {'a'},
+      items: [
+        AnimalCollapseItem(
+          id: 'a',
+          title: const Text('Header'),
+          content: const Text('Body'),
+        ),
+      ],
+    ),
+  ),
+  (
+    name: 'AnimalTabs',
+    build: () => AnimalTabs(
+      tabs: [
+        AnimalTabItem(id: 'a', label: 'First'),
+        AnimalTabItem(id: 'b', label: 'Second'),
+      ],
+      selectedId: 'a',
+      onChanged: (_) {},
+    ),
+  ),
+  (
+    name: 'AnimalCarousel',
+    build: () => AnimalCarousel.uncontrolled(
+      autoPlay: false,
+      items: [
+        AnimalCarouselItem(id: 'a', child: const Text('First')),
+        AnimalCarouselItem(id: 'b', child: const Text('Second')),
+      ],
+    ),
+  ),
+  (
+    name: 'AnimalTable',
+    build: () => AnimalTable(
+      maxHeight: 320,
+      columns: [AnimalTableColumn(title: 'Header')],
+      rowCount: 3,
+      rowKey: (i) => ValueKey(i),
+      rowBuilder: (context, i) => [Text('Row $i')],
+    ),
+  ),
+  (
+    name: 'AnimalPagination',
+    build: () => AnimalPagination(current: 5, total: 200, onChanged: (_) {}),
+  ),
+  (
     name: 'AnimalInput',
     build: () => _Owned<TextEditingController>(
       create: () => TextEditingController(text: 'Island text'),

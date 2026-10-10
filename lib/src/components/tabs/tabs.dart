@@ -1,125 +1,147 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import '../../internal/interaction/interactive_region.dart';
+import '../../foundation/models/option.dart';
+import '../../foundation/theme/components/tabs_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/interactive_region.dart';
+import '../../internal/interaction/option_group_focus.dart';
+import '../../internal/timing/motion_policy.dart';
 import 'tab_indicator.dart';
 import 'tab_item.dart';
-
 export 'tab_item.dart';
 
-class _PrevTabIntent extends Intent {
-  const _PrevTabIntent();
-}
-
-class _NextTabIntent extends Intent {
-  const _NextTabIntent();
-}
-
-class _FirstTabIntent extends Intent {
-  const _FirstTabIntent();
-}
-
-class _LastTabIntent extends Intent {
-  const _LastTabIntent();
-}
-
-/// Animal Island Pill Tab Bar (C10).
-///
-/// Features:
-/// - Layout-driven indicator positioning. Geometry is recalculated when tab labels,
-///   parent constraints, text scaling, locale, or selected index changes.
-/// - Full keyboard accessibility: Left / Right arrows (with RTL awareness), Home, End,
-///   Enter, and Space.
-/// - Tab item focus and activate intent.
-/// - Requests `Scrollable.ensureVisible` for the active tab. Narrow-layout auto-scroll
-///   is not yet guaranteed.
-/// - Safe boundary handling for 0 tabs, all-disabled tabs, or external index changes.
+/// Controlled stable-ID tabs with one roving Tab stop.
+/// Arrows, Home and End move focus and propose an enabled ID. Selection and
+/// its indicator stay with selectedId until the caller accepts the proposal.
 class AnimalTabs extends StatefulWidget {
-  /// Tabs shown in order.
+  /// Immutable snapshot of unique tab identities in display order.
   final List<AnimalTabItem> tabs;
 
-  /// Index of the selected tab, owned by the caller.
-  final int selectedIndex;
+  /// Selected enabled ID, or null for no selection including an empty bar.
+  final String? selectedId;
 
-  /// Called with the index of an enabled tab the user activates or reaches
-  /// with arrow, Home or End keys.
-  final ValueChanged<int> onChanged;
+  /// Receives an enabled ID once per activation or focus-navigation change.
+  final ValueChanged<String> onChanged;
 
-  /// Whether the tabs keep their natural widths and scroll horizontally.
-  ///
-  /// When false, the tabs share the available width equally. Defaults to
-  /// true.
+  /// Whether natural-width tabs scroll; false shares the available width.
   final bool scrollable;
 
-  /// Creates a controlled tab bar.
-  const AnimalTabs({
+  /// Instance overrides before component theme and tokens.
+  final AnimalTabsStyle? style;
+
+  /// Creates a bar. Duplicate, unknown or disabled selected IDs throw
+  /// ArgumentError; removing the selection requires an atomic caller update.
+  AnimalTabs({
     super.key,
-    required this.tabs,
-    required this.selectedIndex,
+    required List<AnimalTabItem> tabs,
+    required this.selectedId,
     required this.onChanged,
     this.scrollable = true,
-  });
-
+    this.style,
+  }) : tabs = List.unmodifiable(tabs) {
+    final ids = <String>{};
+    for (final tab in this.tabs) {
+      if (!ids.add(tab.id)) {
+        throw ArgumentError.value(tab.id, 'tabs', 'IDs must be unique');
+      }
+    }
+    if (selectedId != null &&
+        !this.tabs.any((tab) => tab.id == selectedId && !tab.disabled)) {
+      throw ArgumentError.value(
+        selectedId,
+        'selectedId',
+        'must identify an enabled tab',
+      );
+    }
+  }
   @override
   State<AnimalTabs> createState() => _AnimalTabsState();
 }
 
 class _AnimalTabsState extends State<AnimalTabs> {
-  late List<GlobalKey> _tabKeys;
+  final Map<String, GlobalKey> _tabKeys = {};
   final GlobalKey _stackKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
   Rect? _indicatorRect;
-  bool _isScheduled = false;
+  bool _scheduled = false;
+  double? _lastWidth;
+  void _syncKeys() {
+    final ids = widget.tabs.map((tab) => tab.id).toSet();
+    _tabKeys.removeWhere((id, _) => !ids.contains(id));
+    for (final id in ids) {
+      _tabKeys.putIfAbsent(id, GlobalKey.new);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _recreateKeys();
-    _scheduleIndicatorUpdate();
-  }
-
-  void _recreateKeys() {
-    _tabKeys = List.generate(widget.tabs.length, (_) => GlobalKey());
+    _syncKeys();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Re-measure indicator when MediaQuery (e.g. font scale, window resize) changes
-    _scheduleIndicatorUpdate();
+    // Child layout can change without changing bar constraints or identity.
+    // Subscribe so post-layout geometry follows live text and direction changes.
+    MediaQuery.textScalerOf(context);
+    Directionality.of(context);
+    _scheduleMeasurement();
   }
 
   @override
-  void didUpdateWidget(covariant AnimalTabs oldWidget) {
+  void didUpdateWidget(AnimalTabs oldWidget) {
     super.didUpdateWidget(oldWidget);
-    var needsRecreateKeys = false;
-    var needsUpdate = false;
+    _syncKeys();
+    final labelsChanged =
+        oldWidget.tabs.length != widget.tabs.length ||
+        Iterable<int>.generate(widget.tabs.length).any(
+          (i) =>
+              oldWidget.tabs[i].label != widget.tabs[i].label ||
+              oldWidget.tabs[i].icon != widget.tabs[i].icon ||
+              oldWidget.tabs[i].id != widget.tabs[i].id,
+        );
+    if (labelsChanged ||
+        oldWidget.selectedId != widget.selectedId ||
+        oldWidget.style != widget.style ||
+        oldWidget.scrollable != widget.scrollable) {
+      _scheduleMeasurement();
+    }
+  }
 
-    if (oldWidget.tabs.length != widget.tabs.length) {
-      needsRecreateKeys = true;
-      needsUpdate = true;
-    } else {
-      // Check if any tab label or icon changed (F26 core requirement)
-      for (int i = 0; i < widget.tabs.length; i++) {
-        if (oldWidget.tabs[i].label != widget.tabs[i].label ||
-            oldWidget.tabs[i].disabled != widget.tabs[i].disabled) {
-          needsUpdate = true;
-          break;
-        }
+  void _scheduleMeasurement() {
+    if (_scheduled) return;
+    _scheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scheduled = false;
+      if (!mounted) return;
+      final tabContext = _tabKeys[widget.selectedId]?.currentContext;
+      final tabBox = tabContext?.findRenderObject() as RenderBox?;
+      final stackBox =
+          _stackKey.currentContext?.findRenderObject() as RenderBox?;
+      final rect =
+          tabBox != null &&
+              stackBox != null &&
+              tabBox.hasSize &&
+              stackBox.hasSize
+          ? tabBox.localToGlobal(Offset.zero, ancestor: stackBox) & tabBox.size
+          : null;
+      if (rect != _indicatorRect) setState(() => _indicatorRect = rect);
+      if (tabContext != null && widget.scrollable) {
+        final style = _resolveTabsStyle(
+          AnimalIslandTheme.of(context),
+          widget.style,
+        );
+        Scrollable.ensureVisible(
+          tabContext,
+          alignment: .5,
+          duration: AnimalMotionPolicy.shouldAnimate(context)
+              ? style.duration!
+              : Duration.zero,
+          curve: style.curve!,
+        );
       }
-    }
-
-    if (oldWidget.selectedIndex != widget.selectedIndex) {
-      needsUpdate = true;
-    }
-
-    if (needsRecreateKeys) {
-      _recreateKeys();
-    }
-    if (needsUpdate) {
-      _scheduleIndicatorUpdate();
-    }
+    });
   }
 
   @override
@@ -128,242 +150,165 @@ class _AnimalTabsState extends State<AnimalTabs> {
     super.dispose();
   }
 
-  void _scheduleIndicatorUpdate() {
-    if (_isScheduled) return;
-    _isScheduled = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isScheduled = false;
-      if (!mounted) return;
-      _updateIndicator();
-    });
-  }
-
-  void _updateIndicator() {
-    if (!mounted || widget.tabs.isEmpty) {
-      if (_indicatorRect != null) {
-        setState(() => _indicatorRect = null);
-      }
-      return;
-    }
-
-    final safeIndex = widget.selectedIndex.clamp(0, widget.tabs.length - 1);
-    if (safeIndex >= _tabKeys.length) return;
-
-    final tabCtx = _tabKeys[safeIndex].currentContext;
-    final stackCtx = _stackKey.currentContext;
-
-    if (tabCtx != null && stackCtx != null) {
-      final tabBox = tabCtx.findRenderObject() as RenderBox?;
-      final stackBox = stackCtx.findRenderObject() as RenderBox?;
-
-      if (tabBox != null &&
-          stackBox != null &&
-          tabBox.hasSize &&
-          stackBox.hasSize) {
-        final topLeft = tabBox.localToGlobal(Offset.zero, ancestor: stackBox);
-        final newRect = topLeft & tabBox.size;
-        if (_indicatorRect != newRect) {
-          setState(() {
-            _indicatorRect = newRect;
-          });
-        }
-
-        // Auto-scroll into view if scrollable
-        if (widget.scrollable && mounted) {
-          Scrollable.ensureVisible(
-            tabCtx,
-            duration: AnimalIslandTheme.of(context).motion.normal,
-            curve: AnimalIslandTheme.of(context).motion.ease,
-            alignment: 0.5,
-          );
-        }
-      }
-    }
-  }
-
-  void _selectPrev(bool isRtl) {
-    if (isRtl) {
-      _step(1);
-    } else {
-      _step(-1);
-    }
-  }
-
-  void _selectNext(bool isRtl) {
-    if (isRtl) {
-      _step(-1);
-    } else {
-      _step(1);
-    }
-  }
-
-  void _step(int direction) {
-    if (widget.tabs.isEmpty) return;
-    int next = widget.selectedIndex + direction;
-    while (next >= 0 && next < widget.tabs.length) {
-      if (!widget.tabs[next].disabled) {
-        widget.onChanged(next);
-        return;
-      }
-      next += direction;
-    }
-  }
-
-  void _selectFirst() {
-    for (int i = 0; i < widget.tabs.length; i++) {
-      if (!widget.tabs[i].disabled) {
-        widget.onChanged(i);
-        return;
-      }
-    }
-  }
-
-  void _selectLast() {
-    for (int i = widget.tabs.length - 1; i >= 0; i--) {
-      if (!widget.tabs[i].disabled) {
-        widget.onChanged(i);
-        return;
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = AnimalIslandTheme.of(context);
-    final isRtl = Directionality.of(context) == TextDirection.rtl;
-
+    final style = _resolveTabsStyle(
+      AnimalIslandTheme.of(context),
+      widget.style,
+    );
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Trigger indicator recalculation on parent layout width change
-        _scheduleIndicatorUpdate();
-
-        Widget tabContent = Stack(
-          key: _stackKey,
-          children: [
-            AnimalTabIndicator(targetRect: _indicatorRect, theme: theme),
-            Row(
-              mainAxisSize: widget.scrollable
-                  ? MainAxisSize.min
-                  : MainAxisSize.max,
-              children: [
-                for (int i = 0; i < widget.tabs.length; i++) ...[
-                  if (!widget.scrollable)
-                    Expanded(child: _buildTabItem(context, i, theme))
-                  else
-                    _buildTabItem(context, i, theme),
-                ],
-              ],
-            ),
-          ],
-        );
-
-        if (widget.scrollable) {
-          tabContent = SingleChildScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: tabContent,
-          );
+        if (_lastWidth != constraints.maxWidth) {
+          _lastWidth = constraints.maxWidth;
+          _scheduleMeasurement();
         }
-
         return Container(
-          padding: EdgeInsets.all(theme.spacing.xs),
+          padding: style.padding,
           decoration: BoxDecoration(
-            color: theme.colors.surfaceAlt,
-            borderRadius: theme.radii.pillBorder,
-            border: Border.all(color: theme.colors.border, width: 1.5),
-          ),
-          child: Shortcuts(
-            shortcuts: <ShortcutActivator, Intent>{
-              LogicalKeySet(LogicalKeyboardKey.arrowLeft):
-                  const _PrevTabIntent(),
-              LogicalKeySet(LogicalKeyboardKey.arrowRight):
-                  const _NextTabIntent(),
-              LogicalKeySet(LogicalKeyboardKey.home): const _FirstTabIntent(),
-              LogicalKeySet(LogicalKeyboardKey.end): const _LastTabIntent(),
-            },
-            child: Actions(
-              actions: <Type, Action<Intent>>{
-                _PrevTabIntent: CallbackAction<_PrevTabIntent>(
-                  onInvoke: (_) {
-                    _selectPrev(isRtl);
-                    return null;
-                  },
-                ),
-                _NextTabIntent: CallbackAction<_NextTabIntent>(
-                  onInvoke: (_) {
-                    _selectNext(isRtl);
-                    return null;
-                  },
-                ),
-                _FirstTabIntent: CallbackAction<_FirstTabIntent>(
-                  onInvoke: (_) {
-                    _selectFirst();
-                    return null;
-                  },
-                ),
-                _LastTabIntent: CallbackAction<_LastTabIntent>(
-                  onInvoke: (_) {
-                    _selectLast();
-                    return null;
-                  },
-                ),
-              },
-              child: tabContent,
+            color: style.backgroundColor,
+            borderRadius: style.borderRadius,
+            border: Border.all(
+              color: style.borderColor!,
+              width: style.borderWidth!,
             ),
+          ),
+          child: OptionGroupFocus<String>(
+            options: [
+              for (final tab in widget.tabs)
+                AnimalOption(
+                  value: tab.id,
+                  label: tab.label,
+                  disabled: tab.disabled,
+                ),
+            ],
+            direction: Axis.horizontal,
+            roving: true,
+            selectedValue: widget.selectedId,
+            disabled: false,
+            onNavigate: widget.onChanged,
+            itemBuilder: (context, option, node) {
+              final tab = widget.tabs.firstWhere(
+                (tab) => tab.id == option.value,
+              );
+              final selected = tab.id == widget.selectedId;
+              final states = <WidgetState>{
+                if (selected) WidgetState.selected,
+                if (tab.disabled) WidgetState.disabled,
+              };
+              final color = style.textColor!.resolve(states);
+              return InteractiveRegion(
+                onKeyEvent: optionGroupKeyEvent,
+                key: _tabKeys[tab.id],
+                focusNode: node,
+                selected: selected,
+                disabled: tab.disabled,
+                enableHaptics: false,
+                semanticLabel: tab.label,
+                onPressed: () => widget.onChanged(tab.id),
+                borderRadius: style.borderRadius,
+                child: Container(
+                  padding: style.tabPadding,
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (tab.icon != null) ...[
+                        IconTheme(
+                          data: IconThemeData(
+                            color: color,
+                            size: style.iconSize,
+                          ),
+                          child: tab.icon!,
+                        ),
+                        SizedBox(width: style.iconGap),
+                      ],
+                      Flexible(
+                        child: Text(
+                          tab.label,
+                          style: style.textStyle!.copyWith(
+                            color: color,
+                            fontWeight: selected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            layoutBuilder: (context, children) {
+              final content = Stack(
+                key: _stackKey,
+                children: [
+                  AnimalTabIndicator(targetRect: _indicatorRect, style: style),
+                  Row(
+                    mainAxisSize: widget.scrollable
+                        ? MainAxisSize.min
+                        : MainAxisSize.max,
+                    children: [
+                      for (final child in children)
+                        if (widget.scrollable)
+                          child
+                        else
+                          Expanded(child: child),
+                    ],
+                  ),
+                ],
+              );
+              return widget.scrollable
+                  ? SingleChildScrollView(
+                      controller: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      child: content,
+                    )
+                  : content;
+            },
           ),
         );
       },
     );
   }
+}
 
-  Widget _buildTabItem(
-    BuildContext context,
-    int index,
-    AnimalIslandTheme theme,
-  ) {
-    final tab = widget.tabs[index];
-    final isSelected = index == widget.selectedIndex;
-    final isDisabled = tab.disabled;
-
-    final textColor = isDisabled
-        ? theme.colors.textSecondary.withValues(alpha: 0.4)
-        : (isSelected ? theme.colors.onPrimary : theme.colors.text);
-
-    return InteractiveRegion(
-      key: index < _tabKeys.length ? _tabKeys[index] : null,
-      onPressed: isDisabled ? null : () => widget.onChanged(index),
-      disabled: isDisabled,
-      enableHaptics: false,
-      selected: isSelected,
-      semanticLabel: tab.label,
-      borderRadius: theme.radii.pillBorder,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: theme.spacing.lg,
-          vertical: theme.spacing.sm,
+AnimalTabsStyle _resolveTabsStyle(
+  AnimalIslandTheme theme,
+  AnimalTabsStyle? instance,
+) {
+  final component = theme.components.tabs;
+  return (instance ?? AnimalTabsStyle())
+      .merge(component)
+      .merge(
+        AnimalTabsStyle(
+          backgroundColor: theme.colors.surfaceAlt,
+          borderColor: theme.colors.border,
+          borderWidth: 1.5,
+          borderRadius: theme.radii.pillBorder,
+          padding: EdgeInsets.all(theme.spacing.xs),
+          tabPadding: EdgeInsets.symmetric(
+            horizontal: theme.spacing.lg,
+            vertical: theme.spacing.sm,
+          ),
+          iconGap: theme.spacing.xs,
+          iconSize: 16,
+          textStyle: theme.typography.body,
+          indicatorColor: theme.colors.primary,
+          shadow: theme.shadows.button3d,
+          duration: theme.motion.normal,
+          curve: theme.motion.spring,
         ),
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (tab.icon != null) ...[
-              IconTheme(
-                data: IconThemeData(color: textColor, size: 16.0),
-                child: tab.icon!,
-              ),
-              SizedBox(width: theme.spacing.xs),
-            ],
-            Text(
-              tab.label,
-              style: theme.typography.body.copyWith(
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: textColor,
-              ),
-            ),
-          ],
+      )
+      .copyWith(
+        textColor: WidgetStateProperty.resolveWith(
+          (states) =>
+              instance?.textColor?.resolve(states) ??
+              component?.textColor?.resolve(states) ??
+              (states.contains(WidgetState.disabled)
+                  ? theme.colors.textSecondary.withValues(alpha: .4)
+                  : states.contains(WidgetState.selected)
+                  ? theme.colors.onPrimary
+                  : theme.colors.text),
         ),
-      ),
-    );
-  }
+      );
 }

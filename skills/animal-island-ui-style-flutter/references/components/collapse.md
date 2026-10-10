@@ -15,6 +15,7 @@
 - `disabled`
 - `items`
 - `onChanged`
+- `style`
 
 <!-- generated:api:end -->
 
@@ -33,3 +34,9 @@ Each actionable part responds to pointer taps and, when focused, to Enter or Spa
 
 ## Example
 See [`collapse_story.dart`](../../../../example/lib/stories/collapse_story.dart) in the example Gallery.
+
+## Ownership and customization
+
+Use nonempty unique `AnimalCollapseItem.id` values. `activeIds` owns controlled expansion; omit it and supply `defaultActiveIds` for initial-only ownership. Do not supply both. Every construction validates defaultActiveIds against the current items, so remove deleted default IDs in the same rebuild. Valid default changes do not reset mounted expansion. Unknown IDs and multiple accordion IDs throw `ArgumentError`. While mounted, ownership cannot change. Controlled callbacks propose an immutable set; rejection leaves expansion unchanged. Reordering preserves child state and focus; deleting an uncontrolled item removes its expansion. Hidden content retains state but is excluded from input, focus and semantics. Header Enter/Space activation uses the shared interaction owner.
+
+Use `AnimalCollapseStyle` through `style` or `AnimalIslandTheme.components.collapse`, with instance > component theme > token precedence. See the component documentation for every field and its validation. There are no size presets.

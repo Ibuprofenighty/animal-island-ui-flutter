@@ -15,6 +15,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 - `onChanged`
 - `pageSize`
 - `simple`
+- `style`
 - `total`
 - `totalPages`
 
@@ -31,3 +32,29 @@ Each actionable part responds to pointer taps and, when focused, to Enter or Spa
 
 ## Example
 See [`pagination_story.dart`](../../../example/lib/stories/pagination_story.dart) in the example Gallery.
+
+## Ownership and boundaries
+
+The caller owns `current`. `total` must be nonnegative and `pageSize` positive; page counts use exact integer arithmetic. Empty data has one page, `current: 1`, with no navigation callbacks. Other current values must be in 1..totalPages or throw `RangeError`. Disabled, boundary and current-page activations do not notify; valid actions only propose and never commit locally. Ellipses jump five pages and clamp to the range without overflowing at the maximum integer. Compact layout is selected from page and ellipsis labels measured with their own rendered text styles, active text scaling, resolved spacing and the actual width. RTL reverses arrow direction; navigation remains operable at 320px and 200% text.
+
+## Customization
+
+Use `AnimalPaginationStyle` on `style` or `AnimalIslandTheme.components.pagination`. Each field resolves instance > component theme > token default. Null inherits the lower layer; partial text styles merge by property. Invalid numeric dimensions, insets, radii, font sizes throw `ArgumentError` in debug and release. There are no size presets. The 48px action target remains fixed.
+
+| Field | Rendered decision |
+| --- | --- |
+| `backgroundColor` | Enabled control fill. |
+| `selectedBackgroundColor` | Current page fill. |
+| `disabledBackgroundColor` | Disabled control fill. |
+| `borderRadius` | Control corners. |
+| `padding` | Control insets. |
+| `gap` | Space between controls. |
+| `textStyle` | Page typography. |
+| `ellipsisTextStyle` | Ellipsis typography |
+| `textColor` | Enabled foreground. |
+| `ellipsisTextColor` | Ellipsis foreground |
+| `selectedTextColor` | Current page foreground. |
+| `disabledTextColor` | Disabled foreground. |
+| `iconSize` | Navigation icon size. |
+| `shadow` | Raised control elevation. |
+| `depth` | Raised control travel. |

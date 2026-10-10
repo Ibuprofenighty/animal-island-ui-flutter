@@ -23,7 +23,8 @@ void main() {
                 width: 360,
                 height: 180,
                 child: AnimalTable(
-                  columns: const [AnimalTableColumn(title: 'Island name')],
+                  rowKey: (index) => ValueKey('row-$index'),
+                  columns: [AnimalTableColumn(title: 'Island name')],
                   rowCount: 1,
                   maxHeight: 180,
                   rowBuilder: (_, index) => [Text('Island $index')],

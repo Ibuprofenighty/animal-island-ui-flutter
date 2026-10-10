@@ -109,6 +109,10 @@ class OptionGroupFocus<T> extends StatefulWidget {
   /// Builds each option's item.
   final OptionGroupItemBuilder<T> itemBuilder;
 
+  /// Optional layout; this group still owns keyed focus and navigation.
+  final Widget Function(BuildContext context, List<Widget> children)?
+  layoutBuilder;
+
   /// Creates a focus group for [options].
   const OptionGroupFocus({
     super.key,
@@ -122,6 +126,7 @@ class OptionGroupFocus<T> extends StatefulWidget {
     this.runSpacing = 0,
     this.focusNode,
     this.onNavigate,
+    this.layoutBuilder,
   });
 
   @override
@@ -259,9 +264,10 @@ class _OptionGroupFocusState<T> extends State<OptionGroupFocus<T>> {
       }
     }
     targetIndex %= enabled.length;
-    if (targetIndex < 0) targetIndex += enabled.length;
     final T target = enabled[targetIndex].value;
-    _focusNodes[target]?.requestFocus();
+    FocusTraversalPolicy.defaultTraversalRequestFocusCallback(
+      _focusNodes[target]!,
+    );
     if (target != identity && widget.roving) widget.onNavigate?.call(target);
     return KeyEventResult.handled;
   }
@@ -301,22 +307,24 @@ class _OptionGroupFocusState<T> extends State<OptionGroupFocus<T>> {
         ),
       );
     }
-    final Widget content = widget.direction == Axis.horizontal
-        ? Wrap(
-            spacing: widget.spacing,
-            runSpacing: widget.runSpacing,
-            children: children,
-          )
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              for (int index = 0; index < children.length; index++) ...[
-                if (index > 0) SizedBox(height: widget.spacing),
-                children[index],
-              ],
-            ],
-          );
+    final Widget content =
+        widget.layoutBuilder?.call(context, children) ??
+        (widget.direction == Axis.horizontal
+            ? Wrap(
+                spacing: widget.spacing,
+                runSpacing: widget.runSpacing,
+                children: children,
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  for (int index = 0; index < children.length; index++) ...[
+                    if (index > 0) SizedBox(height: widget.spacing),
+                    children[index],
+                  ],
+                ],
+              ));
     final FocusNode? groupNode = widget.focusNode;
     if (groupNode == null) return content;
     return Focus(

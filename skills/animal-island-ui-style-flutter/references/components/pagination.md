@@ -13,6 +13,7 @@
 - `onChanged`
 - `pageSize`
 - `simple`
+- `style`
 - `total`
 - `totalPages`
 
@@ -29,3 +30,9 @@ Each actionable part responds to pointer taps and, when focused, to Enter or Spa
 
 ## Example
 See [`pagination_story.dart`](../../../../example/lib/stories/pagination_story.dart) in the example Gallery.
+
+## Ownership and customization
+
+The caller owns `current`. `total` must be nonnegative and `pageSize` positive; page counts use exact integer arithmetic. Empty data has one page, `current: 1`, with no navigation callbacks. Other current values must be in 1..totalPages or throw `RangeError`. Disabled, boundary and current-page activations do not notify; valid actions only propose and never commit locally. Ellipses jump five pages and clamp to the range without overflowing at the maximum integer. Compact layout is selected from page and ellipsis labels measured with their own rendered text styles, active text scaling, resolved spacing and the actual width. RTL reverses arrow direction; navigation remains operable at 320px and 200% text.
+
+Use `AnimalPaginationStyle` through `style` or `AnimalIslandTheme.components.pagination`, with instance > component theme > token precedence. See the component documentation for every field and its validation. There are no size presets.

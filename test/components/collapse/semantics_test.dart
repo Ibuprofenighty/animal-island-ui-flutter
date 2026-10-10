@@ -22,7 +22,7 @@ void main() {
                 return AnimalCollapse(
                   activeIds: active,
                   onChanged: (ids) => setState(() => active = ids),
-                  items: const [
+                  items: [
                     AnimalCollapseItem(
                       id: 'faq',
                       title: Text('Island Rules'),

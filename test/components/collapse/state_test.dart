@@ -58,7 +58,7 @@ void main() {
                   return AnimalCollapse(
                     activeIds: active,
                     onChanged: (ids) => setState(() => active = ids),
-                    items: const [
+                    items: [
                       AnimalCollapseItem(
                         id: 'enabled_item',
                         title: Text('Enabled Item'),

@@ -21,6 +21,14 @@ export 'src/foundation/theme/spacing.dart' show AnimalThemeSpacing;
 export 'src/foundation/theme/motion.dart' show AnimalThemeMotion;
 export 'src/foundation/theme/theme.dart' show AnimalIslandTheme;
 export 'src/foundation/theme/component_themes.dart' show AnimalComponentThemes;
+export 'src/foundation/theme/components/collapse_theme.dart'
+    show AnimalCollapseStyle;
+export 'src/foundation/theme/components/tabs_theme.dart' show AnimalTabsStyle;
+export 'src/foundation/theme/components/carousel_theme.dart'
+    show AnimalCarouselStyle;
+export 'src/foundation/theme/components/table_theme.dart' show AnimalTableStyle;
+export 'src/foundation/theme/components/pagination_theme.dart'
+    show AnimalPaginationStyle;
 export 'src/foundation/theme/components/focus_ring_theme.dart'
     show AnimalFocusRingStyle;
 export 'src/foundation/theme/components/input_theme.dart'
@@ -111,7 +119,8 @@ export 'src/components/background/background.dart'
 export 'src/components/collapse/collapse.dart'
     show AnimalCollapse, AnimalCollapseItem;
 export 'src/components/tabs/tabs.dart' show AnimalTabItem, AnimalTabs;
-export 'src/components/carousel/carousel.dart' show AnimalCarousel;
+export 'src/components/carousel/carousel.dart'
+    show AnimalCarousel, AnimalCarouselItem;
 
 // Category 3: Form Controls (Input, Switch, Checkbox, Radio, Select, DatePicker, TimePicker)
 export 'src/components/input/input.dart'

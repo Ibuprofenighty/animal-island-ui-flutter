@@ -12,6 +12,8 @@ symbols:
   - AnimalCardPattern
   - AnimalCardType
   - AnimalCarousel
+  - AnimalCarouselItem
+  - AnimalCarouselStyle
   - AnimalCheckbox
   - AnimalCheckboxGroup
   - AnimalCheckboxSize
@@ -21,6 +23,7 @@ symbols:
   - AnimalCodeBlock
   - AnimalCollapse
   - AnimalCollapseItem
+  - AnimalCollapseStyle
   - AnimalComponentThemes
   - AnimalCountdown
   - AnimalCountdownFormat
@@ -82,6 +85,7 @@ symbols:
   - AnimalOverlayEntryHandle
   - AnimalOverlayHost
   - AnimalPagination
+  - AnimalPaginationStyle
   - AnimalProgress
   - AnimalProgressInfoPosition
   - AnimalProgressSize
@@ -110,7 +114,9 @@ symbols:
   - AnimalTableColumn
   - AnimalTableRowBuilder
   - AnimalTableRowKey
+  - AnimalTableStyle
   - AnimalTabs
+  - AnimalTabsStyle
   - AnimalTag
   - AnimalTagSize
   - AnimalTagVariant

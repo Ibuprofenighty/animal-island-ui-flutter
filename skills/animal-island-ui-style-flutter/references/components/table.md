@@ -8,6 +8,7 @@
 - `AnimalTable`
 
 ## Properties
+- `cacheExtent`
 - `columns`
 - `emptyWidget`
 - `horizontalScrollController`
@@ -17,6 +18,7 @@
 - `rowBuilder`
 - `rowCount`
 - `rowKey`
+- `style`
 - `verticalScrollController`
 
 <!-- generated:api:end -->
@@ -36,3 +38,11 @@ remains the content shown for an empty table.
 
 ## Example
 See [`table_story.dart`](../../../../example/lib/stories/table_story.dart) in the example Gallery.
+
+## Ownership and customization
+
+Supply a nonempty immutable column schema, nonnegative `rowCount`, a required unique stable `rowKey`, and one lazy `rowBuilder`. Keys are snapshotted at construction without building cells; use data IDs rather than positions. Every requested row must return exactly one cell per column or throws `ArgumentError`. Fixed widths must be finite and positive and flex weights positive. Header and body share resolved widths including border, row padding and `minWidth`; horizontal scrolling moves them together. Rows grow for large text. Provide bounded dimensions or positive finite `minWidth`/`maxHeight` in an unbounded parent. Borrowed scroll controllers remain caller-owned. `cacheExtent` is finite and nonnegative, default 96px. The canonical virtualization test uses 10,000 rows, a 480px body viewport, 48px rows and 96px cache; first build requests at most 24 rows and live elements stay bounded while scrolling.
+
+Use `AnimalTableStyle` through `style` or `AnimalIslandTheme.components.table`, with instance > component theme > token precedence. See the component documentation for every field and its validation. There are no size presets.
+
+When content overflows horizontally, Tab enters a visible focus ring on the viewport. Left/Right scroll by 50 logical pixels (mirrored in RTL), Home/End reach the start/end, and PageUp/PageDown move one viewport. These key responses are immediate. Focused descendant editors retain their own keys. Native scroll semantics remain available to screen readers.

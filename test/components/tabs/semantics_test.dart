@@ -15,11 +15,11 @@ void main() {
           theme: AnimalIslandTheme.light.toThemeData(),
           home: Scaffold(
             body: AnimalTabs(
-              selectedIndex: 0,
+              selectedId: 'tab-${0}',
               onChanged: (_) {},
-              tabs: const [
-                AnimalTabItem(label: 'Fish Guide'),
-                AnimalTabItem(label: 'Bug Guide'),
+              tabs: [
+                AnimalTabItem(id: 'tab-0', label: 'Fish Guide'),
+                AnimalTabItem(id: 'tab-1', label: 'Bug Guide'),
               ],
             ),
           ),

@@ -17,7 +17,7 @@ void main() {
 
           key: ValueKey(theme),
           theme: theme.toThemeData(),
-          home: const Scaffold(
+          home: Scaffold(
             body: AnimalPagination(
               current: 2,
               total: 100,

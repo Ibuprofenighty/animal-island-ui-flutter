@@ -17,6 +17,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 - `disabled`
 - `items`
 - `onChanged`
+- `style`
 
 <!-- generated:api:end -->
 
@@ -35,3 +36,32 @@ Each actionable part responds to pointer taps and, when focused, to Enter or Spa
 
 ## Example
 See [`collapse_story.dart`](../../../example/lib/stories/collapse_story.dart) in the example Gallery.
+
+## Ownership and boundaries
+
+Use nonempty unique `AnimalCollapseItem.id` values. `activeIds` owns controlled expansion; omit it and supply `defaultActiveIds` for initial-only ownership. Do not supply both. Every construction validates defaultActiveIds against the current items, so remove deleted default IDs in the same rebuild. Valid default changes do not reset mounted expansion. Unknown IDs and multiple accordion IDs throw `ArgumentError`. While mounted, ownership cannot change. Controlled callbacks propose an immutable set; rejection leaves expansion unchanged. Reordering preserves child state and focus; deleting an uncontrolled item removes its expansion. Hidden content retains state but is excluded from input, focus and semantics. Header Enter/Space activation uses the shared interaction owner.
+
+## Customization
+
+Use `AnimalCollapseStyle` on `style` or `AnimalIslandTheme.components.collapse`. Each field resolves instance > component theme > token default. Null inherits the lower layer; partial text styles merge by property. Invalid numeric dimensions, insets, radii, font sizes and durations throw `ArgumentError` in debug and release. There are no size presets. The 48px action target remains fixed.
+
+| Field | Rendered decision |
+| --- | --- |
+| `backgroundColor` | Card fill. |
+| `borderColor` | Card outline. |
+| `borderWidth` | Card outline width. |
+| `borderRadius` | Card corners. |
+| `shadow` | Card elevation. |
+| `headerPadding` | Header insets. |
+| `contentPadding` | Expanded content insets. |
+| `gap` | Space between cards. |
+| `iconGap` | Space before the disclosure icon. |
+| `iconSize` | Disclosure icon size. |
+| `iconColor` | Disclosure icon color. |
+| `headerBackgroundColor` | Header fill by interaction state. |
+| `textStyle` | Header and content typography. |
+| `textColor` | Header foreground by interaction state. |
+| `contentBackgroundColor` | Expanded content fill. |
+| `contentTextColor` | Expanded content foreground. |
+| `duration` | Expansion transition duration. |
+| `curve` | Expansion transition curve. |

@@ -257,7 +257,8 @@ void main() {
               body: SizedBox(
                 height: 400,
                 child: AnimalTable(
-                  columns: const [
+                  rowKey: (index) => ValueKey('row-$index'),
+                  columns: [
                     AnimalTableColumn(title: 'ID', width: 80),
                     AnimalTableColumn(title: 'Name', flex: 1),
                   ],

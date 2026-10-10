@@ -22,15 +22,15 @@ class _DataTableRecipeState extends State<DataTableRecipe> {
     final startIndex = (_currentPage - 1) * _pageSize;
 
     final columns = [
-      const AnimalTableColumn(title: 'ID', width: 80),
-      const AnimalTableColumn(title: 'Island Item', flex: 2),
-      const AnimalTableColumn(title: 'Category', flex: 1),
-      const AnimalTableColumn(
+      AnimalTableColumn(title: 'ID', width: 80),
+      AnimalTableColumn(title: 'Island Item', flex: 2),
+      AnimalTableColumn(title: 'Category', flex: 1),
+      AnimalTableColumn(
         title: 'Bells Value',
         width: 120,
         alignment: Alignment.centerRight,
       ),
-      const AnimalTableColumn(
+      AnimalTableColumn(
         title: 'Inspect',
         width: 100,
         alignment: Alignment.center,

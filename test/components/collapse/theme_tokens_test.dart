@@ -1,3 +1,4 @@
+import 'package:animal_island_ui/src/internal/interaction/focus_ring.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,7 @@ void main() {
           theme: theme.toThemeData(),
           home: Scaffold(
             body: AnimalCollapse(
-              items: const [
+              items: [
                 AnimalCollapseItem(
                   id: 'enabled',
                   title: Text('Enabled question'),
@@ -76,7 +77,9 @@ void main() {
       );
       expect(
         find.byWidgetPredicate(
-          (widget) => widget is SizedBox && widget.height == theme.spacing.sm,
+          (widget) =>
+              widget is Padding &&
+              widget.padding == EdgeInsets.only(bottom: theme.spacing.sm),
         ),
         findsOneWidget,
       );
@@ -167,19 +170,11 @@ void main() {
       // focus outline, rather than a theme field alone, is observed.
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pump();
-      final focusedCard = tester
-          .widgetList<Container>(find.byType(Container))
-          .firstWhere(
-            (container) =>
-                container.decoration is BoxDecoration &&
-                (container.decoration! as BoxDecoration).borderRadius ==
-                    theme.radii.cardBorder &&
-                (container.decoration! as BoxDecoration).border!.top.color ==
-                    theme.colors.focusYellow,
-          );
       expect(
-        (focusedCard.decoration! as BoxDecoration).border!.top.color,
-        theme.colors.focusYellow,
+        tester
+            .widgetList<AnimalFocusRing>(find.byType(AnimalFocusRing))
+            .any((ring) => ring.focused),
+        isTrue,
       );
       expect(
         themeContrastRatio(theme.colors.focusYellow, theme.colors.bgContent),
@@ -187,19 +182,25 @@ void main() {
         reason: '${theme.colors.brightness.name} collapse focus outline pair',
       );
 
+      final expandedHeight = tester
+          .getSize(find.byType(AnimatedSize).first)
+          .height;
       await tester.tap(find.text('Enabled question'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
-      final transition = tester.widget<SizeTransition>(
-        find.byType(SizeTransition).first,
-      );
-      expect(transition.sizeFactor.value, greaterThan(0.0));
+      final remainingHeight = tester
+          .getSize(find.byType(AnimatedSize).first)
+          .height;
+      expect(remainingHeight, greaterThan(0));
       final expectedFactor = theme.motion.spring.transform(
         1.0 - 100 / theme.motion.normal.inMilliseconds,
       );
-      expect(transition.sizeFactor.value, closeTo(expectedFactor, 0.02));
+      expect(remainingHeight / expandedHeight, closeTo(expectedFactor, 0.02));
       await tester.pump(theme.motion.normal);
-      expect(transition.sizeFactor.value, closeTo(0.0, 0.0001));
+      expect(
+        tester.getSize(find.byType(AnimatedSize).first).height,
+        closeTo(0.0, 0.0001),
+      );
     }
   });
 }

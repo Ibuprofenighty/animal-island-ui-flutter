@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,6 +6,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:animal_island_ui/src/components/pagination/pagination_model.dart';
 
 void main() {
+  _dataOracles();
   group(
     'AnimalPagination S12 Contract & Behavior Tests (F24 / PAG01-PAG03)',
     () {
@@ -234,6 +236,210 @@ void main() {
           expect(tester.takeException(), isNull);
         },
       );
+    },
+  );
+}
+
+Widget _dataApp(Widget child, {double scale = 1}) => MaterialApp(
+  localizationsDelegates: AnimalLocalizations.localizationsDelegates,
+  supportedLocales: AnimalLocalizations.supportedLocales,
+  theme: AnimalIslandTheme.light.toThemeData(),
+  home: MediaQuery(
+    data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+    child: Scaffold(body: child),
+  ),
+);
+void _dataOracles() {
+  testWidgets(
+    'PAG03 ellipsis typography selects the measured window at scaled LTR and RTL thresholds',
+    (tester) async {
+      tester.view.physicalSize = const Size(2400, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final proposals = <int>[];
+      Widget app(double width, double scale, TextDirection direction) =>
+          _dataApp(
+            Directionality(
+              textDirection: direction,
+              child: SizedBox(
+                width: width,
+                child: AnimalPagination(
+                  current: 5,
+                  total: 2000,
+                  onChanged: proposals.add,
+                  style: AnimalPaginationStyle(
+                    ellipsisTextStyle: const TextStyle(fontSize: 80),
+                  ),
+                ),
+              ),
+            ),
+            scale: scale,
+          );
+      for (final direction in TextDirection.values) {
+        for (final scale in [1.0, 2.0]) {
+          await tester.pumpWidget(app(500 * scale, scale, direction));
+          expect(
+            tester.takeException(),
+            isNull,
+            reason: 'PAG03_ELLIPSIS_STYLE_MEASUREMENT',
+          );
+          expect(find.text('5 / 200'), findsOneWidget);
+          final copy = AnimalLocalizations.of(
+            tester.element(find.byType(AnimalPagination)),
+          )!;
+          await tester.tap(find.bySemanticsLabel(copy.paginationNext));
+          await tester.pumpAndSettle();
+          expect(proposals.last, 6);
+          expect(
+            tester
+                .widget<AnimalPagination>(find.byType(AnimalPagination))
+                .current,
+            5,
+          );
+          await tester.pumpWidget(app(2000, scale, direction));
+          expect(tester.takeException(), isNull);
+          expect(find.text('5 / 200'), findsNothing);
+          expect(find.text('•••'), findsNWidgets(2));
+        }
+      }
+      expect(proposals, [6, 6, 6, 6]);
+    },
+  );
+  testWidgets(
+    'PAG02 ellipsis proposals clamp at the maximum integer without overflow or local commit',
+    (tester) async {
+      tester.view.physicalSize = const Size(2400, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final semantics = tester.ensureSemantics();
+      try {
+        const last = 9223372036854775807;
+        const current = last - 4;
+        final proposals = <int>[];
+        await tester.pumpWidget(
+          _dataApp(
+            AnimalPagination(
+              current: current,
+              total: last,
+              pageSize: 1,
+              onChanged: proposals.add,
+            ),
+          ),
+        );
+        expect(tester.takeException(), isNull);
+        final copy = AnimalLocalizations.of(
+          tester.element(find.byType(AnimalPagination)),
+        )!;
+        await tester.tap(find.bySemanticsLabel(copy.paginationSkipForward));
+        await tester.pumpAndSettle();
+        expect(proposals, [last], reason: 'PAG02_MAX_INT_JUMP_OVERFLOW');
+        expect(
+          tester
+              .widget<AnimalPagination>(find.byType(AnimalPagination))
+              .current,
+          current,
+        );
+        proposals.clear();
+        await tester.tap(find.bySemanticsLabel(copy.paginationSkipBackward));
+        await tester.pumpAndSettle();
+        expect(proposals, [current - 5]);
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
+  test('PAG01 current total and pageSize boundaries use exact integers in every build mode', () {
+    for (final size in [0, -1]) {
+      expect(
+        () => AnimalPagination(
+          current: 1,
+          total: 10,
+          pageSize: size,
+          onChanged: (_) {},
+        ),
+        throwsArgumentError,
+      );
+    }
+    for (final current in [0, 11]) {
+      expect(
+        () => AnimalPagination(current: current, total: 100, onChanged: (_) {}),
+        throwsRangeError,
+      );
+    }
+    expect(
+      () => AnimalPagination(current: 2, total: 0, onChanged: (_) {}),
+      throwsRangeError,
+    );
+    expect(
+      AnimalPagination(
+        current: 1,
+        total: 9223372036854775807,
+        pageSize: 10,
+        onChanged: (_) {},
+      ).totalPages,
+      922337203685477581,
+    );
+  });
+  testWidgets(
+    'PAG02 empty disabled and rejected navigation never produce an out of range or local commit',
+    (tester) async {
+      final proposals = <int>[];
+      await tester.pumpWidget(
+        _dataApp(
+          AnimalPagination(current: 1, total: 0, onChanged: proposals.add),
+        ),
+      );
+      await tester.tap(find.bySemanticsLabel('Next page'));
+      await tester.pump();
+      expect(proposals, isEmpty);
+      await tester.pumpWidget(
+        _dataApp(
+          AnimalPagination(current: 2, total: 30, onChanged: proposals.add),
+        ),
+      );
+      await tester.tap(find.bySemanticsLabel('Next page'));
+      await tester.pumpAndSettle();
+      expect(proposals, [3]);
+      expect(
+        tester.widget<AnimalPagination>(find.byType(AnimalPagination)).current,
+        2,
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(proposals.every((page) => page >= 1 && page <= 3), isTrue);
+    },
+  );
+  testWidgets(
+    'PAG03 measured 320 pixel 200 percent RTL and huge totals keep navigation operable',
+    (tester) async {
+      final proposals = <int>[];
+      await tester.pumpWidget(
+        _dataApp(
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: SizedBox(
+              width: 320,
+              child: AnimalPagination(
+                current: 100000000,
+                total: 1000000010,
+                onChanged: proposals.add,
+              ),
+            ),
+          ),
+          scale: 2,
+        ),
+      );
+      expect(find.text('100000000 / 100000001'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      final next = find.bySemanticsLabel('Next page');
+      expect(tester.getSize(next).width, greaterThanOrEqualTo(48));
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(proposals, [100000001]);
     },
   );
 }

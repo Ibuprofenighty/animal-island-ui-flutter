@@ -10,6 +10,10 @@ class AnimalPaginationModel {
     required int current,
     required int totalPages,
   }) {
+    if (totalPages < 1) {
+      throw ArgumentError.value(totalPages, 'totalPages', 'must be positive');
+    }
+    RangeError.checkValueInInterval(current, 1, totalPages, 'current');
     if (totalPages <= 7) {
       return List.generate(totalPages, (i) => i + 1);
     }

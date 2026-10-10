@@ -208,3 +208,11 @@ Complete examples that combine several components:
 - [Form](references/recipes/form_workflow.md)
 - [Overlay](references/recipes/overlay_workflow.md)
 - [Data](references/recipes/data_workflow.md)
+
+## Stable navigation and data contracts
+
+Navigation and data use stable identities. Tabs selection is caller-owned by `selectedId`; live LTR/RTL direction changes realign its indicator without proposing a selection. Carousel makes controlled `activeId` and `.uncontrolled(defaultActiveId: ...)` ownership explicit; configure its height through `AnimalCarouselStyle.height`. Rejected proposals never commit locally. Table requires stable unique row keys and validates every requested cell schema. Pagination validates its caller-owned page against an exact integer page count. All five expose one style type through the instance and component theme, with no size presets.
+
+An overflowing Table viewport is keyboard reachable: Tab, Left/Right (RTL mirrored), Home/End and PageUp/PageDown scroll the shared header/body geometry. Its child editors retain their keys.
+
+Collapse and uncontrolled Carousel require valid default IDs at every construction; clean deleted defaults in the same rebuild as their items. Changing valid defaults does not reset mounted state. Carousel interrupts running page/dot motion when policy stops it, and RTL arrows follow logical previous/next. Pagination measures page and ellipsis labels with their own typography.

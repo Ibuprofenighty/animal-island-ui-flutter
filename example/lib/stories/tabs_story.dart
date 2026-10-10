@@ -11,7 +11,7 @@ class TabsStory extends StatefulWidget {
 }
 
 class _TabsStoryState extends State<TabsStory> {
-  int _selectedTab = 0;
+  String _selectedTab = 'tab-0';
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +41,21 @@ class _TabsStoryState extends State<TabsStory> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AnimalTabs(
-                  selectedIndex: _selectedTab,
+                  selectedId: _selectedTab,
                   onChanged: (idx) => setState(() => _selectedTab = idx),
-                  tabs: const [
+                  tabs: [
                     AnimalTabItem(
+                      id: 'tab-0',
                       label: 'Town Hall',
                       icon: AnimalIcon(data: AnimalIcons.home, size: 16),
                     ),
                     AnimalTabItem(
+                      id: 'tab-1',
                       label: 'Museum',
                       icon: AnimalIcon(data: AnimalIcons.trophy, size: 16),
                     ),
                     AnimalTabItem(
+                      id: 'tab-2',
                       label: 'Able Sisters',
                       icon: AnimalIcon(data: AnimalIcons.tag, size: 16),
                     ),
@@ -67,7 +70,7 @@ class _TabsStoryState extends State<TabsStory> {
                     border: Border.all(color: theme.colors.border),
                   ),
                   child: Text(
-                    'Displaying panel for tab index #$_selectedTab',
+                    'Displaying panel for tab ID $_selectedTab',
                     style: theme.typography.body,
                   ),
                 ),

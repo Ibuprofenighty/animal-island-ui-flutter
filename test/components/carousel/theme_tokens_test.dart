@@ -18,8 +18,8 @@ void main() {
             key: ObjectKey(theme),
             theme: theme.toThemeData(),
             home: Scaffold(
-              body: AnimalCarousel(
-                items: const [],
+              body: AnimalCarousel.uncontrolled(
+                items: [],
                 autoPlay: false,
                 showArrows: false,
                 showDots: false,
@@ -43,8 +43,11 @@ void main() {
             key: ObjectKey(theme),
             theme: theme.toThemeData(),
             home: Scaffold(
-              body: AnimalCarousel(
-                items: const [Text('slide one'), Text('slide two')],
+              body: AnimalCarousel.uncontrolled(
+                items: [
+                  AnimalCarouselItem(id: 'slide-0', child: Text('slide one')),
+                  AnimalCarouselItem(id: 'slide-1', child: Text('slide two')),
+                ],
                 autoPlay: false,
               ),
             ),
@@ -126,13 +129,15 @@ void main() {
         );
         expect(
           overlayPositions.where(
-            (position) => position.left == theme.spacing.md,
+            (position) =>
+                position.left == theme.spacing.md && position.bottom == null,
           ),
           hasLength(1),
         );
         expect(
           overlayPositions.where(
-            (position) => position.right == theme.spacing.md,
+            (position) =>
+                position.right == theme.spacing.md && position.bottom == null,
           ),
           hasLength(1),
         );

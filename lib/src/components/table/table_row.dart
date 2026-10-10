@@ -1,32 +1,32 @@
 import 'package:flutter/widgets.dart';
 
-import '../../foundation/theme/theme.dart';
+import '../../foundation/theme/components/table_theme.dart';
 import 'table_column.dart';
 
-/// Renders a single row (header or body) for [AnimalTable].
-///
-/// Ensures exact matching column geometry and alignment between header and body.
+/// Internal row renderer sharing the owner's resolved column geometry.
 class AnimalTableRow extends StatelessWidget {
-  /// Columns that supply each cell's alignment.
+  /// Immutable validated columns.
   final List<AnimalTableColumn> columns;
 
-  /// Resolved width of each column, one entry per column.
+  /// Resolved width of each cell, identical for header and body.
   final List<double> columnWidths;
 
-  /// Cell content in column order; a missing cell renders empty.
+  /// Validated cells, exactly one per column.
   final List<Widget> cells;
 
-  /// Whether the row is the header, which uses heading text and header
-  /// semantics. Defaults to false.
+  /// Whether cells announce header semantics.
   final bool isHeader;
 
-  /// Fill of the row.
+  /// Resolved row fill.
   final Color backgroundColor;
 
-  /// Color of the 1 logical-pixel top border; null draws no border.
+  /// Optional resolved row separator.
   final Color? borderColor;
 
-  /// Creates a row; [columns] and [columnWidths] must have equal lengths.
+  /// Resolved style from the table owner's sole resolver.
+  final AnimalTableStyle style;
+
+  /// Creates a row after the table boundary has validated its schema.
   const AnimalTableRow({
     super.key,
     required this.columns,
@@ -35,60 +35,50 @@ class AnimalTableRow extends StatelessWidget {
     this.isHeader = false,
     required this.backgroundColor,
     this.borderColor,
-  }) : assert(columns.length == columnWidths.length);
-
+    required this.style,
+  });
   @override
-  Widget build(BuildContext context) {
-    final theme = AnimalIslandTheme.of(context);
-
-    return Container(
+  Widget build(BuildContext context) => Semantics(
+    container: true,
+    explicitChildNodes: true,
+    child: Container(
+      constraints: BoxConstraints(minHeight: style.minRowHeight!),
       decoration: BoxDecoration(
         color: backgroundColor,
-        border: borderColor != null
-            ? Border(top: BorderSide(color: borderColor!, width: 1.0))
-            : null,
+        border: borderColor == null
+            ? null
+            : Border(
+                top: BorderSide(
+                  color: borderColor!,
+                  width: style.dividerThickness!,
+                ),
+              ),
       ),
-      padding: EdgeInsets.symmetric(
-        horizontal: theme.spacing.lg,
-        vertical: theme.spacing.md,
-      ),
+      padding: style.rowPadding,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: List.generate(columns.length, (colIndex) {
-          final col = columns[colIndex];
-          final colWidth = columnWidths[colIndex];
-          final cellWidget = colIndex < cells.length
-              ? cells[colIndex]
-              : const SizedBox.shrink();
-
-          final Widget cellContent;
-          if (isHeader) {
-            cellContent = Semantics(
-              header: true,
-              child: DefaultTextStyle(
-                style: theme.typography.heading.copyWith(
-                  fontSize: theme.typography.button.fontSize,
-                  color: theme.colors.text,
+        children: [
+          for (var i = 0; i < columns.length; i++)
+            SizedBox(
+              width: columnWidths[i],
+              child: Align(
+                alignment: columns[i].alignment,
+                child: Semantics(
+                  header: isHeader,
+                  child: DefaultTextStyle(
+                    style: (isHeader ? style.headerTextStyle : style.textStyle)!
+                        .copyWith(
+                          color: isHeader
+                              ? style.headerTextColor
+                              : style.textColor,
+                        ),
+                    child: cells[i],
+                  ),
                 ),
-                child: cellWidget,
               ),
-            );
-          } else {
-            cellContent = DefaultTextStyle(
-              style: theme.typography.body.copyWith(
-                color: theme.colors.textBody,
-              ),
-              child: cellWidget,
-            );
-          }
-
-          return SizedBox(
-            width: colWidth,
-            child: Align(alignment: col.alignment, child: cellContent),
-          );
-        }),
+            ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }

@@ -231,3 +231,5 @@ flutter run -d chrome
 前提下可以使用、分享和改编本项目，但**不得用于商业目的**。完整条款见
 [LICENSE](LICENSE)，署名见 [NOTICE](NOTICE)。随包附带的 Nunito 与 Noto Sans SC
 字体采用 SIL Open Font License 1.1（见 `assets/licenses/`）。
+
+Tabs 和 Carousel 使用稳定项 ID，Table 必须提供稳定行 key；这些组件与 Collapse/Pagination 均提供实例和组件主题 Style。所有权、键盘导航、校验和定制见对应组件文档。

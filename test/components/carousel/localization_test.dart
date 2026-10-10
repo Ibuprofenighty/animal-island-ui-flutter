@@ -14,11 +14,14 @@ void main() {
     await tester.pumpWidget(
       AnimalLocalizationTestApp(
         controller: controller,
-        child: const SizedBox(
+        child: SizedBox(
           width: 260,
-          child: AnimalCarousel(
-            items: [Text('Slide A'), Text('Slide B')],
-            height: 120,
+          child: AnimalCarousel.uncontrolled(
+            items: [
+              AnimalCarouselItem(id: 'slide-0', child: Text('Slide A')),
+              AnimalCarouselItem(id: 'slide-1', child: Text('Slide B')),
+            ],
+            style: AnimalCarouselStyle(height: 120),
             autoPlay: false,
           ),
         ),

@@ -70,7 +70,7 @@
     targetPath: lib/src/components/collapse/collapse.dart
     requirements: [R02, R04]
     tests: [COL01, COL02, COL03, COL04]
-    decision: "Stable item ID with controlled expandedIds set; remove positional state"
+    decision: "Stable item IDs with controlled activeIds or one uncontrolled set; no positional state"
   - id: C10
     name: AnimalTabs
     stage: S10
@@ -78,7 +78,7 @@
     targetPath: lib/src/components/tabs/tabs.dart
     requirements: [R02, R04, R05]
     tests: [TAB01, TAB02, TAB03, TAB04]
-    decision: "Layout-driven indicator positioning; roving focus keyboard model"
+    decision: "Caller-owned selectedId with stable item IDs; layout-driven indicator and shared roving focus"
   - id: C11
     name: AnimalCarousel
     stage: S10
@@ -86,7 +86,7 @@
     targetPath: lib/src/components/carousel/carousel.dart
     requirements: [R02, R04]
     tests: [CAR01, CAR02, CAR03, CAR04]
-    decision: "Single controlled activeIndex; pause autoplay on hover/focus/TickerMode"
+    decision: "Stable activeId with explicit controlled or uncontrolled ownership; scheduler pauses autoplay on hover/focus/TickerMode"
   - id: C12
     name: AnimalInput
     stage: S07

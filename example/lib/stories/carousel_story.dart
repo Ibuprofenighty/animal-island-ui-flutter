@@ -30,23 +30,32 @@ class CarouselStory extends StatelessWidget {
           StoryCard(
             title: 'Island Highlights Carousel',
             capabilityIds: const ['C11-CAR'],
-            child: AnimalCarousel(
-              height: 160,
+            child: AnimalCarousel.uncontrolled(
+              style: AnimalCarouselStyle(height: 160),
               items: [
-                _buildSlide(
-                  context,
-                  'Spring Blossom Fair',
-                  AnimalTileColor.appOrange,
+                AnimalCarouselItem(
+                  id: 'slide-0',
+                  child: _buildSlide(
+                    context,
+                    'Spring Blossom Fair',
+                    AnimalTileColor.appOrange,
+                  ),
                 ),
-                _buildSlide(
-                  context,
-                  'Summer Night Fireworks',
-                  AnimalTileColor.appBlue,
+                AnimalCarouselItem(
+                  id: 'slide-1',
+                  child: _buildSlide(
+                    context,
+                    'Summer Night Fireworks',
+                    AnimalTileColor.appBlue,
+                  ),
                 ),
-                _buildSlide(
-                  context,
-                  'Autumn Mushroom Gathering',
-                  AnimalTileColor.appTeal,
+                AnimalCarouselItem(
+                  id: 'slide-2',
+                  child: _buildSlide(
+                    context,
+                    'Autumn Mushroom Gathering',
+                    AnimalTileColor.appTeal,
+                  ),
                 ),
               ],
             ),

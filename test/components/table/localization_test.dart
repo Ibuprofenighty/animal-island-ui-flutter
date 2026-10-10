@@ -14,7 +14,8 @@ void main() {
       width: 200,
       height: 250,
       child: AnimalTable(
-        columns: const [AnimalTableColumn(title: 'Name', width: 150)],
+        rowKey: (index) => ValueKey('row-$index'),
+        columns: [AnimalTableColumn(title: 'Name', width: 150)],
         rowCount: 0,
         loading: loading,
         emptyWidget: emptyWidget,

@@ -248,3 +248,5 @@ Licensed under **Creative Commons Attribution-NonCommercial 4.0 International
 **not for commercial purposes**. See [LICENSE](LICENSE) for the full text and
 [NOTICE](NOTICE) for attribution. The bundled Nunito and Noto Sans SC fonts are
 licensed under the SIL Open Font License 1.1 (see `assets/licenses/`).
+
+Tabs and Carousel use stable item IDs; Table requires stable row keys. These components and Collapse/Pagination expose instance and component-theme styles. See their component pages for ownership, keyboard navigation, validation and customization.

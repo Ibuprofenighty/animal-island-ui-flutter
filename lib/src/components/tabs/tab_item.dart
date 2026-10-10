@@ -1,7 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 /// Specification for each tab in [AnimalTabs].
-class AnimalTabItem {
+final class AnimalTabItem {
+  /// Stable nonempty identity preserved through reordering and label changes.
+  final String id;
+
   /// Label string displayed on the tab.
   final String label;
 
@@ -12,5 +15,12 @@ class AnimalTabItem {
   final bool disabled;
 
   /// Creates a tab specification labeled [label].
-  const AnimalTabItem({required this.label, this.icon, this.disabled = false});
+  AnimalTabItem({
+    required this.id,
+    required this.label,
+    this.icon,
+    this.disabled = false,
+  }) {
+    if (id.isEmpty) throw ArgumentError.value(id, 'id', 'must be nonempty');
+  }
 }

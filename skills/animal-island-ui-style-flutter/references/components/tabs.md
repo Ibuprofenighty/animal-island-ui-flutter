@@ -10,15 +10,11 @@
 ## Properties
 - `onChanged`
 - `scrollable`
-- `selectedIndex`
+- `selectedId`
+- `style`
 - `tabs`
 
 <!-- generated:api:end -->
-
-## Known limitation
-
-When a narrow layout changes the selected tab, the active tab may not be brought
-into view.
 
 ## Localization
 AnimalTabItem.label is caller-owned and supplies both visible text and the tab semantics label. Pass a localized label.
@@ -29,3 +25,11 @@ Each actionable part responds to pointer taps and, when focused, to Enter or Spa
 
 ## Example
 See [`tabs_story.dart`](../../../../example/lib/stories/tabs_story.dart) in the example Gallery.
+
+Keyboard navigation reveals the focused tab even when the caller rejects its proposal. Live text-scaler and LTR/RTL direction changes remeasure the indicator after layout, preserving the selected ID without emitting a selection proposal.
+
+## Ownership and customization
+
+Every `AnimalTabItem` requires a nonempty unique `id`. Supply `selectedId` and `onChanged`; null means no selection. Unknown or disabled selected IDs throw `ArgumentError`, so delete a selected item and update the ID together. The caller owns selection. Arrow keys, Home and End move one roving focus and propose an enabled ID; horizontal arrows mirror in RTL. A rejected proposal leaves selection unchanged. Enter/Space and pointer activation propose the focused ID, including the current ID. Labels, text scaling and available width remeasure the indicator; a selected scrollable tab is revealed. Reordering keeps focus with the ID.
+
+Use `AnimalTabsStyle` through `style` or `AnimalIslandTheme.components.tabs`, with instance > component theme > token precedence. See the component documentation for every field and its validation. There are no size presets.

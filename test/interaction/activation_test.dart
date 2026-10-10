@@ -407,14 +407,14 @@ void main() {
   ) async {
     await tester.pumpWidget(
       _app(
-        AnimalCarousel(
-          height: 200,
+        AnimalCarousel.uncontrolled(
+          style: AnimalCarouselStyle(height: 200),
           showArrows: false,
           showDots: true,
-          items: const <Widget>[
-            Text('First slide'),
-            Text('Second slide'),
-            Text('Third slide'),
+          items: <AnimalCarouselItem>[
+            AnimalCarouselItem(id: 'slide-0', child: Text('First slide')),
+            AnimalCarouselItem(id: 'slide-1', child: Text('Second slide')),
+            AnimalCarouselItem(id: 'slide-2', child: Text('Third slide')),
           ],
         ),
       ),

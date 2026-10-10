@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 /// Column specification for [AnimalTable].
-class AnimalTableColumn {
+final class AnimalTableColumn {
   /// Column title text displayed in the sticky header.
   final String title;
 
@@ -17,10 +17,18 @@ class AnimalTableColumn {
   final Alignment alignment;
 
   /// Creates a column specification; [flex] must be greater than 0.
-  const AnimalTableColumn({
+  AnimalTableColumn({
     required this.title,
     this.width,
     this.flex = 1,
     this.alignment = Alignment.centerLeft,
-  }) : assert(flex > 0, 'Column flex must be greater than 0');
+  }) {
+    if (flex <= 0) throw ArgumentError.value(flex, 'flex', 'must be positive');
+    if (width != null && (!width!.isFinite || width! <= 0)) {
+      throw ArgumentError.value(width, 'width', 'must be finite and positive');
+    }
+    if (!alignment.x.isFinite || !alignment.y.isFinite) {
+      throw ArgumentError.value(alignment, 'alignment', 'must be finite');
+    }
+  }
 }

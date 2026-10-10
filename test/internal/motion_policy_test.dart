@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:animal_island_ui/src/internal/timing/motion_policy.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +33,322 @@ class _CountingClock extends FakeClock {
   }
 }
 
+class _ReentrantClock extends FakeClock {
+  VoidCallback? onRead;
+
+  @override
+  Duration get monotonicNow {
+    final callback = onRead;
+    onRead = null;
+    callback?.call();
+    return super.monotonicNow;
+  }
+}
+
 void main() {
   group('Timing and motion policy', () {
+    testWidgets(
+      'clock replacement and animation attachment end quietly when listeners dispose their owner',
+      (tester) async {
+        final scheduler = AnimalMotionScheduler(clock: FakeClock());
+        for (var i = 0; i < 2; i++) {
+          scheduler.schedulePeriodic(
+            interval: const Duration(seconds: 1),
+            eligible: true,
+            onTick: (_) {},
+          );
+        }
+        final replacement = _ReentrantClock()..onRead = scheduler.dispose;
+        try {
+          expect(
+            () => scheduler.updateClock(replacement),
+            returnsNormally,
+            reason: 'N10_REENTRANT_CLOCK_REPLACEMENT',
+          );
+        } finally {
+          scheduler.dispose();
+        }
+        for (final action in ['replace', 'remove']) {
+          final owner = AnimalMotionScheduler(clock: FakeClock());
+          final first = owner.schedulePeriodic(
+            interval: const Duration(seconds: 1),
+            eligible: true,
+            onTick: (_) {},
+          );
+          final second = owner.schedulePeriodic(
+            interval: const Duration(seconds: 1),
+            eligible: true,
+            onTick: (_) {},
+          );
+          final latest = _CountingClock(DateTime(2026));
+          final intermediate = _ReentrantClock()
+            ..onRead = () {
+              if (action == 'replace') {
+                owner.updateClock(latest);
+              } else {
+                second.dispose();
+              }
+            };
+          try {
+            expect(() => owner.updateClock(intermediate), returnsNormally);
+            if (action == 'replace') {
+              expect(
+                latest.monotonicReads,
+                2,
+                reason: 'N10_SUPERSEDED_CLOCK_REPLACEMENT',
+              );
+            } else {
+              expect(() => second.restart(), throwsStateError);
+              expect(() => first.restart(), returnsNormally);
+            }
+          } finally {
+            owner.dispose();
+          }
+        }
+        final animationOwner = AnimalMotionScheduler();
+        final controller = AnimationController(
+          vsync: const TestVSync(),
+          duration: const Duration(seconds: 1),
+        );
+        controller.addListener(animationOwner.dispose);
+        try {
+          final registration = animationOwner.scheduleAnimation(
+            controller,
+            eligible: true,
+          );
+          expect(
+            controller.isAnimating,
+            isFalse,
+            reason: 'N10_REENTRANT_ANIMATION_ATTACHMENT',
+          );
+          expect(() => registration.restart(), throwsStateError);
+        } finally {
+          animationOwner.dispose();
+          controller.dispose();
+        }
+      },
+    );
+    testWidgets(
+      'build-time policy notifications coalesce and replacement or disposal cancels pending delivery',
+      (tester) async {
+        for (final action in ['deliver', 'replace', 'dispose']) {
+          tester.binding.handleAppLifecycleStateChanged(
+            AppLifecycleState.resumed,
+          );
+          final scheduler = AnimalMotionScheduler();
+          var calls = 0;
+          var replacementCalls = 0;
+          scheduler.setPolicyChangedListener(() => calls++);
+          try {
+            await tester.pumpWidget(
+              Builder(
+                builder: (_) {
+                  tester.binding.handleAppLifecycleStateChanged(
+                    AppLifecycleState.paused,
+                  );
+                  tester.binding.handleAppLifecycleStateChanged(
+                    AppLifecycleState.resumed,
+                  );
+                  expect(calls, 0, reason: 'N10_BUILD_POLICY_NOTIFICATION');
+                  if (action == 'replace') {
+                    scheduler.setPolicyChangedListener(
+                      () => replacementCalls++,
+                    );
+                  } else if (action == 'dispose') {
+                    scheduler.dispose();
+                  }
+                  return const SizedBox();
+                },
+              ),
+            );
+            expect(calls, action == 'deliver' ? 1 : 0);
+            expect(replacementCalls, 0);
+            expect(tester.takeException(), isNull);
+          } finally {
+            scheduler.dispose();
+            await tester.pumpWidget(const SizedBox());
+            tester.binding.handleAppLifecycleStateChanged(
+              AppLifecycleState.resumed,
+            );
+          }
+        }
+      },
+    );
+    testWidgets(
+      'timing reads reentering pause disposal or restart leave exactly the current timer',
+      (tester) async {
+        for (final kind in ['periodic', 'readout', 'deadline']) {
+          for (final action in ['pause', 'dispose', 'restart']) {
+            tester.binding.handleAppLifecycleStateChanged(
+              AppLifecycleState.resumed,
+            );
+            final clock = _ReentrantClock();
+            final scheduler = AnimalMotionScheduler(clock: clock);
+            final timers = <Timer>[];
+            late AnimalMotionRegistration task;
+            void interrupt() {
+              if (action == 'pause') {
+                task.setEligible(false);
+              } else if (action == 'dispose') {
+                scheduler.dispose();
+              } else {
+                task.restart();
+              }
+            }
+
+            var interruptNext = false;
+            Duration readDelay() {
+              if (interruptNext) {
+                interruptNext = false;
+                interrupt();
+              }
+              return const Duration(seconds: 1);
+            }
+
+            try {
+              runZoned(
+                () {
+                  task = switch (kind) {
+                    'periodic' => scheduler.schedulePeriodic(
+                      interval: const Duration(seconds: 1),
+                      eligible: false,
+                      onTick: (_) {},
+                    ),
+                    'readout' => scheduler.scheduleReadout(
+                      eligible: false,
+                      nextReadout: readDelay,
+                      onReadout: () {},
+                    ),
+                    _ => scheduler.scheduleDeadline(
+                      eligible: false,
+                      remaining: readDelay,
+                      onDue: () {},
+                    ),
+                  };
+                  if (kind == 'periodic') {
+                    clock.onRead = interrupt;
+                  } else {
+                    interruptNext = true;
+                  }
+                  task.setEligible(true);
+                  expect(
+                    timers.where((timer) => timer.isActive).length,
+                    action == 'restart' ? 1 : 0,
+                    reason: 'N10_REENTRANT_TIMING_READ $kind $action',
+                  );
+                  scheduler.dispose();
+                  expect(timers.any((timer) => timer.isActive), isFalse);
+                },
+                zoneSpecification: ZoneSpecification(
+                  createTimer: (self, parent, zone, delay, callback) {
+                    final timer = parent.createTimer(zone, delay, callback);
+                    timers.add(timer);
+                    return timer;
+                  },
+                  createPeriodicTimer: (self, parent, zone, delay, callback) {
+                    final timer = parent.createPeriodicTimer(
+                      zone,
+                      delay,
+                      callback,
+                    );
+                    timers.add(timer);
+                    return timer;
+                  },
+                ),
+              );
+            } finally {
+              scheduler.dispose();
+              for (final timer in timers) {
+                timer.cancel();
+              }
+            }
+          }
+        }
+      },
+    );
+    testWidgets(
+      'a periodic tick superseded during its clock read ends without a callback',
+      (tester) async {
+        final clock = _ReentrantClock();
+        final scheduler = AnimalMotionScheduler(clock: clock);
+        var calls = 0;
+        scheduler.schedulePeriodic(
+          interval: const Duration(milliseconds: 10),
+          eligible: true,
+          onTick: (_) => calls++,
+        );
+        clock.onRead = scheduler.dispose;
+        clock.advanceMonotonic(const Duration(milliseconds: 10));
+        await tester.pump(const Duration(milliseconds: 10));
+        expect(calls, 0, reason: 'N10_SUPERSEDED_PERIODIC_TICK');
+        scheduler.dispose();
+      },
+    );
+    testWidgets(
+      'a restart superseded by an animation rest listener stays stopped',
+      (tester) async {
+        final controller = AnimationController(
+          vsync: const TestVSync(),
+          duration: const Duration(seconds: 1),
+        );
+        final scheduler = AnimalMotionScheduler();
+        final task = scheduler.scheduleAnimation(controller, eligible: true);
+        var interrupt = true;
+        controller.addListener(() {
+          if (interrupt) {
+            interrupt = false;
+            task.setEligible(false);
+          }
+        });
+        try {
+          task.restart();
+          expect(
+            controller.isAnimating,
+            isFalse,
+            reason: 'N10_SUPERSEDED_ANIMATION_RESTART',
+          );
+          expect(tester.binding.transientCallbackCount, 0);
+        } finally {
+          scheduler.dispose();
+          controller.dispose();
+        }
+      },
+    );
+    testWidgets(
+      'transition listeners replace once and disposal detaches through the scheduler',
+      (tester) async {
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        final scheduler = AnimalMotionScheduler();
+        var replaced = 0;
+        var calls = 0;
+        scheduler.setPolicyChangedListener(() => replaced++);
+        scheduler.setPolicyChangedListener(() => calls++);
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        expect(replaced, 0);
+        expect(calls, 2);
+        scheduler.setPolicyChangedListener(() {
+          calls++;
+          scheduler.dispose();
+        });
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        expect(calls, 3);
+        expect(
+          () => scheduler.setPolicyChangedListener(() => calls++),
+          throwsStateError,
+        );
+        scheduler.setPolicyChangedListener(null);
+        scheduler.setPolicyChangedListener(null);
+        scheduler.dispose();
+      },
+    );
     test('wall time and monotonic elapsed advance independently', () {
       final DateTime base = DateTime(2026, 9, 12, 12);
       final FakeClock clock = FakeClock(base);
@@ -355,7 +671,7 @@ void main() {
           DateTime(2026, 9, 13, 10, 15, 30),
         );
         final ValueNotifier<bool> visible = ValueNotifier<bool>(false);
-        final List<int> carouselChanges = <int>[];
+        final List<String> carouselChanges = <String>[];
         final List<Duration> countdownChanges = <Duration>[];
         int typewriterCompletions = 0;
 
@@ -377,13 +693,22 @@ void main() {
                     children: <Widget>[
                       Offstage(
                         offstage: !isVisible,
-                        child: AnimalCarousel(
-                          height: 100,
+                        child: AnimalCarousel.uncontrolled(
+                          style: AnimalCarouselStyle(height: 100),
                           autoPlayInterval: const Duration(seconds: 1),
-                          items: const <Widget>[
-                            Text('Slide 0'),
-                            Text('Slide 1'),
-                            Text('Slide 2'),
+                          items: <AnimalCarouselItem>[
+                            AnimalCarouselItem(
+                              id: 'slide-0',
+                              child: Text('Slide 0'),
+                            ),
+                            AnimalCarouselItem(
+                              id: 'slide-1',
+                              child: Text('Slide 1'),
+                            ),
+                            AnimalCarouselItem(
+                              id: 'slide-2',
+                              child: Text('Slide 2'),
+                            ),
                           ],
                           visible: isVisible,
                           clock: clock,
@@ -441,13 +766,13 @@ void main() {
 
         await elapse(const Duration(seconds: 1));
         await elapse(const Duration(milliseconds: 250));
-        expect(carouselChanges, <int>[1]);
+        expect(carouselChanges, <String>['slide-1']);
         expect(typewriterCompletions, 0);
 
         visible.value = false;
         await tester.pump();
         clock.resetReads();
-        final List<int> pausedCarousel = List<int>.of(carouselChanges);
+        final List<String> pausedCarousel = List<String>.of(carouselChanges);
         final int pausedCompletions = typewriterCompletions;
         await elapse(const Duration(seconds: 3));
         expect(clock.reads, 0);
@@ -474,7 +799,7 @@ void main() {
         expect(typewriterCompletions, 0);
         await elapse(const Duration(milliseconds: 1));
         await elapse(const Duration(milliseconds: 250));
-        expect(carouselChanges, <int>[1, 2]);
+        expect(carouselChanges, <String>['slide-1', 'slide-2']);
         expect(typewriterCompletions, 1);
 
         await tester.pumpWidget(const SizedBox.shrink());

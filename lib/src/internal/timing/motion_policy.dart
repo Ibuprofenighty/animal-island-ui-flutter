@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../foundation/models/clock.dart';
@@ -34,6 +35,9 @@ class AnimalMotionScheduler {
   late final AnimalLifecycleObserver _lifecycleObserver;
   final Set<AnimalMotionRegistration> _registrations =
       <AnimalMotionRegistration>{};
+  VoidCallback? _onPolicyChanged;
+  int _policyRevision = 0;
+  int _clockRevision = 0;
   bool _disposed = false;
 
   /// Registers decorative [onTick] work to run every [interval].
@@ -99,10 +103,12 @@ class AnimalMotionScheduler {
     _checkLive();
     if (identical(_clock, clock)) return;
     _clock = clock;
+    final revision = ++_clockRevision;
     for (final AnimalMotionRegistration task in _registrations.toList(
       growable: false,
     )) {
-      task.restart();
+      if (revision != _clockRevision) return;
+      if (!task._disposed) task.restart();
     }
   }
 
@@ -111,6 +117,9 @@ class AnimalMotionScheduler {
   void dispose() {
     if (_disposed) return;
     _disposed = true;
+    _policyRevision++;
+    _clockRevision++;
+    _onPolicyChanged = null;
     _lifecycleObserver.detach();
     for (final AnimalMotionRegistration task in _registrations.toList(
       growable: false,
@@ -122,6 +131,10 @@ class AnimalMotionScheduler {
   T _attach<T extends AnimalMotionRegistration>(T Function() create) {
     _checkLive();
     final T task = create();
+    if (_disposed) {
+      task.dispose();
+      return task;
+    }
     _registrations.add(task);
     task._reconcile(resumed: false);
     return task;
@@ -138,11 +151,36 @@ class AnimalMotionScheduler {
   }
 
   void _handleLifecycleChange(AppLifecycleState _) {
+    final revision = ++_policyRevision;
     for (final AnimalMotionRegistration task in _registrations.toList(
       growable: false,
     )) {
       task._reconcile(resumed: true);
     }
+    if (revision != _policyRevision) return;
+    if (WidgetsBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (revision == _policyRevision) _onPolicyChanged?.call();
+      });
+    } else {
+      _onPolicyChanged?.call();
+    }
+  }
+}
+
+/// Package-internal notification for native one-shot transition owners.
+/// The scheduler keeps the sole lifecycle observer and clears the listener
+/// before disposing its registered work. Notifications follow registration
+/// reconciliation; during build or layout they coalesce after the frame.
+/// Replacement, disposal or a newer policy change cancels pending delivery.
+extension MotionSchedulerPolicyChanges on AnimalMotionScheduler {
+  /// Replaces the owner's listener. New listeners after disposal throw
+  /// StateError; removing a listener is idempotent, including after disposal.
+  void setPolicyChangedListener(VoidCallback? listener) {
+    if (listener != null) _checkLive();
+    _policyRevision++;
+    _onPolicyChanged = listener;
   }
 }
 
@@ -155,6 +193,7 @@ sealed class AnimalMotionRegistration {
   bool _eligible;
   bool _running = false;
   bool _disposed = false;
+  int _workRevision = 0;
 
   /// Whether the task stops while the app is in the background.
   bool get _followsLifecycle => true;
@@ -172,7 +211,9 @@ sealed class AnimalMotionRegistration {
   void restart() {
     _checkLive();
     if (!_running) return;
+    final revision = ++_workRevision;
     _stop();
+    if (revision != _workRevision) return;
     _start(resumed: false);
   }
 
@@ -181,6 +222,7 @@ sealed class AnimalMotionRegistration {
   void dispose() {
     if (_disposed) return;
     _disposed = true;
+    _workRevision++;
     if (_running) {
       _running = false;
       _stop(disposing: true);
@@ -199,6 +241,7 @@ sealed class AnimalMotionRegistration {
         (!_followsLifecycle || _scheduler._lifecycleObserver.isForeground);
     if (shouldRun == _running) return;
     _running = shouldRun;
+    _workRevision++;
     if (shouldRun) {
       _start(resumed: resumed);
     } else {
@@ -241,12 +284,17 @@ final class AnimalPeriodicRegistration extends AnimalMotionRegistration {
 
   @override
   void _start({required bool resumed}) {
-    _lastMonotonic = _scheduler._clock.monotonicNow;
+    final revision = _workRevision;
+    final now = _scheduler._clock.monotonicNow;
+    if (revision != _workRevision) return;
+    _lastMonotonic = now;
     _timer = Timer.periodic(_interval, (_) => _tick());
   }
 
   void _tick() {
+    final revision = _workRevision;
     final Duration now = _scheduler._clock.monotonicNow;
+    if (revision != _workRevision) return;
     final Duration elapsed = now - _lastMonotonic;
     if (elapsed.isNegative) {
       throw StateError('AnimalClock.monotonicNow moved backwards');
@@ -302,23 +350,26 @@ final class _ReadoutRegistration extends AnimalMotionRegistration {
   @override
   void _start({required bool resumed}) {
     if (resumed) {
+      final revision = _workRevision;
       _onReadout();
       // The readout may have stopped or restarted this task.
-      if (!_running || _timer != null) return;
+      if (revision != _workRevision) return;
     }
     _arm();
   }
 
   void _arm() {
+    final revision = _workRevision;
     final Duration? delay = _nextReadout();
-    if (delay == null) return;
+    if (revision != _workRevision || delay == null) return;
     _timer = Timer(delay.isNegative ? Duration.zero : delay, _fire);
   }
 
   void _fire() {
+    final revision = _workRevision;
     _timer = null;
     _onReadout();
-    if (_running && _timer == null) _arm();
+    if (revision == _workRevision) _arm();
   }
 
   @override
@@ -347,13 +398,18 @@ final class _DeadlineRegistration extends AnimalMotionRegistration {
   void _start({required bool resumed}) => _arm();
 
   void _arm() {
+    final revision = _workRevision;
     final Duration remaining = _remaining();
+    if (revision != _workRevision) return;
     _timer = Timer(remaining.isNegative ? Duration.zero : remaining, _fire);
   }
 
   void _fire() {
+    final revision = _workRevision;
     _timer = null;
-    if (_remaining() > Duration.zero) {
+    final remaining = _remaining();
+    if (revision != _workRevision) return;
+    if (remaining > Duration.zero) {
       _arm();
       return;
     }

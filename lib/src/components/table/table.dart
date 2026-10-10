@@ -1,9 +1,12 @@
 import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 
 import '../../foundation/localization/generated/animal_localizations.g.dart';
+import '../../foundation/theme/components/table_theme.dart';
 import '../../foundation/theme/theme.dart';
+import '../../internal/interaction/horizontal_scroll_region.dart';
 import '../loading/loading.dart';
 import '../../icons/icon.dart';
 import '../../icons/icons.g.dart';
@@ -11,243 +14,267 @@ import 'table_column.dart';
 import 'table_layout.dart';
 import 'table_row.dart';
 
-/// Signature for building cells in an [AnimalTable] row at a given [index].
+/// Builds exactly one cell per column for a lazily requested row.
 typedef AnimalTableRowBuilder = List<Widget> Function(
   BuildContext context,
   int index,
 );
 
-/// Signature for generating a stable [Key] for an [AnimalTable] row at a given [index].
+/// Supplies a stable unique row identity, independent of row order.
 typedef AnimalTableRowKey = Key Function(int index);
 
-/// Enterprise-grade, lazy virtualized Animal Island rounded Table component.
-///
-/// Features:
-/// - Single lazy row contract: [rowCount] + [rowBuilder] + [rowKey]
-/// - Virtualized scrolling via [ListView.builder] with pinned sticky header
-/// - Solves Fixed, Flex, and Mixed column layout geometry with synchronized X coordinates
-/// - Horizontal scrolling when content exceeds container width or columns have fixed widths
-/// - Alternating themed zebra rows (`theme.colors.surfaceAlt` / `theme.colors.bgContent`)
-/// - Zero [RenderFlex] overflow on large datasets (10,000+ rows)
-/// - Built-in [loading] state with cozy leaf spinner overlay
-/// - Built-in [emptyWidget] state with kawaii empty island graphic
+/// A single lazy indexed table with a sticky header and shared column geometry.
+/// Row keys are snapshotted without building cells. Reordering preserves cell
+/// state by key; rows grow to fit content, including 200% text. Supply bounded
+/// width and height, or minWidth/maxHeight in an unbounded parent.
 class AnimalTable extends StatelessWidget {
-  /// Columns configuration for the table.
+  /// Immutable snapshot of a nonempty column schema.
   final List<AnimalTableColumn> columns;
 
-  /// Total number of rows in the table.
+  /// Nonnegative number of rows.
   final int rowCount;
 
-  /// Lazy builder producing cell widgets for row at [index].
+  /// Only invoked for rows needed by the viewport and cache.
   final AnimalTableRowBuilder rowBuilder;
 
-  /// Optional function to generate a stable [Key] for each row.
-  final AnimalTableRowKey? rowKey;
+  /// Required unique identities; evaluated once per row at construction.
+  final AnimalTableRowKey rowKey;
 
-  /// Whether the table is currently displaying a loading spinner overlay.
+  /// Whether to overlay a localized loading indicator.
   final bool loading;
 
-  /// Custom widget displayed when [rowCount] is 0 and [loading] is false.
+  /// Caller-owned empty content; null uses the localized empty state.
   final Widget? emptyWidget;
 
-  /// Minimum total table width in logical pixels.
+  /// Positive finite minimum outer table width, if supplied.
   final double? minWidth;
 
-  /// Maximum height constraint for the table.
-  ///
-  /// Required if the table is placed inside an unbounded vertical parent.
+  /// Positive finite viewport height limit, if supplied.
   final double? maxHeight;
 
-  /// Optional scroll controller for horizontal scrolling.
+  /// Finite nonnegative viewport cache extent, default 96 logical pixels.
+  final double cacheExtent;
+
+  /// Borrowed horizontal scroll controller; never disposed by the table.
   final ScrollController? horizontalScrollController;
 
-  /// Optional scroll controller for vertical row scrolling.
+  /// Borrowed vertical scroll controller; never disposed by the table.
   final ScrollController? verticalScrollController;
 
-  /// Creates a table of [rowCount] rows built by [rowBuilder].
-  const AnimalTable({
+  /// Instance overrides before component theme and tokens.
+  final AnimalTableStyle? style;
+  late final List<Key> _keys;
+  late final Map<Key, int> _indices;
+
+  /// Creates a table. Invalid schema, dimensions or duplicate row keys throw
+  /// ArgumentError; lazy rows with missing or extra cells throw ArgumentError
+  /// when requested. Validation is identical in debug and release.
+  AnimalTable({
     super.key,
-    required this.columns,
+    required List<AnimalTableColumn> columns,
     required this.rowCount,
     required this.rowBuilder,
-    this.rowKey,
+    required this.rowKey,
     this.loading = false,
     this.emptyWidget,
     this.minWidth,
     this.maxHeight,
+    this.cacheExtent = 96,
     this.horizontalScrollController,
     this.verticalScrollController,
-  }) : assert(columns.length > 0, 'AnimalTable requires at least one column'),
-       assert(rowCount >= 0, 'rowCount must not be negative');
-
-  Widget _buildEmptyState(
-    AnimalIslandTheme theme,
-    AnimalLocalizations localizations,
-  ) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: theme.spacing.xxl + theme.spacing.xs,
-        horizontal: theme.spacing.lg,
-      ),
-      alignment: Alignment.center,
-      child:
-          emptyWidget ??
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimalIcon(
-                data: AnimalIcons.tree,
-                size: 40,
-                color: theme.colors.textDisabled,
-              ),
-              SizedBox(height: theme.spacing.sm),
-              Text(
-                localizations.empty,
-                style: theme.typography.caption.copyWith(
-                  color: theme.colors.textDisabled,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-    );
+    this.style,
+  }) : columns = List.unmodifiable(columns) {
+    if (this.columns.isEmpty) {
+      throw ArgumentError.value(columns, 'columns', 'must be nonempty');
+    }
+    if (rowCount < 0) {
+      throw ArgumentError.value(rowCount, 'rowCount', 'must be nonnegative');
+    }
+    for (final entry in {
+      'minWidth': minWidth,
+      'maxHeight': maxHeight,
+    }.entries) {
+      final value = entry.value;
+      if (value != null && (!value.isFinite || value <= 0)) {
+        throw ArgumentError.value(
+          value,
+          entry.key,
+          'must be finite and positive',
+        );
+      }
+    }
+    if (!cacheExtent.isFinite || cacheExtent < 0) {
+      throw ArgumentError.value(
+        cacheExtent,
+        'cacheExtent',
+        'must be finite and nonnegative',
+      );
+    }
+    final indices = <Key, int>{};
+    final keys = <Key>[];
+    for (var i = 0; i < rowCount; i++) {
+      final key = rowKey(i);
+      if (indices.containsKey(key)) {
+        throw ArgumentError.value(key, 'rowKey', 'must be unique');
+      }
+      keys.add(key);
+      indices[key] = i;
+    }
+    _keys = List.unmodifiable(keys);
+    _indices = Map.unmodifiable(indices);
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AnimalLocalizations.of(context)!;
-    final theme = AnimalIslandTheme.of(context);
-    final headerBg = theme.colors.surfaceHeader;
-    final rowBgEven = theme.colors.surfaceAlt;
-    final rowBgOdd = theme.colors.bgContent;
-    final borderColor = theme.colors.border;
-
+    final copy = AnimalLocalizations.of(context)!;
+    final resolved = _resolveTableStyle(AnimalIslandTheme.of(context), style);
+    final borderColor = resolved.borderColor!;
     return LayoutBuilder(
       builder: (context, constraints) {
         if (!constraints.hasBoundedHeight && maxHeight == null) {
-          throw FlutterError(
-            'AnimalTable was placed in an unbounded vertical viewport without a specified maxHeight. '
-            'Please provide maxHeight or constrain the parent height.',
-          );
+          throw ArgumentError('AnimalTable needs bounded height or maxHeight');
         }
-
-        final availableWidth = constraints.maxWidth;
-        final insideWidth = availableWidth.isFinite
-            ? math.max(
-                0.0,
-                availableWidth - AnimalTableLayout.horizontalTableBorder,
-              )
-            : double.infinity;
+        if (!constraints.hasBoundedWidth && minWidth == null) {
+          throw ArgumentError('AnimalTable needs bounded width or minWidth');
+        }
+        final width = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : minWidth!;
+        final geometryWidth = math.max(width, minWidth ?? 0);
+        final padding = resolved.rowPadding!.resolve(
+          Directionality.of(context),
+        );
         final solvedWidths = AnimalTableLayout.solveWidths(
           columns: columns,
-          availableWidth: availableWidth,
-          horizontalRowPadding: theme.spacing.lg * 2,
+          availableWidth: geometryWidth,
+          horizontalRowPadding: padding.horizontal,
+          flexMinWidth: resolved.flexMinWidth!,
+          horizontalTableBorder: resolved.borderWidth! * 2,
         );
-
-        final totalColumnsWidth = AnimalTableLayout.totalContentWidth(
-          solvedWidths,
-          horizontalRowPadding: theme.spacing.lg * 2,
+        final contentWidth = math.max(
+          geometryWidth - resolved.borderWidth! * 2,
+          AnimalTableLayout.totalContentWidth(
+            solvedWidths,
+            horizontalRowPadding: padding.horizontal,
+          ),
         );
-        final effectiveTableWidth = math.max(
-          minWidth ?? 0.0,
-          totalColumnsWidth,
-        );
-        final requiresHorizontalScroll =
-            !insideWidth.isFinite || effectiveTableWidth > insideWidth;
-
-        // Header Row
+        final height = constraints.hasBoundedHeight
+            ? math.min(
+                maxHeight ?? constraints.maxHeight,
+                constraints.maxHeight,
+              )
+            : maxHeight!;
         final headerRow = AnimalTableRow(
           columns: columns,
           columnWidths: solvedWidths,
-          cells: columns.map((c) => Text(c.title)).toList(),
+          cells: [for (final column in columns) Text(column.title)],
           isHeader: true,
-          backgroundColor: headerBg,
+          backgroundColor: resolved.headerBackgroundColor!,
+          style: resolved,
         );
-
-        // Body Content
         Widget bodyContent;
         if (rowCount == 0 && !loading) {
-          bodyContent = _buildEmptyState(theme, localizations);
+          bodyContent = SingleChildScrollView(
+            child: Container(
+              padding: resolved.emptyPadding,
+              alignment: Alignment.center,
+              child:
+                  emptyWidget ??
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimalIcon(
+                        data: AnimalIcons.tree,
+                        size: resolved.emptyIconSize!,
+                        color: resolved.emptyTextColor,
+                      ),
+                      SizedBox(height: resolved.emptyIconGap),
+                      Text(
+                        copy.empty,
+                        style: resolved.emptyTextStyle!.copyWith(
+                          color: resolved.emptyTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+            ),
+          );
         } else {
           bodyContent = ListView.builder(
             controller: verticalScrollController,
             padding: EdgeInsets.zero,
+            scrollCacheExtent: ScrollCacheExtent.pixels(cacheExtent),
+            findChildIndexCallback: (key) => _indices[key],
             itemCount: rowCount,
             itemBuilder: (context, rowIndex) {
-              final cells = rowBuilder(context, rowIndex);
-              final isEven = rowIndex % 2 == 0;
+              final cells = List<Widget>.unmodifiable(
+                rowBuilder(context, rowIndex),
+              );
+              if (cells.length != columns.length) {
+                throw ArgumentError.value(
+                  cells.length,
+                  'rowBuilder',
+                  'must return exactly ${columns.length} cells',
+                );
+              }
               return AnimalTableRow(
-                key: rowKey?.call(rowIndex) ?? ValueKey(rowIndex),
+                key: _keys[rowIndex],
                 columns: columns,
                 columnWidths: solvedWidths,
                 cells: cells,
-                backgroundColor: isEven ? rowBgEven : rowBgOdd,
-                borderColor: borderColor.withValues(alpha: 0.4),
+                style: resolved,
+                backgroundColor: rowIndex.isEven
+                    ? resolved.evenRowBackgroundColor!
+                    : resolved.oddRowBackgroundColor!,
+                borderColor: resolved.dividerColor,
               );
             },
           );
         }
-
-        final double? resolvedHeight =
-            maxHeight ??
-            (constraints.hasBoundedHeight ? constraints.maxHeight : null);
-
-        Widget tableStructure;
-        if (resolvedHeight != null) {
-          tableStructure = SizedBox(
-            height: resolvedHeight,
-            width: effectiveTableWidth,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                headerRow,
-                Expanded(child: bodyContent),
-              ],
-            ),
-          );
-        } else {
-          tableStructure = SizedBox(
-            width: effectiveTableWidth,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [headerRow, bodyContent],
-            ),
-          );
-        }
-
-        Widget scrollableContent;
-        if (requiresHorizontalScroll) {
-          scrollableContent = SingleChildScrollView(
-            controller: horizontalScrollController,
-            scrollDirection: Axis.horizontal,
-            child: tableStructure,
-          );
-        } else {
-          scrollableContent = tableStructure;
-        }
-
-        return Container(
+        final structure = SizedBox(
+          height: math.max(0, height - resolved.borderWidth! * 2),
+          width: contentWidth,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              headerRow,
+              Expanded(child: bodyContent),
+            ],
+          ),
+        );
+        final horizontal = contentWidth > width - resolved.borderWidth! * 2;
+        Widget surface(ScrollController? controller) => Container(
           decoration: BoxDecoration(
-            color: theme.colors.bgContent,
-            borderRadius: theme.radii.cardBorder,
-            border: Border.all(color: borderColor, width: 1.5),
+            color: resolved.backgroundColor,
+            borderRadius: resolved.borderRadius,
+            border: Border.all(
+              color: borderColor,
+              width: resolved.borderWidth!,
+            ),
           ),
           clipBehavior: Clip.antiAlias,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              scrollableContent,
+              horizontal
+                  ? SingleChildScrollView(
+                      controller: controller,
+                      scrollDirection: Axis.horizontal,
+                      child: structure,
+                    )
+                  : structure,
               if (loading)
                 Positioned.fill(
                   child: Semantics(
                     container: true,
                     excludeSemantics: true,
-                    label: localizations.tableLoadingLabel,
+                    label: copy.tableLoadingLabel,
                     child: Container(
-                      color: theme.colors.bgContent.withValues(alpha: 0.7),
-                      child: const Center(
-                        child: AnimalLoading.spinner(size: 36.0),
+                      color: resolved.backgroundColor!.withValues(alpha: .7),
+                      child: Center(
+                        child: AnimalLoading.spinner(
+                          size: resolved.loadingSize!,
+                        ),
                       ),
                     ),
                   ),
@@ -255,7 +282,52 @@ class AnimalTable extends StatelessWidget {
             ],
           ),
         );
+        return horizontal
+            ? HorizontalScrollRegion(
+                controller: horizontalScrollController,
+                borderRadius: resolved.borderRadius!,
+                builder: surface,
+              )
+            : surface(null);
       },
     );
   }
 }
+
+AnimalTableStyle _resolveTableStyle(
+  AnimalIslandTheme theme,
+  AnimalTableStyle? instance,
+) => (instance ?? AnimalTableStyle())
+    .merge(theme.components.table)
+    .merge(
+      AnimalTableStyle(
+        backgroundColor: theme.colors.bgContent,
+        headerBackgroundColor: theme.colors.surfaceHeader,
+        evenRowBackgroundColor: theme.colors.surfaceAlt,
+        oddRowBackgroundColor: theme.colors.bgContent,
+        borderColor: theme.colors.border,
+        borderWidth: 1.5,
+        borderRadius: theme.radii.cardBorder,
+        dividerColor: theme.colors.border.withValues(alpha: .4),
+        dividerThickness: 1,
+        rowPadding: EdgeInsets.symmetric(
+          horizontal: theme.spacing.lg,
+          vertical: theme.spacing.md,
+        ),
+        minRowHeight: 48,
+        flexMinWidth: 120,
+        headerTextStyle: theme.typography.button,
+        textStyle: theme.typography.body,
+        headerTextColor: theme.colors.text,
+        textColor: theme.colors.textBody,
+        emptyTextStyle: theme.typography.caption,
+        emptyTextColor: theme.colors.textDisabled,
+        emptyPadding: EdgeInsets.symmetric(
+          horizontal: theme.spacing.lg,
+          vertical: theme.spacing.xxl + theme.spacing.xs,
+        ),
+        emptyIconSize: 40,
+        emptyIconGap: theme.spacing.sm,
+        loadingSize: 36,
+      ),
+    );

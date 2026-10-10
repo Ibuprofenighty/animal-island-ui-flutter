@@ -154,7 +154,7 @@ void main() {
     });
 
     testWidgets('AnimalTabs switches selected index', (tester) async {
-      int selected = 0;
+      String selected = 'tab-0';
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -165,11 +165,11 @@ void main() {
             body: StatefulBuilder(
               builder: (context, setState) {
                 return AnimalTabs(
-                  selectedIndex: selected,
+                  selectedId: selected,
                   onChanged: (idx) => setState(() => selected = idx),
-                  tabs: const [
-                    AnimalTabItem(label: 'Tab 1'),
-                    AnimalTabItem(label: 'Tab 2'),
+                  tabs: [
+                    AnimalTabItem(id: 'tab-0', label: 'Tab 1'),
+                    AnimalTabItem(id: 'tab-1', label: 'Tab 2'),
                   ],
                 );
               },
@@ -182,7 +182,7 @@ void main() {
       expect(find.text('Tab 2'), findsOneWidget);
       await tester.tap(find.text('Tab 2'));
       await tester.pumpAndSettle();
-      expect(selected, 1);
+      expect(selected, 'tab-1');
     });
 
     testWidgets('AnimalCountdown renders time units', (tester) async {
@@ -514,7 +514,8 @@ void main() {
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
               body: AnimalTable(
-                columns: const [
+                rowKey: (index) => ValueKey('row-$index'),
+                columns: [
                   AnimalTableColumn(title: 'Item'),
                   AnimalTableColumn(title: 'Price'),
                 ],
@@ -543,7 +544,8 @@ void main() {
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
               body: AnimalTable(
-                columns: const [AnimalTableColumn(title: 'Item')],
+                rowKey: (index) => ValueKey('row-$index'),
+                columns: [AnimalTableColumn(title: 'Item')],
                 rowCount: 0,
                 maxHeight: 300,
                 rowBuilder: (context, i) => const [],
@@ -563,8 +565,9 @@ void main() {
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
               body: AnimalTable(
+                rowKey: (index) => ValueKey('row-$index'),
                 loading: true,
-                columns: const [AnimalTableColumn(title: 'Item')],
+                columns: [AnimalTableColumn(title: 'Item')],
                 rowCount: 0,
                 maxHeight: 300,
                 rowBuilder: (context, i) => const [],
@@ -1215,7 +1218,7 @@ void main() {
     testWidgets('AnimalCarousel renders items and handles navigation', (
       tester,
     ) async {
-      int activeIndex = 0;
+      String activeIndex = 'slide-0';
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AnimalLocalizations.localizationsDelegates,
@@ -1223,10 +1226,14 @@ void main() {
 
           theme: AnimalIslandTheme.light.toThemeData(),
           home: Scaffold(
-            body: AnimalCarousel(
+            body: AnimalCarousel.uncontrolled(
               autoPlay: false,
               onChange: (idx) => activeIndex = idx,
-              items: const [Text('Slide 1'), Text('Slide 2'), Text('Slide 3')],
+              items: [
+                AnimalCarouselItem(id: 'slide-0', child: Text('Slide 1')),
+                AnimalCarouselItem(id: 'slide-1', child: Text('Slide 2')),
+                AnimalCarouselItem(id: 'slide-2', child: Text('Slide 3')),
+              ],
             ),
           ),
         ),
@@ -1238,7 +1245,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.chevron_right_rounded));
       await tester.pumpAndSettle();
 
-      expect(activeIndex, 1);
+      expect(activeIndex, 'slide-1');
     });
 
     testWidgets('AnimalSelect renders options and supports selection', (
@@ -2008,10 +2015,19 @@ void main() {
                       pageSize: 10,
                       onChanged: (_) {},
                     ),
-                    AnimalCarousel(
-                      height: 100,
+                    AnimalCarousel.uncontrolled(
+                      style: AnimalCarouselStyle(height: 100),
                       showArrows: true,
-                      items: const [Text('Slide 1'), Text('Slide 2')],
+                      items: [
+                        AnimalCarouselItem(
+                          id: 'slide-0',
+                          child: Text('Slide 1'),
+                        ),
+                        AnimalCarouselItem(
+                          id: 'slide-1',
+                          child: Text('Slide 2'),
+                        ),
+                      ],
                     ),
                     AnimalBackTop(scrollController: scrollController),
                     const SizedBox(height: 1000),
@@ -2116,7 +2132,7 @@ void main() {
     testWidgets(
       'AnimalCarousel dots can be navigated and activated via keyboard (D-12)',
       (tester) async {
-        int activeIndex = 0;
+        String activeIndex = 'slide-0';
 
         await tester.pumpWidget(
           MaterialApp(
@@ -2125,11 +2141,15 @@ void main() {
 
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
-              body: AnimalCarousel(
-                height: 100,
+              body: AnimalCarousel.uncontrolled(
+                style: AnimalCarouselStyle(height: 100),
                 showDots: true,
                 onChange: (idx) => activeIndex = idx,
-                items: const [Text('Page A'), Text('Page B'), Text('Page C')],
+                items: [
+                  AnimalCarouselItem(id: 'slide-0', child: Text('Page A')),
+                  AnimalCarouselItem(id: 'slide-1', child: Text('Page B')),
+                  AnimalCarouselItem(id: 'slide-2', child: Text('Page C')),
+                ],
               ),
             ),
           ),
@@ -2140,7 +2160,7 @@ void main() {
 
         await tester.tap(dot2);
         await tester.pumpAndSettle();
-        expect(activeIndex, 1);
+        expect(activeIndex, 'slide-1');
       },
     );
   });
@@ -2583,7 +2603,7 @@ void main() {
     testWidgets(
       'A04: AnimalTabs item activates through its shared keyboard owner',
       (tester) async {
-        int activeIndex = 0;
+        String activeIndex = 'tab-0';
         int activationCount = 0;
 
         await tester.pumpWidget(
@@ -2596,15 +2616,15 @@ void main() {
               body: StatefulBuilder(
                 builder: (context, setState) {
                   return AnimalTabs(
-                    selectedIndex: activeIndex,
+                    selectedId: activeIndex,
                     onChanged: (idx) => setState(() {
                       activeIndex = idx;
                       activationCount++;
                     }),
-                    tabs: const [
-                      AnimalTabItem(label: 'Fish Guide'),
-                      AnimalTabItem(label: 'Bug Guide'),
-                      AnimalTabItem(label: 'Sea Creatures'),
+                    tabs: [
+                      AnimalTabItem(id: 'tab-0', label: 'Fish Guide'),
+                      AnimalTabItem(id: 'tab-1', label: 'Bug Guide'),
+                      AnimalTabItem(id: 'tab-2', label: 'Sea Creatures'),
                     ],
                   );
                 },
@@ -2613,12 +2633,12 @@ void main() {
           ),
         );
 
-        expect(activeIndex, 0);
+        expect(activeIndex, 'tab-0');
 
         // Tap Bug Guide tab
         await tester.tap(find.text('Bug Guide'));
         await tester.pumpAndSettle();
-        expect(activeIndex, 1);
+        expect(activeIndex, 'tab-1');
         expect(activationCount, 1);
 
         final tabOwner = find.byWidgetPredicate(
@@ -2634,7 +2654,7 @@ void main() {
         await tester.pump();
         await tester.sendKeyEvent(LogicalKeyboardKey.enter);
         await tester.pump();
-        expect(activeIndex, 1);
+        expect(activeIndex, 'tab-1');
         expect(activationCount, 2);
       },
     );
@@ -2864,8 +2884,9 @@ void main() {
                 children: [
                   AnimalCollapse(
                     disabled: true,
-                    items: const [
+                    items: [
                       AnimalCollapseItem(
+                        id: 'disabled',
                         title: Text('Disabled Item'),
                         content: Text('Content'),
                       ),
@@ -2889,9 +2910,9 @@ void main() {
       'O01: AnimalTable renders with maxHeight virtualized scroll and sticky header without IntrinsicWidth',
       (tester) async {
         final columns = [
-          const AnimalTableColumn(title: 'ID', width: 60.0),
-          const AnimalTableColumn(title: 'Item Name'),
-          const AnimalTableColumn(title: 'Price', width: 80.0),
+          AnimalTableColumn(title: 'ID', width: 60.0),
+          AnimalTableColumn(title: 'Item Name'),
+          AnimalTableColumn(title: 'Price', width: 80.0),
         ];
         await tester.pumpWidget(
           MaterialApp(
@@ -2901,6 +2922,7 @@ void main() {
             theme: AnimalIslandTheme.light.toThemeData(),
             home: Scaffold(
               body: AnimalTable(
+                rowKey: (index) => ValueKey('row-$index'),
                 columns: columns,
                 rowCount: 100,
                 rowBuilder: (context, i) => [
@@ -2942,13 +2964,22 @@ void main() {
                 builder: (context, enabled, child) {
                   return TickerMode(
                     enabled: enabled,
-                    child: AnimalCarousel(
-                      height: 150.0,
+                    child: AnimalCarousel.uncontrolled(
+                      style: AnimalCarouselStyle(height: 150.0),
                       autoPlayInterval: const Duration(milliseconds: 100),
-                      items: const [
-                        Text('Slide 1'),
-                        Text('Slide 2'),
-                        Text('Slide 3'),
+                      items: [
+                        AnimalCarouselItem(
+                          id: 'slide-0',
+                          child: Text('Slide 1'),
+                        ),
+                        AnimalCarouselItem(
+                          id: 'slide-1',
+                          child: Text('Slide 2'),
+                        ),
+                        AnimalCarouselItem(
+                          id: 'slide-2',
+                          child: Text('Slide 3'),
+                        ),
                       ],
                     ),
                   );

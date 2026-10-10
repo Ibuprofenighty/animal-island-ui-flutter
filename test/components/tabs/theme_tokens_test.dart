@@ -20,13 +20,13 @@ void main() {
           body: SizedBox(
             width: 88,
             child: AnimalTabs(
-              tabs: const [
-                AnimalTabItem(label: 'Unselected'),
-                AnimalTabItem(label: 'Disabled', disabled: true),
-                AnimalTabItem(label: 'Third'),
-                AnimalTabItem(label: 'Selected'),
+              tabs: [
+                AnimalTabItem(id: 'tab-0', label: 'Unselected'),
+                AnimalTabItem(id: 'tab-1', label: 'Disabled', disabled: true),
+                AnimalTabItem(id: 'tab-2', label: 'Third'),
+                AnimalTabItem(id: 'tab-3', label: 'Selected'),
               ],
-              selectedIndex: selectedIndex,
+              selectedId: 'tab-$selectedIndex',
               onChanged: (_) {},
               scrollable: true,
             ),

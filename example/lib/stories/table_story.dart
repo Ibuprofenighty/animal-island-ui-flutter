@@ -33,7 +33,8 @@ class TableStory extends StatelessWidget {
             child: SizedBox(
               height: 200,
               child: AnimalTable(
-                columns: const [
+                rowKey: (index) => ValueKey('row-$index'),
+                columns: [
                   AnimalTableColumn(title: 'Index', width: 80),
                   AnimalTableColumn(title: 'Item Name', flex: 2),
                   AnimalTableColumn(title: 'Price', width: 100),

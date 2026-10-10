@@ -1,5 +1,10 @@
 import 'package:flutter/foundation.dart';
 
+import 'components/collapse_theme.dart';
+import 'components/tabs_theme.dart';
+import 'components/carousel_theme.dart';
+import 'components/table_theme.dart';
+import 'components/pagination_theme.dart';
 import 'components/checkbox_theme.dart';
 import 'components/countdown_theme.dart';
 import 'components/date_picker_theme.dart';
@@ -81,6 +86,21 @@ class AnimalComponentThemes {
   /// Overrides for `AnimalTime`.
   final AnimalTimeStyle? time;
 
+  /// Overrides for AnimalCollapse.
+  final AnimalCollapseStyle? collapse;
+
+  /// Overrides for AnimalTabs.
+  final AnimalTabsStyle? tabs;
+
+  /// Overrides for AnimalCarousel.
+  final AnimalCarouselStyle? carousel;
+
+  /// Overrides for AnimalTable.
+  final AnimalTableStyle? table;
+
+  /// Overrides for AnimalPagination.
+  final AnimalPaginationStyle? pagination;
+
   /// Creates component overrides; every entry defaults to null.
   const AnimalComponentThemes({
     this.focusRing,
@@ -101,6 +121,11 @@ class AnimalComponentThemes {
     this.skeleton,
     this.countdown,
     this.time,
+    this.collapse,
+    this.tabs,
+    this.carousel,
+    this.table,
+    this.pagination,
   });
 
   /// Returns a copy of these overrides with the given fields replaced.
@@ -123,6 +148,11 @@ class AnimalComponentThemes {
     AnimalSkeletonStyle? skeleton,
     AnimalCountdownThemeData? countdown,
     AnimalTimeStyle? time,
+    AnimalCollapseStyle? collapse,
+    AnimalTabsStyle? tabs,
+    AnimalCarouselStyle? carousel,
+    AnimalTableStyle? table,
+    AnimalPaginationStyle? pagination,
   }) => AnimalComponentThemes(
     focusRing: focusRing ?? this.focusRing,
     input: input ?? this.input,
@@ -142,6 +172,11 @@ class AnimalComponentThemes {
     skeleton: skeleton ?? this.skeleton,
     countdown: countdown ?? this.countdown,
     time: time ?? this.time,
+    collapse: collapse ?? this.collapse,
+    tabs: tabs ?? this.tabs,
+    carousel: carousel ?? this.carousel,
+    table: table ?? this.table,
+    pagination: pagination ?? this.pagination,
   );
 
   /// Linearly interpolates each entry between these overrides and [other].
@@ -175,6 +210,11 @@ class AnimalComponentThemes {
       skeleton: AnimalSkeletonStyle.lerp(skeleton, other.skeleton, t),
       countdown: AnimalCountdownThemeData.lerp(countdown, other.countdown, t),
       time: AnimalTimeStyle.lerp(time, other.time, t),
+      collapse: AnimalCollapseStyle.lerp(collapse, other.collapse, t),
+      tabs: AnimalTabsStyle.lerp(tabs, other.tabs, t),
+      carousel: AnimalCarouselStyle.lerp(carousel, other.carousel, t),
+      table: AnimalTableStyle.lerp(table, other.table, t),
+      pagination: AnimalPaginationStyle.lerp(pagination, other.pagination, t),
     );
   }
 
@@ -199,7 +239,12 @@ class AnimalComponentThemes {
           progress == other.progress &&
           skeleton == other.skeleton &&
           countdown == other.countdown &&
-          time == other.time;
+          time == other.time &&
+          collapse == other.collapse &&
+          tabs == other.tabs &&
+          carousel == other.carousel &&
+          table == other.table &&
+          pagination == other.pagination;
 
   @override
   int get hashCode => Object.hashAll(<Object?>[
@@ -221,5 +266,10 @@ class AnimalComponentThemes {
     skeleton,
     countdown,
     time,
+    collapse,
+    tabs,
+    carousel,
+    table,
+    pagination,
   ]);
 }

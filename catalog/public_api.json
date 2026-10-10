@@ -134,22 +134,32 @@
       "classes": {
         "AnimalCarousel": {
           "constructors": [
-            "AnimalCarousel"
+            "AnimalCarousel",
+            "AnimalCarousel.uncontrolled"
           ],
           "fields": [
-            "activeIndex",
+            "activeId",
             "autoPlay",
             "autoPlayInterval",
             "clock",
-            "defaultActiveIndex",
-            "height",
+            "defaultActiveId",
             "items",
             "loop",
             "onChange",
             "pauseOnHover",
             "showArrows",
             "showDots",
+            "style",
             "visible"
+          ]
+        },
+        "AnimalCarouselItem": {
+          "constructors": [
+            "AnimalCarouselItem"
+          ],
+          "fields": [
+            "child",
+            "id"
           ]
         }
       },
@@ -238,7 +248,8 @@
             "defaultActiveIds",
             "disabled",
             "items",
-            "onChanged"
+            "onChanged",
+            "style"
           ]
         },
         "AnimalCollapseItem": {
@@ -759,6 +770,7 @@
             "onChanged",
             "pageSize",
             "simple",
+            "style",
             "total",
             "totalPages"
           ]
@@ -959,6 +971,7 @@
             "AnimalTable"
           ],
           "fields": [
+            "cacheExtent",
             "columns",
             "emptyWidget",
             "horizontalScrollController",
@@ -968,6 +981,7 @@
             "rowBuilder",
             "rowCount",
             "rowKey",
+            "style",
             "verticalScrollController"
           ]
         }
@@ -1003,6 +1017,7 @@
           "fields": [
             "disabled",
             "icon",
+            "id",
             "label"
           ]
         },
@@ -1013,7 +1028,8 @@
           "fields": [
             "onChanged",
             "scrollable",
-            "selectedIndex",
+            "selectedId",
+            "style",
             "tabs"
           ]
         }
@@ -1588,7 +1604,9 @@
             "AnimalComponentThemes"
           ],
           "fields": [
+            "carousel",
             "checkbox",
+            "collapse",
             "countdown",
             "datePicker",
             "drawer",
@@ -1599,14 +1617,54 @@
             "loading",
             "modal",
             "notification",
+            "pagination",
             "progress",
             "radio",
             "select",
             "skeleton",
             "switchControl",
+            "table",
+            "tabs",
             "time",
             "timePicker",
             "typewriter"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/carousel_theme.dart": {
+      "classes": {
+        "AnimalCarouselStyle": {
+          "constructors": [
+            "AnimalCarouselStyle"
+          ],
+          "fields": [
+            "activeDotColor",
+            "activeDotWidth",
+            "arrowBackgroundColor",
+            "arrowColor",
+            "arrowIconSize",
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "controlInset",
+            "controlPadding",
+            "curve",
+            "dotBackgroundColor",
+            "dotBorderRadius",
+            "dotColor",
+            "dotDuration",
+            "dotGap",
+            "dotPadding",
+            "dotSize",
+            "duration",
+            "hashCode",
+            "height",
+            "shadow"
           ]
         }
       },
@@ -1647,6 +1705,39 @@
             "middleStyle",
             "smallStyle",
             "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/collapse_theme.dart": {
+      "classes": {
+        "AnimalCollapseStyle": {
+          "constructors": [
+            "AnimalCollapseStyle"
+          ],
+          "fields": [
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "contentBackgroundColor",
+            "contentPadding",
+            "contentTextColor",
+            "curve",
+            "duration",
+            "gap",
+            "hashCode",
+            "headerBackgroundColor",
+            "headerPadding",
+            "iconColor",
+            "iconGap",
+            "iconSize",
+            "shadow",
+            "textColor",
+            "textStyle"
           ]
         }
       },
@@ -1982,6 +2073,36 @@
       "topLevelVariables": {},
       "functions": {}
     },
+    "lib/src/foundation/theme/components/pagination_theme.dart": {
+      "classes": {
+        "AnimalPaginationStyle": {
+          "constructors": [
+            "AnimalPaginationStyle"
+          ],
+          "fields": [
+            "backgroundColor",
+            "borderRadius",
+            "depth",
+            "disabledBackgroundColor",
+            "disabledTextColor",
+            "ellipsisTextColor",
+            "ellipsisTextStyle",
+            "gap",
+            "hashCode",
+            "iconSize",
+            "padding",
+            "selectedBackgroundColor",
+            "selectedTextColor",
+            "shadow",
+            "textColor",
+            "textStyle"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
     "lib/src/foundation/theme/components/progress_theme.dart": {
       "classes": {
         "AnimalProgressStyle": {
@@ -2166,6 +2287,72 @@
             "hashCode",
             "smallStyle",
             "style"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/table_theme.dart": {
+      "classes": {
+        "AnimalTableStyle": {
+          "constructors": [
+            "AnimalTableStyle"
+          ],
+          "fields": [
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "dividerColor",
+            "dividerThickness",
+            "emptyIconGap",
+            "emptyIconSize",
+            "emptyPadding",
+            "emptyTextColor",
+            "emptyTextStyle",
+            "evenRowBackgroundColor",
+            "flexMinWidth",
+            "hashCode",
+            "headerBackgroundColor",
+            "headerTextColor",
+            "headerTextStyle",
+            "loadingSize",
+            "minRowHeight",
+            "oddRowBackgroundColor",
+            "rowPadding",
+            "textColor",
+            "textStyle"
+          ]
+        }
+      },
+      "enums": {},
+      "topLevelVariables": {},
+      "functions": {}
+    },
+    "lib/src/foundation/theme/components/tabs_theme.dart": {
+      "classes": {
+        "AnimalTabsStyle": {
+          "constructors": [
+            "AnimalTabsStyle"
+          ],
+          "fields": [
+            "backgroundColor",
+            "borderColor",
+            "borderRadius",
+            "borderWidth",
+            "curve",
+            "duration",
+            "hashCode",
+            "iconGap",
+            "iconSize",
+            "indicatorColor",
+            "padding",
+            "shadow",
+            "tabPadding",
+            "textColor",
+            "textStyle"
           ]
         }
       },
@@ -2583,5 +2770,5 @@
       "functions": {}
     }
   },
-  "sha256": "d8f2a8fad5e15c964e75e8e7e0db1f7ce30299492590869b81cb95c2a23a82b3"
+  "sha256": "593f93dd6338f86e1f96fffd6d8cef17893c80dadd6c1b89d4770205efc93e68"
 }

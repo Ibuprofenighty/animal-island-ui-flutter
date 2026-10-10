@@ -13,7 +13,7 @@ void main() {
           theme: AnimalIslandTheme.light.toThemeData(),
           home: Scaffold(
             body: AnimalTabs(
-              selectedIndex: 0,
+              selectedId: null,
               onChanged: (_) {},
               tabs: const [],
             ),
@@ -24,10 +24,10 @@ void main() {
       expect(find.byType(AnimalTabs), findsOneWidget);
     });
 
-    testWidgets('didUpdateWidget synchronizes external selectedIndex change', (
+    testWidgets('didUpdateWidget synchronizes external selectedId change', (
       tester,
     ) async {
-      int active = 0;
+      String active = 'tab-0';
 
       await tester.pumpWidget(
         MaterialApp(
@@ -41,15 +41,15 @@ void main() {
                 return Column(
                   children: [
                     AnimalTabs(
-                      selectedIndex: active,
+                      selectedId: active,
                       onChanged: (idx) => setState(() => active = idx),
-                      tabs: const [
-                        AnimalTabItem(label: 'Tab A'),
-                        AnimalTabItem(label: 'Tab B'),
+                      tabs: [
+                        AnimalTabItem(id: 'tab-0', label: 'Tab A'),
+                        AnimalTabItem(id: 'tab-1', label: 'Tab B'),
                       ],
                     ),
                     ElevatedButton(
-                      onPressed: () => setState(() => active = 1),
+                      onPressed: () => setState(() => active = 'tab-1'),
                       child: const Text('Select B Externally'),
                     ),
                   ],
@@ -60,12 +60,12 @@ void main() {
         ),
       );
 
-      expect(active, 0);
+      expect(active, 'tab-0');
 
       await tester.tap(find.text('Select B Externally'));
       await tester.pumpAndSettle();
 
-      expect(active, 1);
+      expect(active, 'tab-1');
     });
   });
 }

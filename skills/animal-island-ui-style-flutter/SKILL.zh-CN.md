@@ -136,3 +136,11 @@ submit。详情见[表单引用](references/components/form.md)。
 - [表单](references/recipes/form_workflow.md)
 - [浮层](references/recipes/overlay_workflow.md)
 - [数据](references/recipes/data_workflow.md)
+
+## 稳定导航与数据契约
+
+导航和数据使用稳定标识。Tabs 的 `selectedId` 只属于调用者，挂载后的 LTR/RTL 方向变化重新对齐指示器且不发出选中提议；Carousel 明确区分受控 `activeId` 与 `.uncontrolled(defaultActiveId: ...)`，高度通过 `AnimalCarouselStyle.height` 配置。被拒绝的提议不本地提交。Table 必须传稳定唯一 row key，并校验每个请求行的单元格 schema。Pagination 按精确整数页数校验父级页码。这五个组件各用一个 Style 类型连接实例与组件主题，没有尺寸预设。
+
+横向溢出的 Table 视口可用键盘进入：Tab、左右键（RTL 镜像）、Home/End 和 PageUp/PageDown 滚动同一表头/正文几何；子级编辑器保留自己的按键处理。
+
+Collapse 与非受控 Carousel 每次构造都要求默认 ID 有效，删项时同批清理默认 ID；合法默认值变化不重置已挂载状态。Carousel 在政策停止时中断运行中的页面/滑点动画，RTL 箭头遵循逻辑上一项/下一项；Pagination 按页码和省略号各自字体实测窗口。

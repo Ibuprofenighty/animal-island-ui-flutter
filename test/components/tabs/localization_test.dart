@@ -22,11 +22,14 @@ void main() {
         child: Builder(
           builder: (context) => AnimalTabs(
             tabs: [
-              AnimalTabItem(label: AnimalLocalizations.of(context)!.today),
+              AnimalTabItem(
+                id: 'tab-0',
+                label: AnimalLocalizations.of(context)!.today,
+              ),
             ],
-            selectedIndex: 0,
+            selectedId: 'tab-${0}',
             onChanged: (index) {
-              expect(index, 0);
+              expect(index, 'tab-0');
               activationCount++;
             },
             scrollable: false,
