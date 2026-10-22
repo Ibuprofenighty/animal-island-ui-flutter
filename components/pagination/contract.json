@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "id": "pagination",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Pagination 分页; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandPagination](../../lib/src/components/pagination.dart), [IslandPaginationValue](../../lib/src/foundation/pagination_value.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "One atomic page and size value; controlled rejection is authoritative. Local menu and input own no committed host state. Total shrink derives safe display without emitting user events.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win. Anchored panels share one actual-Overlay layout owner for Select, DatePicker, TimePicker, Pagination and Tooltip. A fitting reference attachment keeps its position, gap, shape, color and content. Only an overflowing result is moved inside the viewport; the existing available-width constraint applies when content cannot fit. The real child is laid out once, with no post-frame size guessing, cloned content, Gallery override or parallel positioning path. Components retain selection, focus, lifetime and scrolling: Select reveals its active keyboard option; a narrow single calendar scrolls horizontally, range calendars retain their existing horizontal scroll, and short time/long tooltip panels scroll vertically. Explicit opaque child styling and state remain authoritative. This is the user-approved limited usability deviation from the reference overflow defect, not a claim of exact parity or complete platform acceptance. Vertical popup height follows the available attachment-side space so the original trigger remains usable; fitting geometry receives no extra offset. Select owns and disposes its list scroll controller, reveals the committed row on list attachment and moves only that list for keyboard activity, preserving caller scroll positions. Fitting layout uses declared page widths and the size label word minimum for intrinsic contributions. Page/ellipsis/size cells retain proportional shrink while the complete minimum fits. Below that actual minimum, the existing layout owner wraps the same children into aligned runs with2px inline and8px run gaps; fixed total/jumper geometry and minimum page targets stay reachable. No clipping, child cloning or second layout/state implementation. The alignment parameter applies directionally to each run (default centerStart; Table requests centerEnd). Resizing preserves the same focused controls, controlled values, and anchored-menu owner in LTR/RTL.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required. Expanded/collapsed state belongs to the same named actionable trigger node; independent child clear controls remain separate. No DOM or platform semantics shim.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Selected fill, owned foreground and internal focus update atomically to prevent low-contrast intermediate pairings. Transparent content follows its host theme; fixed light controls retain their paired foregrounds. This registered color-transition exception preserves geometry, shadow/rotation motion and opaque child styles. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Pinned24-unit chevrons render at14px with3-unit stroke; caret M12 16.5L5.5 9h13z renders at10px. Decorative10x14 cursor and timeline share Select owner. Reduced motion disables caret rotation.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "pagination.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "pagination.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "pagination.viewport-bounds",
+      "given": "An anchored panel at either edge of a narrow, short or offset Overlay, with normal and long content",
+      "when": "Open, close, reopen, search, navigate by keyboard, scroll the host or resize the window",
+      "then": "The actual panel and required targets remain reachable within that Overlay. Fitting reference attachments remain unchanged; only overflow is corrected. Existing component-owned scrolling and focus/controlled-value ownership survive, with one content subtree."
+    },
+    {
+      "id": "pagination.inline-layout",
+      "given": "A constrained viewport, optional total/size/jumper and an intrinsic-width host",
+      "when": "Resize between fitting and min-content widths, then select or change page size",
+      "then": "Fitting runs preserve the declared-width/owned-word shrink geometry; below the minimum, every action is contained in aligned wrapped runs. Existing controls retain identity, focus, values and callbacks through resize in LTR and RTL."
+    }
+  ]
+}

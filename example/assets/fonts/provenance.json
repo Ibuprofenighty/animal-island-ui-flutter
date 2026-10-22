@@ -1,0 +1,32 @@
+{
+  "source": "https://github.com/google/fonts/tree/main/ofl/notosanssc",
+  "upstream_sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+  "instances": [
+    {
+      "path": "IslandGallerySans-400.ttf",
+      "weight": 400,
+      "outline_weight": 400,
+      "sha256": "339ec31757aa4939f57941eeee5cddc7bc20e88a8dee550804e99d4181a3ebfd",
+      "bytes": 2165836
+    },
+    {
+      "path": "IslandGallerySans-500.ttf",
+      "weight": 500,
+      "outline_weight": 500,
+      "sha256": "e164612a82f798c36f0ab0695fc1fa42173ba7dbbc7aab8ec705da1dfb730b64",
+      "bytes": 2164716
+    },
+    {
+      "path": "IslandGallerySans-900.ttf",
+      "weight": 900,
+      "outline_weight": 700,
+      "sha256": "db6e3a52d080c71dcd7135af56ac07711d4a45a942f0c5a776e6a3146e2e706e",
+      "bytes": 2163556
+    }
+  ],
+  "license": "SIL OFL 1.1; retained in OFL.txt",
+  "family": "Island Gallery Sans",
+  "coverage": "Gallery and pinned reference source text, ASCII, general punctuation and GB2312 ideographs; not all Unicode",
+  "transformation": "Subset reference outlines400/500/700; register bold as900 with matching names and no stale STAT weight so Flutter600..900 renders700 without synthesis. Preserve original coverage.",
+  "tool": "fonttools 4.60.1"
+}

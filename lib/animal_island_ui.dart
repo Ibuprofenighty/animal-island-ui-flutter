@@ -1,192 +1,148 @@
-/// Animal Island UI - A cozy Kawaii component library for Flutter.
-///
-/// Ported with enterprise-grade standards from guokaigdg/animal-island-ui.
-///
-/// Features:
-/// - 36 Production-grade UI components
-/// - 101 Native cute vector island icons
-/// - 7 Canonical Design Laws & 14 Visual Hard Rules
-/// - 3D tactile press depth & spring physics
+/// Original island-life UI for Flutter. All public APIs are exported here.
 library;
 
-// =============================================================================
-// 1. Design Tokens & Foundation Models
-// =============================================================================
-export 'src/foundation/theme/colors.dart'
-    show AnimalThemeColors, AnimalTileColor, AnimalTileColors;
-export 'src/foundation/theme/typography.dart' show AnimalThemeTypography;
-export 'src/foundation/theme/shadows.dart' show AnimalThemeShadows;
-export 'src/foundation/theme/radii.dart' show AnimalThemeRadii;
-export 'src/foundation/theme/spacing.dart' show AnimalThemeSpacing;
-export 'src/foundation/theme/motion.dart' show AnimalThemeMotion;
-export 'src/foundation/theme/theme.dart' show AnimalIslandTheme;
-export 'src/foundation/theme/component_themes.dart' show AnimalComponentThemes;
-export 'src/foundation/theme/components/collapse_theme.dart'
-    show AnimalCollapseStyle;
-export 'src/foundation/theme/components/tabs_theme.dart' show AnimalTabsStyle;
-export 'src/foundation/theme/components/carousel_theme.dart'
-    show AnimalCarouselStyle;
-export 'src/foundation/theme/components/table_theme.dart' show AnimalTableStyle;
-export 'src/foundation/theme/components/pagination_theme.dart'
-    show AnimalPaginationStyle;
-export 'src/foundation/theme/components/focus_ring_theme.dart'
-    show AnimalFocusRingStyle;
-export 'src/foundation/theme/components/input_theme.dart'
-    show AnimalInputStyle, AnimalInputThemeData;
-export 'src/foundation/theme/components/switch_theme.dart'
-    show AnimalSwitchStyle, AnimalSwitchThemeData;
-export 'src/foundation/theme/components/checkbox_theme.dart'
-    show AnimalCheckboxStyle, AnimalCheckboxThemeData;
-export 'src/foundation/theme/components/radio_theme.dart'
-    show AnimalRadioStyle, AnimalRadioThemeData;
-export 'src/foundation/theme/components/select_theme.dart'
-    show AnimalSelectStyle;
-export 'src/foundation/theme/components/date_picker_theme.dart'
-    show AnimalDatePickerStyle;
-export 'src/foundation/theme/components/time_picker_theme.dart'
-    show AnimalTimePickerStyle;
-export 'src/foundation/theme/components/form_item_theme.dart'
-    show AnimalFormItemStyle;
-export 'src/foundation/theme/components/notification_theme.dart'
-    show AnimalNotificationStyle;
-export 'src/foundation/theme/components/loading_theme.dart'
-    show AnimalLoadingStyle;
-export 'src/foundation/theme/components/modal_theme.dart' show AnimalModalStyle;
-export 'src/foundation/theme/components/drawer_theme.dart'
-    show AnimalDrawerStyle;
-export 'src/foundation/theme/components/typewriter_theme.dart'
-    show AnimalTypewriterStyle;
-export 'src/foundation/theme/components/progress_theme.dart'
-    show AnimalProgressStyle, AnimalProgressThemeData;
-export 'src/foundation/theme/components/skeleton_theme.dart'
-    show AnimalSkeletonStyle;
-export 'src/foundation/theme/components/countdown_theme.dart'
-    show AnimalCountdownStyle, AnimalCountdownThemeData;
-export 'src/foundation/theme/components/time_theme.dart' show AnimalTimeStyle;
-export 'src/foundation/forms/animal_validation_issue.dart'
-    show AnimalValidationIssue, AnimalValidationIssueKind;
-export 'src/foundation/forms/animal_field_key.dart' show AnimalFieldKey;
-export 'src/foundation/forms/animal_field_binding.dart'
-    show AnimalFieldBinding, AnimalValidationStatus;
-export 'src/foundation/forms/animal_form_values.dart'
-    show AnimalFieldValue, AnimalFormValues;
-export 'src/foundation/localization/animal_locale_resolution.dart'
-    show resolveAnimalLocale;
-export 'src/foundation/localization/generated/animal_localizations.g.dart'
-    show AnimalLocalizations;
-export 'src/foundation/models/option.dart' show AnimalOption;
-export 'src/foundation/models/date.dart'
+export 'src/foundation/theme.dart'
+    show IslandTokens, IslandTheme, IslandThemeHost, IslandSurfaceTheme;
+export 'src/foundation/localizations.dart' show IslandLocalizations;
+export 'src/foundation/dialog_route.dart' show IslandDialogRoute;
+export 'src/foundation/icon.dart' show IslandIcon, IslandGlyph;
+export 'src/components/actions.dart'
+    show IslandButton, IslandButtonVariant, IslandButtonTheme, IslandIconButton;
+export 'src/components/surfaces.dart'
+    show IslandCard, IslandCardStyle, IslandCardTheme, IslandCardVariant;
+export 'src/components/inputs.dart'
+    show IslandTextField, IslandCheckbox, IslandSwitch;
+
+export 'src/foundation/size.dart' show IslandSize;
+
+export 'src/components/title.dart'
+    show IslandTitle, IslandTitleVariant, IslandPalette;
+
+export 'src/components/modal.dart'
+    show IslandModal, IslandModalVariant, showIslandModal;
+export 'src/components/typewriter.dart' show IslandTypewriter;
+
+export 'src/foundation/option.dart' show IslandOption;
+export 'src/components/selection.dart'
+    show IslandRadioGroup, IslandCheckboxGroup;
+
+export 'src/foundation/colorway.dart' show IslandColorway;
+export 'src/components/tag.dart' show IslandTag, IslandTagVariant;
+export 'src/components/divider.dart' show IslandDivider, IslandDividerVariant;
+
+export 'src/components/rate.dart' show IslandRate;
+export 'src/components/skeleton.dart'
     show
-        AnimalDate,
-        AnimalDatePickerMode,
-        AnimalDateRangeSelection,
-        AnimalDateSelection,
-        AnimalDateSingleSelection;
-export 'src/foundation/models/time.dart' show AnimalTimeValue;
-export 'src/foundation/models/clock.dart' show AnimalClock, SystemClock;
+        IslandSkeleton,
+        IslandSkeletonVariant,
+        IslandSkeletonButton,
+        IslandSkeletonInput,
+        IslandSkeletonAvatar;
 
-// =============================================================================
-// 2. Overlay Realm & Scoped Host
-// =============================================================================
-export 'src/components/overlay_host/overlay_host.dart'
-    show AnimalOverlayController, AnimalOverlayEntryHandle, AnimalOverlayHost;
-
-// =============================================================================
-// 3. 101 Vector Icons
-// =============================================================================
-export 'src/icons/icon.dart' show AnimalIcon;
-export 'src/icons/icon_data.dart' show AnimalIconData;
-export 'src/icons/icons.g.dart' show AnimalIcons;
-
-// =============================================================================
-// 4. Canonical Component Categories (9 Distinct Design System Categories)
-// =============================================================================
-
-// Category 1: General (Button, Cursor, Typewriter, Icon)
-export 'src/components/button/button.dart'
-    show AnimalButton, AnimalButtonSize, AnimalButtonTone, AnimalButtonVariant;
-export 'src/components/cursor/cursor.dart' show AnimalCursor, AnimalCursorType;
-export 'src/components/typewriter/typewriter.dart' show AnimalTypewriter;
-
-// Category 2: Structure & Navigation (Card, Title, Divider, Background, Collapse, Tabs, Carousel)
-export 'src/components/card/card.dart'
-    show AnimalCard, AnimalCardPattern, AnimalCardType;
-export 'src/components/title/title.dart' show AnimalTitle, AnimalTitleSize;
-export 'src/components/divider/divider.dart'
-    show AnimalDivider, AnimalDividerType;
-export 'src/components/background/background.dart'
-    show AnimalBackground, AnimalBackgroundType;
-export 'src/components/collapse/collapse.dart'
-    show AnimalCollapse, AnimalCollapseItem;
-export 'src/components/tabs/tabs.dart' show AnimalTabItem, AnimalTabs;
-export 'src/components/carousel/carousel.dart'
-    show AnimalCarousel, AnimalCarouselItem;
-
-// Category 3: Form Controls (Input, Switch, Checkbox, Radio, Select, DatePicker, TimePicker)
-export 'src/components/input/input.dart'
-    show AnimalInput, AnimalInputSize, AnimalInputStatus;
-export 'src/components/switch/switch.dart' show AnimalSwitch, AnimalSwitchSize;
-export 'src/components/checkbox/checkbox.dart'
-    show AnimalCheckbox, AnimalCheckboxSize;
-export 'src/components/checkbox/checkbox_group.dart' show AnimalCheckboxGroup;
-export 'src/components/radio/radio.dart' show AnimalRadio, AnimalRadioSize;
-export 'src/components/radio/radio_group.dart' show AnimalRadioGroup;
-export 'src/components/select/select.dart' show AnimalSelect;
-export 'src/components/date_picker/date_picker.dart' show AnimalDatePicker;
-export 'src/components/time_picker/time_picker.dart' show AnimalTimePicker;
-
-// Category 4: Form Container (Form, FormItem, Controller, Bindings, Validation)
-export 'src/components/form/form.dart' show AnimalForm;
-export 'src/components/form/form_controller.dart'
-    show AnimalFormController, AnimalSubmitResult, AnimalSubmitStatus;
-export 'src/components/form/form_item.dart' show AnimalFormItem;
-export 'src/components/form/validation.dart' show AnimalRule;
-
-// Category 5: Overlays (Modal, Drawer, Tooltip)
-export 'src/components/modal/modal.dart' show AnimalModal;
-export 'src/components/drawer/drawer.dart'
-    show AnimalDrawer, AnimalDrawerPlacement;
-export 'src/components/tooltip/tooltip.dart'
-    show AnimalTooltip, AnimalTooltipVariant;
-
-// Category 6: Feedback & Animation (Progress, Loading, Skeleton, BackTop, Countdown, Time)
-export 'src/components/progress/progress.dart'
+export 'src/components/code_block.dart'
     show
-        AnimalProgress,
-        AnimalProgressInfoPosition,
-        AnimalProgressSize,
-        AnimalProgressStatus;
-export 'src/components/loading/loading.dart'
-    show AnimalLoading, AnimalLoadingHandle, AnimalLoadingType;
-export 'src/components/skeleton/skeleton.dart'
-    show AnimalSkeleton, AnimalSkeletonVariant;
-export 'src/components/back_top/back_top.dart' show AnimalBackTop;
-export 'src/components/countdown/countdown.dart'
+        IslandCodeBlock,
+        IslandCodeLanguage,
+        IslandCodeToken,
+        IslandCodeBlockStyle,
+        IslandCodeBlockTheme;
+
+export 'src/components/select.dart' show IslandSelect;
+
+export 'src/components/time.dart' show IslandTime;
+export 'src/components/countdown.dart'
+    show IslandCountdown, IslandCountdownVariant;
+
+export 'src/foundation/field_status.dart' show IslandFieldStatus;
+
+export 'src/foundation/time_value.dart' show IslandTimeValue;
+export 'src/components/time_picker.dart' show IslandTimePicker;
+
+export 'src/components/progress.dart' show IslandProgress;
+export 'src/foundation/scene.dart' show IslandScene;
+export 'src/components/footer.dart' show IslandFooter;
+export 'src/components/background.dart' show IslandBackground;
+export 'src/foundation/background_type.dart' show IslandBackgroundType;
+
+export 'src/components/avatar.dart'
+    show IslandAvatar, IslandAvatarGroup, IslandAvatarShape;
+export 'src/components/badge.dart' show IslandBadge, IslandBadgeSize;
+
+export 'src/components/collapse.dart' show IslandCollapse;
+
+export 'src/components/loading.dart' show IslandLoading;
+
+export 'src/components/back_top.dart' show IslandBackTop;
+
+export 'src/components/tabs.dart' show IslandTabs, IslandTab;
+
+export 'src/foundation/pagination_value.dart' show IslandPaginationValue;
+export 'src/components/pagination.dart'
+    show IslandPagination, IslandPaginationVariant;
+export 'src/components/table.dart'
+    show IslandTable, IslandTableColumn, IslandTablePagination;
+
+export 'src/components/count_up.dart'
     show
-        AnimalCountdown,
-        AnimalCountdownFormat,
-        AnimalCountdownSize,
-        AnimalCountdownVariant;
-export 'src/components/time/time.dart' show AnimalTime;
+        IslandCountUp,
+        IslandCountUpVariant,
+        IslandCountUpRepeat,
+        IslandCountUpController;
 
-// Category 7: Notification (Notification Imperative API & Portal)
-export 'src/components/notification/notification.dart'
+export 'src/components/carousel.dart' show IslandCarousel, IslandSlide;
+
+export 'src/components/image.dart' show IslandImage, IslandImageVariant;
+
+export 'src/components/tooltip.dart'
     show
-        AnimalNotification,
-        AnimalNotificationHandle,
-        AnimalNotificationPlacement,
-        AnimalNotificationStatus,
-        AnimalNotificationType;
+        IslandTooltip,
+        IslandTooltipPlacement,
+        IslandTooltipTrigger,
+        IslandTooltipVariant;
 
-// Category 8: Data Display (Table, Pagination, CodeBlock, Tag, Image)
-export 'src/components/table/table.dart'
-    show AnimalTable, AnimalTableRowBuilder, AnimalTableRowKey;
-export 'src/components/table/table_column.dart' show AnimalTableColumn;
-export 'src/components/pagination/pagination.dart' show AnimalPagination;
-export 'src/components/code_block/code_block.dart' show AnimalCodeBlock;
-export 'src/components/tag/tag.dart'
-    show AnimalTag, AnimalTagSize, AnimalTagVariant;
-export 'src/components/image/image.dart' show AnimalImage, AnimalImageVariant;
+export 'src/components/notification.dart'
+    show
+        IslandNotification,
+        IslandNotificationType,
+        IslandNotificationPosition,
+        IslandNotifications,
+        IslandNotificationsController,
+        IslandNotificationHandle;
 
-// Category 9: Decorative (Footer)
-export 'src/components/footer/footer.dart' show AnimalFooter, AnimalFooterType;
+export 'src/components/drawer.dart'
+    show IslandDrawer, IslandDrawerHost, IslandDrawerPlacement;
+
+export 'src/components/cursor.dart' show IslandCursor, IslandCursorVariant;
+
+export 'src/components/date_picker.dart'
+    show IslandDatePicker, IslandDatePickerMode;
+
+export 'src/components/form.dart'
+    show
+        IslandForm,
+        IslandFormLayout,
+        IslandFormRequiredMark,
+        IslandFormController,
+        IslandFormValidation,
+        IslandFormValidator,
+        IslandFormItem,
+        IslandFormField,
+        IslandFormBinding,
+        IslandFormTextField;
+
+export 'src/components/upload.dart'
+    show
+        IslandUpload,
+        IslandUploadFile,
+        IslandUploadSource,
+        IslandUploadPreviewBuilder,
+        IslandUploadStatus,
+        IslandUploadListType,
+        IslandUploadChange,
+        IslandUploadCancellation,
+        IslandUploadTransfer,
+        IslandUploadRequest,
+        IslandUploadPicker,
+        IslandUploadDropBuilder,
+        IslandUploadBefore,
+        islandSimulatedUpload;

@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "id": "image",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Image 图片; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandImage](../../lib/src/components/image.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Provider-bound decode lifecycle; lazy resolution near viewport; independent exact preview route; return focus only to current originating page.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win. Modal Tab traversal consumes forward and reverse keys even when a closed loop keeps the same target or contains no actions. One shared boundary in the existing action module delegates order to the existing FocusScope, owns one skipped non-semantic target for an otherwise empty scope, and removes its borrowed-scope listener and owned node on disposal. It does not inspect children, add another FocusScope or replace a caller-owned focus target. IslandDialogRoute now defaults explicitly to TraversalEdgeBehavior.closedLoop; an explicitly supplied non-closed-loop policy, including null inheritance from Navigator, remains authoritative. Drawer, Loading, showIslandModal and the shared preview/alert route consume this same behavior. Actual Web keyboard and Windows/AT validation remain separate from widget tests.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Preview uses the same readable route presentation as Upload; its close action remains opaque before the mask darkens and throughout exit. Route ownership and source replacement stay local. Preview close mark uses the pinned16x2 rounded crossed bars,150ms reversible ease scale and a separately backed external focus outline; readable opaque colors remain the approved exception. Small intrinsic images keep the close control within a minimum64px preview surface (clamped to viewport); preview-owned load failure text has an opaque readable backing. Generic previews and Gallery alert callbacks reuse public IslandDialogRoute, the sole owner of opaque displacement and reduced-motion settlement. The creator pushes on the root Navigator and retains exact-route lifetime; builder retains content, semantics and surface. Existing showIslandModal scale entry remains its separate reference contract. Stamp uses the actual reference final-mask compositing:5px holes on centered16px repeats, including circles partially outside corners; no external shadow survives the opaque-paper mask.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "image.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "image.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "image.readable-counter-audit",
+      "given": "The relevant owned state and actual supported background, including transition frames",
+      "when": "Focus, hover, entry, exit or reduced motion changes",
+      "then": "Preview uses the same readable route presentation as Upload; its close action remains opaque before the mask darkens and throughout exit. Route ownership and source replacement stay local."
+    },
+    {
+      "id": "image.modal-tab-consumption",
+      "given": "The component-owned modal boundary, or its registered Gallery alert callback, with zero/one/multiple actions",
+      "when": "Forward/reverse Tab, activation, dismissal, rejected close or owner removal occurs",
+      "then": "Closed loops consume Tab without leaving the modal; callbacks fire once and accepted close restores origin. Explicit route traversal overrides survive, opaque child identity/styles remain, and owned focus resources are cleaned up."
+    },
+    {
+      "id": "image.stamp-mask",
+      "given": "An opaque stamp image with210x154 outer dimensions on white",
+      "when": "Render the final mask, including corner-crossing perforations",
+      "then": "No external filtered shadow remains; hole centers expose the host, untouched paper retains#FBFAF5, and radius/pitch stay5/16 across sizes."
+    }
+  ]
+}

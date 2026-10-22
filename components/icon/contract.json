@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "id": "icon",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Icon 图标; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandIcon](../../lib/src/foundation/icon.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Controlled values are authoritative. Component owns only focus, hover, preview, motion and explicitly uncontrolled state.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. The canonical close asset retains pinned geometry and changes only explicit X stroke to #B03038 for necessary-graphic contrast; docs/asset-provenance.json binds transformed bytes. Current scope is163 SVG glyphs. Explicit color overrides IconTheme for currentColor paint; internal multicolor asset paint stays explicit. All16 no-internal-fill glyphs use currentColor for every necessary stroke, preserving geometry; spinner pale track stays decorative. Provenance binds transformed bytes;147 filled glyphs still require contextual adjacency audit. Necessary semantic cores in pause/play/stop use #FFFDF7 against #2A9D8F; the ban slash uses #B03038 against #FAEDCD. Geometry is unchanged and transformed bytes remain bound by asset provenance. This named repair does not certify every multicolor adjacency. Necessary transparent-region strokes in docs/icon-paint-roles.json inherit the existing currentColor role; off slashes use the current asset-owned split paint described in docs/icon-paint-roles.json. Internal artwork paint is asset-owned; registered necessary-role changes retain original geometry and widths. Named raster regression covers canvas/paper light/dark and13 solid plus13 patterned Cards; no runtime background inference. Host-facing contours inherit contextual color; reviewed interior drawing ink stays fixed against its own asset fill. Explicit element roles and unchanged geometry are recorded in docs/icon-paint-roles.json. Named actual-backing contrast assertions do not certify every art adjacency. Necessary eye/beak/heat/connector/off roles are explicitly required by docs/icon-paint-roles.json; no blanket illustration exemption. Public-render147 contour/silhouette and named semantic role tests measure actual backgrounds without runtime inference. Apple stem and balloon string inherit currentColor without geometry changes. The147 host matrix has71 separately named semantic role probes at48px, plus unchanged prior own-backing regressions.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "icon.semantics",
+      "given": "Decorative and meaningful icons",
+      "when": "Read the semantics tree",
+      "then": "Only the icon with a semanticLabel contributes a name"
+    },
+    {
+      "id": "icon.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "icon.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "icon.readable-counter-audit",
+      "given": "The relevant owned state and actual supported background, including transition frames",
+      "when": "Focus, hover, entry, exit or reduced motion changes",
+      "then": "The canonical close asset retains pinned geometry and changes only explicit X stroke to #B03038 for necessary-graphic contrast; docs/asset-provenance.json binds transformed bytes."
+    },
+    {
+      "id": "icon.inherited-stroke",
+      "given": "Menu, four chevrons, link and unlink over supported paper and paired component surfaces",
+      "when": "IconTheme, host theme or explicit color changes",
+      "then": "Core raster strokes follow explicit color then IconTheme and retain3.0 for supported defaults; decorative semantics remain excluded and a semanticLabel is exposed once. All163 assets map bijectively to the public names; mixed artwork is not automatically recolored."
+    },
+    {
+      "id": "icon.transparent-core-contrast",
+      "given": "All16 no-internal-fill canonical glyphs in white Gallery, light/dark paper and13 actual Card surface contexts",
+      "when": "Render required stroke cores at documented reference sizes and compose inherited or explicit color",
+      "then": "Every necessary core paint is observed in raster and retains3.0 against its actual backing. Spinner pale track is decorative; no filled asset is silently recolored. Geometry and stroke widths remain pinned; all163 names/assets still map and decode."
+    },
+    {
+      "id": "icon.filled-role-contrast",
+      "given": "147 filled canonical assets and named necessary semantic roles over30 actual host/Card contexts",
+      "when": "Render public IslandIcon at24/48 and inspect actual opaque core/backing pixels",
+      "then": "Every declared required silhouette/contour and named interior/host role retains3.0; historical failed pairs remain preserved; fixed art detail requires individual semantic disposition, never a blanket exception. SVG geometry/widths remain pinned; local clip/use shares original owned geometry."
+    }
+  ]
+}

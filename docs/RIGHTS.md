@@ -1,0 +1,43 @@
+# Rights and provenance
+
+## Version scope decision / 本版本范围决定 (2026-10-18)
+
+User decisions, 2026-10-18: SDK-COMBOBOX-001 is an approved exception for this version. The installed SDK still cannot project the Select combobox role; the one button/TextField projection remains, without SDK modifications or DOM shims. This is not an implemented role or a passed role test. Keyboard, focus, names/states, IME and contrast requirements remain. The user confirmed private authorization for all21 previously investigated assets (4 library scene SVGs,1 Gallery logo,16 Gallery photos): "这些也是私人授权". See docs/asset-private-authorization.json for the original confirmation and time. Private-use authorization is no longer unknown or a remaining private-use acceptance item. Preserve provenance and the earlier private-only authorization history. The user subsequently confirmed public repository redistribution on2026-10-22; current scope and original confirmation are recorded in docs/RIGHTS.md. This is not independent legal verification or an unconditional commercial license. Investigation is stopped: do not investigate, contact others, request documents, replace or remove assets. Existing GROBOLD private authorization remains. The user approved60fps as the baseline direction for performance diagnosis and an acceptance proposal; detailed sampling, percentile, startup and size thresholds remain proposed until agreed. No installation, screen readers or supervision restart; do not touch the separately owned keep-awake helper.
+
+用户于2026-10-18批准SDK-COMBOBOX-001为本版本例外：已安装SDK仍不能投射Select的combobox角色，保留唯一button/TextField投射，不修改SDK、不加DOM补丁。例外不等于角色已实现或角色测试通过；键盘、焦点、名称/状态、输入法及对比度要求保持。用户已确认此前21项素材（4张库内场景SVG、1个Gallery Logo、16张Gallery照片）“这些也是私人授权”，原文及实际确认时间保存在docs/asset-private-authorization.json；私人使用授权不再未知，也不再是本次私人使用验收未决项。保留来源及此前仅限私人使用授权的历史。用户于2026-10-22另行确认可随公开仓库分发；当前范围与原文统一记录在docs/RIGHTS.md。这不是独立法律核验或无条件商业许可。授权追溯停止，不再调查、联系他人、索要文件、自行替换或移除素材；GROBOLD既有私人授权不变。用户批准以60fps为基础继续性能诊断并拟定验收方案，采样、分位数、启动及体积的具体门槛仍为待确认提案。不安装软件、不做读屏、不恢复监督，不操作另有所有者的防睡眠程序。
+
+New Dart implementation: repository MIT license. No implementation or assets were copied from the old local Flutter library.
+
+External reference material is recorded with paths and output hashes in asset-provenance.json:
+- Naive Icons: pinned public SVG source, MIT; currentColor follows explicit color then IconTheme. Geometry and internal multicolor paint are retained except the documented necessary-color transformations: close X uses #B03038; all16 no-internal-fill canonical glyphs use currentColor for their necessary strokes, with the pale spinner track retained as decoration. That earlier repair left internally filled glyphs unchanged. The later necessary-core repair changes pause/play/stop cores to #FFFDF7 and the ban slash to #B03038, retaining geometry and binding each transformed hash. Per-asset provenance binds every transformed hash. This does not clear contextual mixed-art contrast or final rights review.
+- Reference Gallery: pinned public MIT repository; logo, scene SVGs and Gallery photos retain its notice. Source-specific notices remain; public repository redistribution follows the user confirmation below.
+- Nunito: SIL OFL 1.1; WOFF2 decompressed without outline changes; assets/licenses/nunito.txt.
+- Noto Sans SC: renamed Gallery subset, SIL OFL 1.1; example/assets/fonts/OFL.txt and existing font provenance/recipe.
+- GROBOLD: the user confirmed private authorization for Windows and Web Gallery embedding. See font-authorization.json. The original private grant is preserved; the later public repository confirmation is recorded below.
+
+Fira Code is an OFL 1.1 library-package resource used by CodeBlock; retain assets/licenses/firacode.txt. Nunito, Noto Sans SC, GROBOLD, Arimo and photos belong to the Gallery. Arimo is an OFL 1.1 fallback for Arial control examples; retain assets/licenses/arimo.txt. The Fira Code and Arimo variable TTFs are unchanged upstream byte copies, not OS installations; pinned commits and hashes are in font-resources.json. Library SVG icons/scenes and notices are package assets. The Gallery registers third-party notices with Flutter LicenseRegistry.
+
+Flutter-generated platform runners and SDK dependencies retain their upstream licenses. No contributor authority, trademark clearance or production release approval is inferred from this inventory. Keep the asset-specific notices when packaging.
+
+Upload integration dependencies are pinned in pubspec.yaml and both lockfiles: file_selector 1.1.0 (Flutter, BSD-3-Clause), desktop_drop 0.8.4 (Apache-2.0), dio 5.11.1 (MIT). Package-license sources were checked in the installed pub.dev distributions. Their transitive dependencies and platform binary distribution remain part of release verification. Official package records: https://pub.dev/packages/file_selector/versions/1.1.0, https://pub.dev/packages/desktop_drop/versions/0.8.4, https://pub.dev/packages/dio/versions/5.11.1.
+
+IslandGallerySans is generated by tool/subset_font.py as three static faces: reference400/500/700 outlines registered400/500/900 without synthetic bold from the pinned Noto source. The renamed family retains all6937 codepoints from the previous subset. Each output hash and the upstream hash are recorded in example/assets/fonts/provenance.json; the OFL notice is unchanged.
+
+Pinned-reference glyph followup: Carousel CSS arrow, Pagination inline SVG/cursor and Table empty chart path are translated from reference commit79810934ee9d08c22044d34e06f8bba40391207b under its existing MIT reference notice. The Table path lives in lib/src/components/table.dart. Select reuses assets/icons/close.svg and its registered provenance.
+
+The contextual glyph-stroke followup changes only the explicitly listed necessary elements in icon-paint-roles.json to currentColor and eye-off/bell-off slashes to #B03038. Asset-provenance.json binds each transformed hash; remaining filled artwork and all path geometry stay with the pinned MIT sources.
+
+
+Necessary filled-glyph roles (current2026-10-17): eyes, beaks, eye stalks, steam, connectors, off slashes and the coffee-cup heart are required marks. Brown-faced ink is strengthened to black; navy-faced eye rims use white and beaks keep their own yellow/coral. Exposed steam/connectors inherit currentColor. Off slashes use currentColor on the host and existing danger #E05A5A clipped to the original owned body. Snail eye stalks retain dark ink only over the owned green head. The original geometry and widths are unchanged; static local SVG clip/use references share paths, with no runtime background inference. The147 host-contour/closed-silhouette matrix is separate from individually named interior role probes and is not blanket certification of every artwork adjacency or browser state.
+
+有填色图标的必要角色（当前2026-10-17）：眼睛、喙、眼柄、蒸汽、连接线、关闭斜线和咖啡杯爱心均为必要标记。棕色脸部画笔加强为黑色；深蓝脸部眼圈使用白色，喙保持自身黄色/珊瑚色。外露蒸汽、连接线继承currentColor。关闭斜线在宿主上继承currentColor，在原有自有图形内部裁切使用既有危险色#E05A5A。蜗牛眼柄仅在自有绿色头部保留深色画笔。原几何和描边宽度不变，静态SVG局部clip/use共享路径，不在运行时猜测背景。147项宿主轮廓/封闭剪影矩阵与逐项内部语义采样分开，不代表每个插画邻接色或浏览器状态均已通过。
+
+The same required connector rule covers the original apple stem and balloon string: currentColor on the exposed host, with unchanged geometry. The public-render matrix additionally checks71 individually named semantic probes at48px; prior named own-backing and transparent-role assertions remain binding.
+
+同一必要连接线规则也覆盖原有苹果茎和气球绳：外露宿主区域继承currentColor，不改几何。公共渲染矩阵另在48px逐项检查71个具名语义采样；此前具名自有底色和透明区域断言仍然有效。
+
+## Public repository redistribution / 公开仓库分发（2026-10-22）
+
+The owner answered “保持公开；确认可随仓库公开分发” when asked explicitly about the existing21 scene/logo/photo assets and GROBOLD Gallery font. This authorizes their distribution with this public repository. The original2026-10-18 asset confirmation and2026-10-13 font confirmation remain historical facts in [asset authorization](asset-private-authorization.json) and [font authorization](font-authorization.json); each now also records this later decision. Source-specific licenses and notices remain. This is an owner-confirmation record, not independent legal verification, an unconditional commercial license or a trademark grant. No further authorization investigation is requested.
+
+用户针对现有21项场景／Logo／照片素材及GROBOLD Gallery字体的明确问题回答：“保持公开；确认可随仓库公开分发”。该确认授权这些素材随本公开仓库分发。原2026-10-18素材及2026-10-13字体私人授权记录保留为历史，上述两个既有权威文件追加本次确认；各来源许可与声明继续有效。这是所有者确认记录，不是独立法律核验、无条件商业许可或商标授权；不再追溯授权。

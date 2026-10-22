@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "id": "time-picker",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "TimePicker 时间选择; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandTimePicker](../../lib/src/components/time_picker.dart), [IslandTimeValue](../../lib/src/foundation/time_value.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Committed host value and pending local preview are separate; confirmation proposes value, Escape discards preview. Controlled null and uncontrolled mode are distinct.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win. Anchored panels share one actual-Overlay layout owner for Select, DatePicker, TimePicker, Pagination and Tooltip. A fitting reference attachment keeps its position, gap, shape, color and content. Only an overflowing result is moved inside the viewport; the existing available-width constraint applies when content cannot fit. The real child is laid out once, with no post-frame size guessing, cloned content, Gallery override or parallel positioning path. Components retain selection, focus, lifetime and scrolling: Select reveals its active keyboard option; a narrow single calendar scrolls horizontally, range calendars retain their existing horizontal scroll, and short time/long tooltip panels scroll vertically. Explicit opaque child styling and state remain authoritative. This is the user-approved limited usability deviation from the reference overflow defect, not a claim of exact parity or complete platform acceptance. Vertical popup height follows the available attachment-side space so the original trigger remains usable; fitting geometry receives no extra offset. Select owns and disposes its list scroll controller, reveals the committed row on list attachment and moves only that list for keyboard activity, preserving caller scroll positions.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required. Expanded/collapsed state belongs to the same named actionable trigger node; independent child clear controls remain separate. No DOM or platform semantics shim. Shared PickerFocusBoundary closes only for an actual external focus target; a scope-only/no-target blur leaves the panel open. Outside pointer dismissal remains AnchoredPanel-owned. Action names are announced once. Component-owned decorative clear glyphs and redundant numeric text are excluded; visible plain footer text is its sole name owner. Opaque caller content is not globally suppressed.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Shared footer actions paint a visible focus outline on their known pale panel. Complete owned surface sampling follows docs/DESIGN.md#surface-sampling; timeline, placement and lifecycle remain with their existing owners.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "time-picker.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "time-picker.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "time-picker.focus-exit",
+      "given": "An open picker, a scope-only blur and a separate external focusable control",
+      "when": "Blur without a target, then transfer focus to an external control or click outside",
+      "then": "No-target blur preserves the open panel; an actual external focus target or outside pointer closes it. Preview and committed values stay component-owned."
+    },
+    {
+      "id": "time-picker.physical-border",
+      "given": "A positive logical border and the local MediaQuery DPR",
+      "when": "The component or its Gallery reference frame resolves a border",
+      "then": "IslandTheme.borderWidth is the unique owner: whole physical pixels rounded down, minimum one physical pixel. DPR1 appearance is retained; text line boxes and counts are not border metrics."
+    },
+    {
+      "id": "time-picker.readable-counter-audit",
+      "given": "The relevant owned state and actual supported background, including transition frames",
+      "when": "Focus, hover, entry, exit or reduced motion changes",
+      "then": "Shared footer actions paint a visible focus outline on their known pale panel."
+    },
+    {
+      "id": "time-picker.viewport-bounds",
+      "given": "An anchored panel at either edge of a narrow, short or offset Overlay, with normal and long content",
+      "when": "Open, close, reopen, search, navigate by keyboard, scroll the host or resize the window",
+      "then": "The actual panel and required targets remain reachable within that Overlay. Fitting reference attachments remain unchanged; only overflow is corrected. Existing component-owned scrolling and focus/controlled-value ownership survive, with one content subtree."
+    },
+    {
+      "id": "time-picker.surface-sampling",
+      "given": "The active fractional translation path with caller-owned content, including different text line origins",
+      "when": "Sample visible entry/exit/reversal where that owner supports them, then settle or remove it",
+      "then": "Complete backing/boundary/content are sampled as one group under docs/DESIGN.md#surface-sampling. No text compensation, child traversal, content clone or timing replacement. Nonmoving and nonpainted cases retain their explicit classification."
+    }
+  ]
+}

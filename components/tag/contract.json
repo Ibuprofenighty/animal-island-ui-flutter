@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "id": "tag",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Tag 标签; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandTag](../../lib/src/components/tag.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Controlled values are authoritative. Component owns only focus, hover, preview, motion and explicitly uncontrolled state.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win. Optional parent activation reconciles semantic DOM blur only for the same still-mounted independently focusable child in the resumed view; explicit external focus and disposal win. No opaque child content/style is inspected or rewritten. A pending presentation-focus recovery survives benign host/theme rebuilds while its child/header owner is unchanged. New recovery ownership supersedes the previous request; replacement, removal, disposal, inactive view and explicit external destinations retain priority. Rebuilding alone does not cancel an otherwise valid request. Independent Card/Tag/Table child focus attaches to the existing caller Focus node, including a FocusScope; if no inherited focus exists it uses the existing manager root. A scope boundary must not silently place the child beneath the optional parent detector or paint parent focus over child focus. One shared ActionSurface owns this fork; no new scope or copied child subtree is introduced.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required. Passive and disabled controls do not advertise tap actions.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Transparent variants use surface ink; filled variants use fixed pairs. Foreground/fill changes are atomic; transform/shadow motion remains. Main and close actions have independent two-tone focus. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. The close mark is the reference14px multiplication-sign glyph, not a Material icon; its accessible name remains owned by the close action. Close hover pairs colorway.ink with colorway.soft atomically, including transparent variants under dark hosts; resting close inherits the Tag foreground. This owned graphic retains3.0 against its actual fill, independent of explicit child styling. The close color switch is immediate; the parent retains200ms transform/shadow motion. Known owned surfaces reuse LightSurfaceScope with a component-supplied paired foreground for nested public controls; no background guessing or child rewriting. Scope topology stays stable on filled/transparent Tag changes. Explicit child styles, unrelated ThemeExtensions, keys, state and focus remain authoritative. Custom backgrounds require a caller-owned suitable foreground. The fixed foundation paired foregrounds also cover nested text-button pressed beige and ghost-button8% mint hover composition. Nine onAccent, seven Title and three patterned-paper foreground entries were deepened after396 measured failing frame checks across1092 recipes; fills, hover overlays and motion are retained. The complete old/new pairs and actual backings are registered under A11Y-023; static default contrast is not a substitute for these state checks. Same-frame backing/ink sampling authority: docs/DESIGN.md#surface-sampling. Green soft text and its hovered close glyph use the restored shared colorway ink. Lime/yellow-green filled surfaces and their nested semantic defaults use shared onAccent; all variants retain the same child and independent close action. Actual close backgrounds and nested text-action pressed surfaces remain part of the contrast contract. This component consumes its declared shared roles; fixed-pair decisions have one authority at docs/DESIGN.md#c6-shared-foreground.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "tag.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "tag.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal; include an unrelated host/theme rebuild between presentation frames",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation. A pending presentation-focus recovery survives benign host/theme rebuilds while its child/header owner is unchanged. New recovery ownership supersedes the previous request; replacement, removal, disposal, inactive view and explicit external destinations retain priority. Rebuilding alone does not cancel an otherwise valid request. Independent Card/Tag/Table child focus attaches to the existing caller Focus node, including a FocusScope; if no inherited focus exists it uses the existing manager root. A scope boundary must not silently place the child beneath the optional parent detector or paint parent focus over child focus. One shared ActionSurface owns this fork; no new scope or copied child subtree is introduced."
+    },
+    {
+      "id": "tag.optional-action",
+      "given": "An opaque stateful child inside a parent with optional activation",
+      "when": "The host adds then removes the parent action and the child acts at each step; include an unrelated host/theme rebuild between presentation frames",
+      "then": "The same child state survives; child actions dispatch once without activating the parent; passive parents invent neither an action nor a focus target. A pending presentation-focus recovery survives benign host/theme rebuilds while its child/header owner is unchanged. New recovery ownership supersedes the previous request; replacement, removal, disposal, inactive view and explicit external destinations retain priority. Rebuilding alone does not cancel an otherwise valid request. Independent Card/Tag/Table child focus attaches to the existing caller Focus node, including a FocusScope; if no inherited focus exists it uses the existing manager root. A scope boundary must not silently place the child beneath the optional parent detector or paint parent focus over child focus. One shared ActionSurface owns this fork; no new scope or copied child subtree is introduced."
+    },
+    {
+      "id": "tag.reference-geometry",
+      "given": "Reference DPR 1 Tag variants and a closable tag",
+      "when": "Render with omitted variant, dashed border or a close action",
+      "then": "Default is soft with the observed colorway soft background and ink; the reference API table solid default is contradicted by live DOM and pinned Tag.tsx; dashed reserves the same border width as outlined; close adds 18px at default size without shrinking its 16px action; parent and close retain separate semantic targets."
+    },
+    {
+      "id": "tag.physical-border",
+      "given": "A positive logical border and the local MediaQuery DPR",
+      "when": "The component or its Gallery reference frame resolves a border",
+      "then": "IslandTheme.borderWidth is the unique owner: whole physical pixels rounded down, minimum one physical pixel. DPR1 appearance is retained; text line boxes and counts are not border metrics."
+    },
+    {
+      "id": "tag.close-contrast",
+      "given": "All13 colorways,4 variants and3 sizes on light/dark paper and fixed pale Card surfaces",
+      "when": "The actual16px close target enters hover, presses, leaves, reverses or has keyboard focus",
+      "then": "Owned close graphic contrast is at least3.0 against its actual surface and body text remains4.5. Foreground/fill switch together; focus has an independent readable backing. Parent transform/shadow motion does not fade necessary content."
+    },
+    {
+      "id": "tag.close-lifecycle",
+      "given": "A retained Tag with separate parent/close callbacks and an explicitly styled keyed stateful child",
+      "when": "Close requests are rejected; Enter/Space activate close; disabled changes; onClose and parent activation are added/removed",
+      "then": "Close dispatches once without invoking parent. Disabled suppresses parent/close requests. Host alone removes Tag; opaque child identity, explicit color and its own focus remain intact when optional callbacks change."
+    },
+    {
+      "id": "tag.nested-surface",
+      "given": "A fixed owned surface in either host theme with a nested public transparent action and an opaque keyed child",
+      "when": "Palette, hover/press/focus, host theme or filled/transparent variant changes",
+      "then": "Default necessary text stays at4.5 against its actual backing and required strokes at3; explicit styles, callback isolation, child state and focus survive. No whole-subtree fade or rewrite."
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "id": "button",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Button 按钮; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandButton](../../lib/src/components/actions.dart), [IslandIconButton](../../lib/src/components/actions.dart), [IslandButtonTheme](../../lib/src/components/actions.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Controlled values are authoritative. Component owns only focus, hover, preview, motion and explicitly uncontrolled state.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required. Passive and disabled controls do not advertise tap actions.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "ButtonStyle support authority: only foregroundColor, backgroundColor, side, shape, textStyle and padding are consumed. Each color/side/shape/padding property resolves from its current state set: instance non-null resolved value > IslandButtonTheme.style non-null resolved value > variant recipe. Explicit transparent is present. TextStyle attributes merge default > theme > instance; resolved foregroundColor replaces textStyle.color and supplies default icon Color. Existing explicit textStyle.foreground Paint retains Flutter precedence over text color; it remains caller-owned opaque paint, not a resolved semantic Color role. This contract-only batch preserves that SDK behavior and does not add Paint/shader processing or certify arbitrary paints. Shape supplies geometry; separately resolved side supplies its painted stroke. The normal Flutter ButtonStyle type is accepted, but other fields (for example iconColor, overlayColor, elevation, shadowColor, fixedSize and animationDuration) have no independent consumption promise. This batch does not add support for them. Explicit child styles remain authoritative. IslandIconButton composes this same renderer and inherits IslandButtonTheme, but exposes no instance style parameter. No second button style format, wrapper renderer or compatibility branch. One existing ActionSurface owns per-state null fallback without owning component color recipes. One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. IconButton descriptions compose the public readable Tooltip owner; the action remains one child subtree. Same-frame backing/ink sampling authority: docs/DESIGN.md#surface-sampling. Busy background is the fixed Button-owned reference loading recipe, independent of global leaf. Both host themes use this one recipe with the existing onLeaf information role and existing link border; no new token, variant or runtime theme track. Local/themed ButtonStyle foreground/background/side and opaque-child style precedence stay unchanged. Necessary busy text/donut remain opaque through busy enter/leave/reversal. Do not restore the original white text or pale border; original contrast budgets remain. Busy-owned content reuses the existing LightSurfaceScope for nested default semantic roles in every variant/host theme; the scope stays in one stable content topology when busy toggles. It does not add paint/backplanes, inspect children, replace opaque descendants or change explicit style precedence. Existing unrelated ThemeExtensions remain.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "button.activation",
+      "given": "An enabled and a disabled action",
+      "when": "Activate with pointer and keyboard",
+      "then": "Enabled action dispatches once per activation; disabled/busy action never dispatches"
+    },
+    {
+      "id": "button.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "button.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "button.reference-states",
+      "given": "The pinned Button styles and Gallery variant combinations",
+      "when": "Hover, press, release, disable or set busy; apply an explicit slot style or scoped ButtonStyle",
+      "then": "Normal/dashed return to y=0 when pressed; primary moves to y=2; text/link stay still. The documented single product palette and reference 250ms cubic motion are preserved. Busy uses a 28px counterclockwise 2.5s donut and reduced motion stops it. Instance/theme and explicit child style precedence remain intact."
+    },
+    {
+      "id": "button.readable-counter-audit",
+      "given": "The relevant owned state and actual supported background, including transition frames",
+      "when": "Focus, hover, entry, exit or reduced motion changes",
+      "then": "IconButton descriptions compose the public readable Tooltip owner; the action remains one child subtree."
+    },
+    {
+      "id": "button.rigid-pixel-motion",
+      "given": "One owned backing/border and opaque text/icon slot under the documented product motion",
+      "when": "Enter, exit, reverse rapidly, press/release or settle reduced motion across supported themes and render scales",
+      "then": "Backing and ink retain their same-frame relative geometry under docs/DESIGN.md#surface-sampling; child identity/focus and activation/busy/disabled ownership remain unchanged."
+    },
+    {
+      "id": "button.busy-owned-surface",
+      "given": "A busy Button owns its fixed surface and contains a default public text/link/other Button in light or dark host with an unrelated ThemeExtension",
+      "when": "Hover, press, release, focus, interrupt or change busy; preserve caller-owned explicit child styling",
+      "then": "The existing shared fixed-surface scope supplies readable default semantic roles, text4.5/necessary graphics3.0 remain; nested requests do not activate the busy parent; child identity and unrelated extensions survive. Explicit caller color/style decisions retain ownership."
+    },
+    {
+      "id": "button.style-support",
+      "given": "A scoped ButtonStyle, a partial instance style resolving null in some states, conflicting textStyle.color and an IconButton",
+      "when": "Hover/press/focus/release and resolve typography, foreground/background, side/shape and padding",
+      "then": "Only the six documented fields are consumed with per-state null fallback; explicit transparent is preserved, resolved foreground supplies base ink and side supplies the stroke. IconButton inherits the same theme with no new instance API; explicit child styling and existing busy recipe stay unchanged."
+    }
+  ]
+}

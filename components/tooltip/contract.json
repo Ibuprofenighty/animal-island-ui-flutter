@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "id": "tooltip",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Tooltip 气泡提示; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandTooltip](../../lib/src/components/tooltip.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Owns hover/focus visibility, 100ms hide timer and 250ms motion. Explicit click builder preserves child activation. AnchoredPanel owns geometry; shared organic silhouette with Modal.",
+    "events": "Click builder composes toggle into the child's own action; never clone/inspect child or install an ancestor tap handler.",
+    "composition": "AnchoredPanel owns geometry/portal; OrganicBubbleClip shares only the Modal silhouette. Tooltip content is noninteractive description. Anchored panels share one actual-Overlay layout owner for Select, DatePicker, TimePicker, Pagination and Tooltip. A fitting reference attachment keeps its position, gap, shape, color and content. Only an overflowing result is moved inside the viewport; the existing available-width constraint applies when content cannot fit. The real child is laid out once, with no post-frame size guessing, cloned content, Gallery override or parallel positioning path. Components retain selection, focus, lifetime and scrolling: Select reveals its active keyboard option; a narrow single calendar scrolls horizontally, range calendars retain their existing horizontal scroll, and short time/long tooltip panels scroll vertically. Explicit opaque child styling and state remain authoritative. This is the user-approved limited usability deviation from the reference overflow defect, not a claim of exact parity or complete platform acceptance. Vertical popup height follows the available attachment-side space so the original trigger remains usable; fitting geometry receives no extra offset. Select owns and disposes its list scroll controller, reveals the committed row on list attachment and moves only that list for keyboard activity, preserving caller scroll positions.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required. excludeFromSemantics suppresses only the owned tooltip description for an already named action; child semantics are preserved.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Cancel hide timer and animation on teardown. Stable wrappers preserve child state across visibility and focus changes.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Owned readable text roles also set default icon roles. Fixed light content surfaces scope light semantic roles for nested public controls; explicit child styles and unrelated ThemeExtensions remain unchanged. Complete owned surface sampling follows docs/DESIGN.md#surface-sampling; timeline, placement and lifecycle remain with their existing owners. User decision2026-10-21 retains the original renderer with the accepted ink-centroid measurement limitation, not a0.25 pixelPASS. Pending browser and physical presentation are separate; source-bound status is in the sole audit report.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "tooltip.message",
+      "given": "A tooltip wrapping a named control",
+      "when": "Request tooltip display",
+      "then": "Supplementary message is shown"
+    },
+    {
+      "id": "tooltip.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "tooltip.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "tooltip.viewport-bounds",
+      "given": "An anchored panel at either edge of a narrow, short or offset Overlay, with normal and long content",
+      "when": "Open, close, reopen, search, navigate by keyboard, scroll the host or resize the window",
+      "then": "The actual panel and required targets remain reachable within that Overlay. Fitting reference attachments remain unchanged; only overflow is corrected. Existing component-owned scrolling and focus/controlled-value ownership survive, with one content subtree."
+    },
+    {
+      "id": "tooltip.surface-sampling",
+      "given": "The active fractional translation path with caller-owned content, including different text line origins",
+      "when": "Sample visible entry/exit/reversal where that owner supports them, then settle or remove it",
+      "then": "Preserve one component-owned transform/timeline and opaque child identity under docs/DESIGN.md#surface-sampling. The user accepted retaining the original renderer and the bounded ink-centroid measurement limitation2026-10-21: keep raw0.25 output-image failures; rigid glyph controls also fail, so this is not product pixelPASS or proof of independent text motion/engine cause. No wrapper, text compensation, traversal, clone or timing replacement. Pending browser/outer-skin/physical presentation remains separate."
+    }
+  ]
+}

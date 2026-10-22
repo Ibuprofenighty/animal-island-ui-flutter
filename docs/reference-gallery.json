@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "reference": {
+    "url": "https://guokaigdg.github.io/animal-island-ui/#/",
+    "observed_version": "2.2.1",
+    "observed_date": "2026-10-13",
+    "observed_framework": "React",
+    "target_framework": "Flutter",
+    "pinned_commit": "79810934ee9d08c22044d34e06f8bba40391207b"
+  },
+  "authority": "The pinned reference remains the layout, typography, shape, content and interaction baseline. On 2026-10-15 the user authorized documented accessibility color differences within one Animal Crossing product palette; keep the existing 4.5 text and 3.0 necessary-graphic budgets, preserve historical failures, and verify actual state/background pairs on Windows and Web. No parallel palette, runtime contrast guessing or opaque-child rewriting. One readable motion policy: necessary text, numbers, icons, actions and their backing/boundaries stay opaque and contrast-compliant on every entry, exit, reversal and interrupted frame. Atomic paired colors replace unsafe color interpolation. Modest displacement, scale and decorative motion remain; decoration must not invalidate the actual content background. Reduced motion settles the same state machine. One content subtree and lifecycle per owner; no animation clones, opaque-child inspection, parallel variants or transition contrast exemption. See docs/DESIGN.md. Anchored panels share one actual-Overlay layout owner for Select, DatePicker, TimePicker, Pagination and Tooltip. A fitting reference attachment keeps its position, gap, shape, color and content. Only an overflowing result is moved inside the viewport; the existing available-width constraint applies when content cannot fit. The real child is laid out once, with no post-frame size guessing, cloned content, Gallery override or parallel positioning path. Components retain selection, focus, lifetime and scrolling: Select reveals its active keyboard option; a narrow single calendar scrolls horizontally, range calendars retain their existing horizontal scroll, and short time/long tooltip panels scroll vertically. Explicit opaque child styling and state remain authoritative. This is the user-approved limited usability deviation from the reference overflow defect, not a claim of exact parity or complete platform acceptance. Current Gallery parent layout authority: docs/DESIGN.md#gallery-parent-layout. The2026-10-20 user correction supersedes the old deliberate Select parent overflow; pinned-reference overflow measurements remain historical. User scope decision, 2026-10-17: all screen-reader execution and validation are excluded from this work, including NVDA and other readers. Do not install or start reader software, request reader validation, or keep it as a remaining acceptance blocker. Excluded is not passed or certified. Preserve existing semantic metadata, keyboard navigation, focus behavior, contrast requirements and their tests. No new software may be installed for acceptance. Historical reader-related pending notes below do not define the current work scope. User decisions, 2026-10-18: SDK-COMBOBOX-001 is an approved exception for this version. The installed SDK still cannot project the Select combobox role; the one button/TextField projection remains, without SDK modifications or DOM shims. This is not an implemented role or a passed role test. Keyboard, focus, names/states, IME and contrast requirements remain. The user confirmed private authorization for all21 previously investigated assets (4 library scene SVGs,1 Gallery logo,16 Gallery photos): \"这些也是私人授权\". See docs/asset-private-authorization.json for the original confirmation and time. Private-use authorization is no longer unknown or a remaining private-use acceptance item. Preserve provenance and the earlier private-only authorization history. The user subsequently confirmed public repository redistribution on2026-10-22; current scope and original confirmation are recorded in docs/RIGHTS.md. This is not independent legal verification or an unconditional commercial license. Investigation is stopped: do not investigate, contact others, request documents, replace or remove assets. Existing GROBOLD private authorization remains. The user approved60fps as the baseline direction for performance diagnosis and an acceptance proposal; detailed sampling, percentile, startup and size thresholds remain proposed until agreed. No installation, screen readers or supervision restart; do not touch the separately owned keep-awake helper. Current Gallery Home/Carousel presentation and named contrast exceptions have one authority: docs/DESIGN.md#home-host-and-photo-gradient. Earlier wrong-host, opaque-caption and safe-gradient records are historical audit evidence, not current rendering instructions. Current same-frame surface sampling authority: docs/DESIGN.md#surface-sampling.\nUser decision2026-10-21: retain original Notification/Tooltip and accept the independently reviewed ink-centroid measurement limitation under docs/DESIGN.md#surface-sampling. Preserve0.25 output-image failures; this is not physical presentation, a new calibrated text model, exact Flutter engine cause, or cleared browser hover/Edge375. Select placeholder Wrap is an authorized narrow-layout usability difference from the fixed reference, whose row does not wrap.",
+  "platforms": {
+    "primary": [
+      "windows",
+      "web"
+    ],
+    "later": [
+      "android",
+      "ios"
+    ]
+  },
+  "component_count": 40,
+  "groups": {
+    "基础": [
+      "Title",
+      "Button",
+      "Divider",
+      "Icon",
+      "Tag",
+      "Cursor",
+      "CodeBlock",
+      "Background",
+      "Footer"
+    ],
+    "表单": [
+      "Input",
+      "Switch",
+      "Select",
+      "DatePicker",
+      "TimePicker",
+      "Checkbox",
+      "Radio",
+      "Rate",
+      "Form",
+      "Upload"
+    ],
+    "反馈": [
+      "Notification",
+      "Modal",
+      "Drawer",
+      "Loading",
+      "Tooltip",
+      "Progress",
+      "Skeleton",
+      "BackTop"
+    ],
+    "数据展示": [
+      "Card",
+      "Avatar",
+      "Badge",
+      "Collapse",
+      "Tabs",
+      "Table",
+      "Pagination",
+      "Typewriter",
+      "Image",
+      "Carousel",
+      "Time",
+      "Countdown",
+      "CountUp"
+    ]
+  },
+  "guide_pages": [
+    "Skill"
+  ],
+  "observed_pages": [
+    "/",
+    "/skill",
+    "/button",
+    "/title",
+    "/modal"
+  ],
+  "comparison": {
+    "desktop": {
+      "width": 1440,
+      "height": 1000
+    },
+    "mobile": {
+      "width": 375,
+      "height": 812
+    },
+    "requirements": [
+      "Same route, viewport, zoom, content, font, scroll offset and interaction state",
+      "Side-by-side images and overlay difference for each accepted view",
+      "Animation comparison includes resting, active and completed states",
+      "Flutter font rasterization differences must be documented; no arbitrary similarity percentage is a substitute for review"
+    ],
+    "status": "NOT_ACCEPTED"
+  },
+  "observations": {
+    "shell": {
+      "sidebar": {
+        "x": 12,
+        "y": 12,
+        "width": 220,
+        "radius": 16,
+        "background": "#faf8f3",
+        "border": "2px #fafafa",
+        "bottom_wave": "#a2b0e7"
+      },
+      "main": {
+        "x": 232,
+        "padding": "32px 40px"
+      },
+      "sample_panel": {
+        "x": 272,
+        "y": 178,
+        "width": 1128,
+        "padding": 24,
+        "radius": 12,
+        "border": "1px #e8e2d6",
+        "background": "#ffffff"
+      }
+    },
+    "tokens": {
+      "primary": "#19c8b9",
+      "primary_hover": "#3dd4c6",
+      "primary_active": "#50b9ab",
+      "primary_background": "#e6f9f6",
+      "text": "#794f27",
+      "text_secondary": "#9f927d",
+      "text_disabled": "#c4b89e",
+      "background": "#f8f8f0",
+      "background_secondary": "#f0e8d8",
+      "border": "#dcd8d1",
+      "border_light": "#e8e2d6",
+      "success": "#6fba2c",
+      "warning": "#f5c31c",
+      "error": "#e05a5a",
+      "font": "Nunito + Noto Sans SC",
+      "font_sizes": [
+        12,
+        14,
+        16
+      ],
+      "spacing": [
+        4,
+        8,
+        12,
+        16,
+        24
+      ],
+      "motion_ms": [
+        150,
+        250,
+        350
+      ],
+      "motion_curve": [
+        0.4,
+        0,
+        0.2,
+        1
+      ]
+    },
+    "button": {
+      "types": [
+        "primary",
+        "default",
+        "dashed",
+        "text",
+        "link"
+      ],
+      "flags": [
+        "danger",
+        "ghost",
+        "loading",
+        "disabled",
+        "block"
+      ],
+      "sizes": {
+        "small": {
+          "height": 32,
+          "font": 12,
+          "padding_x": 16
+        },
+        "middle": {
+          "height": 45,
+          "font": 14,
+          "padding_x": 20
+        },
+        "large": {
+          "height": 48,
+          "font": 16,
+          "padding_x": 32
+        }
+      },
+      "normal_primary": {
+        "background": "#f8f8f0",
+        "text": "#794f27",
+        "border": "2px #f8f8f0",
+        "radius": 50,
+        "shadow": "0 5px 0 #bdaea0"
+      },
+      "loading": {
+        "background": "#0ec4b6",
+        "border": "4px #4de2da",
+        "text": "#ffffff"
+      },
+      "danger_primary": {
+        "background": "#e05a5a",
+        "shadow": "0 5px 0 #c94444"
+      }
+    },
+    "title": {
+      "variants": [
+        "layer",
+        "ribbon",
+        "tab"
+      ],
+      "colors": [
+        "default",
+        "app-pink",
+        "purple",
+        "app-blue",
+        "app-yellow",
+        "app-orange",
+        "app-teal",
+        "app-green",
+        "app-red",
+        "lime-green",
+        "yellow-green",
+        "brown",
+        "warm-peach-pink"
+      ]
+    },
+    "modal": {
+      "observed_variant": "game",
+      "observed_width": 520,
+      "observed_height": 217,
+      "background": "#f7f3df",
+      "shape": "Organic silhouette with indented sides, not rounded rectangle",
+      "content": "钓到石头了!竟然连这种都能钓起来...",
+      "actions": [
+        "取消",
+        "确定"
+      ],
+      "typewriter": true
+    }
+  },
+  "acceptance": "All 40 component pages and reference home/guide must be inventoried. Current code is not visually accepted. Previously passing engineering tests do not establish reference parity.",
+  "implementation_constraint": "Write new Dart implementation; do not copy the old local Flutter library implementation. Match observed design and behavior; do not substitute generic Material styling.",
+  "asset_status": "Reference guide describes MIT and naive-icons. Verify actual asset/font licenses and retain provenance before packaging. Current custom 12-glyph set is not accepted as a visual substitute.",
+  "recent_observations": [
+    {
+      "route": "collapse",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "states": [
+        "collapsed",
+        "expanded",
+        "defaultExpanded",
+        "disabled"
+      ],
+      "notes": "Header 60px inside 2px border, radius18, padding16x24, gap12; answer left aligned."
+    },
+    {
+      "route": "card",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "states": [
+        "normal",
+        "dashed",
+        "pattern",
+        "solid"
+      ],
+      "notes": "At DPR1 browser floors 1.5px pattern borders to1px. Paragraph font16 normal line25, margin16. Pattern content gap24."
+    },
+    {
+      "route": "loading",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "states": [
+        "inactive",
+        "tip",
+        "slow fade"
+      ],
+      "notes": "DOM status covers1440x1000, #0b101a; transient screenshot capture pending matched pair."
+    },
+    {
+      "route": "backtop",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "states": [
+        "auto bottom",
+        "return top"
+      ],
+      "notes": "Rocket64px, right24,bottom32. Main scroll owner supplied explicitly."
+    },
+    {
+      "route": "tabs",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "states": [
+        "initial",
+        "selected insect"
+      ],
+      "notes": "Small tab37px; 16px header padding; selected marker brown while label cream. leafAnimation is a no-op in pinned source."
+    }
+  ]
+}

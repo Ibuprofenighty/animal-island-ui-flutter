@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "id": "title",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Title 标题; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandTitle](../../lib/src/components/title.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Controlled values are authoritative. Component owns only focus, hover, preview, motion and explicitly uncontrolled state.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Host owns placement and occupied layout constraints. Title owns its horizontally intrinsic surface, which may overflow those constraints to preserve the reference nowrap layout. A constraint-dependent opaque child must supply its own finite width; explicit child styles, keys, actions and semantics remain authoritative. Gallery-owned alert callbacks use the shared route; this does not move business callback ownership into the component. Modal Tab traversal consumes forward and reverse keys even when a closed loop keeps the same target or contains no actions. One shared boundary in the existing action module delegates order to the existing FocusScope, owns one skipped non-semantic target for an otherwise empty scope, and removes its borrowed-scope listener and owned node on disposal. It does not inspect children, add another FocusScope or replace a caller-owned focus target. IslandDialogRoute now defaults explicitly to TraversalEdgeBehavior.closedLoop; an explicitly supplied non-closed-loop policy, including null inheritance from Navigator, remains authoritative. Drawer, Loading, showIslandModal and the shared preview/alert route consume this same behavior. Actual Web keyboard and Windows/AT validation remain separate from widget tests.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Owned readable text roles also set default icon roles. Fixed light content surfaces scope light semantic roles for nested public controls; explicit child styles and unrelated ThemeExtensions remain unchanged. Known owned surfaces reuse LightSurfaceScope with a component-supplied paired foreground for nested public controls; no background guessing or child rewriting. Scope topology stays stable on filled/transparent Tag changes. Explicit child styles, unrelated ThemeExtensions, keys, state and focus remain authoritative. Custom backgrounds require a caller-owned suitable foreground. The fixed foundation paired foregrounds also cover nested text-button pressed beige and ghost-button8% mint hover composition. Nine onAccent, seven Title and three patterned-paper foreground entries were deepened after396 measured failing frame checks across1092 recipes; fills, hover overlays and motion are retained. The complete old/new pairs and actual backings are registered under A11Y-023; static default contrast is not a substitute for these state checks. Title foreground comes from its independent titlePalette across ribbon/layer/tab and every size. Independent Title role decisions and applicability follow docs/DESIGN.md#c7-title-foreground; state-specific evidence remains in the audit record. Front/back/fold artwork and hover mechanism are unchanged; default nested Text Button pressed/focus pairs retain the original budgets. Gallery captions and Title content retain their declared separate role owners.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "title.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "title.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "title.physical-border",
+      "given": "A positive logical border and the local MediaQuery DPR",
+      "when": "The component or its Gallery reference frame resolves a border",
+      "then": "IslandTheme.borderWidth is the unique owner: whole physical pixels rounded down, minimum one physical pixel. DPR1 appearance is retained; text line boxes and counts are not border metrics."
+    },
+    {
+      "id": "title.nested-surface",
+      "given": "A fixed owned surface in either host theme with a nested public transparent action and an opaque keyed child",
+      "when": "Palette, hover/press/focus, host theme or filled/transparent variant changes",
+      "then": "Default necessary text stays at4.5 against its actual backing and required strokes at3; explicit styles, callback isolation, child state and focus survive. No whole-subtree fade or rewrite."
+    },
+    {
+      "id": "title.modal-tab-consumption",
+      "given": "Title is opaque caller-supplied content inside a caller-owned modal route with zero/one/multiple actions; Title owns no modal route or traversal scope.",
+      "when": "Forward/reverse Tab, activation, dismissal, rejected close or owner removal occurs",
+      "then": "Closed loops consume Tab without leaving the modal; callbacks fire once and accepted close restores origin. Explicit route traversal overrides survive, opaque child identity/styles remain, and owned focus resources are cleaned up."
+    }
+  ]
+}

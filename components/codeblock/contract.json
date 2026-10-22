@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "id": "codeblock",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "CodeBlock 代码高亮; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority: [IslandCodeBlock](../../lib/src/components/code_block.dart), [IslandCodeBlockStyle](../../lib/src/components/code_block.dart), [IslandCodeBlockTheme](../../lib/src/components/code_block.dart), [IslandCodeToken](../../lib/src/components/code_block.dart) and the explicit public root. This contract owns styling support/precedence; signatures/defaults are not duplicated here.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Controlled values are authoritative. Component owns only focus, hover, preview, motion and explicitly uncontrolled state.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "CodeBlock owns one resolved recipe and one lexer/render path. IslandCodeBlockStyle is shared by the instance and IslandCodeBlockTheme.style. For each non-null backgroundColor/foregroundColor/borderColor and each syntaxColors entry: instance > scoped theme > the unchanged default deep-brown recipe. Null means fallback; explicit transparent colors are values, not null. The seven IslandCodeToken roles are comment, literal (string/number/shell argument), command, keyword, type, function and punctuation; unclassified source uses foregroundColor. Lexer classification is unchanged and applies resolved role colors while creating spans; no second lexer or traversal/rewrite of generated or opaque spans. textStyle attributes merge default > theme > instance; resolved foregroundColor replaces textStyle.color for base Color ink. An explicit textStyle.foreground Paint retains Flutter precedence over Color, including span colors; it is opaque caller paint, not a generated semantic Color role. Advanced Paint/shader pairing is outside this bounded Color-role guarantee and is not normalized or inferred. Default family is the packaged IslandTheme.codeFontFamily with zero letter spacing and inherited fallback. Copy foreground/background/border use WidgetStateProperty per current state, instance non-null resolved value > theme non-null resolved value > recipe. The existing ActionSurface supplies hover/pressed/focused/disabled and the existing copy status adds WidgetState.error after failure; state flags coexist and no second lifecycle/state machine exists. Copy focus border, error foreground and hover/press backing may resolve independently. Theme recipes switch atomically through the ThemeExtension, not separate color interpolation. Explicit layout padding/radius/margin retain their existing owners; padding null retains the copy-action reserve. Callers own custom color pair choices and actual alpha/backing validation at4.5 text/3 necessary graphics; no silent inference or recoloring. Screen-reader execution remains excluded; semantic names and keyboard/copy lifecycle remain required.",
+    "performance": "Platform profiling required before release.",
+    "migration": "One atomic pre-release migration: backgroundColor and textStyle move into style: IslandCodeBlockStyle(...); textStyle.color moves to style.foregroundColor, typography to style.textStyle. Highlighted roles use syntaxColors; copy roles are configured separately in the same style. All maintained consumers migrate together; no aliases, forwarding legacy inputs or alternate lexer."
+  },
+  "scenarios": [
+    {
+      "id": "codeblock.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "codeblock.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "codeblock.syntax-contrast",
+      "given": "Every supported language and owned token role on the default deep-brown surface in both host themes",
+      "when": "Render comments, strings, numbers, keywords, types, calls, punctuation and plain source",
+      "then": "Every necessary code token meets4.5; custom background/style remains explicit consumer responsibility. Copy state labels retain their own readable backing."
+    },
+    {
+      "id": "codeblock.custom-roles",
+      "given": "A complete light or dark syntax/surface/copy recipe, partial scoped and instance overrides, and actual alpha backing",
+      "when": "Render every language without changing source/language to evade highlighting, override one token or copy state, focus/hover/press/fail copy and interrupt theme transitions",
+      "then": "All seven token roles and unclassified source use the one resolved recipe; null falls back, transparent remains explicit; copy error and focus coexist. Required text4.5 and graphics3 are checked on actual supported backing. Source, font/selection state and clipboard lifecycle are retained."
+    }
+  ]
+}

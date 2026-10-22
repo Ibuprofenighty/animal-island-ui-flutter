@@ -1,235 +1,157 @@
-# 🍃 Animal Island UI for Flutter (animal_island_ui)
-
-<br/>
 <div align="center">
-  <h3>🏝️ 温馨可爱的海岛风格 Flutter 组件库 🏝️</h3>
-  <p><a href="https://github.com/guokaigdg/animal-island-ui">animal-island-ui</a> 设计语言的 Flutter 实现：暖色调、有按压手感的按钮和手绘风海岛细节。</p>
+
+# 🍃 Animal Island UI for Flutter
+
+**有按压手感的控件、纸纹底板与丝带标题，组成温馨的海岛工具箱。**
+
+[Animal Island UI 设计语言](https://github.com/guokaigdg/animal-island-ui)的全新 Flutter 实现。
+
+<img src="https://img.shields.io/badge/version-0.0.1-blue?style=flat-square" alt="版本 0.0.1">
+<img src="https://img.shields.io/badge/status-experimental-orange?style=flat-square" alt="实验版本">
+<img src="https://img.shields.io/badge/components-40-4b8b63?style=flat-square" alt="40 个组件族">
+<img src="https://img.shields.io/badge/SVG_glyphs-163-b88746?style=flat-square" alt="163 个 SVG 图标">
+<img src="https://img.shields.io/badge/Flutter-3.47.3%2B-02569B?style=flat-square&logo=flutter" alt="Flutter 3.47.3 或更新版本">
+<img src="https://img.shields.io/badge/Dart-3.13.3%2B-0175C2?style=flat-square&logo=dart" alt="Dart 3.13.3 或更新版本">
+
+[English](README.md) · 简体中文
+
 </div>
-<br/>
 
-<div align="center">
-  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FIbuprofenighty%2Fanimal-island-ui-flutter%2Fmain%2Fcatalog%2Fsdk.lock.json&query=%24.flutter.frameworkVersion&label=Flutter&logo=flutter&color=02569B&style=flat-square" alt="Flutter 版本">
-  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FIbuprofenighty%2Fanimal-island-ui-flutter%2Fmain%2Fcatalog%2Fsdk.lock.json&query=%24.flutter.dartSdkVersion&label=Dart&logo=dart&color=0175C2&style=flat-square" alt="Dart 版本">
-  <a href="https://github.com/Ibuprofenighty/animal-island-ui-flutter/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Ibuprofenighty/animal-island-ui-flutter/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"></a>
-  <img src="https://img.shields.io/badge/components-36-blue?style=flat-square" alt="组件：36">
-  <img src="https://img.shields.io/badge/icons-101-orange?style=flat-square" alt="图标：101">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC%204.0%20(non--commercial)-lightgrey?style=flat-square" alt="许可证：CC BY-NC 4.0（非商业）"></a>
-</div>
-<br/>
+## ✨ 核心能力
 
-<p align="center">
-  <a href="README.md">English</a> | 简体中文
-</p>
+- **40 个组件族**：覆盖表单、导航、数据、反馈和海岛装饰，统一从一个公开入口导入。
+- **163 个 SVG 图标**：使用 `IslandIcon` 与 `IslandGlyph`，多色素材保留自身的绘制角色。
+- **明暗主题预设**、语义 Token 与组件样式；定制能力边界由对应契约明确说明。
+- **可组合交互**：受控值、调用方自有控制器、键盘／焦点行为及减少动态效果契约。
+- **本地 Gallery**：组件目录、首页与使用指南。`IslandLocalizations` 提供中英文默认文案，应用自己的内容由应用管理。
 
-## 📖 简介
+当前为**实验版本 0.0.1**，尚未完成全部平台视觉与生产验收。使用前请阅读[验证状态](#-验证状态)。
 
-Animal Island UI 是一个受温馨生活模拟类海岛风格启发的 Flutter 组件库，将
-[guokaigdg/animal-island-ui](https://github.com/guokaigdg/animal-island-ui)
-的视觉语言移植为 Flutter 组件：奶油色底面上的大地棕文字、胶囊形控件、有按压
-深度的按钮、丝带标题、水滴形对话框，以及 101 个海岛图标。
+## 📦 本地安装
 
-所有公开 API 都从同一个入口导入：
-`package:animal_island_ui/animal_island_ui.dart`，并通过一个支持浅色与深色预设的
-主题扩展统一设置样式。
+克隆本仓库后通过本地路径使用。当前未宣称已发布到 pub.dev；Gallery 请在本地运行。
 
-## ✨ 核心亮点
+```sh
+git clone https://github.com/Ibuprofenighty/animal-island-ui-flutter.git animal_island_ui
+```
 
-- 🎮 **有手感的按钮**：主色与危险色的填充按钮带有叠层深度阴影，激活时会下沉；
-  可交互控件提供轻微触感反馈。
-- 🍃 **101 个矢量图标**：树叶、苹果、铃钱、化石等海岛符号，统一由 `AnimalIcon`
-  渲染 `AnimalIcons` 描述符，支持尺寸、颜色与可选的弹跳动画。
-- 🫧 **有机造型**：水滴形模态框、燕尾丝带标题、图案背景，以及海浪或树木页脚。
-- 🎨 **一套主题、六组 token**：`AnimalIslandTheme` 是 Flutter `ThemeExtension`，
-  包含颜色、字体、圆角、间距、阴影和动效，提供浅色与深色预设及 13 组色卡配对。
-- 📋 **表单与数据**：带控制器和校验规则的 `AnimalForm`、日期与时间选择器，以及
-  惰性构建（`rowCount` + `rowBuilder`）并可配合分页的 `AnimalTable`。
-- 🌏 **内置中英文**：库内文案通过导出的 `AnimalLocalizations` 本地化；随包附带
-  Nunito 与 Noto Sans SC 字体，运行时无需联网下载字体。
-- ♿ **尊重动效设置**：动画遵循系统的“减少动态效果”设置。
-
-## 🖼️ 预览
-
-- **在线 Gallery**：<https://ibuprofenighty.github.io/animal-island-ui-flutter/>
-  展示全部 36 个组件、101 图标浏览器和三个示例工作流（表单、浮层、数据表格）。
-- **本地运行**：Gallery 源码位于 [`example/`](example/README.md)。
-
-## 📦 安装
-
-通过本 Git 仓库使用本包。在应用的 `pubspec.yaml` 中添加：
+将本实现的检出目录或解压包放在应用旁，目录名设为 `animal_island_ui`，然后添加：
 
 ```yaml
 dependencies:
   animal_island_ui:
-    git:
-      url: https://github.com/Ibuprofenighty/animal-island-ui-flutter.git
-      ref: main
+    path: ../animal_island_ui
 ```
 
-然后运行 `flutter pub get`。支持的 Flutter 与 Dart 版本见上方徽章（记录于
-[`catalog/sdk.lock.json`](catalog/sdk.lock.json)），最低版本约束见
-[`pubspec.yaml`](pubspec.yaml)。
+按实际位置调整路径，运行 `flutter pub get`。包名和导入路径统一为 `animal_island_ui`；最低 SDK 约束见 [pubspec.yaml](pubspec.yaml)。
 
 ## 🚀 快速开始
-
-### 1. 配置主题与本地化
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(const IslandApp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: AnimalIslandTheme.light.toThemeData(),
-      darkTheme: AnimalIslandTheme.dark.toThemeData(),
-      localizationsDelegates: AnimalLocalizations.localizationsDelegates,
-      supportedLocales: AnimalLocalizations.supportedLocales,
-      localeResolutionCallback: (locale, _) => resolveAnimalLocale(locale),
-      // 通知与全屏 Loading 在最近的 AnimalOverlayHost 中打开。
-      builder: (context, child) =>
-          AnimalOverlayHost(child: child ?? const SizedBox.shrink()),
-      home: const IslandHomePage(),
-    );
-  }
-}
-```
-
-任意地区的中文 locale 都解析为中文；其他或缺省 locale 解析为英文。在组件树内
-使用 `AnimalIslandTheme.of(context)` 读取当前主题。
-
-### 2. 使用组件
-
-```dart
-class IslandHomePage extends StatefulWidget {
-  const IslandHomePage({super.key});
+class IslandApp extends StatelessWidget {
+  const IslandApp({super.key});
 
   @override
-  State<IslandHomePage> createState() => _IslandHomePageState();
+  Widget build(BuildContext context) => MaterialApp(
+    theme: IslandTheme.create(),
+    localizationsDelegates: IslandLocalizations.delegates,
+    supportedLocales: IslandLocalizations.supportedLocales,
+    home: const IslandHome(),
+  );
 }
 
-class _IslandHomePageState extends State<IslandHomePage> {
-  final TextEditingController _searchController = TextEditingController();
+class IslandHome extends StatelessWidget {
+  const IslandHome({super.key});
 
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: AnimalCard(
-          header: const AnimalTitle(child: Text('海岛广场')),
+  Widget build(BuildContext context) => Scaffold(
+    body: Center(
+      child: SizedBox(
+        width: 360,
+        child: IslandCard(
+          header: const IslandTitle(child: Text('海岛广场')),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const AnimalIcon(data: AnimalIcons.leaf, size: 28, bounce: true),
+              const IslandIcon(IslandGlyph.leaf, size: 32),
               const SizedBox(height: 12),
-              AnimalInput(
-                controller: _searchController,
-                placeholder: '搜索海岛...',
-                clearable: true,
-              ),
-              const SizedBox(height: 12),
-              AnimalButton(
-                icon: const AnimalIcon(data: AnimalIcons.apple, size: 18),
-                onPressed: () => AnimalModal.confirm(
+              const Text('留一小块空间，发现日常的新意。'),
+              const SizedBox(height: 20),
+              IslandButton(
+                variant: IslandButtonVariant.primary,
+                onPressed: () => showIslandModal<void>(
                   context: context,
-                  title: const Text('海岛广播'),
-                  content: const Text('今晚广场有烟花大会！'),
+                  title: const Text('欢迎登岛'),
+                  builder: (_) => const Text('海岛生活从这里开始。'),
                 ),
                 child: const Text('出发探索'),
-              ),
-              AnimalButton(
-                variant: AnimalButtonVariant.outlined,
-                onPressed: () =>
-                    AnimalNotification.success(context, message: '已保存！'),
-                child: const Text('发送通知'),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 ```
 
-完整可运行示例见 [`example/lib/quick_start.dart`](example/lib/quick_start.dart)。
+使用 `IslandTheme.create(brightness: Brightness.dark)` 创建深色预设。运行时主题切换与组件定制遵循 [API 指南](docs/API.md)及相应[组件契约](#-文档入口)；示例不代表任意自定义配色会自动满足对比度要求。
 
-## 🧩 组件（36 个）
+## 🧩 组件目录
+
+数量按目录中的组件族计算，不把每个辅助类或分组控件重复计数。
 
 | 分类 | 组件 |
 | :--- | :--- |
-| **通用** | `AnimalButton`、`AnimalIcon`、`AnimalTypewriter`、`AnimalCursor` |
-| **布局与导航** | `AnimalCard`、`AnimalTitle`、`AnimalDivider`、`AnimalBackground`、`AnimalCollapse`、`AnimalTabs`、`AnimalCarousel` |
-| **表单控件** | `AnimalInput`、`AnimalSwitch`、`AnimalCheckbox`、`AnimalRadio`、`AnimalSelect`、`AnimalDatePicker`、`AnimalTimePicker` |
-| **表单** | `AnimalForm`、`AnimalFormItem` |
-| **浮层** | `AnimalModal`、`AnimalDrawer`、`AnimalTooltip` |
-| **反馈** | `AnimalProgress`、`AnimalLoading`、`AnimalSkeleton`、`AnimalBackTop`、`AnimalCountdown`、`AnimalTime`、`AnimalNotification` |
-| **数据展示** | `AnimalTable`、`AnimalPagination`、`AnimalCodeBlock`、`AnimalTag`、`AnimalImage` |
-| **装饰** | `AnimalFooter` |
+| 通用 | Button、Icon、Typewriter、Cursor |
+| 布局与装饰 | Card、Title、Divider、Background、Footer、Collapse |
+| 导航 | Tabs、Pagination、Carousel、BackTop |
+| 表单与输入 | Input、Checkbox、Radio、Switch、Select、Rate、DatePicker、TimePicker、Form、Upload |
+| 数据展示 | Table、Tag、Image、Avatar、Badge、CodeBlock |
+| 反馈 | Tooltip、Notification、Loading、Skeleton、Progress |
+| 时间与计数 | Time、Countdown、CountUp |
+| 浮层 | Modal、Drawer |
 
-复选框和单选框另有 `AnimalCheckboxGroup` 与 `AnimalRadioGroup`。Switch、Checkbox、Radio 和 Select 的当前值由调用方持有，
-回调只提议更新。只读控件仍可聚焦但不激活。Checkbox 各项保留独立 Tab stop；Radio 组使用一个
-roving Tab stop。每个组件在 [`docs/zh/components/`](docs/zh/components/) 下都有参考页面。
+公开名称包括 `IslandTextField`、`IslandRadioGroup`、`IslandCheckboxGroup` 等，以[公开入口声明](lib/animal_island_ui.dart)为准。
 
-## 🍎 图标（101 个）
+## 🖼️ 运行 Gallery
 
-所有图标都是 `AnimalIcons` 上的常量，并由同一个组件绘制：
+从完整源码检出目录运行：
 
-```dart
-const icon = AnimalIcon(data: AnimalIcons.bell, size: 28);
+```bash
+flutter pub get
+cd example
+flutter pub get
+flutter run -d windows
+# 或：flutter run -d chrome
 ```
 
-可在 [Gallery](https://ibuprofenighty.github.io/animal-island-ui-flutter/) 或
-[图标索引](docs/zh/components/icons.md) 中浏览完整图标集。
+[Gallery 指南](example/README.md)说明其配置及素材。[原 Web 参考站](https://guokaigdg.github.io/animal-island-ui/#/)是上游设计参考，不是本 Flutter 实现的部署版本。
 
-## 📚 文档
+## 📚 文档入口
 
 | 文档 | 用途 |
 | :--- | :--- |
-| [文档首页](docs/zh/README.md) · [English](docs/en/README.md) | 全部指南与组件参考的索引 |
-| [主题与 token](docs/zh/tokens.md) | 主题家族、定制、字体与可访问性 |
-| [Gallery 工作流](docs/zh/workflows.md) | 表单、浮层与数据示例 |
-| [AI Agent Skill](skills/animal-island-ui-style-flutter/SKILL.zh-CN.md) | 供 AI 编程助手使用本包的 Skill |
-| [架构决策](docs/adr/README.md) | 关键设计决策 |
-| [贡献指南](CONTRIBUTING.md) | 反馈问题与从源码构建（不接受 Pull Request） |
-| [更新日志](CHANGELOG.md) · [安全策略](SECURITY.md) | 版本历史与漏洞报告 |
+| [API 指南](docs/API.md) · [公开声明](lib/animal_island_ui.dart) | 配置、组合与接口能力 |
+| [设计契约](docs/DESIGN.md) | 主题、颜色、动效及参考决定 |
+| [验收范围](docs/ACCEPTANCE.md) | 证据要求和限制 |
+| [架构](ARCHITECTURE.md) · [维护指南](docs/MAINTENANCE.md) | 所有权、扩展与开发 |
+| [Agent 使用 Skill](skills/animal-island-ui-flutter/SKILL.md) · [中文](skills/animal-island-ui-flutter/SKILL.zh-CN.md) | 组件契约引用及使用指导 |
+| [变更记录](CHANGELOG.md) · [权利与来源](docs/RIGHTS.md) | 版本变化及素材具体条款 |
 
-## 🛠️ 本地开发
+## 🔎 验证状态
 
-```bash
-git clone https://github.com/Ibuprofenighty/animal-island-ui-flutter.git
-cd animal-island-ui-flutter
-flutter pub get
-flutter test
+首批验收目标为 Windows 和 Web，移动端验收后续进行。**整库验收仍未完成。** 最近一次独立核验的运行时检查点保留 Notification／Tooltip 的 **18 项数值测量失败**，适用已记录的测量限制；这些失败没有改记为通过。
 
-# 运行 Gallery
-cd example
-flutter pub get
-flutter run -d chrome
-```
+仍有五项边界：合格浏览器真实悬停中间帧、Edge 实际 375px 修改后画面、OS／物理呈现、当前构建现场及完整实际 Web 前后对照，以及全内容 60fps 声明。具体范围和具名例外由[验收契约](docs/ACCEPTANCE.md)及[设计权威](docs/DESIGN.md)拥有，本 README 不复制具体机制或决定。
 
-## ⚠️ 说明与免责声明
+键盘、语义及对比度契约仍在范围内；当前验收不包含读屏软件运行。不宣称可商用就绪或全面无障碍认证。
 
-- 本项目为独立开源项目，与任天堂或任何游戏公司无隶属关系，也未获其授权或背书。
-  Animal Crossing（集合啦！动物森友会）是任天堂株式会社的商标。
-- 视觉设计遵循上游 [animal-island-ui](https://github.com/guokaigdg/animal-island-ui)
-  项目，署名信息见 [NOTICE](NOTICE) 与[来源说明](docs/zh/provenance.md)。
+## 📄 许可与致谢
 
-## 📄 许可证
-
-采用 **知识共享 署名-非商业性使用 4.0 国际许可协议（CC BY-NC 4.0）**。在署名的
-前提下可以使用、分享和改编本项目，但**不得用于商业目的**。完整条款见
-[LICENSE](LICENSE)，署名见 [NOTICE](NOTICE)。随包附带的 Nunito 与 Noto Sans SC
-字体采用 SIL Open Font License 1.1（见 `assets/licenses/`）。
-
-Tabs 和 Carousel 使用稳定项 ID，Table 必须提供稳定行 key；这些组件与 Collapse/Pagination 均提供实例和组件主题 Style。所有权、键盘导航、校验和定制见对应组件文档。
+新 Dart 实现采用 [MIT 许可](LICENSE)。第三方图标、场景、照片及字体保留各自条款和[来源声明](NOTICE)。所有者已确认21项场景／Logo／照片素材及GROBOLD字体可随本公开仓库分发；这不是无条件商业许可或独立法律核验。权威记录见[权利与来源](docs/RIGHTS.md)。

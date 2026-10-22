@@ -1,0 +1,23 @@
+name: Flutter checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  windows-web:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.3'
+          channel: stable
+          cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tool/verify.py --flutter flutter --builds
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: local-check-evidence
+          path: evidence/raw/

@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "id": "select",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Select 选择器; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandSelect](../../lib/src/components/select.dart), [IslandOption](../../lib/src/foundation/option.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Controlled value; local query, active option and open state. Stable option values survive reordering. Select completes keyboard focus after popup presentation using the latest focus history. Pointer opening, selection, Escape and clear keep keyboard input usable; Tab retains its destination, including the separate clear action. A single cancellable completion after portal attachment/removal restores focus only when it has fallen to the framework root scope and the app is active. Explicit controls and caller-owned scopes remain authoritative. Disable, borrowed-focus replacement and unmount cancel stale completion. No DOM patch, polling, global keyboard interception or additional FocusScope is used. Active IME editing text and its native UTF-16 range remain intact; the logical search query is the suffix. Only a committed/ended session normalizes its owned label prefix, without a duplicate onSearch for an unchanged logical query. An in-progress prefix remains bound to its original editing session when the host changes committed selection.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Host owns the committed selection; Select owns query/active option/hover styles and motion parameters. AnchoredPanel owns placement, outside dismissal and presentation lifetime. Clear emits one null proposal and onClear while retaining an open panel. Stable option values key local pointer presentation. Anchored panels share one actual-Overlay layout owner for Select, DatePicker, TimePicker, Pagination and Tooltip. A fitting reference attachment keeps its position, gap, shape, color and content. Only an overflowing result is moved inside the viewport; the existing available-width constraint applies when content cannot fit. The real child is laid out once, with no post-frame size guessing, cloned content, Gallery override or parallel positioning path. Components retain selection, focus, lifetime and scrolling: Select reveals its active keyboard option; a narrow single calendar scrolls horizontally, range calendars retain their existing horizontal scroll, and short time/long tooltip panels scroll vertically. Explicit opaque child styling and state remain authoritative. This is the user-approved limited usability deviation from the reference overflow defect, not a claim of exact parity or complete platform acceptance. Vertical popup height follows the available attachment-side space so the original trigger remains usable; fitting geometry receives no extra offset. Select owns and disposes its list scroll controller, reveals the committed row on list attachment and moves only that list for keyboard activity, preserving caller scroll positions. The Select Gallery placeholder row models the reference CSS min-content width296=140+16+140 with visible parent overflow. It preserves both140px triggers, the16px minimum gap and fitting desktop space-between; it neither wraps nor shrinks the controls. At375px the reference trigger rectangles are(58,505,140,41) and(214,505,140,41). This corrects the parent layout mapping and is not another popup algorithm or a new visual exception.",
+    "accessibility": "Target role is comboBox; current SDK rejects it in debug and omits Web mapping. The current button/textField fallback exposes expanded/value and controlsNodes relation to one owned list. Clear is a separate child action; option selection is distinct from keyboard active state. Installed Flutter Web engine does not implement comboBox/listbox role mapping; Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17 and are not a remaining blocker; named semantics and keyboard behavior remain required. The non-search trigger exposes focusable, its own primary focused state and a focus action on that same node. Its clear child remains independent; search focus stays with the TextField. Disabled triggers do not expose a focus action. The named editable child has a stable separate semantic owner across opening, filtering and dismissal; list-control metadata stays on the parent boundary. SDK-COMBOBOX-001 is the user-approved exception for this version on2026-10-18; it does not claim the role implemented/test passed or waive the other metadata, input/focus, IME and contrast requirements. One existing button/TextField projection only.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator. Select filtering opts out of native autofill forms: its query is transient option search, not a saved form field. Clear-slot geometry changes must not trigger autofill focus changes during disable.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers. Pending ended-composition reconciliation belongs to the existing text controller; it acts only on the current value/session and never restores focus away from a nested clear control.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Clear uses canonical CloseIcon at12px. Decorative option cursor geometry and500ms timeline share one internal owner with Pagination. Owned readable text roles also set default icon roles. Fixed light content surfaces scope light semantic roles for nested public controls; explicit child styles and unrelated ThemeExtensions remain unchanged. Known owned surfaces reuse LightSurfaceScope with a component-supplied paired foreground for nested public controls; no background guessing or child rewriting. Scope topology stays stable on filled/transparent Tag changes. Explicit child styles, unrelated ThemeExtensions, keys, state and focus remain authoritative. Custom backgrounds require a caller-owned suitable foreground.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "select.selection",
+      "given": "A select with two items",
+      "when": "Open and choose the second item",
+      "then": "Host receives the selected typed value and label updates after commit"
+    },
+    {
+      "id": "select.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "select.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "select.motion",
+      "given": "An enabled select with motion enabled",
+      "when": "Open, close or interrupt presentation",
+      "then": "Necessary content and its backing appear fully opaque without translation. Close removes the panel immediately; reopen/disposal cannot leave a stale overlay. Reduced motion uses the same lifecycle and immediately settles presentation. Decorative option motion retains its own timing and cannot reduce content contrast."
+    },
+    {
+      "id": "select.clear-open",
+      "given": "A selected open select and a host that rejects null",
+      "when": "Activate its clear child",
+      "then": "One null request and one onClear; panel stays open; committed value is unchanged and no ancestor toggle occurs."
+    },
+    {
+      "id": "select.search-editing",
+      "given": "Search displays a committed label",
+      "when": "Append/continue/commit/cancel an IME query, change the host value, transfer focus, press Escape twice after composition, or use a nested clear action",
+      "then": "The logical query excludes the committed label prefix while the active native editing buffer and composition range stay intact. Normalize the prefix only after commit/end, once per changed logical query. Candidate keys remain with the active text editor; after composition, first Escape resets the query while open and second closes. Clear owns Enter/Space without selecting an option; disabled/closed/replaced sessions cannot apply stale prefix normalization or steal focus."
+    },
+    {
+      "id": "select.nested-surface",
+      "given": "A fixed owned surface in either host theme with a nested public transparent action and an opaque keyed child",
+      "when": "Palette, hover/press/focus, host theme or filled/transparent variant changes",
+      "then": "Default necessary text stays at4.5 against its actual backing and required strokes at3; explicit styles, callback isolation, child state and focus survive. No whole-subtree fade or rewrite."
+    },
+    {
+      "id": "select.semantic-focus",
+      "given": "An enabled non-search trigger with a borrowed focus node and a separate clear child",
+      "when": "A platform focus action targets the trigger, then focus moves to clear",
+      "then": "One trigger node reports focusable and its primary focus only; focus action requests the same borrowed node. Clear alone reports focus after transfer. Search retains its native TextField focus semantics and disabled triggers cannot request focus."
+    },
+    {
+      "id": "select.viewport-bounds",
+      "given": "An anchored panel at either edge of a narrow, short or offset Overlay, with normal and long content",
+      "when": "Open, close, reopen, search, navigate by keyboard, scroll the host or resize the window",
+      "then": "The actual panel and required targets remain reachable within that Overlay. Fitting reference attachments remain unchanged; only overflow is corrected. Existing component-owned scrolling and focus/controlled-value ownership survive, with one content subtree."
+    },
+    {
+      "id": "select.gallery-parent-min-content",
+      "given": "The reference custom-placeholder pair at375px and1440px",
+      "when": "Lay out the Gallery parent and open either public selector",
+      "then": "Both triggers retain140x41px, at least16px gap, and reference positions; parent expresses visible min-content overflow without RenderFlex errors or a Gallery imitation of the popup."
+    },
+    {
+      "id": "select.opening-focus",
+      "given": "A pointer-opened Select whose Web popup presentation moves framework focus to the root scope",
+      "when": "ArrowDown and Enter are pressed without refocusing the trigger, then keyboard reopening/dismissal or an external focus transfer occurs",
+      "then": "The next enabled value is requested once and the panel closes. Enter reopens and Escape dismisses; Tab preserves its actual destination so the separate clear action remains keyboard usable. Presentation recovery follows latest focus history only from the framework root while active; explicit controls/caller scopes win. Disable, replacement and unmount cancel stale recovery."
+    },
+    {
+      "id": "select.disable-editing-client",
+      "given": "A searchable Select with active native composition and a host-owned committed value",
+      "when": "The host disables the control, including changing its committed value in the same update",
+      "then": "When search becomes disabled, its native editing client is retired before the committed host label replaces a composition buffer. Deferred restoration uses the latest label and is cancelled by re-enabling, a newer host update or disposal; it emits no selection proposal and takes no focus."
+    }
+  ]
+}

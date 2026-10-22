@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "id": "carousel",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Carousel 轮播图; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandCarousel](../../lib/src/components/carousel.dart), [IslandSlide](../../lib/src/components/carousel.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Stable keyed slide subtrees remain mounted; only active slide paints, hits and exposes semantics. Active changes use opaque displacement without crossfade. Reorder preserves values/state.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Reference9px border-box L arrow retains3px bars and -35%/-65% translation before rotation; no Material glyph substitution. Fixed pale slide backplane uses the existing shared light-surface semantic defaults; arbitrary slide surfaces and explicit styles stay opaque and caller-owned. Region primary focus paints the pinned2px external outline with3px offset; descendants keep their own focus outline. Arrow/dot/rotation controls paint2px external outlines with2px offset, using existing light focus ink on an opaque white stroke backing over unknown photos. Existing FocusOutline owns non-layout paint; wrappers remain stable and no extra focus node, child inspection, timer or slide lifecycle is introduced. Gallery presentation and its named contrast exceptions reference only docs/DESIGN.md#home-host-and-photo-gradient; the public component still treats slide content as opaque.  Complete owned surface sampling follows docs/DESIGN.md#surface-sampling; timeline, placement and lifecycle remain with their existing owners.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "carousel.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "carousel.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "carousel.readable-motion",
+      "given": "Necessary content on its actual supporting surface, including reduced-motion changes",
+      "when": "Enter, sample intermediate frames, reverse/reopen, close, cancel and unmount",
+      "then": "Content/backing stay readable; one subtree retains state; hit/focus/semantics track availability; no stale timer or duplicate callback. Approved reference deviations follow docs/DESIGN.md."
+    },
+    {
+      "id": "carousel.surface-defaults",
+      "given": "Opaque plain text, icons, nested public controls and explicit styles in a fixed pale slide frame",
+      "when": "Change host theme, navigate, reorder and rebuild the same keyed slides",
+      "then": "The existing shared light-surface scope supplies readable default roles and preserves unrelated ThemeExtensions; explicit styles/state/focus remain authoritative. Only active content paints/hits/exposes semantics; no duplicate slide or state owner."
+    },
+    {
+      "id": "carousel.focus-paint",
+      "given": "Keyboard-focused region or arrow/dot/rotation controls over actual light/dark hosts and opaque photos",
+      "when": "Move primary focus into the region, its child and its controls, then return and unmount",
+      "then": "Reference external2px contours at3px/2px offsets remain visible at3.0, control backing is opaque, region contour is absent for descendant-only focus, geometry and borrowed focus ownership remain stable."
+    },
+    {
+      "id": "carousel.reference-transparency",
+      "given": "The3 Gallery photos,1440/375, light/dark hosts and normal300ms transitions including wrap",
+      "when": "Capture original reference-gradient rendering at0/16/150/300ms and measure actual caption/control pixels",
+      "then": "Compare the Gallery scene with the current presentation/contrast authority at docs/DESIGN.md#home-host-and-photo-gradient. Record actual caption/control ratios under its named exception without turning failed ratios intoPASS. Component-owned controls/focus and opaque caller-content ownership retain their separate contracts."
+    },
+    {
+      "id": "carousel.surface-sampling",
+      "given": "The active fractional translation path with caller-owned content, including different text line origins",
+      "when": "Sample visible entry/exit/reversal where that owner supports them, then settle or remove it",
+      "then": "Complete backing/boundary/content are sampled as one group under docs/DESIGN.md#surface-sampling. No text compensation, child traversal, content clone or timing replacement. Nonmoving and nonpainted cases retain their explicit classification."
+    }
+  ]
+}

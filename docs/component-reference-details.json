@@ -1,0 +1,1184 @@
+{
+  "scope": "Reference observations and unaccepted implementation notes; interface contracts live under components/. Historical draft interfaces remain in the repair archive.",
+  "components": {
+    "avatar": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/avatar",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Avatar/index.tsx",
+            "sha256": "e1bd589d37d35de06c5b1e9dc71323183387f95d821d0aabcf8ae96552e59099"
+          }
+        ],
+        "observed_sections": []
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/avatar_badge_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "background": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/background",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Background/index.tsx",
+            "sha256": "0748cf7ec6e8aee1549356fa4db57a70ba3d399d1bfebdafe88a29d5fb834b3f"
+          }
+        ],
+        "observed_sections": [
+          "全部类型（dots-* 底色对应 Card pattern-* 系列，hover 预览整站壁纸）"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "example/test/widget_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "backtop": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/backtop",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/BackTop/index.tsx",
+            "sha256": "0667ac11022b16957e9f90ad7aed32e33ef3994793a93afabf2e48f4392ae2a0"
+          }
+        ],
+        "observed_sections": [
+          "动物岛民列表 — 共 50 位"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/back_top_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "badge": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/badge",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Badge/index.tsx",
+            "sha256": "25b4e3a7a88f1de87a6d3b9d082ea1b3331487240896594ee3d08cbb5d9ce3b8"
+          }
+        ],
+        "observed_sections": [
+          "基本：图标 / 头像右上角的徽标数",
+          "count 为 0 时默认隐藏，showZero 可强制展示",
+          "独立使用：不包裹任何元素，可单独作为计数展示",
+          "封顶数字：超过 overflowCount（默认 99）时显示为「99+」",
+          "讨嫌的小红点：没有具体数字，只有一个小圆点",
+          "size 尺寸（medium / small）",
+          "color 多彩徽标（与 Card / Tag 同一调色板）"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/avatar_badge_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "button": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/button",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Button/index.tsx",
+            "sha256": "5505af764008edcd58d83bcd65ffd5a384eb893b6b5faa7b125b70c405983a1e"
+          }
+        ],
+        "observed_sections": [
+          "type 按钮类型",
+          "danger / ghost / loading / disabled 状态",
+          "size 尺寸",
+          "icon 图标按钮",
+          "block 块级按钮",
+          "danger 组合"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "card": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/card",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Card/index.tsx",
+            "sha256": "69fddb1c4907c03c2072e3165c8afa68a14d3408593482984963f1cfa0835aa7"
+          }
+        ],
+        "observed_sections": [
+          "type=\"default\"",
+          "type=\"dashed\"",
+          "hoverable 启用 hover(默认关闭)",
+          "pattern — 风格花纹",
+          "color"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/card_test.dart",
+          "test/composition_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "carousel": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/carousel",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Carousel/index.tsx",
+            "sha256": "e27d4967424a3b896e939f75ecfcfc6d20b8c3bd243a9c676bfadab30ed2091e"
+          }
+        ],
+        "observed_sections": [
+          "自动播放（悬停或聚焦时暂停）"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/carousel_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "checkbox": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/checkbox",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Checkbox/index.tsx",
+            "sha256": "7dd7f24b3480302a7c15de4adf0f4c031f3f5717775be1416c7c725040547c61"
+          }
+        ],
+        "observed_sections": [
+          "默认水平排列（受控）",
+          "垂直排列 + 含禁用选项",
+          "小尺寸",
+          "中尺寸（默认）",
+          "大尺寸",
+          "全部禁用"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "reverification": {
+        "date": "2026-10-14",
+        "observation": "The shared choice renderer owns the pinned15x14 check path, size-dependent SVG fit,200ms stroke delay plus300ms ease reveal and600ms splash. Label500/.01em/1.5 line height; disabled colors and.55 opacity; focus is a separate2px yellow outline with2px gap. Host-controlled proposals never start selected motion until committed.",
+        "status": "TARGETED_TESTS_PASS_FULL_PLATFORM_PROOF_PENDING"
+      }
+    },
+    "codeblock": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/codeblock",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/CodeBlock/index.tsx",
+            "sha256": "b9771fb6c9a392c1ae4910858d8ddaf12fb2ecc873fc8bcf91010a9b77999505"
+          }
+        ],
+        "observed_sections": [
+          "基础用法",
+          "关闭复制功能",
+          "自定义样式"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "collapse": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/collapse",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Collapse/index.tsx",
+            "sha256": "086c5521e2aa695a8479606c34e327f68507f47e5e064a8e9e77351cbeded5eb"
+          }
+        ],
+        "observed_sections": [
+          "基础用法",
+          "defaultExpanded 默认展开",
+          "disabled 禁用状态"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/collapse_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      },
+      "reverification": {
+        "date": "2026-10-14",
+        "observation": "Reveal uses300ms cubic(.4,0,.2,1); icon/color/leaf and answer bottom padding0..24 use250ms independently. Reversals start at rendered values, and the grid cannot shrink below its current padding. Rebuilds with unchanged target do not restart motion. Reduced motion synchronizes both timelines.",
+        "status": "TARGETED_TESTS_PASS_FULL_PLATFORM_PROOF_PENDING"
+      }
+    },
+    "countdown": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/countdown",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Countdown/index.tsx",
+            "sha256": "a59e680ca8a3a0bee288593ab3dca621ccf86c0d4487089e92a8baa041b6ad4f"
+          }
+        ],
+        "observed_sections": [
+          "活动倒计时",
+          "default 风格",
+          "无边框 / 带边框",
+          "onFinish 回调",
+          "尺寸"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/time_components_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "countup": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/countup",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/CountUp/index.tsx",
+            "sha256": "215e87834ba74fd1b0f086c13fb10e798833838a9df5f5522e191cf90b5f9df1"
+          }
+        ],
+        "observed_sections": [
+          "游戏结算：从 0 滚到本局总分，结束时庆祝一下",
+          "庆祝动效：celebrate 开启，传 text 可以放任意文案",
+          "格式化：千分位 / 小数位 / 前后缀",
+          "缓动曲线（同为 2 秒 7890 分）",
+          "尺寸 / 风格 / 边框",
+          "children 渲染函数：接管数字渲染，reset 可交给外部按钮重播"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/count_up_test.dart",
+          "test/time_components_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "cursor": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/cursor",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Cursor/index.tsx",
+            "sha256": "1e155f44bcfa9570ffecfa49283bbe1b5d918407f90443a6fe9bff7367bae8ab"
+          }
+        ],
+        "observed_sections": [
+          "type=\"default\"（默认）：手指箭头",
+          "type=\"raindrop\"：蓝色雨滴",
+          "forceAll=false：保留原生光标语义"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/cursor_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "date-picker": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/date-picker",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/DatePicker/index.tsx",
+            "sha256": "f8040dfb20d27e72ba799a45c8aa27095d41e322f267a11f4d79205fb231ad44"
+          }
+        ],
+        "observed_sections": [
+          "受控模式",
+          "非受控默认值 + 自定义格式",
+          "允许清空 + 禁用日期（周末）",
+          "三种尺寸",
+          "校验状态",
+          "禁用状态",
+          "隐藏「今天」快捷按钮",
+          "月份选择模式",
+          "范围选择（开始日期 ~ 结束日期）",
+          "范围 + 清空 + 禁用周末"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/date_picker_test.dart",
+          "test/time_components_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "divider": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/divider-comp",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Divider/index.tsx",
+            "sha256": "54d8175a4039977b1ef9fbd7bed1222e8923e1b98c3b445bca339d0a344ea20f"
+          }
+        ],
+        "observed_sections": [
+          "dashed-brown（虚线棕色，默认）",
+          "thin（1px 细线）",
+          "hairline（1px 细密虚线）",
+          "wave-yellow（黄色波浪线）",
+          "squiggle（主题青色波浪线）",
+          "icon（单图标相连分割线）"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "drawer": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/drawer",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Drawer/DrawerDemo.tsx",
+            "sha256": "8b9e8759b8279fa5a11fa2cc9fa0963c0e64a0cebd12465cc09167e8443cfd0b"
+          }
+        ],
+        "observed_sections": [
+          "四个方向",
+          "关闭景深"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/drawer_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "footer": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/footer",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Footer/index.tsx",
+            "sha256": "ddd851067cf1113be7cbb36cf2d009f7d046c6565bea2efb1e0ae5cc901fa343"
+          }
+        ],
+        "observed_sections": [
+          "Footer 版权栏 — 默认展示 © 当前年份 All Rights Reserved.，年份动态获取、文案可传参自定义。",
+          "默认",
+          "自定义文案",
+          "自定义年份 / 样式"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "example/test/widget_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "form": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/form",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Form/index.tsx",
+            "sha256": "89a0b1c2bd8929fe0adb5c2770afeab7bf41d646d15c575df7f01366f4488895"
+          }
+        ],
+        "observed_sections": [
+          "Form 表单组件 — 集成表单实例、校验规则、布局网格、依赖字段等基础能力。",
+          "基础用法：登录表单（required / minLength / 自定义 validator）",
+          "三种布局：horizontal / vertical / inline",
+          "Form.useForm + 命令式 API（setFieldsValue / resetFields）",
+          "onValuesChange：实时同步字段值",
+          "校验规则：pattern / type / max / 自定义 async"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/form_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "icon": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/icon",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Icon/IconDemo.tsx",
+            "sha256": "2f9f3c11486ca680e9c2bf03d51999d28b249b2d50fc5c5f02a370fdf89ed5d2"
+          }
+        ],
+        "observed_sections": [
+          "基础用法",
+          "size 尺寸",
+          "color / strokeWidth 自定义",
+          "全部图标",
+          "使用示例"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "image": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/image",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Image/index.tsx",
+            "sha256": "acd992659e146a280f21b726b1446689de7a1aee494157dde6c5a1c5ac55f3cb"
+          }
+        ],
+        "observed_sections": [
+          "点击预览（preview 默认开启，点击图片弹出大图，ESC / 遮罩 / 关闭按钮均可关闭）",
+          "基础用法（自定义宽高）",
+          "背景颜色（color，Card pattern 同款底色，无花纹）",
+          "懒加载（lazy，滚动到视口附近才加载）",
+          "错误占位（加载失败时显示占位）"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/image_test.dart",
+          "test/avatar_badge_test.dart",
+          "test/card_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "input": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/input",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Input/index.tsx",
+            "sha256": "a3d85efcbd056187f3653e00404714024e4bb4c19c97b39fa8e1963413ec399b"
+          }
+        ],
+        "observed_sections": [
+          "shadow 阴影控制",
+          "基础用法",
+          "size 尺寸",
+          "status 校验状态",
+          "disabled 禁用"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "loading": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/loading",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Loading/index.tsx",
+            "sha256": "9fcaaead69a204a7391d5e61663fee27fb569256df6fbd6d328c269a35af71e6"
+          }
+        ],
+        "observed_sections": [
+          "基础播放 — 点击后全屏落雪覆盖 2.4s，结束时渐变消失",
+          "delay 防闪烁 — 快速结束时（600ms 模拟加载）无 delay 的落雪会闪一下，delay 300ms 的几乎不出现"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/loading_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "modal": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/modal",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Modal/index.tsx",
+            "sha256": "fe07493f0659e144d286b8d8b8b967ec4dddffcf657ad1dd2d358f0ce806d76d"
+          }
+        ],
+        "observed_sections": [
+          "异形弹窗 (game)",
+          "基础弹窗",
+          "关闭打字机效果",
+          "自定义遮罩样式"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "notification": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/notification",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Notification/index.tsx",
+            "sha256": "54423fce5a0e6d38901b5d0b76419283249762553ff171dadebf5485960faffc"
+          }
+        ],
+        "observed_sections": [
+          "4 种 type + 字符串简写",
+          "带 description 描述",
+          "6 个 position",
+          "duration 控制自动关闭(秒)",
+          "onClick / onClose 回调",
+          "btn 自定义操作按钮",
+          "custom icon / closeIcon",
+          "key 更新现有通知(用户关闭后停止后续状态)",
+          "destroy 全局控制"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/notification_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "pagination": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/pagination",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Pagination/index.tsx",
+            "sha256": "2b04363fced28b8c1b919005a3cbb04f6ab935747358e97fb0864fbe5ce228f2"
+          }
+        ],
+        "observed_sections": [
+          "基础用法",
+          "总条数 + 每页条数切换",
+          "快速跳转（受控）",
+          "禁用",
+          "配合 Table（pagination 属性）"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/pagination_table_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "progress": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/progress",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Progress/index.tsx",
+            "sha256": "55b88abcc3a7c90e66ab0f7d9628bbbe5a6fdfb414607aff96e60ddcfb9e8fa8"
+          }
+        ],
+        "observed_sections": [
+          "经典场景 — 上传 / 经验 / 任务",
+          "基础用法",
+          "size — 三档尺寸",
+          "variant — fill 背景场景图（当前进度区域显示场景，从左揭开）",
+          "受控 — 滑块驱动 percent (0–100,自动 clamp)",
+          "duration=0 — 关闭 fill 宽度动画",
+          "showInfo=false — 只渲染条,不带文字"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/components_test.dart",
+          "example/test/widget_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "radio": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/radio",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Radio/index.tsx",
+            "sha256": "29bc470992eeeb1d9587a8833d5f187f9ae2b454f3bc1cabbd3853a957200e4c"
+          }
+        ],
+        "observed_sections": [
+          "水平排列（受控）— 支持方向键 ↑↓←→ 切换",
+          "垂直排列 + 含禁用选项",
+          "小尺寸",
+          "中尺寸（默认）",
+          "大尺寸",
+          "3D 按键感 — 点击体验下压反馈",
+          "全部禁用"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "reverification": {
+        "date": "2026-10-14",
+        "observation": "Uses the same choice glyph/typography/motion owner as Checkbox; group identity, selection requests and keyboard traversal remain Radio-owned.",
+        "status": "TARGETED_TESTS_PASS_FULL_PLATFORM_PROOF_PENDING"
+      }
+    },
+    "rate": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/rate",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Rate/index.tsx",
+            "sha256": "b5daf321e60111b0757eb0de4442e7d28c3e3be2d8750ab8af9ba3be08ed1f5b"
+          }
+        ],
+        "observed_sections": [
+          "基础用法（受控）— 点击星星评分",
+          "悬停预览 + 再次点击清空（allowClear 默认开启）",
+          "allowClear=false — 再次点击同一颗星不清空",
+          "三种尺寸",
+          "自定义星星数量（count=10）",
+          "只读 — 用于展示已有评分，不响应点击与悬停"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "reverification": {
+        "status": "IMPLEMENTED_TARGETED_TESTS_PASS_PLATFORM_REVALIDATION_PENDING",
+        "finding": "PARITY-012",
+        "tests": [
+          "test/rate_motion_test.dart",
+          "test/reference_patterns_test.dart"
+        ],
+        "scope": "Observed pop/splash/keyboard/hover/clear; not exhaustive raster or AT acceptance."
+      }
+    },
+    "select": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/select",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Select/index.tsx",
+            "sha256": "7b8d9241d262b2b36f6dd5bdfcf0458f42548ca09128ce22a4ba898181c52e2b"
+          }
+        ],
+        "observed_sections": [
+          "默认状态",
+          "自定义占位文本",
+          "禁用状态",
+          "allowClear 一键清空",
+          "showSearch 输入关键字过滤"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/select_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "skeleton": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/skeleton",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Skeleton/index.tsx",
+            "sha256": "d3449aae0bc9f52529dbbf76862667bf8d9e08a8b03227aa487233621e438f73"
+          }
+        ],
+        "observed_sections": [
+          "loading 切换",
+          "variant — 四种变体",
+          "Skeleton.Button / Skeleton.Input / Skeleton.Avatar",
+          "loading=false 时直接渲染 children"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "switch": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/switch",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Switch/index.tsx",
+            "sha256": "cb44d2b4e9286b80907c821a8a5dc600e3f6a06f5b944e75cced6f60a96f737b"
+          }
+        ],
+        "observed_sections": [
+          "基础用法",
+          "checkedChildren / unCheckedChildren 自定义文案",
+          "size 尺寸",
+          "disabled / loading 状态"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "reverification": {
+        "date": "2026-10-14",
+        "observation": "Switch uses intrinsic label width above its52x28/38x20 minima, device-pixel-rounded2.5px borders, reference thumb insets,250ms cubic(.4,0,.2,1), separate2px focus outline with2px gap, and a600ms11px ring at.7 busy opacity. Disabled/busy inputs never commit requests; reduced motion stops the ring.",
+        "status": "TARGETED_TESTS_PASS_FULL_PLATFORM_PROOF_PENDING"
+      }
+    },
+    "table": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/table",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Table/TableDemo.tsx",
+            "sha256": "092ee3cea34a001d53fb891d960f408cc115cc04e4d0f0da38b411a533db2d44"
+          }
+        ],
+        "observed_sections": [
+          "数据表格组件，支持斑马纹、边框、加载状态等常用功能。",
+          "内置分页（pagination 属性，客户端分页）"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/pagination_table_test.dart",
+          "test/table_intrinsic_test.dart",
+          "test/table_interaction_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "tabs": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/tabs",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Tabs/index.tsx",
+            "sha256": "4ab5be86ef0baf1c1ac1ac6557156b54406f1d103556c9d34c23dde1435d2cd9"
+          }
+        ],
+        "observed_sections": [
+          "shadow 阴影控制",
+          "非受控模式",
+          "受控模式",
+          "leafAnimation 叶子动画控制"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/tabs_test.dart",
+          "test/components_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "tag": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/tag",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Tag/index.tsx",
+            "sha256": "8b3031bc0563cd34f05f6a00ccd3810d8a7888e7c70fa20431046e7da06491dd"
+          }
+        ],
+        "observed_sections": [
+          "variant 风格变体",
+          "size 尺寸",
+          "color 颜色（soft · 同色系）",
+          "color 颜色（solid）",
+          "color 颜色（outlined）",
+          "color 颜色（dashed）",
+          "closable 可关闭",
+          "onClick 可点击（hover + 键盘 Enter / Space 触发）"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "time": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/time",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Time/index.tsx",
+            "sha256": "4f201b54626be7e24acbe57bde46f7683f3218c07debe99f338a19278f5b12ef"
+          }
+        ],
+        "observed_sections": [
+          "HUD 风格的实时时钟卡片，实时显示星期、月日与 HH:MM，每秒自动刷新。",
+          "搭配 className 自定义"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/time_components_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "time-picker": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/time-picker",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/TimePicker/index.tsx",
+            "sha256": "08ae5e89a8b61367916b10e971043e794842c513f8ac64a95d516399c0f130e4"
+          }
+        ],
+        "observed_sections": [
+          "受控模式",
+          "非受控默认值 + 自定义格式（不含秒）",
+          "分钟步进（15 分钟一档）",
+          "允许清空",
+          "三种尺寸",
+          "校验状态",
+          "禁用状态"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/time_components_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "title": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/title",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Title/index.tsx",
+            "sha256": "4c066630c039f987fc300a7c59396cb1eec58859e59fe9cc277b186eff58bbe7"
+          }
+        ],
+        "observed_sections": [
+          "全部类型（随机取色）",
+          "配色变体（默认双层纸 Layer）",
+          "尺寸",
+          "支持英文文案",
+          "飘带标题 Ribbon",
+          "双层纸 Layer",
+          "折角便签 Tab"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "reverification": {
+        "date": "2026-10-14",
+        "observation": "Live reference: layer/tab hover scales to1.06 over200ms ease without changing layout; ribbon remains static. Padding is1.6em/1.55em/1.5em for ribbon/layer/tab; tab adds0.4em left text margin and uses actual theme-ink text. Only ribbon has0.11em top optical offset. Explicit child styles/state remain authoritative. Reduced motion jumps to the target.",
+        "status": "TARGETED_TESTS_PASS_FULL_PLATFORM_PROOF_PENDING",
+        "gallery": "All25 reference examples restored;1440/375 tests pass."
+      }
+    },
+    "tooltip": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/tooltip",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Tooltip/index.tsx",
+            "sha256": "43fd461a49ada78e1fdd49d94cd51d4d74eeefd68a0d39282d401c1d87988fe4"
+          }
+        ],
+        "observed_sections": [
+          "基础用法 — hover 触发",
+          "风格 — island 不规则气泡",
+          "12 个方向",
+          "触发方式 — click",
+          "触发方式 — focus",
+          "多行内容"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/tooltip_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    },
+    "typewriter": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/typewriter",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Typewriter/index.tsx",
+            "sha256": "98991324c9532186b9ee76c71879170dd92d63065e7e08967a8b3559ac660fa1"
+          }
+        ],
+        "observed_sections": [
+          "基础用法",
+          "保留多行与富内容 (速度 40ms)"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      }
+    },
+    "upload": {
+      "reference": {
+        "url": "https://guokaigdg.github.io/animal-island-ui/#/upload",
+        "commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+        "demo_sources": [
+          {
+            "path": "demo/components/Upload/index.tsx",
+            "sha256": "b1fc1bd887e4ff4c417804db1a6b773f61d0abcef77576a25737affa54a1cfcf"
+          }
+        ],
+        "observed_sections": [
+          "基础用法 — 点击上传(默认模拟上传进度)",
+          "defaultFileList — 预置已完成文件 + onChange 收集",
+          "drag — 拖拽上传区域",
+          "maxCount + beforeUpload — 数量上限与类型拦截",
+          "listType=\"picture-card\" — 图片卡片 + 预览",
+          "customRequest — 接入真实上传(示例为慢速模拟)",
+          "action — 内置 XHR 真实上传(带进度与取消)",
+          "children — 自定义触发区内容",
+          "showUploadList=false — 纯上传按钮(隐藏列表)",
+          "onPreview — 点击缩略图直接预览大图",
+          "listType=\"picture\" — 行内缩略图"
+        ]
+      },
+      "acceptance": {
+        "windows": "NOT_ACCEPTED",
+        "web": "NOT_ACCEPTED",
+        "visual": "NOT_ACCEPTED"
+      },
+      "implementation": {
+        "tests": [
+          "test/upload_test.dart",
+          "test/upload_http_test.dart",
+          "test/upload_preview_test.dart"
+        ],
+        "status": "IMPLEMENTED_DRAFT",
+        "visual_acceptance": "NOT_ACCEPTED"
+      }
+    }
+  }
+}

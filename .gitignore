@@ -1,41 +1,12 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
-node_modules/
-
-# IntelliJ & IDE
-*.iml
-*.ipr
-*.iws
-.idea/
-.vscode/
-
-# Flutter / Dart / Pub
-# pubspec.lock is tracked: catalog/sdk.lock.json pins its SHA-256.
-**/doc/api/
 .dart_tool/
-.flutter-plugins-dependencies
 build/
-/coverage/
-.codex/
-test-results/
-playwright-report/
-**/ephemeral/
-**/.last-run.json
+.pub/
+*.iml
+.idea/
 scratch/
-
-# Candidate evidence and per-candidate mirrors (never source; see AGENTS.md)
-/artifacts/
-/catalog/source.lock.json
-/evidence/static/
-
-# Local agent worktrees and settings
-/.claude/
+evidence/
+example/.dart_tool/
+example/build/
+example/windows/flutter/ephemeral/
+.venv/
+__pycache__/

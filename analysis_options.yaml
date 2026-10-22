@@ -1,21 +1,12 @@
-include: package:flutter_lints/flutter.yaml
-
-# Every public member of the package is documented.
-linter:
-  rules:
-    - public_member_api_docs
-
 analyzer:
   exclude:
     - build/**
-    - artifacts/**
     - scratch/**
-    - android/**
-    - ios/**
-    - web/**
-    - windows/**
-    - macos/**
-    - linux/**
-
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+    - evidence/**
+linter:
+  rules:
+    - avoid_print
+    - prefer_const_constructors
+    - use_key_in_widget_constructors
+    - cancel_subscriptions
+    - close_sinks

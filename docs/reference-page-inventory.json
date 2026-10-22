@@ -1,0 +1,401 @@
+{
+  "reference_commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+  "groups": [
+    {
+      "label": "指南",
+      "items": [
+        {
+          "id": "skill",
+          "label": "Skill 介绍",
+          "isNew": true
+        }
+      ]
+    },
+    {
+      "label": "基础",
+      "items": [
+        {
+          "id": "title",
+          "label": "Title 标题",
+          "isNew": true
+        },
+        {
+          "id": "button",
+          "label": "Button 按钮",
+          "isNew": false
+        },
+        {
+          "id": "divider-comp",
+          "label": "Divider 分割线",
+          "isNew": false
+        },
+        {
+          "id": "icon",
+          "label": "Icon 图标",
+          "isNew": true
+        },
+        {
+          "id": "tag",
+          "label": "Tag 标签",
+          "isNew": false
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor 光标",
+          "isNew": false
+        },
+        {
+          "id": "codeblock",
+          "label": "CodeBlock 代码高亮",
+          "isNew": false
+        },
+        {
+          "id": "background",
+          "label": "Background 背景",
+          "isNew": true
+        },
+        {
+          "id": "footer",
+          "label": "Footer 页脚",
+          "isNew": false
+        }
+      ]
+    },
+    {
+      "label": "表单",
+      "items": [
+        {
+          "id": "input",
+          "label": "Input 输入框",
+          "isNew": false
+        },
+        {
+          "id": "switch",
+          "label": "Switch 开关",
+          "isNew": false
+        },
+        {
+          "id": "select",
+          "label": "Select 选择器",
+          "isNew": false
+        },
+        {
+          "id": "date-picker",
+          "label": "DatePicker 日期选择",
+          "isNew": false
+        },
+        {
+          "id": "time-picker",
+          "label": "TimePicker 时间选择",
+          "isNew": false
+        },
+        {
+          "id": "checkbox",
+          "label": "Checkbox 多选框",
+          "isNew": false
+        },
+        {
+          "id": "radio",
+          "label": "Radio 单选框",
+          "isNew": false
+        },
+        {
+          "id": "rate",
+          "label": "Rate 评分",
+          "isNew": true
+        },
+        {
+          "id": "form",
+          "label": "Form 表单",
+          "isNew": false
+        },
+        {
+          "id": "upload",
+          "label": "Upload 上传",
+          "isNew": true
+        }
+      ]
+    },
+    {
+      "label": "反馈",
+      "items": [
+        {
+          "id": "notification",
+          "label": "Notification 通知",
+          "isNew": false
+        },
+        {
+          "id": "modal",
+          "label": "Modal 弹窗",
+          "isNew": false
+        },
+        {
+          "id": "drawer",
+          "label": "Drawer 抽屉",
+          "isNew": false
+        },
+        {
+          "id": "loading",
+          "label": "Loading 加载",
+          "isNew": false
+        },
+        {
+          "id": "tooltip",
+          "label": "Tooltip 气泡提示",
+          "isNew": false
+        },
+        {
+          "id": "progress",
+          "label": "Progress 进度条",
+          "isNew": false
+        },
+        {
+          "id": "skeleton",
+          "label": "Skeleton 骨架屏",
+          "isNew": false
+        },
+        {
+          "id": "backtop",
+          "label": "BackTop 返回顶部",
+          "isNew": false
+        }
+      ]
+    },
+    {
+      "label": "数据展示",
+      "items": [
+        {
+          "id": "card",
+          "label": "Card 卡片",
+          "isNew": false
+        },
+        {
+          "id": "avatar",
+          "label": "Avatar 头像",
+          "isNew": true
+        },
+        {
+          "id": "badge",
+          "label": "Badge 徽标数",
+          "isNew": true
+        },
+        {
+          "id": "collapse",
+          "label": "Collapse 折叠面板",
+          "isNew": false
+        },
+        {
+          "id": "tabs",
+          "label": "Tabs 标签页",
+          "isNew": false
+        },
+        {
+          "id": "table",
+          "label": "Table 表格",
+          "isNew": false
+        },
+        {
+          "id": "pagination",
+          "label": "Pagination 分页",
+          "isNew": false
+        },
+        {
+          "id": "typewriter",
+          "label": "Typewriter 打字机",
+          "isNew": false
+        },
+        {
+          "id": "image",
+          "label": "Image 图片",
+          "isNew": false
+        },
+        {
+          "id": "carousel",
+          "label": "Carousel 轮播图",
+          "isNew": false
+        },
+        {
+          "id": "time",
+          "label": "Time 时钟",
+          "isNew": false
+        },
+        {
+          "id": "countdown",
+          "label": "Countdown 倒计时",
+          "isNew": false
+        },
+        {
+          "id": "countup",
+          "label": "CountUp 数字滚动",
+          "isNew": true
+        }
+      ]
+    }
+  ],
+  "pages": {
+    "button": {
+      "title": "Button 按钮",
+      "description": "按钮组件 — 支持 primary / dashed / text / link 等类型，danger / ghost / loading / disabled 状态，icon 图标，block 块级，三种尺寸"
+    },
+    "input": {
+      "title": "Input 输入框",
+      "description": "输入框组件 — 支持三种尺寸、allowClear 清除、prefix / suffix 前后缀、error / warning 校验状态、disabled 禁用"
+    },
+    "switch": {
+      "title": "Switch 开关",
+      "description": "开关组件 — 支持受控 / 非受控、自定义文案、small 尺寸、loading 状态"
+    },
+    "card": {
+      "title": "Card 卡片",
+      "description": "卡片容器组件 — 支持 default / title 两种类型，13 种背景颜色"
+    },
+    "collapse": {
+      "title": "Collapse 折叠面板",
+      "description": "折叠面板组件 — 支持展开/收起、默认展开、禁用状态"
+    },
+    "cursor": {
+      "title": "Cursor 光标",
+      "description": "光标组件 — 自定义手指光标，支持自定义尺寸、点击动画"
+    },
+    "footer": {
+      "title": "Footer 底部装饰",
+      "description": "页面底部装饰图片，支持树和海两种类型"
+    },
+    "modal": {
+      "title": "Modal 弹窗",
+      "description": "模态弹窗组件 — SVG 有机形状裁切、支持标题、关闭按钮、自定义 Footer、ESC / 遮罩关闭、自定义遮罩样式"
+    },
+    "drawer": {
+      "title": "Drawer 抽屉",
+      "description": "下沉景深抽屉组件 — 背景下沉 + 缩放 + 降亮突出主体，支持 left/right/top/bottom 四个方向、自定义宽高、ESC / 遮罩关闭"
+    },
+    "typewriter": {
+      "title": "Typewriter 打字机",
+      "description": "打字机组件 — 按字符逐个显示文本，支持多行与 ReactNode 富内容，不改变原有样式"
+    },
+    "divider-comp": {
+      "title": "Divider 分割线",
+      "description": "分割线组件 — 装饰性分割线"
+    },
+    "background": {
+      "title": "Background 背景",
+      "description": "装饰背景组件 — 奶油/深绿波点、彩色针糖 + 12 色 Card pattern 底色壁纸，零图片资源，可作为整页或区块背景，内容渲染在图案之上"
+    },
+    "icon": {
+      "title": "Icon 图标",
+      "description": "图标组件 — naive-icons 手绘 SVG 图标库，125 个可爱图标，支持自定义尺寸与描边颜色。全部图标为原创作品，个人与商业项目均可自由使用。"
+    },
+    "select": {
+      "title": "Select 选择器",
+      "description": "下拉选择器组件 — 支持自定义选项列表、allowClear 清空、showSearch 关键字过滤、键盘导航"
+    },
+    "date-picker": {
+      "title": "DatePicker 日期选择",
+      "description": "日期选择组件 — 年/月/日三级面板切换与开始~结束范围选择，支持受控/非受控、三种尺寸、allowClear 清空、disabledDate 禁用日期、自定义格式与键盘导航"
+    },
+    "time-picker": {
+      "title": "TimePicker 时间选择",
+      "description": "时间选择组件 — 时/分/秒三列滚选，此刻/确定快捷操作，支持受控/非受控、自定义格式、时/分/秒步进、allowClear 清空与键盘导航"
+    },
+    "tabs": {
+      "title": "Tabs 标签页",
+      "description": "标签页组件 — 支持受控/非受控模式切换"
+    },
+    "checkbox": {
+      "title": "Checkbox 多选框",
+      "description": "多选框组件 — 支持受控/非受控、水平/垂直排列、三种尺寸、禁用单项或全部禁用"
+    },
+    "radio": {
+      "title": "Radio 单选框",
+      "description": "单选框组件 — 支持受控/非受控、水平/垂直排列、三种尺寸、禁用单项或全部禁用"
+    },
+    "rate": {
+      "title": "Rate 评分",
+      "description": "评分组件 — 支持受控/非受控、三种尺寸、只读展示"
+    },
+    "tooltip": {
+      "title": "Tooltip 气泡提示",
+      "description": "气泡提示组件 — 支持 12 个方向、hover/click/focus 三种触发，default/island 两种风格，bordered 边框可配置"
+    },
+    "title": {
+      "title": "Title 标题",
+      "description": "装饰性标题组件 — cloud 云朵 / ribbon 飘带 两种风格，三种尺寸，适用于游戏化页面、活动 Banner 与场景分组"
+    },
+    "codeblock": {
+      "title": "CodeBlock 代码高亮",
+      "description": "代码高亮组件 — JSX/TS 语法高亮，支持一键复制、自定义样式和类名"
+    },
+    "table": {
+      "title": "Table 表格",
+      "description": "数据表格组件，支持斑马纹、边框、加载状态、内置分页等常用功能"
+    },
+    "pagination": {
+      "title": "Pagination 分页",
+      "description": "分页组件 — 支持受控/非受控、每页条数切换、快速跳转、总条数展示，可配合 Table 使用"
+    },
+    "tag": {
+      "title": "Tag 标签",
+      "description": "标签组件 — 支持 solid / outlined / dashed 三种风格，16 种颜色，三种尺寸，可关闭、可点击、自定义图标"
+    },
+    "notification": {
+      "title": "Notification 通知",
+      "description": "命令式通知组件 — 4 种 type (success/info/warning/error) × 6 个 position，支持 description / btn / onClick / onClose，显式 key 二次调用会更新现有通知"
+    },
+    "progress": {
+      "title": "Progress 进度条",
+      "description": "场景图进度条 —  3 档 size, 百分比文字固定显示在右侧、自定义格式化、duration 控制 fill 宽度动画"
+    },
+    "loading": {
+      "title": "Loading 加载",
+      "description": "全屏落雪加载指示器 — 50 片随机雪花旋转飘落 + 暗角夜空，中央提示文字、delay 防闪烁，结束时渐变消失"
+    },
+    "form": {
+      "title": "Form 表单",
+      "description": "表单组件 — 支持 useForm 命令式实例、多种校验规则、三种布局（horizontal / vertical / inline）、labelCol / wrapperCol 网格"
+    },
+    "upload": {
+      "title": "Upload 上传",
+      "description": "文件上传组件 — 点击 / 拖拽两种触发方式，text 与 picture-card 两种列表形态，beforeUpload 拦截、maxCount 上限、customRequest 接入真实上传，内置模拟进度"
+    },
+    "skeleton": {
+      "title": "Skeleton 骨架屏",
+      "description": "骨架屏加载占位组件 — 四种变体（text / circle / rect / paragraph），包含 Skeleton.Button / Skeleton.Input / Skeleton.Avatar 子组件，支持 loading 切换动画"
+    },
+    "backtop": {
+      "title": "BackTop 返回顶部",
+      "description": "返回顶部组件，支持全局/容器内滚动、自定义显示高度、自定义图标、平滑动画"
+    },
+    "image": {
+      "title": "Image 图片",
+      "description": "图片组件 — 白色衬板相框 + 错误占位，支持懒加载、点击预览"
+    },
+    "avatar": {
+      "title": "Avatar 头像",
+      "description": "头像组件 — 图片 / 图标 / 文字三种形态，圆形 / 方形两种形状，预设三档与任意数值尺寸，图片加载失败自动回退，支持头像组叠加与超出折叠"
+    },
+    "badge": {
+      "title": "Badge 徽标数",
+      "description": "徽标数组件 — 图标 / 头像右上角的圆形角标，支持数字、封顶数字（99+）、小红点、独立使用、两种尺寸与 12 色多彩徽标"
+    },
+    "countdown": {
+      "title": "Countdown 倒计时",
+      "description": "倒计时组件 — 接收结束时间，支持天/时/分/秒格式、三种尺寸、两种风格与归零回调"
+    },
+    "countup": {
+      "title": "CountUp 数字滚动",
+      "description": "计分动效组件 — 从 start 滚到 end，支持缓动曲线、千分位 / 小数位格式化、暂停继续，以及结束时的庆祝动效（可附任意文案贴纸）"
+    },
+    "time": {
+      "title": "Time 时钟",
+      "description": "时间显示组件 — HUD 风格的卡片，实时显示星期、月日与 HH:MM，每秒自动刷新，冒号闪烁与入场动画"
+    },
+    "carousel": {
+      "title": "Carousel 轮播图",
+      "description": "轮播图组件 — 支持受控/非受控索引、自动播放、首尾循环、箭头/圆点和完整键盘导航"
+    },
+    "skill": {
+      "title": "Skill 介绍",
+      "description": "项目配套的 animal-island-ui-style 技能 — 可安装到 AI 编码代理（Claude Code / Codex / Cursor），教模型按治愈系海岛风格搭建 React 页面或单文件 HTML"
+    }
+  }
+}

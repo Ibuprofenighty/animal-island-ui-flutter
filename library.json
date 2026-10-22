@@ -1,0 +1,697 @@
+{
+  "schema_version": "1.0",
+  "method_version": "1.0.0",
+  "name": "animal-island-ui",
+  "profile": "portable",
+  "product": {
+    "audience": "Flutter developers building cozy community, collection and lifestyle applications.",
+    "outcomes": [
+      "Reference Gallery appearance and interaction in a new Flutter implementation, with the user-authorized necessary accessibility color differences in docs/DESIGN.md",
+      "Extensible composition with explicit parent/child ownership",
+      "Commercial delivery backed by Windows and Web acceptance evidence"
+    ],
+    "in_scope": [
+      "40 reference components and every Gallery page/state",
+      "Windows + Web first",
+      "Physical template, scoped public APIs and synchronized usage Skill"
+    ],
+    "out_of_scope": [
+      "Reuse of old local Flutter implementation",
+      "Mobile acceptance in the first tranche",
+      "Public publishing without authorization",
+      "All screen-reader execution and validation (user decision 2026-10-17)",
+      "Installing new software for acceptance",
+      "Further21-asset authorization investigation (stopped by user2026-10-18); later public repository redistribution confirmed2026-10-22, see docs/RIGHTS.md",
+      "SDK-COMBOBOX-001 exact Select role projection for this version (approved exception; not implemented or passed)"
+    ]
+  },
+  "targets": [
+    {
+      "id": "windows",
+      "platform": "native",
+      "framework": "Flutter 3.47.3 / Dart 3.13.3",
+      "versions": "Windows 11 x64; keyboard/mouse; Screen-reader validation excluded by user scope decision (2026-10-17)."
+    },
+    {
+      "id": "web",
+      "platform": "web",
+      "framework": "Flutter 3.47.3 / Dart 3.13.3 CanvasKit",
+      "versions": "Chrome 154 and Edge 155 on Windows 11; keyboard/mouse; other browsers and mobile unverified."
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "foundation",
+      "level": "required",
+      "rationale": "Reference tokens, scoped styles, input/presentation patterns and licensed SVG/font assets."
+    },
+    {
+      "id": "core-components",
+      "level": "required",
+      "rationale": "All 40 reference components and parent/child composition."
+    },
+    {
+      "id": "advanced-data",
+      "level": "required",
+      "rationale": "Reference includes Table, Form, DatePicker, TimePicker, Select and Upload."
+    },
+    {
+      "id": "mobile",
+      "level": "optional",
+      "rationale": "Later device acceptance."
+    },
+    {
+      "id": "screen-reader-validation",
+      "level": "excluded",
+      "rationale": "User scope decision, 2026-10-17: all screen-reader execution and validation are excluded from this work, including NVDA and other readers. Do not install or start reader software, request reader validation, or keep it as a remaining acceptance blocker. Excluded is not passed or certified. Preserve existing semantic metadata, keyboard navigation, focus behavior, contrast requirements and their tests. No new software may be installed for acceptance. Historical reader-related pending notes below do not define the current work scope."
+    }
+  ],
+  "components": [
+    "components/title/contract.json",
+    "components/button/contract.json",
+    "components/divider/contract.json",
+    "components/icon/contract.json",
+    "components/tag/contract.json",
+    "components/cursor/contract.json",
+    "components/codeblock/contract.json",
+    "components/background/contract.json",
+    "components/footer/contract.json",
+    "components/input/contract.json",
+    "components/switch/contract.json",
+    "components/select/contract.json",
+    "components/date-picker/contract.json",
+    "components/time-picker/contract.json",
+    "components/checkbox/contract.json",
+    "components/radio/contract.json",
+    "components/rate/contract.json",
+    "components/form/contract.json",
+    "components/upload/contract.json",
+    "components/notification/contract.json",
+    "components/modal/contract.json",
+    "components/drawer/contract.json",
+    "components/loading/contract.json",
+    "components/tooltip/contract.json",
+    "components/progress/contract.json",
+    "components/skeleton/contract.json",
+    "components/backtop/contract.json",
+    "components/card/contract.json",
+    "components/avatar/contract.json",
+    "components/badge/contract.json",
+    "components/collapse/contract.json",
+    "components/tabs/contract.json",
+    "components/table/contract.json",
+    "components/pagination/contract.json",
+    "components/typewriter/contract.json",
+    "components/image/contract.json",
+    "components/carousel/contract.json",
+    "components/time/contract.json",
+    "components/countdown/contract.json",
+    "components/countup/contract.json"
+  ],
+  "source_scope": [
+    "library.json",
+    "ARCHITECTURE.md",
+    "pubspec.yaml",
+    "pubspec.lock",
+    "analysis_options.yaml",
+    "lib",
+    "test",
+    "components",
+    "docs",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    "NOTICE",
+    "CHANGELOG.md",
+    "tool",
+    "example/lib",
+    "example/pubspec.yaml",
+    "example/pubspec.lock",
+    "example/test",
+    "example/web",
+    "example/windows/CMakeLists.txt",
+    "example/windows/runner",
+    "example/windows/flutter/CMakeLists.txt",
+    ".github/workflows/check.yml",
+    "example/assets",
+    ".pubignore",
+    "example/analysis_options.yaml",
+    "example/integration_test",
+    "assets",
+    "skills",
+    "RELEASE.md",
+    "example/README.md",
+    "AGENTS.md",
+    ".gitattributes",
+    ".gitignore",
+    "example/.gitignore",
+    "example/.metadata",
+    "example/windows/.gitignore"
+  ],
+  "quality": [
+    {
+      "domain": "behavior",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "component-behavior"
+      ]
+    },
+    {
+      "domain": "accessibility",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Semantic metadata, keyboard navigation, focus behavior and contrast remain required. All screen-reader execution and validation are excluded by the user decision on 2026-10-17. SDK-COMBOBOX-001 approved version exception2026-10-18; other named metadata/input/focus requirements remain.",
+      "check_ids": [
+        "semantics-and-keyboard",
+        "carousel-focus-paint",
+        "filled-glyph-roles"
+      ]
+    },
+    {
+      "domain": "visual",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "visual-review"
+      ]
+    },
+    {
+      "domain": "localization",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "locale-layout"
+      ]
+    },
+    {
+      "domain": "compatibility",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "target-build"
+      ]
+    },
+    {
+      "domain": "performance",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "60fps baseline direction approved2026-10-18; repeatable diagnosis and concrete acceptance proposal required; detailed thresholds remain proposed.",
+      "check_ids": [
+        "size-budget"
+      ]
+    },
+    {
+      "domain": "security",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "source-policy"
+      ]
+    },
+    {
+      "domain": "distribution",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "package-consumer"
+      ]
+    },
+    {
+      "domain": "rights",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Original private confirmation retained; user confirmed public repository redistribution2026-10-22. Preserve source notices and history; no independent legal verification or unconditional commercial license. See docs/RIGHTS.md.",
+      "check_ids": [
+        "rights-review"
+      ]
+    },
+    {
+      "domain": "maintenance",
+      "target_id": "windows",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "release-docs"
+      ]
+    },
+    {
+      "domain": "behavior",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "component-behavior"
+      ]
+    },
+    {
+      "domain": "accessibility",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Semantic metadata, keyboard navigation, focus behavior and contrast remain required. All screen-reader execution and validation are excluded by the user decision on 2026-10-17. SDK-COMBOBOX-001 approved version exception2026-10-18; other named metadata/input/focus requirements remain.",
+      "check_ids": [
+        "semantics-and-keyboard",
+        "carousel-focus-paint",
+        "filled-glyph-roles"
+      ]
+    },
+    {
+      "domain": "visual",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "visual-review"
+      ]
+    },
+    {
+      "domain": "localization",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "locale-layout"
+      ]
+    },
+    {
+      "domain": "compatibility",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "target-build"
+      ]
+    },
+    {
+      "domain": "performance",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "60fps baseline direction approved2026-10-18; repeatable diagnosis and concrete acceptance proposal required; detailed thresholds remain proposed.",
+      "check_ids": [
+        "size-budget"
+      ]
+    },
+    {
+      "domain": "security",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "source-policy"
+      ]
+    },
+    {
+      "domain": "distribution",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "package-consumer"
+      ]
+    },
+    {
+      "domain": "rights",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Original private confirmation retained; user confirmed public repository redistribution2026-10-22. Preserve source notices and history; no independent legal verification or unconditional commercial license. See docs/RIGHTS.md.",
+      "check_ids": [
+        "rights-review"
+      ]
+    },
+    {
+      "domain": "maintenance",
+      "target_id": "web",
+      "applicability": "required",
+      "reason": "Applies to declared reusable UI scope.",
+      "check_ids": [
+        "release-docs"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "id": "component-behavior",
+      "domain": "behavior",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "automated",
+      "requirement": "All 40 reference component contracts: public behavior, controlled rejection, composition and lifecycle regressions",
+      "threshold": "No failing or skipped tests",
+      "scenario_ids": [
+        "title.composition",
+        "button.activation",
+        "button.composition",
+        "button.reference-states",
+        "divider.decorative",
+        "divider.composition",
+        "icon.semantics",
+        "icon.composition",
+        "tag.composition",
+        "tag.optional-action",
+        "tag.reference-geometry",
+        "cursor.composition",
+        "codeblock.composition",
+        "background.composition",
+        "footer.composition",
+        "input.composition",
+        "switch.controlled",
+        "switch.composition",
+        "select.selection",
+        "select.composition",
+        "date-picker.composition",
+        "date-picker.commit",
+        "date-picker.calendar",
+        "time-picker.composition",
+        "checkbox.controlled",
+        "checkbox.composition",
+        "radio.composition",
+        "rate.composition",
+        "form.composition",
+        "form.validation",
+        "form.ownership",
+        "form.label-focus",
+        "upload.composition",
+        "upload.lifecycle",
+        "upload.limits",
+        "upload.progress-burst",
+        "notification.composition",
+        "notification.close-slot",
+        "modal.composition",
+        "drawer.composition",
+        "loading.composition",
+        "tooltip.message",
+        "tooltip.composition",
+        "progress.value",
+        "progress.composition",
+        "skeleton.composition",
+        "backtop.composition",
+        "card.content",
+        "card.composition",
+        "card.optional-action",
+        "avatar.name",
+        "avatar.composition",
+        "badge.label",
+        "badge.composition",
+        "collapse.composition",
+        "tabs.selection",
+        "tabs.composition",
+        "table.composition",
+        "table.intrinsic-layout",
+        "table.line-box",
+        "table.interaction-surface",
+        "table.optional-action",
+        "pagination.composition",
+        "typewriter.composition",
+        "image.composition",
+        "carousel.composition",
+        "time.composition",
+        "countdown.composition",
+        "countup.composition",
+        "typewriter.line-metrics",
+        "select.motion",
+        "select.clear-open",
+        "select.search-editing",
+        "tag.close-lifecycle",
+        "card.nested-surface",
+        "tag.nested-surface",
+        "title.nested-surface",
+        "select.nested-surface",
+        "icon.inherited-stroke",
+        "modal.readable-route",
+        "title.physical-border",
+        "tag.physical-border",
+        "switch.physical-border",
+        "select.viewport-bounds",
+        "select.gallery-parent-min-content",
+        "date-picker.focus-exit",
+        "date-picker.physical-border",
+        "date-picker.viewport-bounds",
+        "time-picker.focus-exit",
+        "time-picker.physical-border",
+        "time-picker.viewport-bounds",
+        "checkbox.readable-motion",
+        "radio.readable-motion",
+        "rate.motion-keyboard",
+        "rate.readable-motion",
+        "upload.physical-border",
+        "notification.readable-motion",
+        "modal.readable-motion",
+        "loading.readable-motion",
+        "tooltip.viewport-bounds",
+        "card.physical-border",
+        "badge.readable-motion",
+        "table.readable-motion",
+        "pagination.viewport-bounds",
+        "carousel.readable-motion",
+        "time.readable-motion",
+        "countup.readable-motion",
+        "checkbox.group-spacing",
+        "radio.group-spacing",
+        "input.hint-lines",
+        "table.preferred-width",
+        "pagination.inline-layout",
+        "image.stamp-mask",
+        "select.disable-editing-client",
+        "drawer.closed-overlay-exclusion",
+        "carousel.reference-transparency"
+      ]
+    },
+    {
+      "id": "semantics-and-keyboard",
+      "domain": "accessibility",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "automated",
+      "requirement": "Names/roles/states/keyboard; theme contrast",
+      "threshold": "Named oracles pass; text 4.5:1 and control outlines 3:1 SDK-COMBOBOX-001 exact Select role is an approved version exception2026-10-18; unsupported fact retained, other keyboard/focus/names/states/IME checks remain required. HOME-REFERENCE-CONTRAST-001 and CAROUSEL-REFERENCE-CONTRAST-001 are explicit user-approved original-reference exceptions only for the named Gallery wallpaper text/photo-caption regions. Preserve actual sub4.5 ratios, not threshold PASS; no global or public-component waiver. All other required contrast/keyboard/focus/metadata checks remain.",
+      "scenario_ids": [
+        "tag.close-contrast",
+        "codeblock.syntax-contrast",
+        "carousel.surface-defaults",
+        "icon.transparent-core-contrast",
+        "title.modal-tab-consumption",
+        "button.readable-counter-audit",
+        "icon.readable-counter-audit",
+        "input.readable-counter-audit",
+        "select.semantic-focus",
+        "date-picker.readable-counter-audit",
+        "time-picker.readable-counter-audit",
+        "radio.radio-semantics",
+        "rate.radio-semantics",
+        "form.modal-tab-consumption",
+        "upload.readable-counter-audit",
+        "upload.modal-tab-consumption",
+        "notification.modal-tab-consumption",
+        "modal.modal-tab-consumption",
+        "drawer.readable-counter-audit",
+        "drawer.modal-tab-consumption",
+        "loading.modal-tab-consumption",
+        "avatar.readable-counter-audit",
+        "badge.readable-counter-audit",
+        "table.readable-counter-audit",
+        "image.readable-counter-audit",
+        "image.modal-tab-consumption",
+        "countup.readable-counter-audit",
+        "select.opening-focus",
+        "drawer.closed-overlay-exclusion"
+      ]
+    },
+    {
+      "id": "visual-review",
+      "domain": "visual",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "manual",
+      "requirement": "All reference routes, examples and interaction states at matched desktop and narrow viewports",
+      "threshold": "No unresolved layout, geometry, asset, typography or behavior differences; documented platform rasterization differences only User-approved overflow, accessibility-color/readable-motion and the two named original-reference transparency exceptions follow docs/DESIGN.md; they are disclosed deviations/scoped decisions, not unqualified exact parity or WCAG certification.",
+      "scenario_ids": [
+        "title.reference",
+        "button.reference",
+        "button.reference-states",
+        "divider.reference",
+        "icon.reference",
+        "tag.reference",
+        "tag.reference-geometry",
+        "cursor.reference",
+        "codeblock.reference",
+        "background.reference",
+        "footer.reference",
+        "input.reference",
+        "switch.reference",
+        "select.reference",
+        "date-picker.reference",
+        "time-picker.reference",
+        "checkbox.reference",
+        "radio.reference",
+        "rate.reference",
+        "form.reference",
+        "upload.reference",
+        "notification.reference",
+        "modal.reference",
+        "drawer.reference",
+        "loading.reference",
+        "tooltip.reference",
+        "progress.reference",
+        "skeleton.reference",
+        "backtop.reference",
+        "card.reference",
+        "avatar.reference",
+        "badge.reference",
+        "collapse.reference",
+        "tabs.reference",
+        "table.reference",
+        "pagination.reference",
+        "typewriter.reference",
+        "image.reference",
+        "carousel.reference",
+        "time.reference",
+        "countdown.reference",
+        "countup.reference",
+        "carousel.reference-transparency"
+      ]
+    },
+    {
+      "id": "locale-layout",
+      "domain": "localization",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "automated",
+      "requirement": "English/Chinese defaults and inherited RTL",
+      "threshold": "Delegates resolve; RTL and 2x layout tests pass",
+      "scenario_ids": []
+    },
+    {
+      "id": "target-build",
+      "domain": "compatibility",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "automated",
+      "requirement": "Build actual target Gallery with locked dependencies",
+      "threshold": "Release build exits 0; Windows engine integration flow and Web browser interaction smoke pass.",
+      "scenario_ids": []
+    },
+    {
+      "id": "size-budget",
+      "domain": "performance",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "manual",
+      "requirement": "Record archive and target output sizes",
+      "threshold": "60fps baseline direction approved2026-10-18. Record repeated native/browser frame costs and both actual first-screen network transfer and full disk output. Detailed percentile, startup and size limits are an acceptance proposal, not an automatic PASS.",
+      "scenario_ids": []
+    },
+    {
+      "id": "source-policy",
+      "domain": "security",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "automated",
+      "requirement": "No runtime network/telemetry/file IO/dynamic code/old imports",
+      "threshold": "Static source policy passes and dependency inventory recorded",
+      "scenario_ids": []
+    },
+    {
+      "id": "package-consumer",
+      "domain": "distribution",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "automated",
+      "requirement": "Extract actual archive to independent consumer",
+      "threshold": "Public import compiles and consumer test passes",
+      "scenario_ids": []
+    },
+    {
+      "id": "rights-review",
+      "domain": "rights",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "manual",
+      "requirement": "Preserved provenance, original private grants and later user-confirmed public repository redistribution",
+      "threshold": "User confirmed public repository redistribution of21 assets and GROBOLD2026-10-22; original private grants and notices retained. No further investigation. Owner confirmation is not independent legal verification or unconditional commercial licensing; see docs/RIGHTS.md.",
+      "scenario_ids": []
+    },
+    {
+      "id": "release-docs",
+      "domain": "maintenance",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "automated",
+      "requirement": "Bilingual setup, explicit exports, version policy",
+      "threshold": "Required documents and public API consistency checks pass",
+      "scenario_ids": []
+    },
+    {
+      "id": "carousel-focus-paint",
+      "domain": "accessibility",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "manual",
+      "requirement": "Carousel primary/control focus paint at1440 and375",
+      "threshold": "Observe2px external root/control outlines on actual images with correct primary-focus handoff; Chrome and Edge physical keyboard handoff remains required for Web.",
+      "scenario_ids": [
+        "carousel.focus-paint"
+      ]
+    },
+    {
+      "id": "filled-glyph-roles",
+      "domain": "accessibility",
+      "target_ids": [
+        "windows",
+        "web"
+      ],
+      "kind": "automated",
+      "requirement": "147 filled glyph host silhouettes and individually named necessary semantic marks",
+      "threshold": "Actual rendered core/backing3.0 on30 supported host/Card backgrounds; preserve explicit per-role test membership and geometry. Platform-specific execution required.",
+      "scenario_ids": [
+        "icon.filled-role-contrast"
+      ]
+    }
+  ],
+  "rights": {
+    "policy": "New Dart implementation; pinned public reference design and assets. Preserve source-specific notices and user-confirmed GROBOLD authorization. Asset inventory is not independent legal clearance. User confirmed public repository redistribution of21 assets and GROBOLD2026-10-22; original private grants retained. Investigation stopped; provenance/notices/history retained. No unconditional commercial license inferred; see docs/RIGHTS.md.",
+    "assets": [
+      {
+        "id": "reference-assets",
+        "source": "docs/asset-provenance.json",
+        "license": "Per asset record; original private authorization and later public repository redistribution confirmation, see docs/RIGHTS.md",
+        "commercial_use": "pending",
+        "evidence": "assets/licenses/ and docs/RIGHTS.md and docs/asset-private-authorization.json; commercial_use is not an unconditional license"
+      },
+      {
+        "id": "gro-bold",
+        "source": "Reference Gallery GROBOLD font",
+        "license": "Original private embedding grant and later owner-confirmed public repository redistribution; no unconditional commercial license, see docs/RIGHTS.md",
+        "commercial_use": "allowed",
+        "evidence": "docs/font-authorization.json"
+      }
+    ]
+  }
+}

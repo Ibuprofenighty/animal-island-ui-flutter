@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+<defs><clipPath id="role-body-clip" clipPathUnits="userSpaceOnUse"><use href="#role-body" /></clipPath><path id="role-mark-3" d="M8 8 L 40 40" fill="none" /></defs><path d="M5 24 C 11 13 37 13 43 24 C 37 35 11 35 5 24 Z" fill="#FAEDCD" id="role-body" />
+<circle cx="24" cy="24" r="6.5" fill="#2A9D8F" stroke="#2A2A2A" />
+<circle cx="24" cy="24" r="3" fill="#2A2A2A" stroke="#2A2A2A" />
+<use fill="none" stroke-width="3.5" href="#role-mark-3" stroke="currentColor" /><use fill="none" stroke-width="3.5" href="#role-mark-3" stroke="#E05A5A" clip-path="url(#role-body-clip)" /></svg>

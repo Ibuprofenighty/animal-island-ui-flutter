@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "id": "drawer",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Drawer 抽屉; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandDrawer](../../lib/src/components/drawer.dart), [IslandDrawerHost](../../lib/src/components/drawer.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Explicit host owns background depth and exclusion. Controlled panel owns focus/motion and retained contents. Rejected close proposals stay open.",
+    "events": "Escape, close and optional mask propose onClose. Panel actions never close through mask. Focus enters close button, loops in panel, and returns after accepted close.",
+    "composition": "Explicit nearest DrawerHost owns background only; no ancestor scanning or child rewriting. Panel lives in ViewportOverlay and persists closed but is excluded from semantics/focus/pointers. Drawer composes IslandCursor over its own mask/panel; cursor decoration never intercepts actions or dismissal. Modal Tab traversal consumes forward and reverse keys even when a closed loop keeps the same target or contains no actions. One shared boundary in the existing action module delegates order to the existing FocusScope, owns one skipped non-semantic target for an otherwise empty scope, and removes its borrowed-scope listener and owned node on disposal. It does not inspect children, add another FocusScope or replace a caller-owned focus target. IslandDialogRoute now defaults explicitly to TraversalEdgeBehavior.closedLoop; an explicitly supplied non-closed-loop policy, including null inheritance from Navigator, remains authoritative. Drawer, Loading, showIslandModal and the shared preview/alert route consume this same behavior. Actual Web keyboard and Windows/AT validation remain separate from widget tests.",
+    "accessibility": "Explicit semanticLabel names the dialog; the opaque title slot has heading semantics. Closed content is excluded. No child introspection. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17. A closed retained drawer excludes the whole viewport overlay, including captured locale wrapper semantics, so the underlying host remains the only active pointer/semantic target. Internal content remains mounted.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Dispose owned animation/scope/focus nodes. Remove only own host registration. Superseded focus callbacks check generation.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Dependency-driven reduced-motion settling is deferred until after build; it does not recapture focus or notify an overlay during build. Owned readable text roles also set default icon roles. Fixed light content surfaces scope light semantic roles for nested public controls; explicit child styles and unrelated ThemeExtensions remain unchanged.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "drawer.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "drawer.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "drawer.readable-counter-audit",
+      "given": "The relevant owned state and actual supported background, including transition frames",
+      "when": "Focus, hover, entry, exit or reduced motion changes",
+      "then": "Dependency-driven reduced-motion settling is deferred until after build; it does not recapture focus or notify an overlay during build."
+    },
+    {
+      "id": "drawer.modal-tab-consumption",
+      "given": "The component-owned modal boundary, or its registered Gallery alert callback, with zero/one/multiple actions",
+      "when": "Forward/reverse Tab, activation, dismissal, rejected close or owner removal occurs",
+      "then": "Closed loops consume Tab without leaving the modal; callbacks fire once and accepted close restores origin. Explicit route traversal overrides survive, opaque child identity/styles remain, and owned focus resources are cleaned up."
+    },
+    {
+      "id": "drawer.closed-overlay-exclusion",
+      "given": "A retained closed Drawer with a live action in its host",
+      "when": "Semantic presentation is active and a real browser pointer clicks the host, then opens and closes the drawer",
+      "then": "No empty full-screen semantic leaf intercepts the host. The first click opens; one Tab and Enter closes once and restores the trigger. Closed opaque child state remains retained."
+    }
+  ]
+}

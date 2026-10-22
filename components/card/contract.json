@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "id": "card",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Card 卡片; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority: [IslandCard](../../lib/src/components/surfaces.dart), [IslandCardStyle](../../lib/src/components/surfaces.dart), [IslandCardTheme](../../lib/src/components/surfaces.dart), [IslandSurfaceTheme](../../lib/src/foundation/theme.dart) and the explicit public root. This contract owns behavior and style support; source declarations own parameters/defaults.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Stateless content ownership; local hover only. Patterns supersede solid colorways, explicit color/style supersede defaults. Nested actions do not activate the card.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win. Optional parent activation reconciles semantic DOM blur only for the same still-mounted independently focusable child in the resumed view; explicit external focus and disposal win. No opaque child content/style is inspected or rewritten. A pending presentation-focus recovery survives benign host/theme rebuilds while its child/header owner is unchanged. New recovery ownership supersedes the previous request; replacement, removal, disposal, inactive view and explicit external destinations retain priority. Rebuilding alone does not cancel an otherwise valid request. Independent Card/Tag/Table child focus attaches to the existing caller Focus node, including a FocusScope; if no inherited focus exists it uses the existing manager root. A scope boundary must not silently place the child beneath the optional parent detector or paint parent focus over child focus. One shared ActionSurface owns this fork; no new scope or copied child subtree is introduced.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required. Passive and disabled controls do not advertise tap actions.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "Card owns one final role record used by its paint, slots and existing shared surface scope. The instance IslandCardStyle and IslandCardTheme.style use the same type. backgroundColor, foregroundColor, borderColor, focusColor, dividerColor, largeDotColor and smallDotColor resolve per existing ActionSurface state: instance non-null state value > scoped theme non-null state value > recipe. Explicit transparent is not fallback. Final foregroundColor supplies passive text/icon defaults and default Card focusColor; an explicit focus role is independent. Typography merges default > theme > instance; foregroundColor replaces textStyle.color for base Color ink. Explicit textStyle.foreground Paint retains Flutter precedence and caller ownership, is not inferred as semantic ink, and requires an explicit suitable focus/control recipe when used. This is not an advanced Paint/shader theming guarantee. Explicit opaque child styles/paint remain untouched. Header weight, layout padding and radius retain their existing owners. Dot colors are consumed only when pattern is enabled and keep caller alpha; no forced preset alpha is reapplied to explicit values. Fixed colorway/paper fills and pattern geometry remain unchanged. Fixed-pair ownership decisions follow docs/DESIGN.md#c6-shared-foreground. Optional surfaceTheme is one explicit IslandSurfaceTheme value (declared brightness plus existing IslandTokens), instance > theme. It carries nested controls' own state roles through existing LightSurfaceScope; passive foreground does not overwrite an explicit control recipe. Null preserves the existing known-light paired protection in either host; it is not arbitrary inheritance of host branding. No background-brightness guess, extra scope/resolver/provider or descendant rewrite. Other ThemeExtensions, child keys/state/focus, event isolation and stable ActionSurface topology remain. Custom backing/foreground/control/pattern pairs are caller-owned and must meet applicable4.5 text/3 necessary-graphics constraints against actual composites; defaults do not certify arbitrary values. Foreground/fill/context change together with the recipe; only existing transform/shadow timing animates. Same-frame sampling scope is docs/DESIGN.md#surface-sampling. Existing named reference/readable-motion exceptions remain with docs/DESIGN.md, none added. Existing geometry still decides whether a stroke exists: borderColor styles only the dashed/pattern border, dividerColor only header/footer separators, and dot roles only an enabled pattern. No new border-width/shape/disabled/selected/error Card API is implied. This component consumes its declared shared roles; fixed-pair decisions have one authority at docs/DESIGN.md#c6-shared-foreground.",
+    "performance": "Platform profiling required before release.",
+    "migration": "One atomic pre-release migration: Card color -> style.backgroundColor; textStyle.color -> style.foregroundColor; remaining typography -> style.textStyle (WidgetStateProperty values). Theme color/borderColor/textStyle move into IslandCardTheme.style with the same roles. Padding and theme radius stay with layout. No retained old color/style aliases or duplicate role renderer."
+  },
+  "scenarios": [
+    {
+      "id": "card.content",
+      "given": "A card with long content",
+      "when": "Lay out at narrow width",
+      "then": "Content remains visible and card height expands"
+    },
+    {
+      "id": "card.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "card.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal; include an unrelated host/theme rebuild between presentation frames",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation. A pending presentation-focus recovery survives benign host/theme rebuilds while its child/header owner is unchanged. New recovery ownership supersedes the previous request; replacement, removal, disposal, inactive view and explicit external destinations retain priority. Rebuilding alone does not cancel an otherwise valid request. Independent Card/Tag/Table child focus attaches to the existing caller Focus node, including a FocusScope; if no inherited focus exists it uses the existing manager root. A scope boundary must not silently place the child beneath the optional parent detector or paint parent focus over child focus. One shared ActionSurface owns this fork; no new scope or copied child subtree is introduced."
+    },
+    {
+      "id": "card.optional-action",
+      "given": "An opaque stateful child inside a parent with optional activation",
+      "when": "The host adds then removes the parent action and the child acts at each step; include an unrelated host/theme rebuild between presentation frames",
+      "then": "The same child state survives; child actions dispatch once without activating the parent; passive parents invent neither an action nor a focus target. A pending presentation-focus recovery survives benign host/theme rebuilds while its child/header owner is unchanged. New recovery ownership supersedes the previous request; replacement, removal, disposal, inactive view and explicit external destinations retain priority. Rebuilding alone does not cancel an otherwise valid request. Independent Card/Tag/Table child focus attaches to the existing caller Focus node, including a FocusScope; if no inherited focus exists it uses the existing manager root. A scope boundary must not silently place the child beneath the optional parent detector or paint parent focus over child focus. One shared ActionSurface owns this fork; no new scope or copied child subtree is introduced."
+    },
+    {
+      "id": "card.physical-border",
+      "given": "A positive logical border and the local MediaQuery DPR",
+      "when": "The component or its Gallery reference frame resolves a border",
+      "then": "IslandTheme.borderWidth is the unique owner: whole physical pixels rounded down, minimum one physical pixel. DPR1 appearance is retained; text line boxes and counts are not border metrics."
+    },
+    {
+      "id": "card.nested-surface",
+      "given": "A fixed owned surface in either host theme with a nested public transparent action and an opaque keyed child",
+      "when": "Palette, hover/press/focus, host theme or filled/transparent variant changes",
+      "then": "Default necessary text stays at4.5 against its actual backing and required strokes at3; explicit styles, callback isolation, child state and focus survive. No whole-subtree fade or rewrite."
+    },
+    {
+      "id": "card.custom-role-ownership",
+      "given": "A custom Card with final foreground, focus/border/divider/pattern roles, optional explicit control semantic recipe and an opaque keyed child",
+      "when": "Apply partial per-state instance/theme overrides, explicit transparency and alpha; focus/hover/press, reverse a theme update or activate a nested control",
+      "then": "One final recipe drives all paints and descendant defaults. Focus defaults to final foreground; explicit role values and control state semantics remain distinct. Actual supported text/backing and required strokes keep4.5/3. Opaque styles, identities, focus and independent callbacks survive; no parent action is triggered by the nested child."
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "form",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Form 表单; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandForm](../../lib/src/components/form.dart), [IslandFormItem](../../lib/src/components/form.dart), [IslandFormField](../../lib/src/components/form.dart), [IslandFormTextField](../../lib/src/components/form.dart), [IslandFormBinding](../../lib/src/components/form.dart), [IslandFormController](../../lib/src/components/form_controller.dart), [IslandFormValidation](../../lib/src/components/form_controller.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Explicit typed field builders; controller owns values and generation-bound validation. Opaque children are never cloned. Reset/change/unregister/dispose invalidates pending work; one host borrows one controller.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win. Gallery-owned alert callbacks use the shared route; this does not move business callback ownership into the component. Modal Tab traversal consumes forward and reverse keys even when a closed loop keeps the same target or contains no actions. One shared boundary in the existing action module delegates order to the existing FocusScope, owns one skipped non-semantic target for an otherwise empty scope, and removes its borrowed-scope listener and owned node on disposal. It does not inspect children, add another FocusScope or replace a caller-owned focus target. IslandDialogRoute now defaults explicitly to TraversalEdgeBehavior.closedLoop; an explicitly supplied non-closed-loop policy, including null inheritance from Navigator, remains authoritative. Drawer, Loading, showIslandModal and the shared preview/alert route consume this same behavior. Actual Web keyboard and Windows/AT validation remain separate from widget tests.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "form.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "form.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "form.validation",
+      "given": "Async validators and an attached form",
+      "when": "Values change, reset, field unmounts, or form/controller is disposed while validation is pending",
+      "then": "Stale completion does not overwrite errors or submit a newer value snapshot."
+    },
+    {
+      "id": "form.ownership",
+      "given": "Typed field builders, text adapters and two forms",
+      "when": "Fill, reset, reorder, validate or replace the borrowed controller",
+      "then": "Children retain identity and callbacks; sibling forms remain isolated; duplicate field names fail explicitly; old controller cannot submit detached form."
+    },
+    {
+      "id": "form.label-focus",
+      "given": "A text adapter with an owned or borrowed focus node",
+      "when": "Its label is clicked, its node is replaced, or the field is disabled or unmounted",
+      "then": "Only enabled labels focus their explicit target; borrowed nodes remain usable and label line boxes follow the reference 1.6 line height."
+    },
+    {
+      "id": "form.modal-tab-consumption",
+      "given": "The component-owned modal boundary, or its registered Gallery alert callback, with zero/one/multiple actions",
+      "when": "Forward/reverse Tab, activation, dismissal, rejected close or owner removal occurs",
+      "then": "Closed loops consume Tab without leaving the modal; callbacks fire once and accepted close restores origin. Explicit route traversal overrides survive, opaque child identity/styles remain, and owned focus resources are cleaned up."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "id": "background",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Background 背景; reference Gallery contract with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandBackground](../../lib/src/components/background.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "User intent callbacks; host decides whether to commit controlled state.",
+    "state_model": "Stateless decorative paint; no global Gallery changes or child rewriting.",
+    "events": "A child action dispatches once and does not activate its ancestor.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
+    "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
+    "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. The canonical scene SVGs materialize their finite user-space circle tiles offline, preserving dot positions, radius, paint, opacity and full-scene clipping; runtime renderer limits and child ownership are unchanged.",
+    "performance": "The public decorative renderer is unchanged; platform profiling retains its measured scope. The Gallery owns preview placement: it may skip fully off-viewport scene-preview painting with a one-logical-pixel guard, retaining the same mounted child, geometry, semantics and pointer path. Visible SVG scenes paint in the existing canvas without a new repaint layer. This is private Gallery composition, not a public IslandBackground option or application-wide culling guarantee.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "background.reference",
+      "given": "The pinned reference page and its recorded sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "background.composition",
+      "given": "Nested, themed and controlled composition",
+      "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
+      "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "background.gallery-viewport",
+      "given": "Gallery scene previews crossing the actual viewport boundary, reversed scrolling, transformed/scaled and resized framework hosts",
+      "when": "A scene becomes fully clipped or partially visible and its child is hovered or activated",
+      "then": "Only fully clipped paint is skipped; visible content paints in the existing canvas and child identity, layout, semantics and input behavior remain. Framework boundary oracle: example/test/background_viewport_test.dart. Native pixel evidence and real OS/Web scope are recorded separately."
+    }
+  ]
+}

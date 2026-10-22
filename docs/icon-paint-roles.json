@@ -1,0 +1,1423 @@
+{
+  "format": "animal-island.icon-paint-roles.v1",
+  "role_review": {
+    "status": "REGISTERED_BEFORE_REPAIR",
+    "scope": "Necessary strokes on transparent host regions; explicit per-element map. No global recolor of filled artwork or geometry change.",
+    "contexts": "Actual native17-context glyph captures: evidence/raw/glyph-context-diagnostic-20261017T124515Z",
+    "old": "#2A2A2A or fixed teal/coral on transparent paper/canvas",
+    "new": "currentColor from the existing component text/icon role",
+    "threshold": 3,
+    "old_dark_paper_ratio": 1.2,
+    "assets": {
+      "alert-circle": {
+        "elements": [
+          0,
+          1,
+          2
+        ],
+        "role": "open outline and exclamation"
+      },
+      "help-circle": {
+        "elements": [
+          0,
+          1,
+          2
+        ],
+        "role": "open outline and question mark"
+      },
+      "info": {
+        "elements": [
+          0,
+          1,
+          2
+        ],
+        "role": "open outline and information mark"
+      },
+      "arrow-down": {
+        "elements": [
+          0
+        ],
+        "role": "shaft"
+      },
+      "arrow-left": {
+        "elements": [
+          0
+        ],
+        "role": "shaft"
+      },
+      "arrow-right": {
+        "elements": [
+          0
+        ],
+        "role": "shaft"
+      },
+      "arrow-up": {
+        "elements": [
+          0
+        ],
+        "role": "shaft"
+      },
+      "arrow-up-right": {
+        "elements": [
+          0,
+          1
+        ],
+        "role": "directional stroke"
+      },
+      "bicycle": {
+        "elements": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "role": "wheel and frame"
+      },
+      "headphones": {
+        "elements": [
+          0
+        ],
+        "role": "headband"
+      },
+      "list": {
+        "elements": [
+          3,
+          4,
+          5
+        ],
+        "role": "list rules"
+      },
+      "maximize": {
+        "elements": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "role": "open corners"
+      },
+      "mic": {
+        "elements": [
+          1,
+          2,
+          3
+        ],
+        "role": "microphone stand"
+      },
+      "music": {
+        "elements": [
+          2
+        ],
+        "role": "note stems and beam"
+      },
+      "redo": {
+        "elements": [
+          0
+        ],
+        "role": "return arc"
+      },
+      "undo": {
+        "elements": [
+          0
+        ],
+        "role": "return arc"
+      },
+      "search": {
+        "elements": [
+          2
+        ],
+        "role": "magnifier handle"
+      },
+      "share": {
+        "elements": [
+          3,
+          4
+        ],
+        "role": "node connectors"
+      },
+      "sliders": {
+        "elements": [
+          0,
+          1,
+          2
+        ],
+        "role": "slider rails"
+      },
+      "sun": {
+        "elements": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "role": "radial rays"
+      },
+      "lock": {
+        "elements": [
+          0
+        ],
+        "role": "closed shackle"
+      },
+      "lock-open": {
+        "elements": [
+          0
+        ],
+        "role": "open shackle"
+      },
+      "key": {
+        "elements": [
+          2,
+          3,
+          4
+        ],
+        "role": "shaft and teeth"
+      },
+      "flag": {
+        "elements": [
+          0
+        ],
+        "role": "flagpole"
+      },
+      "download": {
+        "elements": [
+          0
+        ],
+        "role": "shaft"
+      },
+      "upload": {
+        "elements": [
+          0
+        ],
+        "role": "shaft"
+      },
+      "globe": {
+        "elements": [
+          5,
+          6
+        ],
+        "role": "stand"
+      },
+      "lamp": {
+        "elements": [
+          1,
+          4
+        ],
+        "role": "stand"
+      },
+      "shopping-bag": {
+        "elements": [
+          0
+        ],
+        "role": "handle"
+      },
+      "trophy": {
+        "elements": [
+          0,
+          1,
+          3
+        ],
+        "role": "handles and stem"
+      },
+      "dumbbell": {
+        "elements": [
+          2
+        ],
+        "role": "connecting bar"
+      },
+      "sort": {
+        "elements": [
+          0,
+          2
+        ],
+        "role": "directional shafts"
+      },
+      "refresh": {
+        "elements": [
+          0,
+          2
+        ],
+        "role": "return arcs"
+      },
+      "volume": {
+        "elements": [
+          1,
+          2
+        ],
+        "role": "sound arcs"
+      },
+      "volume-x": {
+        "elements": [
+          1
+        ],
+        "role": "muted cross"
+      },
+      "wifi": {
+        "elements": [
+          0,
+          1
+        ],
+        "role": "signal arcs"
+      },
+      "rainbow": {
+        "elements": [
+          0
+        ],
+        "role": "outer identifying arch"
+      }
+    },
+    "internal_slashes": {
+      "eye-off": "currentColor on exposed host; #E05A5A clipped to original owned body",
+      "bell-off": "currentColor on exposed host; #E05A5A clipped to original owned body"
+    },
+    "classification_note": "Historical role map is narrowed by necessary_identity_followup below: eyes, beaks, eye stalks, steam, connectors and off marks are necessary. Material seams/highlights need individual disposition; there is no blanket facial or steam exemption."
+  },
+  "regression_owner": "test/icon_context_contrast_test.dart",
+  "per_asset": [
+    {
+      "name": "alert-circle",
+      "elements": [
+        0,
+        1,
+        2
+      ],
+      "necessary_role": "open outline and exclamation",
+      "sample_points": [
+        [
+          24,
+          7
+        ],
+        [
+          24,
+          20
+        ],
+        [
+          24,
+          33
+        ]
+      ]
+    },
+    {
+      "name": "help-circle",
+      "elements": [
+        0,
+        1,
+        2
+      ],
+      "necessary_role": "open outline and question mark",
+      "sample_points": [
+        [
+          24,
+          7
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          24,
+          33
+        ]
+      ]
+    },
+    {
+      "name": "info",
+      "elements": [
+        0,
+        1,
+        2
+      ],
+      "necessary_role": "open outline and information mark",
+      "sample_points": [
+        [
+          24,
+          7
+        ],
+        [
+          24,
+          15.5
+        ],
+        [
+          24,
+          28
+        ]
+      ]
+    },
+    {
+      "name": "arrow-down",
+      "elements": [
+        0
+      ],
+      "necessary_role": "shaft",
+      "sample_points": [
+        [
+          24,
+          15
+        ]
+      ]
+    },
+    {
+      "name": "arrow-left",
+      "elements": [
+        0
+      ],
+      "necessary_role": "shaft",
+      "sample_points": [
+        [
+          34,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "arrow-right",
+      "elements": [
+        0
+      ],
+      "necessary_role": "shaft",
+      "sample_points": [
+        [
+          14,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "arrow-up",
+      "elements": [
+        0
+      ],
+      "necessary_role": "shaft",
+      "sample_points": [
+        [
+          24,
+          33
+        ]
+      ]
+    },
+    {
+      "name": "arrow-up-right",
+      "elements": [
+        0,
+        1
+      ],
+      "necessary_role": "directional stroke",
+      "sample_points": [
+        [
+          23,
+          25
+        ],
+        [
+          34,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "bicycle",
+      "elements": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "necessary_role": "wheel and frame",
+      "sample_points": [
+        [
+          5,
+          33
+        ],
+        [
+          43,
+          33
+        ],
+        [
+          18.5,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "headphones",
+      "elements": [
+        0
+      ],
+      "necessary_role": "headband",
+      "sample_points": [
+        [
+          24,
+          14.5
+        ]
+      ]
+    },
+    {
+      "name": "list",
+      "elements": [
+        3,
+        4,
+        5
+      ],
+      "necessary_role": "list rules",
+      "sample_points": [
+        [
+          30,
+          14
+        ],
+        [
+          30,
+          24
+        ],
+        [
+          30,
+          34
+        ]
+      ]
+    },
+    {
+      "name": "maximize",
+      "elements": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "necessary_role": "open corners",
+      "sample_points": [
+        [
+          6,
+          11
+        ],
+        [
+          37,
+          6
+        ],
+        [
+          42,
+          37
+        ],
+        [
+          11,
+          42
+        ]
+      ]
+    },
+    {
+      "name": "mic",
+      "elements": [
+        1,
+        2,
+        3
+      ],
+      "necessary_role": "microphone stand",
+      "sample_points": [
+        [
+          24,
+          33
+        ],
+        [
+          24,
+          37
+        ],
+        [
+          24,
+          42
+        ]
+      ]
+    },
+    {
+      "name": "music",
+      "elements": [
+        2
+      ],
+      "necessary_role": "note stems and beam",
+      "sample_points": [
+        [
+          30,
+          12.2
+        ],
+        [
+          40,
+          20
+        ]
+      ]
+    },
+    {
+      "name": "redo",
+      "elements": [
+        0
+      ],
+      "necessary_role": "return arc",
+      "sample_points": [
+        [
+          10,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "undo",
+      "elements": [
+        0
+      ],
+      "necessary_role": "return arc",
+      "sample_points": [
+        [
+          38,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "search",
+      "elements": [
+        2
+      ],
+      "necessary_role": "magnifier handle",
+      "sample_points": [
+        [
+          37,
+          37
+        ]
+      ]
+    },
+    {
+      "name": "share",
+      "elements": [
+        3,
+        4
+      ],
+      "necessary_role": "node connectors",
+      "sample_points": [
+        [
+          23,
+          18.15
+        ],
+        [
+          23,
+          29.85
+        ]
+      ]
+    },
+    {
+      "name": "sliders",
+      "elements": [
+        0,
+        1,
+        2
+      ],
+      "necessary_role": "slider rails",
+      "sample_points": [
+        [
+          10,
+          15
+        ],
+        [
+          10,
+          24
+        ],
+        [
+          10,
+          33
+        ]
+      ]
+    },
+    {
+      "name": "sun",
+      "elements": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "necessary_role": "radial rays",
+      "sample_points": [
+        [
+          24,
+          6
+        ],
+        [
+          24,
+          42
+        ],
+        [
+          6,
+          24
+        ],
+        [
+          42,
+          24
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          37,
+          37
+        ],
+        [
+          11,
+          37
+        ],
+        [
+          37,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "lock",
+      "elements": [
+        0
+      ],
+      "necessary_role": "closed shackle",
+      "sample_points": [
+        [
+          24,
+          9
+        ]
+      ]
+    },
+    {
+      "name": "lock-open",
+      "elements": [
+        0
+      ],
+      "necessary_role": "open shackle",
+      "sample_points": [
+        [
+          24,
+          9
+        ]
+      ]
+    },
+    {
+      "name": "key",
+      "elements": [
+        2,
+        3,
+        4
+      ],
+      "necessary_role": "shaft and teeth",
+      "sample_points": [
+        [
+          38,
+          24
+        ],
+        [
+          30,
+          28
+        ],
+        [
+          36,
+          28
+        ]
+      ]
+    },
+    {
+      "name": "flag",
+      "elements": [
+        0
+      ],
+      "necessary_role": "flagpole",
+      "sample_points": [
+        [
+          12,
+          37
+        ]
+      ]
+    },
+    {
+      "name": "download",
+      "elements": [
+        0
+      ],
+      "necessary_role": "shaft",
+      "sample_points": [
+        [
+          24,
+          12
+        ]
+      ]
+    },
+    {
+      "name": "upload",
+      "elements": [
+        0
+      ],
+      "necessary_role": "shaft",
+      "sample_points": [
+        [
+          24,
+          32
+        ]
+      ]
+    },
+    {
+      "name": "globe",
+      "elements": [
+        5,
+        6
+      ],
+      "necessary_role": "stand",
+      "sample_points": [
+        [
+          24,
+          37
+        ],
+        [
+          24,
+          42
+        ]
+      ]
+    },
+    {
+      "name": "lamp",
+      "elements": [
+        1,
+        4
+      ],
+      "necessary_role": "stand including later overpaint",
+      "sample_points": [
+        [
+          24,
+          32
+        ]
+      ]
+    },
+    {
+      "name": "shopping-bag",
+      "elements": [
+        0
+      ],
+      "necessary_role": "handle",
+      "sample_points": [
+        [
+          24,
+          10.25
+        ]
+      ]
+    },
+    {
+      "name": "trophy",
+      "elements": [
+        0,
+        1,
+        3
+      ],
+      "necessary_role": "handles and stem",
+      "sample_points": [
+        [
+          8,
+          17
+        ],
+        [
+          40,
+          17
+        ],
+        [
+          24,
+          33
+        ]
+      ]
+    },
+    {
+      "name": "dumbbell",
+      "elements": [
+        2
+      ],
+      "necessary_role": "connecting bar",
+      "sample_points": [
+        [
+          24,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "sort",
+      "elements": [
+        0,
+        2
+      ],
+      "necessary_role": "directional shafts",
+      "sample_points": [
+        [
+          15,
+          35
+        ],
+        [
+          33,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "refresh",
+      "elements": [
+        0,
+        2
+      ],
+      "necessary_role": "return arcs",
+      "sample_points": [
+        [
+          24,
+          9
+        ],
+        [
+          24,
+          39
+        ]
+      ]
+    },
+    {
+      "name": "volume",
+      "elements": [
+        1,
+        2
+      ],
+      "necessary_role": "sound arcs",
+      "sample_points": [
+        [
+          31,
+          24
+        ],
+        [
+          39,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "volume-x",
+      "elements": [
+        1
+      ],
+      "necessary_role": "muted cross",
+      "sample_points": [
+        [
+          32.5,
+          23
+        ]
+      ]
+    },
+    {
+      "name": "wifi",
+      "elements": [
+        0,
+        1
+      ],
+      "necessary_role": "signal arcs",
+      "sample_points": [
+        [
+          24,
+          13.67
+        ],
+        [
+          24,
+          24
+        ]
+      ]
+    },
+    {
+      "name": "rainbow",
+      "elements": [
+        0
+      ],
+      "necessary_role": "outer identifying arch",
+      "sample_points": [
+        [
+          24,
+          17
+        ]
+      ]
+    }
+  ],
+  "filled_role_review": {
+    "status": "REGISTERED_BEFORE_REPAIR",
+    "source": "visual-integrated-20261017T125506Z/icon-contexts/light-paper.png and dark-paper.png inspected at1440x1000",
+    "reason": "Inherited host-facing pale stroke overpaints tiny dark internal marks on their own opaque light fill. Earlier transparent-host oracle does not cover these adjacencies. Preserve interior reference drawing ink explicitly, with unchanged geometry and fill bytes. Necessary interior identity marks receive own-backing raster assertions; decorative eyes/highlights/material seams are retained artwork, not a blanket contrast certificate.",
+    "interior_stroke": "#2A2A2A (original pinned root drawing ink)",
+    "interior_assets": {
+      "alert-triangle": [
+        2
+      ],
+      "apple": [
+        3,
+        4
+      ],
+      "balloon": [
+        3,
+        4,
+        5
+      ],
+      "bee": [
+        6
+      ],
+      "bell": [
+        3,
+        4
+      ],
+      "bird": [
+        3,
+        4
+      ],
+      "book": [
+        3,
+        4
+      ],
+      "bulb": [
+        3,
+        4
+      ],
+      "butterfly": [
+        4,
+        5
+      ],
+      "cactus": [
+        7,
+        8
+      ],
+      "calendar": [
+        5,
+        6,
+        7
+      ],
+      "camera": [
+        2,
+        3,
+        4
+      ],
+      "cat": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "chat": [
+        1,
+        2,
+        3
+      ],
+      "cherry": [
+        5,
+        6
+      ],
+      "clock": [
+        3
+      ],
+      "cloud": [
+        1,
+        2
+      ],
+      "compass": [
+        1
+      ],
+      "credit-card": [
+        1,
+        2
+      ],
+      "donut": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "eye": [
+        1,
+        2,
+        3
+      ],
+      "fish": [
+        2,
+        3
+      ],
+      "flame": [
+        1
+      ],
+      "fox": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8
+      ],
+      "frog": [
+        2,
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "heart": [
+        1,
+        2
+      ],
+      "home": [
+        2,
+        3,
+        4
+      ],
+      "icecream": [
+        4,
+        5
+      ],
+      "image": [
+        1,
+        2
+      ],
+      "inbox": [
+        1
+      ],
+      "key": [
+        1
+      ],
+      "keyboard": [
+        1,
+        2
+      ],
+      "ladybug": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "lemon": [
+        3,
+        4
+      ],
+      "location": [
+        1
+      ],
+      "lock": [
+        2,
+        3
+      ],
+      "lock-open": [
+        2,
+        3
+      ],
+      "mail": [
+        2,
+        3
+      ],
+      "map": [
+        4
+      ],
+      "mushroom": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "rabbit": [
+        2,
+        3,
+        5,
+        6,
+        7
+      ],
+      "rocket": [
+        4
+      ],
+      "save": [
+        1,
+        2,
+        3
+      ],
+      "shopping-bag": [
+        2,
+        3
+      ],
+      "smile": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "star": [
+        1,
+        2
+      ],
+      "strawberry": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "tag": [
+        1
+      ],
+      "thermometer": [
+        1,
+        2
+      ],
+      "train": [
+        2,
+        9,
+        10,
+        11
+      ],
+      "tree": [
+        2,
+        3
+      ],
+      "user": [
+        2,
+        3
+      ],
+      "user-plus": [
+        2,
+        3
+      ],
+      "users": [
+        4,
+        5
+      ],
+      "water-cup": [
+        1,
+        3,
+        4
+      ],
+      "watermelon": [
+        4,
+        5
+      ],
+      "mouse": [
+        1,
+        2
+      ],
+      "trophy": [
+        5
+      ]
+    },
+    "host_assets": {
+      "umbrella": {
+        "indices": [
+          2,
+          3
+        ],
+        "role": "stem and curved handle",
+        "samples": [
+          [
+            24,
+            36
+          ],
+          [
+            27,
+            42
+          ]
+        ]
+      },
+      "user-plus": {
+        "indices": [
+          5
+        ],
+        "role": "identifying add marker",
+        "samples": [
+          [
+            37,
+            28
+          ],
+          [
+            42,
+            33
+          ]
+        ]
+      },
+      "penguin": {
+        "indices": [
+          7,
+          8
+        ],
+        "role": "outer flipper contours",
+        "samples": [
+          [
+            8.8,
+            32
+          ],
+          [
+            39.2,
+            32
+          ]
+        ]
+      },
+      "water-cup": {
+        "indices": [
+          2
+        ],
+        "role": "external straw",
+        "samples": [
+          [
+            30.5,
+            6
+          ]
+        ]
+      },
+      "snowflake": {
+        "indices": [
+          "0",
+          "1/0",
+          "2/0",
+          "3/0"
+        ],
+        "role": "six-arm glyph including central dot",
+        "samples": [
+          [
+            24,
+            5
+          ],
+          [
+            24,
+            43
+          ],
+          [
+            24,
+            24
+          ]
+        ]
+      },
+      "scooter": {
+        "indices": [
+          "0/2",
+          "0/3",
+          "0/10"
+        ],
+        "role": "unfilled wheels and handlebar",
+        "samples": [
+          [
+            36,
+            43
+          ],
+          [
+            10,
+            43
+          ],
+          [
+            19.5,
+            9
+          ]
+        ]
+      }
+    },
+    "warm_core": {
+      "charger": {
+        "element": 2,
+        "old": "#FAEDCD",
+        "new": "#FFFDF7",
+        "backing": "#E76F51",
+        "old_ratio": 2.6596504714,
+        "new_ratio": 3.0403602612559735
+      },
+      "monitor": {
+        "elements": [
+          1,
+          2
+        ],
+        "old": "#FAEDCD",
+        "new": "#FFFDF7",
+        "backing": "#2A9D8F",
+        "old_ratio": 2.8585627075,
+        "new_ratio": 3.2677453498540783
+      }
+    },
+    "limits": "Do not infer all163 artwork adjacencies or every component state accepted from this named oracle. Exterior art and necessary semantic identity are reviewed separately from static illustration detail.",
+    "necessary_identity_followup": {
+      "finding": "A11Y-030",
+      "roles": {
+        "mouse": "button separator and wheel boundary against own teal/coral backing",
+        "trophy": "achievement star against own yellow cup"
+      },
+      "threshold": 3,
+      "oracle": "test/icon_context_contrast_test.dart",
+      "fixture_note": "Mouse48px rounded wheel inner fill has no fully covered pixel at every fractional origin;96px oracle keeps exact expected coral RGB and3.0 threshold. Divider and trophy remain in the30-context48px matrix."
+    },
+    "necessary_role_followup": {
+      "finding": "A11Y-033",
+      "status": "IMPLEMENTED_PENDING_CURRENT_PLATFORM_VERIFICATION",
+      "threshold": 3,
+      "oracle": "test/filled_glyph_roles_test.dart",
+      "membership": 147,
+      "host_contexts": 30,
+      "sizes": [
+        24,
+        48
+      ],
+      "assets": {
+        "bear": {
+          "paint": "Necessary eyes, nose and muzzle drawing ink #2A2A2A -> #000000 on owned brown/cream.",
+          "original_geometry_and_widths": true
+        },
+        "dog": {
+          "paint": "Necessary eyes and nose drawing ink #2A2A2A -> #000000 on owned brown.",
+          "original_geometry_and_widths": true
+        },
+        "coffee": {
+          "paint": "All three exposed steam strokes inherit currentColor.",
+          "original_geometry_and_widths": true
+        },
+        "coffee-cup": {
+          "paint": "Exposed steam inherits currentColor; necessary heart emblem #FAEDCD -> #FFFDF7 on coral.",
+          "original_geometry_and_widths": true
+        },
+        "cherry": {
+          "paint": "Both exposed connector stems inherit currentColor.",
+          "original_geometry_and_widths": true
+        },
+        "penguin": {
+          "paint": "Existing eye rim stroke becomes white; beak stroke becomes existing coral to distinguish necessary face against navy.",
+          "original_geometry_and_widths": true
+        },
+        "owl": {
+          "paint": "Existing eye rim stroke becomes white; beak stroke becomes existing yellow to distinguish necessary face against navy.",
+          "original_geometry_and_widths": true
+        },
+        "bell-off": {
+          "paint": "Original slash has currentColor on host and existing danger #E05A5A clipped to the original owned cream body; original body/bar contours inherit currentColor.",
+          "original_geometry_and_widths": true
+        },
+        "eye-off": {
+          "paint": "Original slash has currentColor on host and existing danger #E05A5A clipped to the original owned eye body, including dark pupil.",
+          "original_geometry_and_widths": true
+        },
+        "snail": {
+          "paint": "Original eye stalks inherit currentColor on host, with original fixed dark ink clipped to the existing owned green head.",
+          "original_geometry_and_widths": true
+        },
+        "apple": {
+          "paint": "fruit-to-leaf stem inherits currentColor",
+          "original_geometry_and_widths": true
+        },
+        "balloon": {
+          "paint": "hanging string inherits currentColor",
+          "original_geometry_and_widths": true
+        }
+      },
+      "limits": "147 host-facing contours/closed silhouettes plus explicitly named semantic probes. Existing20 own-backing probes remain binding in icon_context_contrast_test.dart. This is not every multicolor adjacency or every browser state. Local clip/use is static owned-asset paint, never background inference or child inspection.",
+      "additional_finding": "A11Y-034",
+      "named_semantic_probes": 71
+    }
+  }
+}

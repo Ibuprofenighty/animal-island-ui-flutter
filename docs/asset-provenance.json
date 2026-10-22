@@ -1,0 +1,1721 @@
+[
+  {
+    "path": "assets/icons/airplane.svg",
+    "sha256": "fb5c0e9cb9b499744b47914a7fc151fd99e61ee53dc214461b5e7c263f390fc9",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/airplane.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "ca992eee4d43276aeaa1fb5af6217da5698955e8d742dfb09444001a39986f65",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/alert-circle.svg",
+    "sha256": "a951cbe93657b3f179554733e541f98e53a5c5e7e0615de64e59641f1a65dba2",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/alert-circle.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: open outline and exclamation elements [0, 1, 2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "a767d77dfa5054299fc866ead5f5103c000292446497f33cbb220a7d21bf9fec",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/alert-triangle.svg",
+    "sha256": "51017a4b0ca198529313805fce2d8b23dc921b8c03d4d92c2b215fb2d0febc40",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/alert-triangle.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "1116b1420d98ef286fcded5c15c59499a7c43b1e785d3d4b15b10484e291677b",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/anchor.svg",
+    "sha256": "0184b607f11296a5ee50e86278c3a6c937e5dff96fce93ae244a1438682cc622",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/anchor.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "3c0177597bac3b5d24c90915bd7afbbf66a95ab43746f39c022b40754c16acf7",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/apple.svg",
+    "sha256": "427e3ec724848b20897618723bde6af78f6df565a69b759fc4f257b2dc234bb3",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/apple.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged. Necessary exposed fruit-to-leaf stem inherits currentColor; original geometry,widths and all other paint retained."
+  },
+  {
+    "path": "assets/icons/arrow-down.svg",
+    "sha256": "3f4c1332ed7d507c0641c9b81a46507357e278e684d25db25bb85fc8a62f75d6",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/arrow-down.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: shaft elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "d8ca50e9f580fffdaebeb1eaf4c0ae20e78253b24b22566e535a58e79c3277e8",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/arrow-left.svg",
+    "sha256": "76433b4734fff75907a1b169f249029caa6099cd8b3128cc9d4604db286b4e12",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/arrow-left.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: shaft elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "e7dc8c53e5a18641a0641fcfac95a5dd01a05e5ab72f6d9fe2da5bd923ecbf09",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/arrow-right.svg",
+    "sha256": "b166f7aec300a97ebd7a4c27bdbbb63551c53fc77a966c575aaff3939620e48c",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/arrow-right.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: shaft elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "bb9b67774a37936f8168f96b3178c07c09f25288440ed4a7c7e143b519fdb657",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/arrow-up-right.svg",
+    "sha256": "1a8f2126c0db9ca2c12e2f31cd742d8ece7250bbc42e32292b0bb7faf443d8ac",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/arrow-up-right.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: directional stroke elements [0, 1] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "20337d0fed7f14769b0bb5613adfe7ca19bf9b7e2b9b9de56abb7c6a6e2a6c28",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/arrow-up.svg",
+    "sha256": "9587862111e1a108a12480676adb9a2c110ef9a81568f5603de8611a8118013e",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/arrow-up.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: shaft elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "5aaef6c4fadb3787cab8d38c9cb6fa4f8f95829c6926ebfddc3f49448e547978",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/badge-check.svg",
+    "sha256": "45f243346753af9832cef48dcbe05621c683b20050e3cfbd83e20710affcb594",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/badge-check.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "79ccf920549cbee69c33ca63ec840a59bc0ed9c3787fbcd1dd0972aeec4a6897",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/balloon.svg",
+    "sha256": "d107ffee6b4c9cff833d864976d77c3fd9ccb99548295346722d030ca464b35c",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/balloon.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4, 5] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged. Necessary exposed hanging string inherits currentColor; original geometry,widths and all other paint retained."
+  },
+  {
+    "path": "assets/icons/ban.svg",
+    "sha256": "2f1d86458d2018d87472fcaab27117ba3d1effec40c9874145d4d6ee878ebb99",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/ban.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Necessary semantic core only: #E76F51 to #B03038; geometry unchanged. Registered A11Y-027 actual backing/contrast pair.",
+    "prior_crlf_sha256": "a9b1137b5320d73ba19f54e4bb4d614d10e96e51b8b6ab2d1da93513acc49fc8",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/basketball.svg",
+    "sha256": "ac23609ec45632b3b00882eeb0698ba4de0e59c8c0b5605fee248de1b83d36c0",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/basketball.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "168e3941f9097367456f6d9cca7e1eba81d04992f3f8d45cd7536d993c876b71",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/bear.svg",
+    "sha256": "21b9393f601ba959b5c4303aa04c801de419dfafbc7e483232677b3e6fc57c80",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/bear.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Necessary eyes, nose and muzzle drawing ink #2A2A2A -> #000000 on owned brown/cream. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/bee.svg",
+    "sha256": "0688113326f41e34fc4ddec1e34a1b6b31a5791f00e977bf6ba0551d410b4002",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/bee.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[6] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "72936315f23e008f0ce305dd3c74852940740303a2a07c5c3698d054d55ffee9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/bell-off.svg",
+    "sha256": "2b41a851b5d222f818ff2714a6063ddaef01d57d782261037aeac9919347f97d",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/bell-off.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Original slash has currentColor on host and existing danger #E05A5A clipped to the original owned cream body; original body/bar contours inherit currentColor. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/bell.svg",
+    "sha256": "cc33259914516049972a88ce0d0aa3e4b954d51617476a98a4c78161a739a69f",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/bell.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "ca504f3f56d5357a2a41754c923f3d84c070af884d6b50192b10df8b68d229d6",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/bicycle.svg",
+    "sha256": "7e87010494d196c8a39711014d5ece29eed71325e797a4303e5b8f5a4d6b5d41",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/bicycle.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: wheel and frame elements [0, 1, 2, 3, 4, 5, 6] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "9be6312ff7076d03eb5d37135ed5180cbd5ec1fb0e951a6c7e74824625ce1267",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/bird.svg",
+    "sha256": "4425953a656ee0ea7064b02ca6b681c3c396b6994cab08dfedaa514c7f985d07",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/bird.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "091ed0c0b90c25b32de746bfbe657b61f0a9c4bb4b50c5cb5bca718cf35d5049",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/book.svg",
+    "sha256": "31e3501496c215e4facbaa359a740c57c740bf890ac389d1a055adb39c4f1921",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/book.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "198fb14640216f74dfa0c2b22873f10a7d689b6de02063116e1884c0a4d4d7b0",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/bookmark.svg",
+    "sha256": "40e886ee4fbc6659ce697df856017c552554707e0e95be69961616f1aa31a42c",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/bookmark.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "18deff6e585ba75bb529ccd8a893d2b905c31fdf98bfaae89e84b5f3ec284cd5",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/bulb.svg",
+    "sha256": "c07ed2aba01c80e31419214a4bffbe8c65f8fcedacef1bd5f3826fa2811e7066",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/bulb.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "a4e6070f617f56a2402ea0afdb4da1778ed88d9923fdfb987841522edfd8fd1c",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/butterfly.svg",
+    "sha256": "695f868c10afd2bbeae9a0c0268955a4d6022ae5bc93cbbef25da4467f9d210e",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/butterfly.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[4, 5] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "6d5ab01ecff7a50cb0e8c08f970dd34d0ad43d96bdc0b66ce8a09cdce3a1131d",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/cactus.svg",
+    "sha256": "412d022b6d856e2a917d576c2175c904ee36a11bd28caf40b3272c9633efd3b8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/cactus.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[7, 8] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "b209f9763dc64617ccbca8591e86279f24e77be2742ea62a09083af902776dc1",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/cake.svg",
+    "sha256": "6d4812c200d84ab1d856ad7de440fe495cc34ee406f3650d30a39927332cdd66",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/cake.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "e72bdd50aef025bf01cb5cf82d8f97b8f988b2152b05f13b943880be630dd9d3",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/calendar.svg",
+    "sha256": "8ef5c7023f65e1d5ad0838ca42e4bf4fb96b9d6c168e488accaa8b69af09d67e",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/calendar.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[5, 6, 7] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "b8a77fdb9384f66a16649cfca3e3e8fbe48da88b5e059d49f82f14927977e48e",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/camera.svg",
+    "sha256": "24d7fe4cd5ec5d4f3d453676fd3111542a52b5f8d0ce3abc80a3eec952491cf4",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/camera.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "2de94d6da64a6ad56c8fe8f79d3cad8ca72d02ec672e4fc26837378c6686788e",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/candle.svg",
+    "sha256": "4e9c71eae724d353a29632c640af4aafc1058d7aa0d9270e527da10b053c0883",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/candle.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "5d0279449ecf33eb1f51b9e8ca7c3232a99d657aca934d1ad6375ba2613c340c",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/car.svg",
+    "sha256": "6532554553a8e419aae81e01e39c7f3c25a7ab8834a04ae98b2531447e19f443",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/car.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "d88d2cc36ea2c99a011f9981332decf795bf8c8e9ae34ce13c08137fe8b42da8",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/cart.svg",
+    "sha256": "35d73d9ef6fe1811809e4917c3f9edfc26157445c5d680e4abf86be7065e584d",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/cart.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "2fa15aeb4697b555cead43824187dae43054cf24441d645760c62d6d77af23c9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/cat.svg",
+    "sha256": "cfe97d1b43f69a2c76a02fe97f6a15f561c7afa147cfaf1c33f8fb3dd88f1ac3",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/cat.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4, 5, 6, 7] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "4c157f64d5025e1d692df06a53539e67cd0eca99c77edb13027912c71c9d5a66",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/charger.svg",
+    "sha256": "474410dd92856761d70446f29099a5eba309de84f593fe068269af725e092c46",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/charger.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Necessary fixed pale core uses warm #FFFDF7 on its own coral/teal backing;3.0 threshold retained.",
+    "prior_crlf_sha256": "35784ab98a721ec3829cacb94331b7c49fca592528be43208143691ac003fff6",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/chat.svg",
+    "sha256": "0bb442436de5f039508bda8de7b64d0f7c3bf989e6adfd2dff9f4ee28012ea2b",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/chat.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "163388393ae4af26a68c3b7129f06525e34cc1c9183ca9898656c07980282e6d",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/check-circle.svg",
+    "sha256": "5b554983777451bf14762f2a5a9ffdd1e7f77bb86b81bc28ad17bdc3b5dbf079",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/check-circle.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "67053a498f62155119afc4ead2a89b7243bab4f03429a757ce626376eb9f24ad",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/check-square.svg",
+    "sha256": "ad9a5973cc7ee7bdc520adda046c2a82437542640394b9b027bffb49c82b80a8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/check-square.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "3149960973c9da6de208361d39140451b274408c8a615ad9a159c90e2a9040f5",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/check.svg",
+    "sha256": "3f1c76602e87eff044c221e3a1524da80d8f7fb92e4711d6ed2070ee50667890",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/check.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "c03dd01f9c8b6529dcaefebe2bc5e8e8720ca9effe5e04e754e620f30f34658b",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/cherry.svg",
+    "sha256": "dc1e773883a32a1eda09cdfe0c40bdc0ba687e3f5614d18f09d211c36e8ff0c8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/cherry.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Both exposed connector stems inherit currentColor. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/chevron-down.svg",
+    "sha256": "5cd438bc2ea8eabe77249a8e9ce49699ee9790aa8a168ec5d2dcff86b693672a",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/chevron-down.svg",
+    "license": "MIT",
+    "transformation": "Root and exclusively monochrome unfilled required strokes use currentColor (explicit color, then IconTheme). Geometry and stroke widths retained. Authorized necessary-graphic contrast repair A11Y-024; not a whole-art color filter.",
+    "prior_crlf_sha256": "780c6cfbb373ec4575f6caa3e4ff3a2b9189a5ab66be4e50b9a09b1222f9a8c0",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/chevron-left.svg",
+    "sha256": "6145702ee87766b3508ebc395303d90e25d5e700cc238940317e5ee1dc8ba007",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/chevron-left.svg",
+    "license": "MIT",
+    "transformation": "Root and exclusively monochrome unfilled required strokes use currentColor (explicit color, then IconTheme). Geometry and stroke widths retained. Authorized necessary-graphic contrast repair A11Y-024; not a whole-art color filter.",
+    "prior_crlf_sha256": "3ba7b0af2087fef9e093a0189d92a02fd85f72f49995770f4e485cb2725a7b0e",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/chevron-right.svg",
+    "sha256": "3458be2d3d619d83d68f99b8bed7bbd568ea0a78897ff886d43b11ccc23668e2",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/chevron-right.svg",
+    "license": "MIT",
+    "transformation": "Root and exclusively monochrome unfilled required strokes use currentColor (explicit color, then IconTheme). Geometry and stroke widths retained. Authorized necessary-graphic contrast repair A11Y-024; not a whole-art color filter.",
+    "prior_crlf_sha256": "afc900ebc04f18dce34b7bb9fd23b31c7dca512c80b476f4af04529b8cae85aa",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/chevron-up.svg",
+    "sha256": "a7a9d5d38d7996b9435f0567eb9879d1b331be27dd7120a131266838371c14ba",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/chevron-up.svg",
+    "license": "MIT",
+    "transformation": "Root and exclusively monochrome unfilled required strokes use currentColor (explicit color, then IconTheme). Geometry and stroke widths retained. Authorized necessary-graphic contrast repair A11Y-024; not a whole-art color filter.",
+    "prior_crlf_sha256": "03ee7ab04954a0441dfffb5c9d50f399ae507a3381db76d9cb8b4acfc435710b",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/clock.svg",
+    "sha256": "d37525619a3a521f2e7d2117a1bd8ac885c6ef0a14d8ca7db0430a053a7fa6c4",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/clock.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "87ffdc90dbdc913d4a5b9ecc0c71cc6469e78a98cd5d1e8fc4f1641ec99fd893",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/close.svg",
+    "sha256": "a9fc05b915899ef5ab7de1800a585313d5b01f29867fa7319248a044ebc76998",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/close.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Authorized accessibility palette correction: explicit X strokes #E76F51 -> #B03038; original path geometry and cream circle retained.",
+    "prior_crlf_sha256": "9a54e26bff30c1eadd5c09c9360c253c4dc83b73422089d0619acf5b04fbc5e3",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/cloud.svg",
+    "sha256": "5b0f6a9203cf11e44b7aa35c45cd244274c2354fbc89dc8fb1b992fbe35b9cba",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/cloud.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "fc206f15fc234b1ba97b67519d903eb579b33444605fef75f4c73fc276fd36d4",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/code.svg",
+    "sha256": "c3f644ec167011557d8b196aa91d30a6dffdbf832800df97963710086eb54f87",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/code.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "cfb255a461768a9b56b9428a08813febed2bab902b66a723fafc32c1a2052784",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/coffee-cup.svg",
+    "sha256": "8244db23ba2d886482bf680c1baa9829c3b4d43c7dd78af072a2a382cb6e3520",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/coffee-cup.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Exposed steam inherits currentColor; necessary heart emblem #FAEDCD -> #FFFDF7 on coral. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/coffee.svg",
+    "sha256": "816bba31c66645bf373493250d56e0cfe3e44ff225fcbcc59fc48047b421a719",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/coffee.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. All three exposed steam strokes inherit currentColor. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/compass.svg",
+    "sha256": "a090076325c28de02beda5539bf703ad3a7e69eec6944577417e052d1caa7549",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/compass.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "ac0645175392a478f503d23b767e58c9a9b3db3e7cab7d92ee7b4a79adfcda40",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/copy.svg",
+    "sha256": "e177fa7d89f5f01e0c63287eba03b7d1558ecfbf215fc068df0acbdaa0961fbd",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/copy.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "39e4114ab254e014ed81f3065b2be3f27f518f85ff472ee12834ecec8959ff40",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/credit-card.svg",
+    "sha256": "62b13b54144140e0072a65fa1b7eb9483220590f1f3533ff7478aee601a92116",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/credit-card.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "082ff8fd605232bf96477ed6916d3d63b5b1d06780c89b5cd5921ccb07de58c9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/dog.svg",
+    "sha256": "329706b9fc765bb3a6f12896fbeb1d92f98f4263fca85ae32ecdf8bdc06101e6",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/dog.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Necessary eyes and nose drawing ink #2A2A2A -> #000000 on owned brown. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/donut.svg",
+    "sha256": "d26cb0d219a89daac9c7e7ffce460615b050cb9f3d980174c6cf1351a6620f85",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/donut.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2, 3, 4, 5, 6, 7] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "f2f5c0b44028627d9a9a584569ae58c7a817833f49c61d44f7f8f4b3b35e1745",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/download.svg",
+    "sha256": "5cf8cc997919d90cf7cf707e2a8b94e4838ecb4b3754144bd6f76239601c00ee",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/download.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: shaft elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "8573a5b14a444999d2fc4d798d99f682d22bfe74dc38d9552cb175658588b2ae",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/dumbbell.svg",
+    "sha256": "698a5d55254b3031366e1325e554b3db04771b701b8b4029ca8d802b6c417126",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/dumbbell.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: connecting bar elements [2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "7f48d04a6eee094c8c0a8f29ed7cfd27cdf8f3e6a898421b6febae0d0d0acaad",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/edit.svg",
+    "sha256": "b8102de64ea7b1c09080158d433c9ce4f95ecf2ccee136f31807443cddf46e96",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/edit.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "14cd371c3c40d53048db0fbffdbffabfe9e7a13ba710609ba55933ae41066c12",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/ellipsis.svg",
+    "sha256": "3e6242871d6a3ad923564ec1972ae29d36b59aa0b81e15ce3e2703a84574de5b",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/ellipsis.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "3e36356c6dd7c097fb8bbde25130ee01c6813fcd4fd44eec11c117ea36ed8700",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/external-link.svg",
+    "sha256": "ac37061efe7cf0e06da7444354a584b99b4431c7b1c44e6b72b9342e78b2bc22",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/external-link.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "3313b346d42be28f6025829cfa277ee23727bdcb2c6b7546b3aeff66c1a4ea8a",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/eye-off.svg",
+    "sha256": "074eb6a4e3f7f1dfda0178fc4e3bd68eba35c3dfc7ddbfca709591dc87ab424e",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/eye-off.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Original slash has currentColor on host and existing danger #E05A5A clipped to the original owned eye body, including dark pupil. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/eye.svg",
+    "sha256": "53657392a06c8f734ce9e0394c6330f29a72ae76d07da82b6a961f0f5f31e5bc",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/eye.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "16add9b85feb4110892dc3e364526d43a894d896c32aab0aa30cd896b502a0a5",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/file.svg",
+    "sha256": "1c924f67123dc717345bbee39981e2fd9df6156b244c2f56c9fd6b9fcc4fdc58",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/file.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "dda64e06e52497170740a42d3d39c817fbae5ed7b4887bca04b6f1d706977d0d",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/filter.svg",
+    "sha256": "459f110295e2afa7dd2c1398806ebc21524c0c59bd6a0844cb34d849950971e1",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/filter.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "2985501a66936f55beadc48140a5e926261a43abfd15ddc42a193ec76d22bb0d",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/fish.svg",
+    "sha256": "73b310ad3d83cc9b245149ea1777117e4c81200a85582ee97211dfe1d4756935",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/fish.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "3aca9cdf7598292e50e9ec6553391938a90519fb20071341269dc952c389989c",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/flag.svg",
+    "sha256": "0abd98d2b68cda4974018763829b790e1e28c42fd71c8f5921e486461a421d8f",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/flag.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: flagpole elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "9216c9c05a38a8adfa51b19ea892c8c7b9ea78aea5e1fedd42c44b8fa8e07903",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/flame.svg",
+    "sha256": "4b8977cd835eee34e1442d12e8518c2226d910bfec93491299192b0ef6e49f78",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/flame.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "4873b67805524ee32a346cd7e339443aa03e361d5422e1db39ab3b805c75418d",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/flower.svg",
+    "sha256": "e83bebd91ae17de42d0f3c2d1477c7b7904cb96beb0dc2377564da272655efd8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/flower.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "111b89de314b18d65e227819e1d97219244a7aa5503f29df9a681c0a0bb7fd98",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/folder.svg",
+    "sha256": "b6f72f063d203c655a6290ab6977b23ad2213dc42271732c14c1b235841519d4",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/folder.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "f5b99d749d6e508a7197055083394a898d31587ce11db1ec75bbed278f56df06",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/fox.svg",
+    "sha256": "77c33fd77e0cf28b90fe3539cc01ade3e62ad74866e20dda3114c1da20bad98f",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/fox.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3, 5, 6, 7, 8] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "1b776dfb40e34c64b7f380b17286ada7a9c0e91d9369f125633dd6f6856e7275",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/frog.svg",
+    "sha256": "bb41444986bb6369a4a924f16a974981e8b124895d4bc4a0805e713c14192454",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/frog.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3, 4, 5, 8, 9] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "8652215557375b90894e178740fc208a5ff4a2ee21b5841486ad6ac9063f0426",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/gift.svg",
+    "sha256": "7d3c46d44c68d04084b0fca9ce1fe9ac4944e231f4b6dd9278fe9b06a5337ada",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/gift.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "82a3cc368dc51f53003f4a5415c7242b9f7c298dcbc07913ab0011e37696fde9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/globe.svg",
+    "sha256": "0a2f48912ca289038eaf353ebee532452a586f3fbf2a00b31a7c7e6f264d1f38",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/globe.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: stand elements [5, 6] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "4e9e153de92bf3f3342995493d182be909b00ffb5fc3e8ec7e3ef61c97f1af8f",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/google-chrome.svg",
+    "sha256": "7b53ceb9d0facce56473fd6be11411bb29c8040166c32975a4fcddf5ee87fcc8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/google-chrome.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "c6be8c9bd5f86b42fb73bb9078aa9afbc47fb116b27e36b0b45653698d16a8d4",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/grid.svg",
+    "sha256": "96bb8225b79685ffd09c40729341681d71ad8770c25cf74f57aa1f616cc772f1",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/grid.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "e3ebf3efba82a3405b5fcf55ac1babae72347193d2b9bfd0e5cef991378f0ab9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/headphones.svg",
+    "sha256": "aca15cd43a58c0955eef9663e006457847e507a0764bfb0e64a31fce4caad19e",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/headphones.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: headband elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "ca1d80aa49a0ea9f1891da5346003621ad4796a016dca1f121a18bc7de150e44",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/heart.svg",
+    "sha256": "cf0cf97ce9d70a10799b7fba37ee6b9ea1d879cf379eb21dcdb14c620251bf24",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/heart.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "916713fc0d067d208f15b20dfdb2bdd7398a71398878e5614502def0decd65cf",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/help-circle.svg",
+    "sha256": "2e029fefc74d01d9cb30fb953c33e72d405aaaf156db1110c26ec5b772026aee",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/help-circle.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: open outline and question mark elements [0, 1, 2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "5daceafa46d0f8eee76b3f94901f99eae91341ce67c055ab0d19b33ac4f14221",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/home.svg",
+    "sha256": "84c1d8a279ca1aa55d861375074c61701bc62c9a432cd059d163ab1d4e7df3f5",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/home.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "c1e9f3fd41bda0724d5560cb6971c0898f3323defeb8111474c77a83db9d25c5",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/icecream.svg",
+    "sha256": "2d9b54705f9dbfef4949e9be39f8ec5ae53483e2317434599638800dd03aaffc",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/icecream.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[4, 5] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "68e6a89fe631394e5775e5c44103e3a17a6c7e2e3bdcfdcfdbcf56d230843079",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/image.svg",
+    "sha256": "f09b080d512aad69961f555fb7a415f01988af176452d3fcc5c90ea1f6ab6542",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/image.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "a5672d6906381bb916c543a827c51f88cfb289fb3d5b89956471d66017628200",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/inbox.svg",
+    "sha256": "bfc432bedbe6390104b725afd3eab021815720255820168a7319e4d1e5a2ff2c",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/inbox.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "0f16da015fc70cf13e8c4099d331cff5c7b2c5895811dcb847c0ada81ab9b4c2",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/info.svg",
+    "sha256": "77845f4869b474a936e4a467c84ab3f77f859d224363a58b4bae11fab43ad705",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/info.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: open outline and information mark elements [0, 1, 2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "e07258dc7ad721063b3c3afdfb4161c8f127f5d3f68f8c99ec08ec384a01d0b4",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/key.svg",
+    "sha256": "7882331b73e0e696191d8561ed9445ab33ff94ec6a7167ca6a8f1f5254a87d27",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/key.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: shaft and teeth elements [2, 3, 4] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.  Interior art elements[1] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "f8a8f91d5d58a221331981e1ff688b747b280c6feb6fdc36464c2ed3ea4d81f2",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/keyboard.svg",
+    "sha256": "1758441d0e666c47d8a4773107e65c0542b30ea2360f80e75c753119e6b0ff80",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/keyboard.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "15b4a918c4dd1e1afb0578c2030d426994d26ae220f7976664019d6d417e842b",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/ladybug.svg",
+    "sha256": "1dc5099f10399c3e87c4d3c3cacfb69f12e2d455312f18fb8e8ccefacea7dde6",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/ladybug.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4, 5, 6] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "d6fba6cd424dc8c1990fb93aadb5f893396ed05adcdefa330adefbe4c89906e3",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/lamp.svg",
+    "sha256": "b7b3368179b3a782fc12a504ece51610518784cd31bbb43f8abb21a954acf4d2",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/lamp.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: stand elements [1] inherit currentColor; geometry and remaining explicit fills/strokes unchanged. The later vertical ray element4 also inherits the stand role because it overpaints that necessary line.",
+    "prior_crlf_sha256": "58e51ed8d62b7f92d35020c35859c36976557b382897459b2ff75c76eb0c393f",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/leaf.svg",
+    "sha256": "ca3069b74e54296410ce4692c875d78fb8b691e3579f7841a17a831492a91c2f",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/leaf.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "e5153c484edb04e54456d2059cefd2b1f2bc9d8ed1c3b701e03bffd06624538d",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/lemon.svg",
+    "sha256": "0aa96b9c8added66944e8612ee48be2fdc793de6a2db16a6cee7c26c07d36076",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/lemon.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "8a98773095090b2fbfb58ccee46698bd4d0e625153d8ae42631acdef33bb6cac",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/link.svg",
+    "sha256": "a9a2bc13f7364dbfdf9b1d7d4a44a2d399286b3ddb56b2a48949b14625ac6609",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/link.svg",
+    "license": "MIT",
+    "transformation": "Root and exclusively monochrome unfilled required strokes use currentColor (explicit color, then IconTheme). Geometry and stroke widths retained. Authorized necessary-graphic contrast repair A11Y-024; not a whole-art color filter.",
+    "prior_crlf_sha256": "ad4ce18b75e95722edc5960fcc96e743eea2786d01586e0372b872b42186b987",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/list.svg",
+    "sha256": "83f576e16afe4e438c47441501f7a91c31b12c6647a838444af363cc0e5c1e3a",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/list.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: list rules elements [3, 4, 5] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "232b843616a59f912570e5ce52b6f6a623330235cfb8a34e13c731c39555fecf",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/location.svg",
+    "sha256": "6be4aa02e9d3381fd28be466a79d00d7ff8ed68052d9d7f1c5a6f78dcd2a56fc",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/location.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "5d053554fd3b2a4ab9e8124bdb7217aa4eadead393b305687abb2130149654d6",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/lock-open.svg",
+    "sha256": "d619ad10aa9d4e505a72f7d9fe9cef4740abf04c60f5b252d5eb67c1a2f905f8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/lock-open.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: open shackle elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.  Interior art elements[2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "8d23900ac7e1aa40f6c98f3265cbd745309bd6e7ff63f025a2365eacb24b7036",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/lock.svg",
+    "sha256": "d3a8f6fbf632e7740eb3251a2d77910a7683e54b0b228014bac825289beff20d",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/lock.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: closed shackle elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.  Interior art elements[2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "f56ded68695732d49160ab4af2ba596f3d3ba5a1dadaa6460403f2ae8a807182",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/magnet.svg",
+    "sha256": "56cb1b1b150c8b0f7ebf3ae9d9d807c1a0ff6780a29970323c6669001d7d995d",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/magnet.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "575c8ebda93399f52a11e76d0cb260f5d627175f82bfcdc0ac615955959b08d9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/mail.svg",
+    "sha256": "cc790b6f411abf1622f402b8d313aa87b170257c66727a67baf3c63c9c13e44f",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/mail.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "ab0e09b53d3c474f1b8e1d2f53685833468c2d6f43c492335e662c9b29d791d4",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/map.svg",
+    "sha256": "bc576851322b3a14c9706e75fa85edb5caba3fe866c4cbb3d3633f32bdea5177",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/map.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "b39c4bab6d87b2bccf3ec8fa8b7fa74d658549b71215d8dbbf61555bb6b15c76",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/maximize.svg",
+    "sha256": "9fb104903ea92d2f0907233348342f17dec7c4593ec9dbd41641109653a81508",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/maximize.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: open corners elements [0, 1, 2, 3] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "5dbe6a55095c12cc9b896b5193130cf1c2f6fc9ed66fa1d2fafa351b966322c8",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/menu.svg",
+    "sha256": "1b431ba953fc7407e46dc3a0343baf81a4eec7af9466010ad1cffcb027dcbe26",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/menu.svg",
+    "license": "MIT",
+    "transformation": "Root and exclusively monochrome unfilled required strokes use currentColor (explicit color, then IconTheme). Geometry and stroke widths retained. Authorized necessary-graphic contrast repair A11Y-024; not a whole-art color filter.",
+    "prior_crlf_sha256": "fe285eb2b2a9930de722fb284ada03f54e7fdce71ee6dbddaed35e617ac2d0d5",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/mic.svg",
+    "sha256": "8208a6e979814f426c9786831e35377f49c2a0ecb22ddbac35024cfacd91e644",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/mic.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: microphone stand elements [1, 2, 3] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "f00027b36d46759ba4e3429eed742b1eeaf7195dad235ad6ba5a97433222980c",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/minus.svg",
+    "sha256": "05bd7e786b7ab98112ddecd63a33476c95aa4da19ab95084dfc89d89367ec8c1",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/minus.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "7b4d635389214db1c74ec23e4e27a237b9c1eb3f2c88396d05a8aa03201cec39",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/monitor.svg",
+    "sha256": "7d58f3608c2d5305484650c563860221785330332b4c6e7d90ffd7cb2fde2152",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/monitor.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Necessary fixed pale core uses warm #FFFDF7 on its own coral/teal backing;3.0 threshold retained.",
+    "prior_crlf_sha256": "bae6844e71afd3681dde69a0db1366d9f3f23f7720c07559955a0a9c261ac955",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/moon.svg",
+    "sha256": "7608db0aeca42aa09d9fa00abdea5473dee7565e70996377c24ffa470df65680",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/moon.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "bb9d38508bb53e21ac5f98ebcbec2c0c6ce4725e81807a8ef22a6ae603fd0599",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/more-vertical.svg",
+    "sha256": "103194e0f30f337b087d7af1bcf69440c8474dab83daed9ea77d8824b64259bb",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/more-vertical.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "84e431c8417fb19b0d4e80b69edaa1501a9998fd621288896fecbb2ddb513918",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/mountain.svg",
+    "sha256": "959248a35a512cf63232ded36f0759a004ca5c0748838f1337d63da85fb92961",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/mountain.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "21b3037a2208286666bf817713952b38dd9eb123efd9c1a6012688088eef37dc",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/mouse.svg",
+    "sha256": "895875c3aca5408cf4675e6c65e915ccdcae4c84a217f4e3a398d4fea4e3c35a",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/mouse.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Necessary own-backing identity repair: mouse divider/wheel elements1/2 retain original explicit drawing ink#2A2A2A; all fills and geometry remain unchanged.",
+    "prior_crlf_sha256": "e6305a883f03a7ca9c47af7342230f08bf9fbb9336508885811917f5b8bcb864",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/mushroom.svg",
+    "sha256": "fe635ff075d536a1793e11ffb54f1041a402aa87d329427cf1fc87b6e6f69ab9",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/mushroom.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2, 3, 5, 6] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "9e57594c46a384cf0135e81118844e12d7964ba85371f21d6a08b1eea0f8109f",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/music.svg",
+    "sha256": "0d2387f887540933a1abd1484826faa8a05df183b5ebbe4ebff52362b900269c",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/music.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: note stems and beam elements [2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "38807402a84fae93aba66d8a320ad8e1441190ce281a9d94c9a3782a1f15867d",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/owl.svg",
+    "sha256": "be7b9005d03c1e1a921e110cef489e3466a8b136697d7ca5b56cb890ac2964b0",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/owl.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Existing eye rim stroke becomes white; beak stroke becomes existing yellow to distinguish necessary face against navy. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/paintbrush.svg",
+    "sha256": "169f31eaed34d2de7a8bb92475762b4df6360b1be729dabde877dcec35dd52b1",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/paintbrush.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "c30ccdf34d048ce7a6c00d2501098d62600a9c8656d3f44a36384216c917cd58",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/paperclip.svg",
+    "sha256": "1ff6c69639057b61cb1ee106173e963faf17e15591f18a010b8da180332bf7bf",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/paperclip.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "429d79035265408d436712e45bad7b528b60450f655fe8943d992b22e966d3c6",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/pause.svg",
+    "sha256": "25fc432579d2e1121e7c0a25d7b747c97e7aff96ffe26d5300c702ba4f56b77d",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/pause.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Necessary semantic core only: #E9C46A to #FFFDF7; geometry unchanged. Registered A11Y-027 actual backing/contrast pair.",
+    "prior_crlf_sha256": "294dc996fabf010c8284fbeec9e96feb294a1730f8032e2561241eff4c71d97a",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/pencil.svg",
+    "sha256": "0956be64567eed3a3425da42bb684871631518145987a829d999d8d5e3b3e1c8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/pencil.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "2cb4559a36056467fbc7a6cb2d17c3dc124c6b1f2dee8156f4cba52fec7e30f9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/penguin.svg",
+    "sha256": "dfc1107a56901d8f659b189624dd7364f09829639eab34587fca068522b649ab",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/penguin.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Existing eye rim stroke becomes white; beak stroke becomes existing coral to distinguish necessary face against navy. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/phone.svg",
+    "sha256": "713075daf84f02d4793f625c341d88baaaaa7585a222cc9f9d37d87ab3001ae3",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/phone.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "0900e2ecefb03b76867a1928218366d8b0a7f33bb23e1c4f8bcdfe6e302dbf3e",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/play.svg",
+    "sha256": "16ba4d7fd0cf093a12500ba87f1e8d0988a1663740500dcfa77247a1c07348e1",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/play.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Necessary semantic core only: #E9C46A to #FFFDF7; geometry unchanged. Registered A11Y-027 actual backing/contrast pair.",
+    "prior_crlf_sha256": "72da8f386b6b3ca91870adb76f53945499d6c7a1f849c7a5a97786fe735e6043",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/plus.svg",
+    "sha256": "ce93ffb7972234511510ac28cc93555acd890ccbbdd22bba15a235f9aec0f891",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/plus.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "949478463fcdddca6e02cbc53784fb74f25e5318d4dc33b3e2a990768f0ccfc0",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/rabbit.svg",
+    "sha256": "75b95e2bb869f0002d75ae4d66d5ae4ac75c59bb8dee17d3425d757447c7f24a",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/rabbit.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3, 5, 6, 7] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "a5e1f3d2fea5a29f253c6ce73ef8c85af09fb12a2101286955589c159c93855a",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/rainbow.svg",
+    "sha256": "1340095670259acbbf52407aaea081721ab15b4f1deb4061f4506688690319e5",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/rainbow.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: outer identifying arch elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "717ca351db7adf97a45fbad0c602366b400facfacbc78bdc656db3793504d7dc",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/redo.svg",
+    "sha256": "ca4258d342817485a19a454ff0446b06da0e1025e4eec01a578037ba13e0b02e",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/redo.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: return arc elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "abe613f152a12d0ec91cbe7ac911008e12b1848263f89aa2fe3f1b7dfd05fe82",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/refresh.svg",
+    "sha256": "8429f74d9ba5a7b426a5d262184893a4e0f63adfc588ddfe7ca3c1a2b0050f07",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/refresh.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: return arcs elements [0, 2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "d37e6933673f05eb61a2c01ee783f9579c3a8e40c73588bbf452e9f5d6b6eb94",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/rocket.svg",
+    "sha256": "a8f9f01993495c33acc3a047f8ae727e983cbb323494e7437cfef4da44ab8a9e",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/rocket.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "5fcebc4b03e962272173ea9c44cd56b4793a9cc334ed82f8664e93eb5902ba50",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/sailboat.svg",
+    "sha256": "994f5af871b1749e012291d412573881f1daeb43e0eb1394895619460bb1f345",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/sailboat.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "30cfc7b75883c1287a0cc26ace01cfda476b6369181efa8394c0fa0106860a33",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/save.svg",
+    "sha256": "4b4adb16d6ce7cbe89b2c06ee080b224cd98528bc54c118194b8151e70437473",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/save.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "8740a8070e736000dd155bb7517f87094d5ff7efa36bc6de9ddf64c28151079b",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/scooter.svg",
+    "sha256": "041c53a4a5cb8e0f31e51100a6d0766fd7121841dec76f37ca023859da260938",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/scooter.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Necessary transparent-host unfilled wheels and handlebar inherits existing contextual currentColor; geometry unchanged.",
+    "prior_crlf_sha256": "6353c09cc5af843708b4369bcfb6549f73584246c7ad3242a9077d31993cfa81",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/search.svg",
+    "sha256": "b9d42aed84e734075116ed0c0f1931ce88f079f4677445c1dcf6dce9490cc475",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/search.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: magnifier handle elements [2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "acd2f47366fd9802e39e91ea49cdedff95b9cea36bd1f34e05bc63c562517716",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/send.svg",
+    "sha256": "d4ceca8cf05da5383ad29bb9f78dfb5862c7a5234b14a90c16c2aef5850b73c8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/send.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "86dfeb1e37be355e9bddc4c9218ec42cd1e42f74ba0629d22ee362e4169215ce",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/settings.svg",
+    "sha256": "8e43f769399df631bcd091df3a4ac4fa0686c347a000f64792397850ebb3c56c",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/settings.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "5876f9abf87227428229442f347b942c60eb4c1f1cc5d8bc65c49b003525489d",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/share.svg",
+    "sha256": "2f8eb4d2d97c0acfa4b5b02985fcbe617437c03e8040bd464efeb277b256d908",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/share.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: node connectors elements [3, 4] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "2da59c7bfe01b7db4f1e0cc2588427b3194a801b0eb08112f294203e9deb683a",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/shield.svg",
+    "sha256": "f1f97a65fc79896f73f919e42e9b6d71fd7c8b56966d95fe3b8ceb57a61dcaf3",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/shield.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "198672b71ea98da0f14a9e91e98fc0a064adc4abf3ef69c2c6f58840493abb4e",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/shopping-bag.svg",
+    "sha256": "4e023e43a82f550227cdc9f0d6e83b85545c228f66ca638fa70800238a67e4d4",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/shopping-bag.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: handle elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.  Interior art elements[2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "251a7829cfb191552ea4af39b8154045f9078b3bd61f45af22de1e9ee9971668",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/sliders.svg",
+    "sha256": "f5d7ce602a75755081936c39008c0488aacb84573064901b5a9c39938e6327bb",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/sliders.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: slider rails elements [0, 1, 2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "3d5b7b2edde1df994ef7b8678ef37fed854afec03158ddc9683d60245012ba92",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/smile.svg",
+    "sha256": "02e56b0073699f57e9af677e815bda77adc0f4b7b321f3e8596567d6285d27d5",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/smile.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2, 4, 5] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "73cac54bf072656687d202d045e558a672cf9f161b9279a02db0e740880f4022",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/snail.svg",
+    "sha256": "c2cd520c346f6e57efea5752aaa9ff885a35b713c1e4b4d5340ce62e18ba1b93",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/snail.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor. Original eye stalks inherit currentColor on host, with original fixed dark ink clipped to the existing owned green head. All original drawing geometry and widths retained; a local SVG clip/use shares existing marker/body paths without a runtime context heuristic."
+  },
+  {
+    "path": "assets/icons/snowflake.svg",
+    "sha256": "fb60e006362c69c815b52d4f09a87247c04d9879ee2cd708143c25ae0ff7c963",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/snowflake.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Necessary transparent-host six-arm glyph including central dot inherits existing contextual currentColor; geometry unchanged.",
+    "prior_crlf_sha256": "3e127dcc71514a027567977f41fdfc68fa7086fb88fb497630a4c68705ea5749",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/sort.svg",
+    "sha256": "dfec09b2073912227732c6cb25c67cc2f542c9205b93961db3ca415723b8098d",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/sort.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: directional shafts elements [0, 2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "d361c2df9a036fc68ffc8eb13a91ac5bf1b52e8317131fe12d3dbe36a7142b4b",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/spinner.svg",
+    "sha256": "f8dd3ab43b4e2658c9c067815e7eddf76edfb3376a0b1a3391fff18b08ecf82e",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/spinner.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Pale #FAEDCD spinner track remains decorative and unchanged. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "0a18055d6335d96dc4b412f6ef3cd8daea28d9a1ee9faf8ae2f1df6fba0c8e18",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/star.svg",
+    "sha256": "a5313b954c9db61442efd839d5077499258636bceba77a55ce3b8a2590bec702",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/star.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "539435ca3681a177f77bcf44e23b3a10ab763f5add4d644cb99a3194b529722e",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/stop.svg",
+    "sha256": "3b5baaa0c830a19d8a964faf522be35501e179e4e504f6ea226370baa53f8db5",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/stop.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Necessary semantic core only: #E9C46A to #FFFDF7; geometry unchanged. Registered A11Y-027 actual backing/contrast pair.",
+    "prior_crlf_sha256": "ebe26c07a96e9b2cccd249743b79c8e030d00400648d1e3c1bbb7f92deaaf142",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/strawberry.svg",
+    "sha256": "c3f78674d7f4e156b99652261e25834ff64ae506e61074e748d00d0462700787",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/strawberry.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3, 4, 5, 6, 7] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "1fd215890e03232e6bb967209e28be2ae51ddfed98a7d2d45003ef937dc0f256",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/sun.svg",
+    "sha256": "092cbd57a2b00d031a9d954e8c22875dd25e30eaa76ba9efb5322a0a7f9d2ab4",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/sun.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: radial rays elements [1, 2, 3, 4, 5, 6, 7, 8] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "8f7ff59f235084e97506446fbed278f1bfe9a50f9a62746b0955e9ba83118d78",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/tag.svg",
+    "sha256": "68d7960d931e7b53e4c85d5fe653eca7bf53bb4b23a5409d779fb511e46ef67d",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/tag.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "265ff0ff4ba4f8e11de10201caa76ecb5bc8d6ae2ccc001c54823341e7c0c3e6",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/tent.svg",
+    "sha256": "b1cd464f8702844067ab950f675208d37eec8309a5297f62f8727e57373c5bc6",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/tent.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "70cec848c8a75893bde74bac9de5b8ee742e6407e374b995a58cd9d53330f335",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/thermometer.svg",
+    "sha256": "f4dc3ef7364c4511acfefa1755325f431ff46029be4f607d014a1455ce409b75",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/thermometer.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 2] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "6ba0e8db7ac1122832950b91eec2651185e29e007b03e806dae584b73f2a67ac",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/thumbs-up.svg",
+    "sha256": "dc885b8289fac4744aa0e461a3dba14c3df2a861b57ce6421b664fc05a578b46",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/thumbs-up.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "5be3efe9aa33a79379839f5b889a9cb94379a2ba99fa4f069573c133076fd5c2",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/train.svg",
+    "sha256": "e9ba82acab710b53ad2a8d4f9d725e7f60bb0c15f66009fbfbbc9af53a4d241f",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/train.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 9, 10, 11] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "0d6a5969fe7b5024c32dd32e3a4c97573c65ee62b10292d9182c6149dfc154bf",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/trash.svg",
+    "sha256": "b588c98a0531df88bb0f5344665b0f5cff949247e432c33c79e7a552bf4a98d4",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/trash.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "5c417a955cd556ef7fc8f04caaf0a17dc6a1d3e30b39566043b118e06037a952",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/tree.svg",
+    "sha256": "1d20467408ec76da91e0a68129f3678f8213b38daa658c4f3b015a30485a0d87",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/tree.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "66201db9c94cd46f444669697c2ee40cce523f40d13446e3ce77a8193ca37f77",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/trophy.svg",
+    "sha256": "89c8b9dd888aaa848215dc217e7a7019f62fc80062ea164791577cdf22bdd20d",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/trophy.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: handles and stem elements [0, 1, 3] inherit currentColor; geometry and remaining explicit fills/strokes unchanged. Necessary own-backing identity repair: central achievement star element5 retain original explicit drawing ink#2A2A2A; all fills and geometry remain unchanged.",
+    "prior_crlf_sha256": "2a7604676572a17e98c5a2c630c67afb13df1a61a971e2eaed23ead04f1449cf",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/umbrella.svg",
+    "sha256": "e2ca233d3190e1b1e164839f6a400f09f6b83299d35d777ae78cfdcac1df1dc1",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/umbrella.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Necessary transparent-host stem and curved handle inherits existing contextual currentColor; geometry unchanged.",
+    "prior_crlf_sha256": "d72a60022a77294c0f397f508d7315cef7d8bca82d4ee5af2f4d1df77b7deae4",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/undo.svg",
+    "sha256": "150e47ae2e016c500ab6cd51bfc1ed106989073b775c66eb9dcbefa03edf68c2",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/undo.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: return arc elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "b3874672ba051a6cc1b3ff465abf6853fc0c75e5f2f12ea78ac6058db6179b1b",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/unlink.svg",
+    "sha256": "95cc8db941d18428559b7d2f448676eb6317b5ea8ac9364cbbc5da41ec88ac69",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/unlink.svg",
+    "license": "MIT",
+    "transformation": "Root and exclusively monochrome unfilled required strokes use currentColor (explicit color, then IconTheme). Geometry and stroke widths retained. Authorized necessary-graphic contrast repair A11Y-024; not a whole-art color filter.",
+    "prior_crlf_sha256": "048bbb2df8aaf8dd229e700b9391122f7d2cf5c956d392722295f1c475941939",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/upload.svg",
+    "sha256": "6c89841f23583c0b86ce38ff804d6c876e7b6cc30e9b7120d744479d5b00bc51",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/upload.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: shaft elements [0] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "4d2dfdce0e6982bcbf40c1f8426e158191dc79598cc65c41dac72a6c52646dc9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/user-plus.svg",
+    "sha256": "6d18cb79af721aa78518ba7e59dcd31ef123b805d99a0f4cf4018ae1f93fdcc9",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/user-plus.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.  Necessary transparent-host identifying add marker inherits existing contextual currentColor; geometry unchanged.",
+    "prior_crlf_sha256": "f591d1dba0034091742e2bdcabd5cb705de51f3f7090ac6f1371146e7eb85d7a",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/user.svg",
+    "sha256": "6cfda97dc5fd0658d51ceb334ea27b5da31d275b518bc260c7cc98a397ef2d57",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/user.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[2, 3] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "34d878d089f556af7cb3a388fe8f450a891c0bf1beca2fbe20f59ff92ea7ce31",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/users.svg",
+    "sha256": "5be032c64c46982d9a64f63208b9c6dc43db076a13c2cab2bbc3b9372f1cc2f7",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/users.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[4, 5] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "21ced4dde439bc49f9e3ddfbf3db1d947371ecfed37772e79c23861d96534da9",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/video.svg",
+    "sha256": "a1750fea6e1b133d8e75fb9a03a6dc6c40444cc6c8f2d04a5f5905469d54c9f8",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/video.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.",
+    "prior_crlf_sha256": "21226b3863489167b957ce22390d50807b7b956666dcd611426ff6de9aab54ce",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/volume-x.svg",
+    "sha256": "f5175900452174d16a601b3c2ac747ed26a7685a59e3b759c1385169fd1e015a",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/volume-x.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: muted cross elements [1] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "dc5b902b2f1f36f3e086af21c288f47e6429b920817d680c1b33cf9f1bf4b433",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/volume.svg",
+    "sha256": "70320ddf9a13e8b5d8d0c78b07846183635ff13e617d4526b2efb53717690701",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/volume.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: sound arcs elements [1, 2] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "2c26d33725edabd23d307ce2ec6567a68d48f6f9122130b6b09650ea83415070",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/water-cup.svg",
+    "sha256": "513525ac955d147e474ee0b4ea27d8814f499f8432c7bcdd3cb97ef35d3fb692",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/water-cup.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[1, 3, 4] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.  Necessary transparent-host external straw inherits existing contextual currentColor; geometry unchanged.",
+    "prior_crlf_sha256": "c9574f76187d1c2cdf483479da456667a43047bf33020a5d22a725638b218044",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/watermelon.svg",
+    "sha256": "c350f3d9e0b72606d6c42f265986333e3c731c034dc52ea97c021d04d04354d3",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/watermelon.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained.  Interior art elements[4, 5] retain original fixed drawing ink on their own opaque filled backing; outer contextual role and geometry unchanged.",
+    "prior_crlf_sha256": "704412868a7d5c8f5f96bb0d10d9f3f0b5b4d1f87d8a2144be7d57d9955a3860",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/wifi.svg",
+    "sha256": "cc0f34dbf4bcbeedb45e776bcd8c7443d6b02a9bda7c3c85ec33893a05810e70",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/wifi.svg",
+    "license": "MIT",
+    "transformation": "Root stroke uses currentColor; explicit child strokes and fills retained. Contextual necessary-stroke repair: signal arcs elements [0, 1] inherit currentColor; geometry and remaining explicit fills/strokes unchanged.",
+    "prior_crlf_sha256": "183ff73d19bcd67e33d016c8f534bd17c04a39e498a628625b4cca45a8ffb994",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/x-circle.svg",
+    "sha256": "5b931bee1ca19f941ad434c57fdc45d1a980974e3cd9171b72d42cc9baedba53",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/x-circle.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "3dd7acf6eed549e03efa8c0e47e016452e835744a83c3a77fcd5f17964e64b0f",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/zoom-in.svg",
+    "sha256": "31beecce0d9d1f2ca4a6b3a93b86d43d280a1810fc5f7f5758a8dcf38e00916b",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/zoom-in.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "f532471662bcca57335da88a9c76b9da4a047a59a0b7c12cea58d79cf6ab72e7",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/icons/zoom-out.svg",
+    "sha256": "86474d9c19f7b15ec72dbf7422e1e502eac7ccba03cb9d7fb16ea9210d68c909",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/svg/zoom-out.svg",
+    "license": "MIT",
+    "transformation": "All necessary strokes on this no-internal-fill glyph inherit currentColor (explicit color then IconTheme); geometry and stroke widths retained. Authorized A11Y-024 repair after actual core-pixel contrast failures; no runtime filter or change to filled artwork.",
+    "prior_crlf_sha256": "7f16866bb77c9bf9dd3569041a3d1a909e166703f7a94a3243246a8398f00314",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/licenses/naive-icons.txt",
+    "sha256": "81ea5c396ce3a5a120f6e4a677d34bc0d533abf6fc007f46669c0d75f53e5f6c",
+    "source": "https://github.com/guokaigdg/naive-icons/blob/edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559/LICENSE",
+    "license": "MIT",
+    "prior_crlf_sha256": "2942b4b1583f48b13fbdf5dd48cdbce6e2dc73bfdd17ae91b8503e01c3a3f7e1",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "assets/licenses/reference-gallery.txt",
+    "sha256": "488be025948fe293d599c5a922df4c25177c9d814f158fda27f03a6ec91d5217",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/LICENSE",
+    "license": "MIT",
+    "prior_crlf_sha256": "36aaac433c4f0df6581553b4cdae22c12ce52f0c824354af417a7fe809c7ac44",
+    "line_ending_normalization": "CRLF to LF only under .gitattributes; SVG geometry/paint and source-specific terms unchanged. Historical raw evidence retains original bytes."
+  },
+  {
+    "path": "example/assets/reference/logo.png",
+    "sha256": "6ebb181b483aa8cd35feeb95463bcaa9f2a7a7a90c20975ec8180ea014e2147a",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/logo.png",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/fonts/nunito-latin-500-normal.ttf",
+    "sha256": "9f77b66fe182f0a2dd1f58e22f571afacbe91071d202025ba713c01dea675932",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/src/assets/fonts/nunito-latin-500-normal.woff2",
+    "license": "SIL OFL 1.1",
+    "transformation": "WOFF2 decompression; outlines unchanged"
+  },
+  {
+    "path": "example/assets/fonts/nunito-latin-700-normal.ttf",
+    "sha256": "54594fca47f79c33efa5133887033a323d24b16c2a744fdbd6bf4ab28e92a243",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/src/assets/fonts/nunito-latin-700-normal.woff2",
+    "license": "SIL OFL 1.1",
+    "transformation": "WOFF2 decompression; outlines unchanged"
+  },
+  {
+    "path": "example/assets/fonts/nunito-latin-900-normal.ttf",
+    "sha256": "c4cf6ba84abe111f61f2697038ea472e30b1c7ccefc3c2508ae18f220472d981",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/src/assets/fonts/nunito-latin-900-normal.woff2",
+    "license": "SIL OFL 1.1",
+    "transformation": "WOFF2 decompression; outlines unchanged"
+  },
+  {
+    "path": "example/assets/fonts/GROBOLD.ttf",
+    "sha256": "98e9c349709da1cd410d65b2954d30e355c154a8ea52004ecbe6eb0d8205d040",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/fonts/GROBOLD-1.ttf",
+    "license": "User-authorized; see docs/font-authorization.json"
+  },
+  {
+    "path": "assets/licenses/nunito.txt",
+    "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/nunito/OFL.txt",
+    "license": "SIL OFL 1.1"
+  },
+  {
+    "path": "example/assets/fonts/OFL.txt",
+    "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+    "source": "Noto Sans SC OFL notice",
+    "license": "SIL OFL 1.1"
+  },
+  {
+    "path": "assets/scenes/coffee-break.svg",
+    "sha256": "315785493e77e081e29af8b03eef01e43d56046220b8f2a7e221546dafadd26c",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/src/assets/image/coffee-break.svg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "transformation": "Local SVG use references and finite circle tiles expanded; dot geometry, clipping, paths, transforms, styles and gradients preserved. No renderer limits changed.",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "assets/scenes/forest-grove.svg",
+    "sha256": "7a7dcfb559ed18ff77a4858df7373e8eb50ba21ec161101da4bc3261ee77fdad",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/src/assets/image/forest-grove.svg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "transformation": "Local SVG use references and finite circle tiles expanded; dot geometry, clipping, paths, transforms, styles and gradients preserved. No renderer limits changed.",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "assets/scenes/starry-camp.svg",
+    "sha256": "bf61d080aaa6518283bde85cc2a6ecf2456f02beeb6f620d1b2d20937c1f691a",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/src/assets/image/starry-camp.svg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "transformation": "Local SVG use references and finite circle tiles expanded; dot geometry, clipping, paths, transforms, styles and gradients preserved. No renderer limits changed.",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "assets/scenes/sweet-corner.svg",
+    "sha256": "75434e07181b523933070778c9b878ed582fd52e1ff0c3c9e627d966919b8723",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/src/assets/image/sweet-corner.svg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "transformation": "Local SVG use references and finite circle tiles expanded; dot geometry, clipping, paths, transforms, styles and gradients preserved. No renderer limits changed.",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/hillside-town.jpg",
+    "sha256": "9ded54f926946c7330eabceb63f305ac3fa3ea95409ae426e463176a181222e3",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/hillside-town.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/lake-morning.jpg",
+    "sha256": "2346477a35f76051364c9602cf07a5b8745a43c8200d3849fcb4c2384bee3788",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/lake-morning.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-01.jpg",
+    "sha256": "bea00e942f430dfdcd51466cc268c0ad6d8f8b2ff94e3585f400fb4e5b323148",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-01.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-02.jpg",
+    "sha256": "5201235eca708932a9fbab4207e570ea28aada204c7611cc0b3988d78e5ff02f",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-02.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-03.jpg",
+    "sha256": "94634a30c4fb436b123f6f50f20b737a3a2dae3c74c53292e9a130a58a814bb5",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-03.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-04.jpg",
+    "sha256": "293eeb6bd71a2518361763a8d32b09d039c1cc33f4397be5941140abcbb04b3b",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-04.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-05.jpg",
+    "sha256": "df17dc22dbc2a0c7568cc918561b51bfe335e2cfb909edc286af2af0a4a07a98",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-05.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-06.jpg",
+    "sha256": "fd97d65b21fd5ca06e555463bafe31f02ce9a1eab60b6b82b7694a12147c3659",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-06.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-07.jpg",
+    "sha256": "41e69dbb89d014ce2e78afc2d391befd2a5e8795f433524fa29bb61401928c82",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-07.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-08.jpg",
+    "sha256": "5201235eca708932a9fbab4207e570ea28aada204c7611cc0b3988d78e5ff02f",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-08.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-09.jpg",
+    "sha256": "f9d3387f2d351b9621a2e7adb9a70c5297d951cc21a36e250a0fe0302332a042",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-09.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-10.jpg",
+    "sha256": "15c23d4f80c9a7fc1069108e1ce5017a3bcfb42e76a9898d6765b9cfb7d1e331",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-10.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-11.jpg",
+    "sha256": "a4697816838b22e84c086b0dd3a37f62be6cab041368ed07aa83a264d4446bbc",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-11.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-12.jpg",
+    "sha256": "0b030df6fe9ba41850ba64ad1e42e106646719339425734899e678b9c545d58a",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-12.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/photo-13.jpg",
+    "sha256": "592a58d1c1e3151b88de776ab71d195d3dda98ab0986ccff56a2d38c545021d7",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/photo-13.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/photos/sunny-field.jpg",
+    "sha256": "e72d3b72cbbd666fb8818d7f9cbd591feeaba08f46f33487ce292f0483f7cec0",
+    "source": "https://github.com/guokaigdg/animal-island-ui/blob/79810934ee9d08c22044d34e06f8bba40391207b/demo/assets/images/sunny-field.jpg",
+    "license": "Original source notice retained; user-confirmed public repository redistribution2026-10-22, see docs/RIGHTS.md; not an unconditional commercial license",
+    "public_repository_authorization": "User confirmed2026-10-22; docs/RIGHTS.md; prior private/source-specific facts retained; no unconditional commercial license",
+    "prior_private_license_record": "MIT repository; user-confirmed private authorization2026-10-18; public/commercial redistribution not inferred (docs/asset-private-authorization.json)"
+  },
+  {
+    "path": "example/assets/fonts/IslandGallerySans-400.ttf",
+    "sha256": "339ec31757aa4939f57941eeee5cddc7bc20e88a8dee550804e99d4181a3ebfd",
+    "source": "https://github.com/google/fonts/tree/main/ofl/notosanssc",
+    "license": "SIL OFL 1.1",
+    "transformation": "Renamed subset, static wght=400; original character coverage preserved; see example/assets/fonts/provenance.json and tool/subset_font.py."
+  },
+  {
+    "path": "example/assets/fonts/IslandGallerySans-500.ttf",
+    "sha256": "e164612a82f798c36f0ab0695fc1fa42173ba7dbbc7aab8ec705da1dfb730b64",
+    "source": "https://github.com/google/fonts/tree/main/ofl/notosanssc",
+    "license": "SIL OFL 1.1",
+    "transformation": "Renamed subset, static wght=500; original character coverage preserved; see example/assets/fonts/provenance.json and tool/subset_font.py."
+  },
+  {
+    "path": "example/assets/fonts/IslandGallerySans-900.ttf",
+    "sha256": "db6e3a52d080c71dcd7135af56ac07711d4a45a942f0c5a776e6a3146e2e706e",
+    "source": "https://github.com/google/fonts/tree/main/ofl/notosanssc",
+    "license": "SIL OFL 1.1",
+    "transformation": "Renamed reference700 subset outlines registered900; matching name identity and removed stale STAT avoid synthetic bold for600..900. Glyph coordinates unchanged. See font provenance and tool/subset_font.py."
+  },
+  {
+    "path": "assets/fonts/FiraCode-Variable.ttf",
+    "sha256": "9335b082b3c7850d98a64b584f3417f65355f3471278bb5eeb8c6c0e8657aeeb",
+    "source": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/firacode/FiraCode%5Bwght%5D.ttf",
+    "license": "SIL OFL 1.1",
+    "transformation": "None: upstream complete variable TTF copied byte-for-byte. No subsetting, outline/name changes, system-font copying or OS installation."
+  },
+  {
+    "path": "assets/licenses/firacode.txt",
+    "sha256": "926041dac670e6922505e35ac1661a4e8d20f1ffeabbbcb5edb5544370702369",
+    "source": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/firacode/OFL.txt",
+    "license": "SIL OFL 1.1",
+    "transformation": "Unchanged upstream notice."
+  },
+  {
+    "path": "example/assets/fonts/Arimo-Variable.ttf",
+    "sha256": "e43898b143ec826ac8cb4034816458a7047fbe0836558de2a1f8c6223ae3e0ca",
+    "source": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/arimo/Arimo%5Bwght%5D.ttf",
+    "license": "SIL OFL 1.1",
+    "transformation": "None: upstream complete variable TTF copied byte-for-byte. No subsetting, outline/name changes, system-font copying or OS installation."
+  },
+  {
+    "path": "assets/licenses/arimo.txt",
+    "sha256": "11cce536cd2f3864d767003af5dcd739e2e15818cf2279b6175edeadd3960992",
+    "source": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/arimo/OFL.txt",
+    "license": "SIL OFL 1.1",
+    "transformation": "Unchanged upstream notice."
+  }
+]
