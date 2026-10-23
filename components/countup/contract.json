@@ -17,7 +17,7 @@
     "localization": "Reference Chinese Gallery; host content and inherited directionality.",
     "async_behavior": "Celebration content remains opaque for900ms in normal/reduced mode; reduced skips only decoration/pop. Reset/disposal cancel pending removal.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
-    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Celebration foreground is light.onSun across the full amber gradient, at every pulse frame. Owned readable text roles also set default icon roles. Fixed light content surfaces scope light semantic roles for nested public controls; explicit child styles and unrelated ThemeExtensions remain unchanged.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Celebration foreground is light.onSun across the full amber gradient, at every pulse frame. Owned readable text roles also set default icon roles. Fixed light content surfaces scope light semantic roles for nested public controls; explicit child styles and unrelated ThemeExtensions remain unchanged. Dashed strokes use the single public foundation painter under docs/API.md#dashed-stroke. This component retains its existing shape, color, width, dash/gap, state and content ownership; no second contour loop or consumer-private import.",
     "performance": "Platform profiling required before release.",
     "migration": "Fresh implementation; no old-library compatibility track."
   },
@@ -45,6 +45,12 @@
       "given": "The relevant owned state and actual supported background, including transition frames",
       "when": "Focus, hover, entry, exit or reduced motion changes",
       "then": "Celebration foreground is light.onSun across the full amber gradient, at every pulse frame."
+    },
+    {
+      "id": "countup.dashed-stroke",
+      "given": "The existing dashed recipe in each supported size, applicable state and target pixel ratio, with opaque content",
+      "when": "Render and update the same component, including its current hover/press/focus and stroke-width recipes where applicable",
+      "then": "The contour, final short dash and inset match the unchanged recipe; all drawing uses the shared public foundation mechanism. Content geometry, callback/focus behavior and lifecycle remain unchanged under docs/API.md#dashed-stroke."
     }
   ]
 }

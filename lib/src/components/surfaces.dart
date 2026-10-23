@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../foundation/theme.dart';
 import '../foundation/colorway.dart';
-import '../internal/dashed_border.dart';
+import '../foundation/dashed_border.dart';
 import '../internal/dot_pattern.dart';
 import '../internal/content_scope.dart';
 import '../internal/action_surface.dart';
@@ -228,9 +228,10 @@ class IslandCard extends StatelessWidget {
           ),
           child: CustomPaint(
             foregroundPainter: dashed && !patterned
-                ? DashedBorderPainter(
-                    RoundedRectangleBorder(borderRadius: radius),
-                    BorderSide(color: roles.border, width: 2),
+                ? IslandDashedBorderPainter(
+                    shape: RoundedRectangleBorder(borderRadius: radius),
+                    color: roles.border,
+                    strokeWidth: 2,
                     dash: 6,
                     gap: 4,
                   )

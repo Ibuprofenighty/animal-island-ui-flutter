@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'dashed_border.dart';
+import '../foundation/dashed_border.dart';
 
 /// Shared outer numeric surface; content, semantics and time remain caller-owned.
 class NumberSurface extends StatelessWidget {
@@ -12,9 +12,12 @@ class NumberSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) => CustomPaint(
     foregroundPainter: island
-        ? DashedBorderPainter(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            const BorderSide(color: Color(0xffd4c4a8), width: 2),
+        ? IslandDashedBorderPainter(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            color: const Color(0xffd4c4a8),
+            strokeWidth: 2,
           )
         : null,
     child: Container(

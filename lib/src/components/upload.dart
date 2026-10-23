@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../foundation/icon.dart';
 import '../internal/action_surface.dart';
-import '../internal/dashed_border.dart';
+import '../foundation/dashed_border.dart';
 import '../internal/hover_surface.dart';
 import '../internal/owned_route.dart';
 part 'upload_types.dart';
@@ -481,18 +481,16 @@ class _IslandUploadState extends State<IslandUpload> {
           final active = (hover || dragging) && !widget.disabled;
           final radius = cards ? 16.0 : 20.0;
           return CustomPaint(
-            foregroundPainter: DashedBorderPainter(
-              RoundedRectangleBorder(
+            foregroundPainter: IslandDashedBorderPainter(
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius),
               ),
-              BorderSide(
-                color: highlight
-                    ? IslandTokens.light.focus
-                    : active
-                    ? IslandTokens.light.link
-                    : IslandTokens.light.muted,
-                width: cards ? IslandTheme.borderWidth(context, 1.5) : 2,
-              ),
+              color: highlight
+                  ? IslandTokens.light.focus
+                  : active
+                  ? IslandTokens.light.link
+                  : IslandTokens.light.muted,
+              strokeWidth: cards ? IslandTheme.borderWidth(context, 1.5) : 2,
               dash: 6,
               gap: 4,
             ),

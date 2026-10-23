@@ -30,3 +30,5 @@
 根目录使用 `flutter test test/<affected_test>.dart`、`flutter analyze --fatal-infos` 和 `python -B tool/reference_coverage.py`。在 `example` 中按范围运行相关测试及 `flutter build web`／`flutter build windows`。`python -B tool/verify.py --flutter <configured-flutter> --builds` 执行维护中的检查序列，详见[维护说明](../../docs/MAINTENANCE.md)。
 
 本地诊断放入已忽略的 scratch/evidence 目录；保留来源许可及[分发边界](../../docs/RIGHTS.md)，发布须有用户授权。不在产品文档嵌入本机路径、会话指令或逐日执行记录。
+
+调用方自有虚线框使用公共根入口的 `IslandDashedBorderPainter`；形状、画笔及间距配方仍归调用方，行为遵循[绘制契约](../../docs/API.md#dashed-stroke)。不复制路径切段循环，不导入包内私有源码。Gallery 受约束示例行引用[唯一父布局权威](../../docs/DESIGN.md#gallery-parent-layout)；现行性能限制引用 [ACCEPTANCE](../../docs/ACCEPTANCE.md)，不以历史可选基准提案作为当前门槛。

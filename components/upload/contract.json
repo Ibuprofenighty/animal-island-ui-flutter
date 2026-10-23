@@ -17,7 +17,7 @@
     "localization": "Reference Chinese Gallery; host content and inherited directionality.",
     "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
-    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Status content and preview/delete actions own opaque pale backings above arbitrary thumbnail slots. Transparent tip defaults inherit the host theme. Hidden hover controls reject pointer hits while keyboard focus reveals the same subtree. Preview route uses shared opaque displacement and a visible close focus ring; component retains cancellation and route ownership. Generic previews and Gallery alert callbacks reuse public IslandDialogRoute, the sole owner of opaque displacement and reduced-motion settlement. The creator pushes on the root Navigator and retains exact-route lifetime; builder retains content, semantics and surface. Existing showIslandModal scale entry remains its separate reference contract.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Status content and preview/delete actions own opaque pale backings above arbitrary thumbnail slots. Transparent tip defaults inherit the host theme. Hidden hover controls reject pointer hits while keyboard focus reveals the same subtree. Preview route uses shared opaque displacement and a visible close focus ring; component retains cancellation and route ownership. Generic previews and Gallery alert callbacks reuse public IslandDialogRoute, the sole owner of opaque displacement and reduced-motion settlement. The creator pushes on the root Navigator and retains exact-route lifetime; builder retains content, semantics and surface. Existing showIslandModal scale entry remains its separate reference contract. Dashed strokes use the single public foundation painter under docs/API.md#dashed-stroke. This component retains its existing shape, color, width, dash/gap, state and content ownership; no second contour loop or consumer-private import.",
     "performance": "Platform profiling required before release.",
     "migration": "Fresh implementation; no old-library compatibility track."
   },
@@ -69,6 +69,12 @@
       "given": "The component-owned modal boundary, or its registered Gallery alert callback, with zero/one/multiple actions",
       "when": "Forward/reverse Tab, activation, dismissal, rejected close or owner removal occurs",
       "then": "Closed loops consume Tab without leaving the modal; callbacks fire once and accepted close restores origin. Explicit route traversal overrides survive, opaque child identity/styles remain, and owned focus resources are cleaned up."
+    },
+    {
+      "id": "upload.dashed-stroke",
+      "given": "The existing dashed recipe in each supported size, applicable state and target pixel ratio, with opaque content",
+      "when": "Render and update the same component, including its current hover/press/focus and stroke-width recipes where applicable",
+      "then": "The contour, final short dash and inset match the unchanged recipe; all drawing uses the shared public foundation mechanism. Content geometry, callback/focus behavior and lifecycle remain unchanged under docs/API.md#dashed-stroke."
     }
   ]
 }

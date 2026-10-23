@@ -163,6 +163,10 @@ Modal Tab traversal consumes forward and reverse keys even when a closed loop ke
 
 模态闭环即使保持同一目标或没有操作控件，也消费正向和反向 Tab。现有动作模块中的同一边界把顺序交给原有 FocusScope，仅为原本为空的 Scope 创建一个跳过遍历且不产生语义节点的内部焦点目标，并在卸载时移除借用 Scope 的监听、释放自有节点。不检查子内容、不增加第二个 FocusScope、不替换调用者的焦点目标。IslandDialogRoute 现明确默认 TraversalEdgeBehavior.closedLoop；调用者显式传入的非闭环策略（包括 null 以继承 Navigator）仍然有效。Drawer、Loading、showIslandModal 和共享预览/提示路由复用同一行为。真实 Web 键盘与 Windows/辅助技术验收独立于 Widget 测试。
 
-The Select Gallery placeholder row models the reference CSS min-content width296=140+16+140 with visible parent overflow. It preserves both140px triggers, the16px minimum gap and fitting desktop space-between; it neither wraps nor shrinks the controls. At375px the reference trigger rectangles are(58,505,140,41) and(214,505,140,41). This corrects the parent layout mapping and is not another popup algorithm or a new visual exception.
+Gallery example rows use the one StoryDemoBox/storyRow owner. The current narrow-layout behavior follows [the authorized Gallery parent-layout rule](docs/DESIGN.md#gallery-parent-layout); prior reference min-content overflow observations are historical reference facts, not current implementation requirements.
 
-Select Gallery 的占位示例行按参考 CSS 最小内容宽度296=140+16+140以及父级可见溢出布局；保留两个140px触发器、16px最小间距及桌面能放下时的 space-between，不临时换行或压缩控件。375px下参考矩形为(58,505,140,41)与(214,505,140,41)。这是父级布局映射修正，不是另一个浮层算法或新增视觉例外。
+Gallery 示例行由现有 StoryDemoBox/storyRow 所有，当前窄屏行为统一引用[已授权的父布局规则](docs/DESIGN.md#gallery-parent-layout)；旧参考最小内容宽度溢出观测仅为历史参考事实，不是现行实现要求。
+
+Dashed contour drawing has one foundation owner, `IslandDashedBorderPainter`, exported alone through the public root. Components and Gallery consume the same painter; each recipe retains shape, color, width, dash/gap and state. Gallery owns its demonstration frame only and imports no private package source. Public drawing behavior is defined in [API](docs/API.md#dashed-stroke).
+
+虚线路径切段由 foundation 中唯一的 `IslandDashedBorderPainter` 所有，根入口仅导出此绘制器。组件与 Gallery 共用它，各配方仍拥有形状、颜色、宽度、dash/gap 及状态；Gallery 只负责自身示例框，不导入包内私有源码。公开绘制行为见 [API](docs/API.md#dashed-stroke)。

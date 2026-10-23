@@ -146,3 +146,5 @@ export 'src/components/upload.dart'
         IslandUploadDropBuilder,
         IslandUploadBefore,
         islandSimulatedUpload;
+
+export 'src/foundation/dashed_border.dart' show IslandDashedBorderPainter;

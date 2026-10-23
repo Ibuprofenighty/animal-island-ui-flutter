@@ -9,7 +9,7 @@ import '../internal/action_surface.dart';
 import '../internal/content_scope.dart';
 import '../internal/light_surface_scope.dart';
 import '../internal/focus_outline.dart';
-import '../internal/dashed_border.dart';
+import '../foundation/dashed_border.dart';
 
 enum IslandButtonVariant { primary, normal, dashed, text, link }
 
@@ -279,7 +279,11 @@ class IslandButton extends StatelessWidget {
               ),
               child: CustomPaint(
                 foregroundPainter: variant == IslandButtonVariant.dashed
-                    ? DashedBorderPainter(shape, border)
+                    ? IslandDashedBorderPainter(
+                        shape: shape,
+                        color: border.color,
+                        strokeWidth: border.width,
+                      )
                     : null,
                 child: Padding(
                   padding: variant == IslandButtonVariant.dashed

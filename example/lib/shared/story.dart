@@ -453,36 +453,19 @@ class StoryDemoBox extends StatelessWidget {
       border: dashed ? null : Border.all(color: const Color(0xffe8e2d6)),
     ),
     child: CustomPaint(
-      foregroundPainter: dashed ? const _DemoDashes() : null,
+      foregroundPainter: dashed
+          ? const IslandDashedBorderPainter(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(18)),
+              ),
+              color: Color(0xffe0d8c8),
+              dash: 3,
+              gap: 3,
+            )
+          : null,
       child: Padding(padding: padding, child: child),
     ),
   );
-}
-
-class _DemoDashes extends CustomPainter {
-  const _DemoDashes();
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          (Offset.zero & size).deflate(.5),
-          const Radius.circular(18),
-        ),
-      );
-    final pen = Paint()
-      ..color = const Color(0xffe0d8c8)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-    for (final metric in path.computeMetrics()) {
-      for (double distance = 0; distance < metric.length; distance += 6) {
-        canvas.drawPath(metric.extractPath(distance, distance + 3), pen);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DemoDashes old) => false;
 }
 
 /// Reference demo-box padding. Its trailing CSS margin collapses with the next

@@ -366,3 +366,14 @@ Atomic pre-release migration: old Card color/textStyle and CardTheme color/borde
 Fixed-pair decisions do not add constructor parameters. Public signatures remain in exported declarations; component contracts own supported customization. See the [fixed-pair decision authority](DESIGN.md#shared-accent-foreground) and [independent Title role policy](DESIGN.md#title-foreground).
 
 固定配对决定不增加构造参数。公开声明拥有签名，组件契约拥有定制能力；配对处置只引用[固定配对设计决定](DESIGN.md#shared-accent-foreground)及[独立Title角色规则](DESIGN.md#title-foreground)。
+
+<a id="dashed-stroke"></a>
+## Dashed contour drawing / 虚线路径绘制
+
+[`IslandDashedBorderPainter`](../lib/src/foundation/dashed_border.dart), exported by the public root, is the shared `CustomPainter` for an explicit `OutlinedBorder` shape and stroke recipe. Its declaration owns the constructor/defaults. It obtains the outer shape path inside the size deflated by half the stroke width, then paints only that contour; it adds no layout, clipping, fill, input, semantics or child lifecycle. Shape, color, width, dash/gap and state remain with the consuming recipe. Component variants and Gallery frames do not own another path-segmentation loop.
+
+Each contour starts a full dash at distance zero, independently of previous contours. The final dash is clipped to the contour length; empty contours paint nothing and open contours are not forced closed. Stroke width zero uses Canvas hairline behavior. Dash must be finite and positive; gap and stroke width must be finite and nonnegative. These caller preconditions are asserted in the const constructor. Inputs and shapes must be immutable for CustomPainter repaint comparison. Changes to any drawing input repaint the same content subtree; application slots remain opaque. Explicit custom recipes have no automatic contrast certification.
+
+公共根入口导出 [`IslandDashedBorderPainter`](../lib/src/foundation/dashed_border.dart)，作为给定 `OutlinedBorder` 形状及描边配方的共享 `CustomPainter`；构造签名与默认值以声明为准。它在尺寸内按描边半宽内缩后取得形状外路径，只绘制该轮廓，不增加布局、裁切、填充、输入、语义或子内容生命周期。形状、颜色、宽度、dash/gap 和状态仍由消费者配方负责，组件变体及 Gallery 示例框不再各自维护切段循环。
+
+每个轮廓独立从距离零开始完整 dash，末尾裁至轮廓长度；空轮廓不绘制，不强制闭合开放轮廓。宽度零沿用 Canvas hairline。dash 须为有限正数，gap 与宽度须为有限非负数，这些调用前置条件由 const 构造断言。输入和形状应不可变，以供 CustomPainter 判断重绘；任一绘制输入变化均在同一内容子树重绘，不检查不透明插槽，也不自动认证自定义配方对比度。

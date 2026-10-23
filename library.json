@@ -462,7 +462,13 @@
         "image.stamp-mask",
         "select.disable-editing-client",
         "drawer.closed-overlay-exclusion",
-        "carousel.reference-transparency"
+        "carousel.reference-transparency",
+        "button.dashed-stroke",
+        "card.dashed-stroke",
+        "tag.dashed-stroke",
+        "upload.dashed-stroke",
+        "countdown.dashed-stroke",
+        "countup.dashed-stroke"
       ]
     },
     {
@@ -596,7 +602,7 @@
       ],
       "kind": "manual",
       "requirement": "Record archive and target output sizes",
-      "threshold": "60fps baseline direction approved2026-10-18. Record repeated native/browser frame costs and both actual first-screen network transfer and full disk output. Detailed percentile, startup and size limits are an acceptance proposal, not an automatic PASS.",
+      "threshold": "Current actual-load performance boundary and accepted Icon observation limits are in docs/ACCEPTANCE.md. Record actual new archive/output sizes and observed frame/network/startup boundaries. Earlier percentile/CPU/startup/size proposals in docs/MAINTENANCE.md are historical or future optional benchmarks, not current mandatory gates or automatic PASS. No all-content/all-platform60fps certification is implied.",
       "scenario_ids": []
     },
     {

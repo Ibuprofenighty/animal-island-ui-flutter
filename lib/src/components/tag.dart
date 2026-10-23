@@ -8,7 +8,7 @@ import '../internal/action_surface.dart';
 import '../internal/content_scope.dart';
 import '../internal/light_surface_scope.dart';
 import '../internal/focus_outline.dart';
-import '../internal/dashed_border.dart';
+import '../foundation/dashed_border.dart';
 
 enum IslandTagVariant { solid, outlined, soft, dashed }
 
@@ -126,7 +126,11 @@ class IslandTag extends StatelessWidget {
             ),
             child: CustomPaint(
               foregroundPainter: variant == IslandTagVariant.dashed
-                  ? DashedBorderPainter(shape, side)
+                  ? IslandDashedBorderPainter(
+                      shape: shape,
+                      color: side.color,
+                      strokeWidth: side.width,
+                    )
                   : null,
               child: Container(
                 constraints: BoxConstraints(
