@@ -3,7 +3,7 @@
   "role_review": {
     "status": "REGISTERED_BEFORE_REPAIR",
     "scope": "Necessary strokes on transparent host regions; explicit per-element map. No global recolor of filled artwork or geometry change.",
-    "contexts": "Actual native17-context glyph captures: evidence/raw/glyph-context-diagnostic-20261017T124515Z",
+    "contexts": "Necessary strokes are evaluated on 17 named host contexts. Source-bound raw captures are retained in the separate acceptance archive.",
     "old": "#2A2A2A or fixed teal/coral on transparent paper/canvas",
     "new": "currentColor from the existing component text/icon role",
     "threshold": 3,
@@ -948,7 +948,7 @@
   ],
   "filled_role_review": {
     "status": "REGISTERED_BEFORE_REPAIR",
-    "source": "visual-integrated-20261017T125506Z/icon-contexts/light-paper.png and dark-paper.png inspected at1440x1000",
+    "source": "Light-paper and dark-paper host contexts inspected at 1440x1000. Source-bound raw captures are retained in the separate acceptance archive.",
     "reason": "Inherited host-facing pale stroke overpaints tiny dark internal marks on their own opaque light fill. Earlier transparent-host oracle does not cover these adjacencies. Preserve interior reference drawing ink explicitly, with unchanged geometry and fill bytes. Necessary interior identity marks receive own-backing raster assertions; decorative eyes/highlights/material seams are retained artwork, not a blanket contrast certificate.",
     "interior_stroke": "#2A2A2A (original pinned root drawing ink)",
     "interior_assets": {

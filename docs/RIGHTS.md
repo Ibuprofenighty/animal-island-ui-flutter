@@ -1,10 +1,4 @@
-# Rights and provenance
-
-## Version scope decision / 本版本范围决定 (2026-10-18)
-
-User decisions, 2026-10-18: SDK-COMBOBOX-001 is an approved exception for this version. The installed SDK still cannot project the Select combobox role; the one button/TextField projection remains, without SDK modifications or DOM shims. This is not an implemented role or a passed role test. Keyboard, focus, names/states, IME and contrast requirements remain. The user confirmed private authorization for all21 previously investigated assets (4 library scene SVGs,1 Gallery logo,16 Gallery photos): "这些也是私人授权". See docs/asset-private-authorization.json for the original confirmation and time. Private-use authorization is no longer unknown or a remaining private-use acceptance item. Preserve provenance and the earlier private-only authorization history. The user subsequently confirmed public repository redistribution on2026-10-22; current scope and original confirmation are recorded in docs/RIGHTS.md. This is not independent legal verification or an unconditional commercial license. Investigation is stopped: do not investigate, contact others, request documents, replace or remove assets. Existing GROBOLD private authorization remains. The user approved60fps as the baseline direction for performance diagnosis and an acceptance proposal; detailed sampling, percentile, startup and size thresholds remain proposed until agreed. No installation, screen readers or supervision restart; do not touch the separately owned keep-awake helper.
-
-用户于2026-10-18批准SDK-COMBOBOX-001为本版本例外：已安装SDK仍不能投射Select的combobox角色，保留唯一button/TextField投射，不修改SDK、不加DOM补丁。例外不等于角色已实现或角色测试通过；键盘、焦点、名称/状态、输入法及对比度要求保持。用户已确认此前21项素材（4张库内场景SVG、1个Gallery Logo、16张Gallery照片）“这些也是私人授权”，原文及实际确认时间保存在docs/asset-private-authorization.json；私人使用授权不再未知，也不再是本次私人使用验收未决项。保留来源及此前仅限私人使用授权的历史。用户于2026-10-22另行确认可随公开仓库分发；当前范围与原文统一记录在docs/RIGHTS.md。这不是独立法律核验或无条件商业许可。授权追溯停止，不再调查、联系他人、索要文件、自行替换或移除素材；GROBOLD既有私人授权不变。用户批准以60fps为基础继续性能诊断并拟定验收方案，采样、分位数、启动及体积的具体门槛仍为待确认提案。不安装软件、不做读屏、不恢复监督，不操作另有所有者的防睡眠程序。
+# Rights and provenance / 权利与来源
 
 New Dart implementation: repository MIT license. No implementation or assets were copied from the old local Flutter library.
 

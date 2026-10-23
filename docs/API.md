@@ -1,19 +1,5 @@
 # Public API / 公共接口
 
-## Version scope decision / 本版本范围决定 (2026-10-18)
-
-User decisions, 2026-10-18: SDK-COMBOBOX-001 is an approved exception for this version. The installed SDK still cannot project the Select combobox role; the one button/TextField projection remains, without SDK modifications or DOM shims. This is not an implemented role or a passed role test. Keyboard, focus, names/states, IME and contrast requirements remain. The user confirmed private authorization for all21 previously investigated assets (4 library scene SVGs,1 Gallery logo,16 Gallery photos): "这些也是私人授权". See docs/asset-private-authorization.json for the original confirmation and time. Private-use authorization is no longer unknown or a remaining private-use acceptance item. Preserve provenance and the earlier private-only authorization history. The user subsequently confirmed public repository redistribution on2026-10-22; current scope and original confirmation are recorded in docs/RIGHTS.md. This is not independent legal verification or an unconditional commercial license. Investigation is stopped: do not investigate, contact others, request documents, replace or remove assets. Existing GROBOLD private authorization remains. The user approved60fps as the baseline direction for performance diagnosis and an acceptance proposal; detailed sampling, percentile, startup and size thresholds remain proposed until agreed. No installation, screen readers or supervision restart; do not touch the separately owned keep-awake helper.
-
-用户于2026-10-18批准SDK-COMBOBOX-001为本版本例外：已安装SDK仍不能投射Select的combobox角色，保留唯一button/TextField投射，不修改SDK、不加DOM补丁。例外不等于角色已实现或角色测试通过；键盘、焦点、名称/状态、输入法及对比度要求保持。用户已确认此前21项素材（4张库内场景SVG、1个Gallery Logo、16张Gallery照片）“这些也是私人授权”，原文及实际确认时间保存在docs/asset-private-authorization.json；私人使用授权不再未知，也不再是本次私人使用验收未决项。保留来源及此前仅限私人使用授权的历史。用户于2026-10-22另行确认可随公开仓库分发；当前范围与原文统一记录在docs/RIGHTS.md。这不是独立法律核验或无条件商业许可。授权追溯停止，不再调查、联系他人、索要文件、自行替换或移除素材；GROBOLD既有私人授权不变。用户批准以60fps为基础继续性能诊断并拟定验收方案，采样、分位数、启动及体积的具体门槛仍为待确认提案。不安装软件、不做读屏、不恢复监督，不操作另有所有者的防睡眠程序。
-
-## Current work scope / 当前工作范围 (2026-10-17)
-
-User scope decision, 2026-10-17: all screen-reader execution and validation are excluded from this work, including NVDA and other readers. Do not install or start reader software, request reader validation, or keep it as a remaining acceptance blocker. Excluded is not passed or certified. Preserve existing semantic metadata, keyboard navigation, focus behavior, contrast requirements and their tests. No new software may be installed for acceptance. Historical reader-related pending notes below do not define the current work scope.
-
-用户于2026-10-17明确将所有读屏软件运行与验收从本工作范围中排除，包括NVDA及其他读屏器。不得安装或启动读屏软件、再次要求读屏验收，或将其保留为待完成的验收阻塞项。排除不等于通过或认证。保留现有语义信息、键盘导航、焦点行为、对比度要求及相应测试。验收不得安装新软件。下文历史记录中的读屏待验收说明不再定义当前工作范围。
-
-Import core widgets from `package:animal_island_ui/animal_island_ui.dart`; optional platform IO uses `package:animal_island_ui/animal_island_upload_platform.dart`. Actual exported Dart declarations are the single authority for complete signatures, named constructors, types and defaults. Each component contract links its declaration owners and specifies behavioral requirements. Gallery API tables explain usage; they are not an independently versioned signature definition. This is an experimental rebuild; no compatibility layer with the old library is provided.
-
 ## Implemented reference stories / 已有参考展示
 
 The registry in `example/lib/pages/stories/registry.dart` owns executable page presence. Run `tool/reference_coverage.py` to compare against all 40 components and the guide. Presence does not mean complete visual/state coverage.
@@ -359,7 +345,7 @@ Button busy is a fixed component-owned surface recipe, independent of global bra
 Busy content uses the existing fixed-surface semantic scope for default nested controls while retaining unrelated extensions and explicit child styles. Busy 内容通过既有固定表面作用域提供嵌套默认角色；其他主题扩展、子树身份与显式样式保持。
 
 
-<a id="color-api-p1"></a>
+<a id="color-customization"></a>
 ## Color customization ownership / 颜色自定义职责
 
 Card and CodeBlock now expose component-sized style data used by both instance and theme overrides, with one recipe/render path. Source declarations own signatures; [Card](../components/card/contract.json), [CodeBlock](../components/codeblock/contract.json) and [Button](../components/button/contract.json) contracts own exact style support and precedence. For supported state properties, an instance's non-null value for that state wins, then a non-null theme value, then the default. Transparent is an explicit value. TextStyle merges typography; resolved foreground replaces textStyle.color for base Color ink. Explicit textStyle.foreground Paint retains Flutter precedence and caller ownership rather than becoming a semantic Color role. Explicit opaque child styles and assets stay authoritative.
@@ -377,6 +363,6 @@ Atomic pre-release migration: old Card color/textStyle and CardTheme color/borde
 
 ### Fixed palette references / 固定配色引用
 
-Fixed-pair decisions do not add constructor parameters. Public signatures remain in exported declarations; component contracts own supported customization. See the [fixed-pair decision authority](DESIGN.md#c6-shared-foreground) and [independent Title role policy](DESIGN.md#c7-title-foreground).
+Fixed-pair decisions do not add constructor parameters. Public signatures remain in exported declarations; component contracts own supported customization. See the [fixed-pair decision authority](DESIGN.md#shared-accent-foreground) and [independent Title role policy](DESIGN.md#title-foreground).
 
-固定配对决定不增加构造参数。公开声明拥有签名，组件契约拥有定制能力；配对处置只引用[固定配对设计决定](DESIGN.md#c6-shared-foreground)及[独立Title角色规则](DESIGN.md#c7-title-foreground)。
+固定配对决定不增加构造参数。公开声明拥有签名，组件契约拥有定制能力；配对处置只引用[固定配对设计决定](DESIGN.md#shared-accent-foreground)及[独立Title角色规则](DESIGN.md#title-foreground)。

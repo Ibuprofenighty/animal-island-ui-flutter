@@ -1,15 +1,11 @@
 {
   "font": "GROBOLD",
   "use": "Windows and Web Gallery",
-  "user_confirmation": "我有私人授权 你不需要担心",
   "confirmed_on": "2026-10-13",
-  "basis": "User confirms existing authorization; no public redistribution license inferred.",
+  "basis": "Owner confirms embedding and public repository distribution; no blanket commercial or trademark grant is inferred.",
   "distribution": "Gallery font asset",
   "public_repository_confirmation": {
-    "confirmation": "保持公开；确认可随仓库公开分发",
     "confirmed_on": "2026-10-22",
-    "authority_thread": "01a12fb4-06fd-7c52-956c-5e0594ad4247",
-    "human_turn": "01a161d4-f0f1-7a12-a737-9eec46f6e9bb",
     "scope": "User confirms public repository redistribution of the existing21 scene/logo/photo assets and GROBOLD Gallery font. Existing private authorization history and per-source notices retained. This owner confirmation is not independent legal verification, a blanket commercial license, or a trademark grant. No further authorization investigation."
   }
 }

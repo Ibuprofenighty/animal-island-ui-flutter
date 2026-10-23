@@ -1,12 +1,31 @@
+# Regenerable Flutter/Dart output (at every package depth)
 .dart_tool/
 build/
 .pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+coverage/
+doc/api/
+example/windows/flutter/ephemeral/
+
+# Local tools and editors
+.venv/
+venv/
+__pycache__/
+*.py[cod]
 *.iml
 .idea/
-scratch/
-evidence/
-example/.dart_tool/
-example/build/
-example/windows/flutter/ephemeral/
-.venv/
-__pycache__/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Private diagnostics, review records and delivery staging
+/scratch/
+/evidence/
+/artifacts/
+/outputs/
+/archives/
+/acceptance-archive*/
+/.codex/
+/.agents/

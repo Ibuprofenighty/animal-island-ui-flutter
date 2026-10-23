@@ -1,13 +1,5 @@
 # Architecture / 架构
 
-## Current work scope / 当前工作范围 (2026-10-17)
-
-User scope decision, 2026-10-17: all screen-reader execution and validation are excluded from this work, including NVDA and other readers. Do not install or start reader software, request reader validation, or keep it as a remaining acceptance blocker. Excluded is not passed or certified. Preserve existing semantic metadata, keyboard navigation, focus behavior, contrast requirements and their tests. No new software may be installed for acceptance. Historical reader-related pending notes below do not define the current work scope.
-
-用户于2026-10-17明确将所有读屏软件运行与验收从本工作范围中排除，包括NVDA及其他读屏器。不得安装或启动读屏软件、再次要求读屏验收，或将其保留为待完成的验收阻塞项。排除不等于通过或认证。保留现有语义信息、键盘导航、焦点行为、对比度要求及相应测试。验收不得安装新软件。下文历史记录中的读屏待验收说明不再定义当前工作范围。
-
-Fresh Flutter implementation; Windows + Web first. The reference and 40-component scope are owned by docs/reference-gallery.json. docs/DESIGN.md owns visual acceptance. No previous 20-component exclusions remain.
-
 ## Dependency direction
 
 Gallery app/pages/shared → package public entry → component modules → foundation and internal interaction/presentation → Flutter platform.

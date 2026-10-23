@@ -2,9 +2,9 @@
 
 ## 0.0.1 — independent project, unreleased
 
-- Correct the independent Title foreground pairing through its existing owner; policy remains in `docs/DESIGN.md#c7-title-foreground`, with unchanged APIs and contrast budgets.
+- Correct the independent Title foreground pairing through its existing owner; policy remains in `docs/DESIGN.md#title-foreground`, with unchanged APIs and contrast budgets.
 
-- Correct shared fixed-palette guidance and consolidate its decision authority in `docs/DESIGN.md#c6-shared-foreground`; component APIs and rendering mechanisms are unchanged.
+- Correct shared fixed-palette guidance and consolidate its decision authority in `docs/DESIGN.md#shared-accent-foreground`; component APIs and rendering mechanisms are unchanged.
 
 - Unreleased: unify bounded CodeBlock/Card custom color ownership and the ButtonStyle support contract; migrate all current consumers atomically, retain existing visual/platform limits.
 

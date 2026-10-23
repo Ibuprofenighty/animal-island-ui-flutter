@@ -6,3 +6,14 @@ evidence/
 scratch/
 tool/
 .github/
+.dart_tool/
+.venv/
+__pycache__/
+build/
+coverage/
+artifacts/
+outputs/
+archives/
+acceptance-archive*/
+.codex/
+.agents/
