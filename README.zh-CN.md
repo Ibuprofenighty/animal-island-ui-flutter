@@ -15,6 +15,8 @@
 
 [English](README.md) · 简体中文
 
+**[打开在线 Gallery](https://ibuprofenighty.github.io/animal-island-ui-flutter/) · [组件 API](docs/API.md) · [AI 使用 Skill](skills/animal-island-ui-flutter/SKILL.zh-CN.md)**
+
 </div>
 
 ## ✨ 核心能力
@@ -23,13 +25,25 @@
 - **163 个 SVG 图标**：使用 `IslandIcon` 与 `IslandGlyph`，多色素材保留自身的绘制角色。
 - **明暗主题预设**、语义 Token 与组件样式；定制能力边界由对应契约明确说明。
 - **可组合交互**：受控值、调用方自有控制器、键盘／焦点行为及减少动态效果契约。
-- **本地 Gallery**：组件目录、首页与使用指南。`IslandLocalizations` 提供中英文默认文案，应用自己的内容由应用管理。
+- **在线与本地 Gallery**：组件目录、首页与使用指南。`IslandLocalizations` 提供中英文默认文案，应用自己的内容由应用管理。
 
 当前为**实验版本 0.0.1**，尚未完成全部平台视觉与生产验收。使用前请阅读[验证状态](#-验证状态)。
 
+## 🏝️ 在线体验
+
+[**进入 Flutter Gallery →**](https://ibuprofenighty.github.io/animal-island-ui-flutter/)
+
+| 想先看什么 | 入口 |
+| :--- | :--- |
+| 海岛首页与主题 | [首页](https://ibuprofenighty.github.io/animal-island-ui-flutter/) |
+| 按压、悬停与表单组合 | [Button](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/button) · [Select](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/select) · [Form](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/form) |
+| 图片、装饰与反馈 | [Carousel](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/carousel) · [Icon](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/icon) · [Notification](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/notification) |
+
+这是本仓库的 Flutter Web 预览；[上游 React Gallery](https://guokaigdg.github.io/animal-island-ui/#/)是设计参考。建议先用桌面 Chrome 或 Edge 体验。预览发布成功不代表全部验收通过，已知限制见下文。
+
 ## 📦 本地安装
 
-克隆本仓库后通过本地路径使用。当前未宣称已发布到 pub.dev；Gallery 请在本地运行。
+克隆本仓库后通过本地路径使用。当前未宣称已发布到 pub.dev；无需安装即可先试用在线 Gallery。
 
 ```sh
 git clone https://github.com/Ibuprofenighty/animal-island-ui-flutter.git animal_island_ui
@@ -46,6 +60,9 @@ dependencies:
 按实际位置调整路径，运行 `flutter pub get`。包名和导入路径统一为 `animal_island_ui`；最低 SDK 约束见 [pubspec.yaml](pubspec.yaml)。
 
 ## 🚀 快速开始
+
+<details>
+<summary>展开完整 Flutter 示例</summary>
 
 ```dart
 import 'package:flutter/material.dart';
@@ -99,6 +116,8 @@ class IslandHome extends StatelessWidget {
   );
 }
 ```
+
+</details>
 
 使用 `IslandTheme.create(brightness: Brightness.dark)` 创建深色预设。运行时主题切换与组件定制遵循 [API 指南](docs/API.md)及相应[组件契约](#-文档入口)；示例不代表任意自定义配色会自动满足对比度要求。
 
@@ -154,4 +173,4 @@ flutter run -d windows
 
 ## 📄 许可与致谢
 
-新 Dart 实现采用 [MIT 许可](LICENSE)。第三方图标、场景、照片及字体保留各自条款和[来源声明](NOTICE)。所有者已确认21项场景／Logo／照片素材及GROBOLD字体可随本公开仓库分发；这不是无条件商业许可或独立法律核验。权威记录见[权利与来源](docs/RIGHTS.md)。
+新 Dart 实现采用 [MIT 许可](LICENSE)。第三方图标、场景、照片及字体保留各自条款和[来源声明](NOTICE)。所有者已确认 21 项场景／Logo／照片素材及 GROBOLD 字体可随本公开仓库分发；这不是无条件商业许可或独立法律核验。权威记录见[权利与来源](docs/RIGHTS.md)。

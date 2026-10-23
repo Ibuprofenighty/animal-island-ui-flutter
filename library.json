@@ -133,6 +133,7 @@
     "example/windows/runner",
     "example/windows/flutter/CMakeLists.txt",
     ".github/workflows/check.yml",
+    ".github/workflows/gallery.yml",
     "example/assets",
     ".pubignore",
     "example/analysis_options.yaml",

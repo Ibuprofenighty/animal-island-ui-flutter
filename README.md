@@ -15,6 +15,8 @@ A fresh Flutter implementation of the [Animal Island UI design language](https:/
 
 English · [简体中文](README.zh-CN.md)
 
+**[Open the live Gallery](https://ibuprofenighty.github.io/animal-island-ui-flutter/) · [Component API](docs/API.md) · [AI usage Skill](skills/animal-island-ui-flutter/SKILL.md)**
+
 </div>
 
 ## ✨ What’s inside
@@ -23,13 +25,25 @@ English · [简体中文](README.zh-CN.md)
 - **163 SVG glyphs** through `IslandIcon` and `IslandGlyph`; multicolor artwork retains its own paint roles.
 - **Light and dark theme presets**, semantic tokens and component styles with explicit, documented customization boundaries.
 - **Composable interactions**: controlled values, caller-owned controllers, keyboard/focus behavior and reduced-motion contracts.
-- **A local Gallery** with the component catalog, homepage and usage guide. English and Chinese defaults are available through `IslandLocalizations`; application copy remains yours.
+- **A live and local Gallery** with the component catalog, homepage and usage guide. English and Chinese defaults are available through `IslandLocalizations`; application copy remains yours.
 
 This is **experimental 0.0.1**. It has not completed all-platform visual or production acceptance. See [verification status](#-verification-status) before adopting it.
 
+## 🏝️ Explore the island
+
+[**Open the Flutter Gallery →**](https://ibuprofenighty.github.io/animal-island-ui-flutter/)
+
+| Start with | Preview |
+| :--- | :--- |
+| The island homepage and themes | [Home](https://ibuprofenighty.github.io/animal-island-ui-flutter/) |
+| Tactile controls and form composition | [Button](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/button) · [Select](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/select) · [Form](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/form) |
+| Images, decoration and feedback | [Carousel](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/carousel) · [Icon](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/icon) · [Notification](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/notification) |
+
+This preview runs this repository’s Flutter implementation; the [upstream React Gallery](https://guokaigdg.github.io/animal-island-ui/#/) is the design reference. Start with desktop Chrome or Edge. A successful preview deployment does not mean complete acceptance; known limits are listed below.
+
 ## 📦 Install locally
 
-Clone this repository for local path consumption. The package is not currently advertised as a pub.dev release; run the Gallery locally.
+Clone this repository for local path consumption. The package is not currently advertised as a pub.dev release. You can try the live Gallery without installing it.
 
 ```sh
 git clone https://github.com/Ibuprofenighty/animal-island-ui-flutter.git animal_island_ui
@@ -46,6 +60,9 @@ dependencies:
 Adjust the path to your actual location and run `flutter pub get`. The package identity and import are `animal_island_ui`; minimum SDK constraints live in [pubspec.yaml](pubspec.yaml).
 
 ## 🚀 Quick start
+
+<details>
+<summary>Show the complete Flutter example</summary>
 
 ```dart
 import 'package:flutter/material.dart';
@@ -99,6 +116,8 @@ class IslandHome extends StatelessWidget {
   );
 }
 ```
+
+</details>
 
 Use `IslandTheme.create(brightness: Brightness.dark)` for a dark preset. Runtime theme switching and component customization follow the [API guide](docs/API.md) and the relevant [component contracts](#-documentation); examples do not imply arbitrary colors automatically meet contrast requirements.
 
@@ -154,4 +173,4 @@ Keyboard, semantics and contrast contracts remain in scope. Screen-reader execut
 
 ## 📄 License & attribution
 
-The new Dart implementation uses the [MIT license](LICENSE). Third-party glyphs, scenes, photos and fonts retain their own terms and [notices](NOTICE). The owner has confirmed distribution of the21 scene/logo/photo assets and GROBOLD font with this public repository; this is not an unconditional commercial license or independent legal verification. See [rights and provenance](docs/RIGHTS.md) for the authoritative record.
+The new Dart implementation uses the [MIT license](LICENSE). Third-party glyphs, scenes, photos and fonts retain their own terms and [notices](NOTICE). The owner has confirmed distribution of the 21 scene/logo/photo assets and GROBOLD font with this public repository; this is not an unconditional commercial license or independent legal verification. See [rights and provenance](docs/RIGHTS.md) for the authoritative record.
