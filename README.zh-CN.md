@@ -33,6 +33,8 @@
 
 [**进入 Flutter Gallery →**](https://ibuprofenighty.github.io/animal-island-ui-flutter/)
 
+[![线上 Flutter Gallery 的 Button 变体展示](docs/images/gallery-preview.jpg)](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/button)
+
 | 想先看什么 | 入口 |
 | :--- | :--- |
 | 海岛首页与主题 | [首页](https://ibuprofenighty.github.io/animal-island-ui-flutter/) |

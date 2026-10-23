@@ -33,6 +33,8 @@ This is **experimental 0.0.1**. It has not completed all-platform visual or prod
 
 [**Open the Flutter Gallery →**](https://ibuprofenighty.github.io/animal-island-ui-flutter/)
 
+[![The live Flutter Gallery showing Button variants](docs/images/gallery-preview.jpg)](https://ibuprofenighty.github.io/animal-island-ui-flutter/#/button)
+
 | Start with | Preview |
 | :--- | :--- |
 | The island homepage and themes | [Home](https://ibuprofenighty.github.io/animal-island-ui-flutter/) |
