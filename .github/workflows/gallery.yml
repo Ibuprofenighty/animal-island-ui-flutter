@@ -13,7 +13,28 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gallery-tests:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.3'
+          channel: stable
+          cache: true
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter pub get --enforce-lockfile
+        working-directory: example
+      - name: Test Gallery on the supported host
+        working-directory: example
+        run: flutter test --no-pub --reporter json > gallery-tests.jsonl
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gallery-test-results
+          path: example/gallery-tests.jsonl
   build:
+    needs: gallery-tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,9 +53,6 @@ jobs:
       - name: Resolve Gallery dependencies
         working-directory: example
         run: flutter pub get --enforce-lockfile
-      - name: Test Gallery
-        working-directory: example
-        run: flutter test --no-pub
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v5
