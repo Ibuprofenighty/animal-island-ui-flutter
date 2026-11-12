@@ -9,12 +9,12 @@ This experimental library has scoped usability evidence, not complete production
 - **Select semantics:** the supported SDK projects button/text-field semantics rather than the complete combobox role. Keyboard, focus, names, states and IME remain required. No SDK fork or DOM shim is used.
 - **Home and Carousel contrast:** only the named Gallery wallpaper text and photo captions follow the reference-priority exceptions in [DESIGN](DESIGN.md#home-host-and-photo-gradient). They may fall below 4.5:1. Other text, controls and focus retain their existing requirements.
 - **Icon scrolling:** actual-load scrolling can have long observation intervals. Simultaneous host activity may contribute, but has not been established as the sole cause. There is no all-content or all-platform 60fps guarantee.
-- **Notification/Tooltip measurements:** 18 ink-centroid numerical tests remain failing under the retained threshold. Rigid controls also exceed that criterion, so it alone cannot identify component-specific animation desynchronization. The renderer is retained; a precise engine cause and perceptual lag have not been established. Root-test failure also prevents the current sequential CI workflow from reaching later steps; a local build does not mean hosted CI is green.
+- **Notification/Tooltip measurements:** 18 ink-centroid numerical tests remain failing under the retained threshold. Rigid controls also exceed that criterion, so it alone cannot identify component-specific animation desynchronization. The renderer is retained; a precise engine cause and perceptual lag have not been established. The CI workflow records this root-test failure, continues through the later checks and builds, and still ends failed; a local build does not mean hosted CI is green.
 
 - **Select 语义：**受支持 SDK 使用 button/text-field 投射，未实现完整 combobox 角色；键盘、焦点、名称、状态和输入法要求保持，不使用 SDK 分叉或 DOM 垫片。
 - **首页及轮播对比度：**仅[设计契约](DESIGN.md#home-host-and-photo-gradient)明确的首页背景文字和照片说明采用参考优先例外，可能低于 4.5:1；其他文字、控件及焦点不豁免。
 - **图标滚动：**实际负载下可能出现较长观测间隔；同时使用电脑可能贡献负载，但未证明是唯一原因，不承诺全内容、全平台 60fps。
-- **通知／气泡测量：**原阈值下仍有 18 项墨量质心数值测试失败。刚性对照也超限，因此不能仅凭此指标判定组件动效不同步；保留现有实现，不声称已确定引擎原因或感知延迟。根测试失败会使当前串行 CI 停在该步骤，本地构建通过不代表远端 CI 全绿。
+- **通知／气泡测量：**原阈值下仍有 18 项墨量质心数值测试失败。刚性对照也超限，因此不能仅凭此指标判定组件动效不同步；保留现有实现，不声称已确定引擎原因或感知延迟。CI 记录该根测试失败后继续执行后续检查与构建，最终结果仍为失败；本地构建通过不代表远端 CI 全绿。
 
 ## Not yet verified / 尚未验证
 

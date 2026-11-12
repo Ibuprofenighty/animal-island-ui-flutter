@@ -148,8 +148,10 @@ def main():
     if not flutter:raise SystemExit("Flutter command not found.")
     run_id=datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     out=ROOT/"evidence/raw"/run_id;out.mkdir(parents=True)
-    records=[]
-    def run(name,argv,cwd=ROOT):
+    records=[];deferred=[]
+    # Independent checks defer their failure so later steps still produce evidence;
+    # a deferred failure is still a failed run. Prerequisite steps stop immediately.
+    def run(name,argv,cwd=ROOT,*,defer=False):
         started=time.monotonic()
         log=out/(name+".txt")
         with log.open("w",encoding="utf-8") as stream:
@@ -165,15 +167,16 @@ def main():
                "sha256":hashlib.sha256(log.read_bytes()).hexdigest()}
         records.append(entry);dump(out/"commands.json",records)
         print(f"{name}: {'PASS' if code==0 else 'FAIL'} ({entry['seconds']}s)",flush=True)
-        if code:raise RuntimeError(f"{name} failed; inspect {log}")
+        if code and defer:deferred.append(f"{name} failed; inspect {log}")
+        elif code:raise RuntimeError(f"{name} failed; inspect {log}")
     try:
         dump(out/"source-policy.json",policy())
         run("reference-coverage",[sys.executable,str(ROOT/"tool/reference_coverage.py")])
         run("sdk",[flutter,"--version","--machine"])
         run("resolve",[flutter,"pub","get"])
-        run("root-tests",[flutter,"test","--reporter","json"])
-        run("analysis",[flutter,"analyze","--fatal-infos"])
-        run("gallery-tests",[flutter,"test","--reporter","json"],ROOT/"example")
+        run("root-tests",[flutter,"test","--reporter","json"],defer=True)
+        run("analysis",[flutter,"analyze","--fatal-infos"],defer=True)
+        run("gallery-tests",[flutter,"test","--reporter","json"],ROOT/"example",defer=True)
         run("dependencies",[flutter,"pub","deps","--json"])
         # Public archive is an explicit manifest, independent of working-copy imports.
         members=package_members()
@@ -217,6 +220,7 @@ def main():
         for target,folder in [("web",ROOT/"example/build/web"),("windows",ROOT/"example/build/windows/x64/runner/Release")]:
             if folder.exists():sizes[target]=sum(p.stat().st_size for p in folder.rglob("*") if p.is_file())
         dump(out/"build-sizes.json",sizes)
+        if deferred:raise RuntimeError("; ".join(deferred))
         dump(out/"result.json",{"result":"pass","builds_requested":args.builds,"commands":records,
              "limitations":["Manual visual parity, release rights and performance/size review remain separate. Screen-reader validation is excluded by the user decision on 2026-10-17."]})
         print("EVIDENCE "+str(out),flush=True)
