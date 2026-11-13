@@ -5,6 +5,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../shared/catalog.dart';
 import '../shared/version.g.dart';
+import '../shared/palette.dart';
 import '../shared/story.dart';
 import '../shared/reference_source_link.dart';
 
@@ -13,13 +14,13 @@ import '../shared/reference_source_link.dart';
 /// docs/DESIGN.md#home-host-and-photo-gradient; card text keeps product roles.
 abstract final class HomeWallpaperInk {
   /// Hero title and scroll hint (`#FFF9E6`).
-  static const cream = Color(0xFFFFF9E6);
+  static const cream = GalleryPalette.homeCream;
 
   /// Section titles (`#725d42`).
-  static const title = Color(0xFF725D42);
+  static const title = GalleryPalette.homeTitle;
 
   /// Hero subtitle, section descriptions and footer (`#7c5734`).
-  static const body = Color(0xFF7C5734);
+  static const body = GalleryPalette.homeBody;
 }
 
 /// Same reference composition. Random wallpaper is stable for a page lifetime.
@@ -333,7 +334,7 @@ class _GalleryHomeState extends State<GalleryHome>
                                 child: IslandIcon(
                                   giants![i].icon,
                                   size: giants![i].size,
-                                  color: Colors.white,
+                                  color: GalleryPalette.homeGiantIcon,
                                 ),
                               ),
                             ),
@@ -391,7 +392,8 @@ class _GalleryHomeState extends State<GalleryHome>
                                                     vertical: 4,
                                                   ),
                                               decoration: BoxDecoration(
-                                                color: const Color(0xffe6f9f6),
+                                                color: GalleryPalette
+                                                    .homeVersionBadge,
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),
@@ -419,7 +421,8 @@ class _GalleryHomeState extends State<GalleryHome>
                                         color: HomeWallpaperInk.cream,
                                         shadows: const [
                                           Shadow(
-                                            color: Color(0x66000000),
+                                            color:
+                                                GalleryPalette.homeHeroShadow,
                                             offset: Offset(0, 4),
                                             blurRadius: 1,
                                           ),
@@ -501,7 +504,8 @@ class _GalleryHomeState extends State<GalleryHome>
                                           fontSize: 12,
                                           shadows: [
                                             Shadow(
-                                              color: Color(0x4D000000),
+                                              color:
+                                                  GalleryPalette.homeHintShadow,
                                               offset: Offset(0, 1),
                                               blurRadius: 2,
                                             ),
@@ -783,7 +787,9 @@ class _FeatureState extends State<_Feature>
             boxShadow: [
               if (lift > 0)
                 BoxShadow(
-                  color: Color.fromRGBO(114, 93, 66, .15 * lift),
+                  color: GalleryPalette.homeCardLift.withValues(
+                    alpha: .15 * lift,
+                  ),
                   offset: Offset(0, 8 * lift),
                   blurRadius: 24 * lift,
                 ),

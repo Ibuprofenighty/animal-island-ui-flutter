@@ -1,3 +1,4 @@
+import '../foundation/recipes/form.dart';
 import '../foundation/theme.dart';
 
 import 'dart:async';
@@ -605,10 +606,5 @@ class _FormTextEditorState extends State<_FormTextEditor> {
   );
 }
 
-/// Reference `@label-color` / form colour `rgba(0,0,0,.85)`: a fixed near-black
-/// on light surfaces, independent of a surrounding card's passive ink. Dark
-/// surfaces (no reference counterpart) keep the theme ink for contrast.
-Color _formInk(BuildContext context) =>
-    Theme.of(context).colorScheme.brightness == Brightness.light
-    ? const Color(0xd9000000)
-    : IslandTheme.of(context).ink;
+/// Form label/control ink; see [FormColors.ink].
+Color _formInk(BuildContext context) => FormColors.ink(context);

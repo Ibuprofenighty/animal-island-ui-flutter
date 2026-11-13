@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../foundation/recipes/divider.dart';
+
 enum IslandDividerVariant { dashedBrown, thin, hairline, waveYellow, squiggle }
 
 class IslandDivider extends StatelessWidget {
@@ -56,7 +58,7 @@ class IslandDivider extends StatelessWidget {
                                 child: Container(
                                   width: 4,
                                   height: 2,
-                                  color: const Color(0xffc4b89e),
+                                  color: DividerColors.iconGap,
                                 ),
                               ),
                             ),
@@ -81,7 +83,7 @@ class _DividerPainter extends CustomPainter {
     switch (variant) {
       case IslandDividerVariant.thin:
         paint
-          ..color = const Color(0xffe8dec7)
+          ..color = DividerColors.thin
           ..strokeWidth = 1;
         path
           ..moveTo(0, .5)
@@ -90,7 +92,7 @@ class _DividerPainter extends CustomPainter {
       case IslandDividerVariant.dashedBrown:
         final thin = variant == IslandDividerVariant.hairline;
         paint
-          ..color = Color(thin ? 0xffd5c3a2 : 0xffc4b89e)
+          ..color = thin ? DividerColors.hairline : DividerColors.dashedBrown
           ..strokeWidth = thin ? 1 : 2;
         final step = thin ? 6.0 : 12.0;
         for (double x = 0; x < size.width; x += step) {
@@ -100,7 +102,7 @@ class _DividerPainter extends CustomPainter {
         }
       case IslandDividerVariant.waveYellow:
         paint
-          ..color = const Color(0xfff5d04a)
+          ..color = DividerColors.waveYellow
           ..strokeWidth = 2.5
           ..strokeCap = StrokeCap.round;
         final start = ((size.width - 40) / 2) % 40 - 40;
@@ -112,7 +114,7 @@ class _DividerPainter extends CustomPainter {
         }
       case IslandDividerVariant.squiggle:
         paint
-          ..color = const Color(0xff19c8b9)
+          ..color = DividerColors.squiggle
           ..strokeWidth = 5
           ..strokeCap = StrokeCap.round;
         final start = ((size.width - 120) / 2) % 120 - 120;

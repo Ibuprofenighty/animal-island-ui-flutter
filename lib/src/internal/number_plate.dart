@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../foundation/recipes/number.dart';
+
 /// Shared numeric plate skin. The owning component supplies its content/timeline.
 class NumberPlate extends StatelessWidget {
   const NumberPlate({
@@ -19,14 +21,16 @@ class NumberPlate extends StatelessWidget {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          island ? const Color(0xfffffdf4) : Colors.white,
-          const Color(0xfff8f8f0),
+          island ? NumberColors.islandPlateTop : NumberColors.plateTop,
+          NumberColors.plateBottom,
         ],
       ),
       border: bordered
           // Reference `.bordered .unit/.plate { border: 1.5px solid }`.
           ? Border.all(
-              color: Color(island ? 0xffd4c4a8 : 0xffd4c9b4),
+              color: island
+                  ? NumberColors.islandPlateBorder
+                  : NumberColors.plateBorder,
               width: 1.5,
             )
           : null,

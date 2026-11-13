@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class InputStory extends StatelessWidget {
   const InputStory({super.key});
@@ -61,7 +62,9 @@ class InputStory extends StatelessWidget {
                 const IslandCardTheme(
                   radius: 18,
                   style: IslandCardStyle(
-                    borderColor: WidgetStatePropertyAll(Color(0xfff1d5a4)),
+                    borderColor: WidgetStatePropertyAll(
+                      GalleryPalette.inputDemoCardBorder,
+                    ),
                   ),
                 ),
               ],

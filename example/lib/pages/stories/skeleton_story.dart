@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class SkeletonStory extends StatefulWidget {
   const SkeletonStory({super.key});
@@ -15,9 +16,9 @@ class _SkeletonStoryState extends State<SkeletonStory> {
     width: 240,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
-      color: const Color(0xfffafaf5),
+      color: GalleryPalette.skeletonDemoSurface,
       border: Border.all(
-        color: const Color(0xffe8dcc8),
+        color: GalleryPalette.skeletonDemoBorder,
         width: IslandTheme.borderWidth(context, 1.5),
       ),
       borderRadius: BorderRadius.circular(20),
@@ -61,7 +62,10 @@ class _SkeletonStoryState extends State<SkeletonStory> {
           const SizedBox(width: 12),
           Text(
             loading ? '加载中' : '已加载',
-            style: const TextStyle(fontSize: 13, color: Color(0xff725d42)),
+            style: const TextStyle(
+              fontSize: 13,
+              color: GalleryPalette.storyInk,
+            ),
           ),
         ],
       ),
@@ -143,7 +147,10 @@ class _SkeletonStoryState extends State<SkeletonStory> {
                 ? const IslandSkeletonInput()
                 : const Text(
                     '输入框已加载',
-                    style: TextStyle(fontSize: 14, color: Color(0xff725d42)),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: GalleryPalette.storyInk,
+                    ),
                   ),
           ),
           card(
@@ -161,7 +168,10 @@ class _SkeletonStoryState extends State<SkeletonStory> {
                   )
                 : const Text(
                     '头像已加载',
-                    style: TextStyle(fontSize: 14, color: Color(0xff725d42)),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: GalleryPalette.storyInk,
+                    ),
                   ),
           ),
         ],
@@ -173,7 +183,7 @@ class _SkeletonStoryState extends State<SkeletonStory> {
           width: double.infinity,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: const Color(0xffe6f9f6),
+            color: GalleryPalette.skeletonDemoCard,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(

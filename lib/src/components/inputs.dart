@@ -1,3 +1,4 @@
+import '../foundation/recipes/input.dart';
 import '../foundation/theme.dart';
 
 import 'dart:math' as math;
@@ -9,7 +10,6 @@ import '../foundation/size.dart';
 import '../internal/action_surface.dart';
 import '../internal/choice_control.dart';
 import '../internal/focus_outline.dart';
-import '../internal/light_surface_scope.dart';
 
 class IslandTextField extends StatefulWidget {
   const IslandTextField({
@@ -130,17 +130,10 @@ class _IslandTextFieldState extends State<IslandTextField> {
       IslandSize.large => 48.0,
     };
     const lineHeight = 1.5715;
-    // Reference `.wrapper-disabled .input` and placeholder #c4b89e; disabled
-    // controls are exempt from the text contrast budget.
-    const disabledText = Color(0xffc4b89e);
-    // On the reference palette the status colors are the reference
-    // `.wrapper-error` #c94444 (4.7:1 on the field fill) and the 3:1
-    // same-hue deepening of `.wrapper-warning` #dba90e (#af8600, 3.3:1 on the
-    // field fill); the decorative shadow bar keeps #d4c9b4 / hover #c4b89e
-    // because the 1px outline carries the boundary. Other palettes keep roles.
-    final reference = usesReferencePalette(context);
-    final errorColor = reference ? const Color(0xffc94444) : tokens.dangerText;
-    final warningColor = reference ? const Color(0xffaf8600) : tokens.warning;
+    const disabledText = InputColors.disabledText;
+    final colors = InputColors.of(context, tokens);
+    final errorColor = colors.error;
+    final warningColor = colors.warning;
     final borderColor = field.hasError
         ? errorColor
         : switch (widget.status) {
@@ -165,9 +158,9 @@ class _IslandTextFieldState extends State<IslandTextField> {
         : !widget.shadow
         ? null
         : _hovered
-        ? (reference ? const Color(0xffc4b89e) : tokens.muted, 3)
+        ? (colors.barHover, 3)
         : (
-            reference ? const Color(0xffd4c9b4) : tokens.outline,
+            colors.bar,
             switch (widget.size) {
               IslandSize.small => 2.0,
               IslandSize.middle => 3.0,
@@ -192,7 +185,7 @@ class _IslandTextFieldState extends State<IslandTextField> {
         ),
       ),
       decoration: BoxDecoration(
-        color: widget.enabled ? tokens.inputSurface : const Color(0xffece8dc),
+        color: widget.enabled ? tokens.inputSurface : InputColors.disabledFill,
         borderRadius: BorderRadius.circular(50),
       ),
       child: TextField(
@@ -560,7 +553,7 @@ class IslandSwitch extends StatelessWidget {
                           decoration: ShapeDecoration(
                             shape: const StadiumBorder(),
                             color: busy
-                                ? const Color(0xfff8f8f0)
+                                ? SwitchColors.busyBase
                                 : Colors.transparent,
                           ),
                           child: Opacity(
@@ -575,9 +568,9 @@ class IslandSwitch extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: value
                                     ? (hover
-                                          ? const Color(0xff7ccc70)
-                                          : const Color(0xff86d67a))
-                                    : const Color(0xffd4c9b4),
+                                          ? SwitchColors.trackOnHover
+                                          : SwitchColors.trackOn)
+                                    : SwitchColors.trackOff,
                                 borderRadius: BorderRadius.circular(50),
                                 // Unchecked rest: reference #c4b89e (1.8:1)
                                 // OKLCH-deepened in hue to the 3:1 boundary
@@ -589,7 +582,7 @@ class IslandSwitch extends StatelessWidget {
                                       ? IslandTokens.light.onLeaf
                                       : hover
                                       ? IslandTokens.light.muted
-                                      : const Color(0xff978b73),
+                                      : SwitchColors.trackOffBorder,
                                   width: border,
                                 ),
                               ),
@@ -626,7 +619,7 @@ class IslandSwitch extends StatelessWidget {
                                       color: IslandTokens.light.onLeaf,
                                       shadows: const [
                                         Shadow(
-                                          color: Color(0x1a000000),
+                                          color: SwitchColors.textShadow,
                                           offset: Offset(0, 1),
                                           blurRadius: 1,
                                         ),
@@ -657,14 +650,14 @@ class IslandSwitch extends StatelessWidget {
                                       height: thumb,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: const Color(0xfff7f3df),
+                                        color: SwitchColors.thumb,
                                         // Reference `.handle` #c4b89e /
                                         // checked #6fba2c, each deepened in
                                         // hue to 3:1 on the thumb fill.
                                         border: Border.all(
                                           color: value
-                                              ? const Color(0xff579d00)
-                                              : const Color(0xff978b73),
+                                              ? SwitchColors.thumbBorderOn
+                                              : SwitchColors.thumbBorderOff,
                                           width: border,
                                         ),
                                       ),
@@ -738,10 +731,8 @@ class _SwitchSpinnerState extends State<_SwitchSpinner>
     turns: motion,
     child: CustomPaint(
       size: const Size.square(11),
-      // Reference `.spinner` #6fba2c / unchecked #a89878, deepened in hue to
-      // 3:1 against the busy (0.7) thumb they are drawn on.
       painter: _SwitchRing(
-        widget.checked ? const Color(0xff3d7200) : const Color(0xff716244),
+        widget.checked ? SwitchColors.spinnerOn : SwitchColors.spinnerOff,
       ),
     ),
   );

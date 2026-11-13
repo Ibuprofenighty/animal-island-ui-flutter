@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../foundation/reference_palette.dart';
 import '../foundation/theme.dart';
 import 'content_scope.dart';
 
@@ -50,7 +51,7 @@ class LightSurfaceScope extends StatelessWidget {
       iconColor: enabled ? foreground ?? tokens.ink : null,
       child: child,
     );
-    body = _ReferencePaper(
+    body = ReferencePaperScope(
       tokens: enabled && referencePaper && surfaceTheme == null ? tokens : null,
       child: body,
     );
@@ -80,28 +81,4 @@ class LightSurfaceScope extends StatelessWidget {
       child: body,
     );
   }
-}
-
-class _ReferencePaper extends InheritedWidget {
-  const _ReferencePaper({required this.tokens, required super.child});
-
-  /// The token set the declaring scope installed, or null for no declaration.
-  final IslandTokens? tokens;
-  @override
-  bool updateShouldNotify(_ReferencePaper old) =>
-      !identical(old.tokens, tokens);
-}
-
-/// Whether component recipes at [context] use the reference light colors
-/// (each measured against every light product paper): the default light
-/// palette itself, or a light paper declared by its surface owner whose
-/// tokens are still the ones in effect. Dark, customized or accent-filled
-/// surfaces keep their token roles.
-bool usesReferencePalette(BuildContext context) {
-  final tokens = IslandTheme.of(context);
-  if (identical(tokens, IslandTokens.light)) return true;
-  final declared = context
-      .dependOnInheritedWidgetOfExactType<_ReferencePaper>()
-      ?.tokens;
-  return declared != null && identical(declared, tokens);
 }

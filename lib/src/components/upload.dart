@@ -1,4 +1,5 @@
 import '../foundation/dialog_route.dart';
+import '../foundation/recipes/upload.dart';
 import '../foundation/theme.dart';
 
 import 'dart:async';
@@ -391,7 +392,7 @@ class _IslandUploadState extends State<IslandUpload> {
     late final IslandDialogRoute<void> route;
     route = IslandDialogRoute<void>(
       context: context,
-      barrierColor: const Color(0xd10f0c08),
+      barrierColor: UploadColors.previewBarrier,
       barrierLabel: '关闭预览',
       builder: (context) => Stack(
         children: [
@@ -515,10 +516,10 @@ class _IslandUploadState extends State<IslandUpload> {
                     : const EdgeInsets.symmetric(vertical: 30, horizontal: 22),
                 decoration: BoxDecoration(
                   color: dragging || cards && active
-                      ? const Color(0xffe6f9f6)
+                      ? UploadColors.hoverFill
                       : cards
-                      ? const Color(0x00e6f9f6)
-                      : const Color(0xfffffdf7),
+                      ? UploadColors.cardZoneRest
+                      : UploadColors.surface,
                   borderRadius: BorderRadius.circular(radius),
                 ),
                 child: IconTheme.merge(
@@ -571,14 +572,16 @@ class _IslandUploadState extends State<IslandUpload> {
             height: 36,
             padding: const EdgeInsets.symmetric(horizontal: 18),
             decoration: BoxDecoration(
-              color: const Color(0xfff8f8f0),
+              color: UploadColors.button,
               borderRadius: BorderRadius.circular(50),
               border: highlight
                   ? Border.all(color: IslandTokens.light.focus, width: 2)
                   : null,
               boxShadow: [
                 BoxShadow(
-                  color: Color(widget.disabled ? 0xffd5c8b8 : 0xffbdaea0),
+                  color: widget.disabled
+                      ? UploadColors.buttonDepthDisabled
+                      : UploadColors.buttonDepth,
                   offset: Offset(
                     0,
                     pressed
@@ -600,7 +603,7 @@ class _IslandUploadState extends State<IslandUpload> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xff794f27),
+                    color: UploadColors.buttonLabel,
                   ),
                 ),
               ],
@@ -680,7 +683,7 @@ class _IslandUploadState extends State<IslandUpload> {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: states.contains(WidgetState.hovered)
-            ? const Color(0xffe6f9f6)
+            ? UploadColors.hoverFill
             : IslandTokens.light.inputSurface,
         shape: BoxShape.circle,
         border: states.contains(WidgetState.focused)
@@ -713,14 +716,14 @@ class _IslandUploadState extends State<IslandUpload> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: file.status == IslandUploadStatus.error
-            ? const Color(0xfffdeeee)
+            ? UploadColors.errorRowFill
             : states.contains(WidgetState.hovered)
-            ? const Color(0xffe6f9f6)
-            : const Color(0xfffffdf7),
+            ? UploadColors.hoverFill
+            : UploadColors.surface,
         border: Border.all(
           color: file.status == IslandUploadStatus.error
               ? IslandTokens.light.dangerText
-              : const Color(0xffe8dcc8),
+              : UploadColors.border,
           width: IslandTheme.borderWidth(context, 1.5),
         ),
         borderRadius: BorderRadius.circular(12),
@@ -734,7 +737,7 @@ class _IslandUploadState extends State<IslandUpload> {
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: const Color(0xffe8dcc8),
+                  color: UploadColors.border,
                   width: IslandTheme.borderWidth(context, 1.5),
                 ),
                 borderRadius: BorderRadius.circular(8),
@@ -754,7 +757,7 @@ class _IslandUploadState extends State<IslandUpload> {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xff794f27),
+                      color: UploadColors.fileName,
                     ),
                   ),
                 ),
@@ -826,14 +829,14 @@ class _IslandUploadState extends State<IslandUpload> {
       height: 84,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: const Color(0xfffffdf7),
+        color: UploadColors.surface,
         border: Border.all(
           width: IslandTheme.borderWidth(context, 1.5),
           color: file.status == IslandUploadStatus.error
               ? IslandTokens.light.dangerText
               : file.status == IslandUploadStatus.done
               ? IslandTokens.light.muted
-              : const Color(0xffe8dcc8),
+              : UploadColors.border,
         ),
         borderRadius: BorderRadius.circular(16),
       ),
@@ -854,7 +857,7 @@ class _IslandUploadState extends State<IslandUpload> {
           if (file.status == IslandUploadStatus.uploading ||
               file.status == IslandUploadStatus.error)
             ColoredBox(
-              color: const Color(0x8c0f0c08),
+              color: UploadColors.cardOverlay,
               child: Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -978,7 +981,7 @@ class _UploadSpinnerPaint extends CustomPainter {
     canvas.drawOval(
       rect,
       Paint()
-        ..color = const Color(0xffe6f9f6)
+        ..color = UploadColors.progressTrack
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );

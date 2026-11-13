@@ -6,6 +6,7 @@ import 'dart:math' as math;
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class SkillStory extends StatelessWidget {
   const SkillStory({super.key});
@@ -103,8 +104,8 @@ class SkillStory extends StatelessWidget {
   Widget chip(String text) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
     decoration: BoxDecoration(
-      color: const Color(0xfff8f8f0),
-      border: Border.all(color: const Color(0xffe8e2d6)),
+      color: IslandTokens.light.paper,
+      border: Border.all(color: GalleryPalette.rule),
       borderRadius: BorderRadius.circular(12),
     ),
     child: Text(text, style: TextStyle(fontSize: 12, color: ink)),
@@ -117,8 +118,8 @@ class SkillStory extends StatelessWidget {
         width: 26,
         height: 26,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Color(0xff19c8b9),
+        decoration: BoxDecoration(
+          color: IslandTokens.light.leaf,
           shape: BoxShape.circle,
         ),
         child: Text(
@@ -409,8 +410,8 @@ class SkillStory extends StatelessWidget {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xfff8f8f0),
-                    border: Border.all(color: const Color(0xffe8e2d6)),
+                    color: IslandTokens.light.paper,
+                    border: Border.all(color: GalleryPalette.rule),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: _CatalogRow(
@@ -445,7 +446,7 @@ class SkillStory extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xfff0e8d8),
+                          color: GalleryPalette.codeChip,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -520,7 +521,7 @@ class SkillStory extends StatelessWidget {
                     width: 116,
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                      color: const Color(0xfff8f8f0),
+                      color: IslandTokens.light.paper,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
@@ -532,7 +533,7 @@ class SkillStory extends StatelessWidget {
                           // Reference .swatchChip border-bottom.
                           foregroundDecoration: const BoxDecoration(
                             border: Border(
-                              bottom: BorderSide(color: Color(0xffe8e2d6)),
+                              bottom: BorderSide(color: GalleryPalette.rule),
                             ),
                           ),
                         ),

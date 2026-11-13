@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 typedef Islander = ({
   String id,
@@ -78,15 +79,15 @@ class HobbyPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (bg, ink) = switch (hobby) {
-      '音乐' => (0xffece7f8, IslandColorway.purple.ink),
-      '运动' => (0xfffff0dc, IslandColorway.orange.ink),
-      '唱歌' => (0xffffe8e4, IslandColorway.red.ink),
-      '钓鱼' => (0xffe2effd, IslandColorway.blue.ink),
-      '画画' => (0xffffe8f1, IslandColorway.pink.ink),
-      _ => (0xffe0f7f4, IslandColorway.teal.ink),
+      '音乐' => (GalleryPalette.hobbyMusic, IslandColorway.purple.ink),
+      '运动' => (GalleryPalette.hobbySport, IslandColorway.orange.ink),
+      '唱歌' => (GalleryPalette.hobbySinging, IslandColorway.red.ink),
+      '钓鱼' => (GalleryPalette.hobbyFishing, IslandColorway.blue.ink),
+      '画画' => (GalleryPalette.hobbyDrawing, IslandColorway.pink.ink),
+      _ => (GalleryPalette.hobbyOther, IslandColorway.teal.ink),
     };
     return CustomPaint(
-      painter: _HobbyBackground(Color(bg)),
+      painter: _HobbyBackground(bg),
       child: DefaultTextStyle.merge(
         style: TextStyle(
           fontSize: 12,

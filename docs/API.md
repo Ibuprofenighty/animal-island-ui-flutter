@@ -352,6 +352,8 @@ Card and CodeBlock now expose component-sized style data used by both instance a
 
 Card 与 CodeBlock 的实例／主题现在共用各自小型样式数据和唯一配方／绘制路径。声明拥有签名；[Card](../components/card/contract.json)、[CodeBlock](../components/codeblock/contract.json)、[Button](../components/button/contract.json) 契约拥有准确样式支持与优先级。已支持的状态属性逐状态取实例非空值、主题非空值、默认值；透明不是空。TextStyle 合并字形，已解析前景替换 textStyle.color 作为基础Color文字；显式 textStyle.foreground Paint 保留Flutter优先级和调用方所有权，不自动成为语义Color角色；opaque child 显式样式和素材仍优先。
 
+Default colors behind these styles and all other component recipes are internal named tokens (`lib/src/foundation/recipes/`, primitives in `palette.dart`); the public color surface is unchanged: IslandTokens, IslandColorway, IslandBackgroundType and the existing style/default parameters. 这些样式及其他组件配方的默认色均为内部具名令牌；公共颜色接口不变。
+
 `IslandSurfaceTheme` is explicit data, not a new scope: brightness plus the existing IslandTokens recipe. Card carries it through the existing LightSurfaceScope for nested controls while passive slot ink is separate. Without it, existing known-light protection stays intact. It does not infer color brightness, clone custom brand defaults, or restyle descendants. Arbitrary custom pairs still require validation against actual alpha/backing and state.
 
 `IslandSurfaceTheme` 只是明确亮度与既有 IslandTokens 的数据，不是新增作用域。Card 经既有 LightSurfaceScope 传递嵌套控件配方，被动插槽前景分开；未指定时保留已知浅表面保护。不推断亮度、不自动复制全部品牌值、不改写后代；自定义配对仍需结合真实 alpha／底色和状态验证。

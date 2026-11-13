@@ -1,3 +1,4 @@
+import '../foundation/recipes/picker.dart';
 import '../foundation/theme.dart';
 import '../internal/focus_outline.dart';
 
@@ -362,7 +363,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                       width: 1,
                       height: 16,
                       margin: const EdgeInsets.symmetric(horizontal: 10),
-                      color: const Color(0xffe8dcc8),
+                      color: PickerColors.rangeDivider,
                     ),
                     Expanded(
                       child: Text(
@@ -371,7 +372,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                         style: last == null
                             ? TextStyle(
                                 color: widget.disabled
-                                    ? const Color(0xffc4b89e)
+                                    ? PickerColors.disabledText
                                     : IslandTokens.light.muted,
                                 fontWeight: FontWeight.w400,
                               )
@@ -433,7 +434,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                   PickerFooterAction(
                     '确定',
                     primary: true,
-                    primaryHoverColor: const Color(0xff796c5a),
+                    primaryHoverColor: PickerColors.confirmHover,
                     onPressed: confirm,
                   ),
                 ],
@@ -503,7 +504,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: states.contains(WidgetState.hovered)
-              ? const Color(0x1a725d42)
+              ? PickerColors.navHoverFill
               : null,
           borderRadius: BorderRadius.circular(8),
         ),
@@ -546,7 +547,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xff725d42),
+                      color: PickerColors.text,
                     ),
                   ),
                 )
@@ -570,7 +571,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                     ),
                     decoration: BoxDecoration(
                       color: states.contains(WidgetState.hovered)
-                          ? const Color(0xffe6f9f6)
+                          ? PickerColors.headingHoverFill
                           : null,
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -583,7 +584,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                         fontWeight: FontWeight.w700,
                         color: states.contains(WidgetState.hovered)
                             ? IslandTokens.light.link
-                            : const Color(0xff725d42),
+                            : PickerColors.text,
                       ),
                     ),
                   ),
@@ -759,16 +760,16 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
       final disabled = onPressed == null;
       final range = widget._range && round;
       final color = disabled
-          ? const Color(0xffd4c9b4)
+          ? PickerColors.dayDisabled
           : selected
           ? (range ? IslandTokens.light.onSun : IslandTokens.light.onLeaf)
           : hover && range
-          ? const Color(0xff725d42)
+          ? PickerColors.text
           : hover || isToday
           ? IslandTokens.light.link
           : outside
           ? IslandTokens.light.muted
-          : const Color(0xff725d42);
+          : PickerColors.text;
       return Container(
         width: round ? 32 : null,
         foregroundDecoration: FocusOutline(
@@ -789,15 +790,19 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
               ? null
               : selected
               ? (range
-                    ? Color(hover ? 0xffffb400 : 0xffffc107)
-                    : Color(hover ? 0xff3dd4c6 : 0xff19c8b9))
+                    ? (hover
+                          ? PickerColors.rangeSelectedHover
+                          : PickerColors.rangeSelected)
+                    : (hover
+                          ? PickerColors.daySelectedHover
+                          : PickerColors.daySelected))
               : hover
-              ? (range ? const Color(0xffffd54f) : const Color(0xffe6f9f6))
+              ? (range ? PickerColors.rangeHover : PickerColors.dayHover)
               : null,
           // Reference `.dayCellRangeStart/End` 1px white contour: decorative;
           // the contiguous amber run already locates its endpoints.
           border: edge && !disabled
-              ? Border.all(color: Colors.white)
+              ? Border.all(color: PickerColors.rangeEndpointRing)
               : isToday
               ? Border.all(color: IslandTokens.light.link, width: 1.5)
               : null,

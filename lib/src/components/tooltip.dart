@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import '../internal/anchored_panel.dart';
 import '../internal/content_scope.dart';
 import '../internal/organic_bubble.dart';
+import '../foundation/recipes/tooltip.dart';
 
 enum IslandTooltipPlacement {
   top,
@@ -212,7 +213,7 @@ class _IslandTooltipState extends State<IslandTooltip>
                                 child: ContentScope(
                                   textStyle: TextStyle(
                                     fontSize: 12,
-                                    color: const Color(0xff725d42),
+                                    color: TooltipColors.text,
                                     fontWeight: island
                                         ? FontWeight.w600
                                         : FontWeight.w500,
@@ -251,7 +252,7 @@ class _BubblePainter extends CustomPainter {
   final bool bordered;
   @override
   void paint(Canvas canvas, Size size) {
-    const paper = Color(0xfff7f3df), border = Color(0xffc4b89e);
+    const paper = TooltipColors.paper, border = TooltipColors.border;
     final island = variant == IslandTooltipVariant.island;
     final path = island
         ? const OrganicBubbleClip().getClip(size)
@@ -266,7 +267,9 @@ class _BubblePainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = island ? const Color(0x24794f27) : const Color(0x1a3d3428)
+        ..color = island
+            ? TooltipColors.islandShadow
+            : TooltipColors.plainShadow
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, island ? 7 : 5),
     );
     canvas.restore();

@@ -3,6 +3,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
 import '../../shared/icon_labels.dart';
+import '../../shared/palette.dart';
 
 class IconStory extends StatelessWidget {
   const IconStory({super.key});
@@ -62,13 +63,13 @@ class IconStory extends StatelessWidget {
           const IslandIcon(
             IslandGlyph.coffee,
             size: 32,
-            color: const Color(0xffe05260),
+            color: GalleryPalette.iconDemoCoffee,
             strokeWidth: 3,
           ),
           const IslandIcon(
             IslandGlyph.cherry,
             size: 32,
-            color: const Color(0xff2a9d8f),
+            color: GalleryPalette.iconDemoCherry,
             strokeWidth: 3,
           ),
           IslandIcon(
@@ -83,7 +84,7 @@ class IconStory extends StatelessWidget {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xffe8e2d6)),
+          border: Border.all(color: GalleryPalette.rule),
           borderRadius: BorderRadius.circular(12),
         ),
         child: LayoutBuilder(
@@ -162,10 +163,14 @@ class _IconTileState extends State<_IconTile> {
           curve: Curves.ease,
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
           decoration: BoxDecoration(
-            color: hover ? const Color(0xfffaf7f0) : Colors.white,
+            color: hover
+                ? GalleryPalette.iconTileHover
+                : GalleryPalette.iconTile,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: hover ? const Color(0xffe8dec7) : Colors.transparent,
+              color: hover
+                  ? GalleryPalette.iconTileHoverBorder
+                  : Colors.transparent,
             ),
           ),
           child: Column(
@@ -204,7 +209,7 @@ class _IconTileState extends State<_IconTile> {
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xff725d42),
+                  color: GalleryPalette.storyInk,
                 ),
               ),
             ],

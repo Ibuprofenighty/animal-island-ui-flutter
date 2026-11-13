@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../foundation/size.dart';
+import '../foundation/recipes/skeleton.dart';
 
 enum IslandSkeletonVariant { text, circle, rect, paragraph }
 
@@ -42,7 +43,7 @@ class IslandSkeleton extends StatelessWidget {
       double? w,
       double h,
       double r, {
-      Color color = const Color(0xffeae5db),
+      Color color = SkeletonColors.block,
     }) =>
         _Shimmer(width: w, height: h, radius: r, active: active, color: color);
     final widths = rowWidths ?? const [1.0, .92, .84, .76, .68];
@@ -67,7 +68,9 @@ class IslandSkeleton extends StatelessWidget {
                     borderRadius: BorderRadius.circular(radius ?? 12),
                     child: SizedBox(
                       height: height ?? 14,
-                      child: const ColoredBox(color: Color(0xffdfd9ce)),
+                      child: const ColoredBox(
+                        color: SkeletonColors.paragraphRow,
+                      ),
                     ),
                   ),
                 ),
@@ -244,9 +247,9 @@ class _ShimmerState extends State<_Shimmer>
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        Color(0x2efffaeb),
-                        Color(0x8cfffcf2),
-                        Color(0x2efffaeb),
+                        SkeletonColors.sweepEdge,
+                        SkeletonColors.sweepCentre,
+                        SkeletonColors.sweepEdge,
                         Colors.transparent,
                       ],
                     ),

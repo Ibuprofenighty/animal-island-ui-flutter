@@ -1,5 +1,6 @@
 import 'package:flutter/rendering.dart' show OverflowBoxFit;
 
+import '../foundation/recipes/rate.dart';
 import '../foundation/theme.dart';
 
 import 'dart:ui' show SemanticsRole;
@@ -166,17 +167,9 @@ class _IslandRateState extends State<IslandRate>
       _nodes[i].skipTraversal = widget.readOnly || i != math.max(0, value - 1);
     }
     final reduced = MediaQuery.disableAnimationsOf(context);
-    // Reference selected stroke #dba90e (warning-active): kept on dark paper
-    // (5.5:1); on light papers (1.9:1) the same hue is OKLCH-deepened to 3:1.
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final selectedOutline = dark
-        ? const Color(0xffdba90e)
-        : const Color(0xffaf8600);
-    // Reference unselected stroke #c4b89e (text-color-disabled): kept on dark
-    // paper (6.0:1); 1.8:1 on light papers, deepened in hue to #978b73.
-    final idleOutline = dark
-        ? const Color(0xffc4b89e)
-        : const Color(0xff978b73);
+    final brightness = Theme.of(context).brightness;
+    final selectedOutline = RateColors.selectedStroke(brightness);
+    final idleOutline = RateColors.idleStroke(brightness);
     final duration = reduced
         ? Duration.zero
         : const Duration(milliseconds: 250);
@@ -286,13 +279,7 @@ class _RateSplash extends CustomPainter {
     canvas.save();
     canvas.translate(size.width / 2, size.height / 2);
     canvas.scale(scale);
-    paintSixDotSplash(
-      canvas,
-      Offset.zero,
-      22,
-      const Color(0xfff5c31c),
-      progress,
-    );
+    paintSixDotSplash(canvas, Offset.zero, 22, RateColors.splash, progress);
     canvas.restore();
   }
 
@@ -306,11 +293,7 @@ class _StarPainter extends CustomPainter {
   final bool fill;
   final Color outline;
 
-  /// Reference `.icon circle { fill: var(--animal-text-color) }` with the
-  /// inherited `.active` stroke #dba90e painted over it (SVG order), so the
-  /// eyes read as faint tonal dots. They are decorative and keep the
-  /// reference stroke even where the star outline deepens for contrast.
-  static const eyeFill = Color(0xff794f27), eyeStroke = Color(0xffdba90e);
+  static const eyeFill = RateColors.eyeFill, eyeStroke = RateColors.eyeStroke;
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
@@ -329,7 +312,7 @@ class _StarPainter extends CustomPainter {
       ..close();
     canvas.drawPath(
       path,
-      Paint()..color = fill ? const Color(0xfff5c31c) : Colors.transparent,
+      Paint()..color = fill ? RateColors.starFill : Colors.transparent,
     );
     canvas.drawPath(
       path,

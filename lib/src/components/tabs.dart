@@ -6,6 +6,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/services.dart';
 
+import '../foundation/recipes/tabs.dart';
 import '../foundation/theme.dart';
 import '../internal/action_surface.dart';
 import '../internal/content_scope.dart';
@@ -160,7 +161,7 @@ class _IslandTabsState<T extends Object> extends State<IslandTabs<T>> {
       decoration: BoxDecoration(
         color: tokens.paper,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xffe8e2d6), width: 2),
+        border: Border.all(color: TabsColors.frame, width: 2),
       ),
       child: Padding(
         padding: const EdgeInsets.all(2),
@@ -185,12 +186,13 @@ class _IslandTabsState<T extends Object> extends State<IslandTabs<T>> {
                   child: Semantics(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? tokens.paper
-                            : const Color(0x99ffffff),
+                        color: TabsColors.header(
+                          Theme.of(context).brightness,
+                          tokens,
+                        ),
                         border: const Border(
                           bottom: BorderSide(
-                            color: Color(0xffe8e2d6),
+                            color: TabsColors.headerRule,
                             width: 2,
                           ),
                         ),
@@ -229,7 +231,8 @@ class _IslandTabsState<T extends Object> extends State<IslandTabs<T>> {
                                         boxShadow: selected && widget.shadow
                                             ? const [
                                                 BoxShadow(
-                                                  color: Color(0x143d3428),
+                                                  color:
+                                                      TabsColors.selectedShadow,
                                                   offset: Offset(0, 3),
                                                 ),
                                               ]

@@ -31,5 +31,5 @@ for i,encoded in enumerate(re.findall(r'data:image/svg\+xml,([^"]+)',css)):
   shapes.append("(%s,%s,%s,%s,%s,Color(0xff%s))"%(x,y,angle,float(a['width']),float(a['height']),a['fill'][1:]))
  layers.append("  (%s.0,%s.0,%s.0,%s.0,[%s])"%(svg.attrib['width'],svg.attrib['height'],i*45,i*30,','.join(shapes)))
 assert len(layers)==3
-(root/'lib/src/internal/sprinkle_data.dart').write_text("// Generated reference sprinkle positions; do not randomize.\nimport 'package:flutter/painting.dart';\nconst sprinkleLayers = <(double,double,double,double,List<(double,double,double,double,double,Color)>)>[\n"+",\n".join(layers)+"\n];\n",encoding='utf-8')
+(root/'lib/src/foundation/sprinkle_data.dart').write_text("// Generated reference sprinkle positions; do not randomize.\nimport 'package:flutter/painting.dart';\nconst sprinkleLayers = <(double,double,double,double,List<(double,double,double,double,double,Color)>)>[\n"+",\n".join(layers)+"\n];\n",encoding='utf-8')
 print('Projected 19 wallpapers and 18 sprinkle shapes.')

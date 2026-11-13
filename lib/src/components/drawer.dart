@@ -1,4 +1,5 @@
 import '../internal/light_surface_scope.dart';
+import '../foundation/recipes/drawer.dart';
 import '../foundation/theme.dart';
 
 import 'dart:math' as math;
@@ -20,7 +21,7 @@ class IslandDrawerHost extends StatefulWidget {
   const IslandDrawerHost({
     super.key,
     required this.child,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor = DrawerColors.hostBackplane,
   });
 
   /// Backplane exposed when the page recedes.
@@ -352,11 +353,11 @@ class _IslandDrawerState extends State<IslandDrawer>
                       ? size.height
                       : math.min(widget.height, math.max(0, size.height - 32)),
                   decoration: BoxDecoration(
-                    color: const Color(0xfff7f3df),
+                    color: DrawerColors.panel,
                     borderRadius: radius,
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0x2e3d3428),
+                        color: DrawerColors.panelShadow,
                         offset: direction * -12,
                         blurRadius: 32,
                       ),
@@ -377,7 +378,7 @@ class _IslandDrawerState extends State<IslandDrawer>
                                       fontSize: 28,
                                       height: 1.5,
                                       fontWeight: FontWeight.w700,
-                                      color: Color(0xff725d42),
+                                      color: DrawerColors.title,
                                     ),
                                     child: Semantics(
                                       headingLevel: 2,
@@ -397,7 +398,7 @@ class _IslandDrawerState extends State<IslandDrawer>
                                       shape: BoxShape.circle,
                                       color:
                                           states.contains(WidgetState.hovered)
-                                          ? const Color(0x1a725d42)
+                                          ? DrawerColors.closeHoverFill
                                           : Colors.transparent,
                                       border:
                                           states.contains(WidgetState.focused)
@@ -416,7 +417,7 @@ class _IslandDrawerState extends State<IslandDrawer>
                                                 states.contains(
                                                   WidgetState.hovered,
                                                 )
-                                                ? const Color(0xff725d42)
+                                                ? DrawerColors.closeHover
                                                 : IslandTokens.light.ink,
                                           ),
                                       child: const ExcludeSemantics(
@@ -483,11 +484,8 @@ class _IslandDrawerState extends State<IslandDrawer>
                             behavior: HitTestBehavior.opaque,
                             onTap: widget.maskClosable ? widget.onClose : null,
                             child: ColoredBox(
-                              color: Color.fromRGBO(
-                                0,
-                                0,
-                                0,
-                                .18 * maskMotion.value,
+                              color: DrawerColors.mask.withValues(
+                                alpha: .18 * maskMotion.value,
                               ),
                             ),
                           ),

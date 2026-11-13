@@ -1,4 +1,5 @@
 import 'focus_outline.dart';
+import '../foundation/recipes/picker.dart';
 import '../foundation/theme.dart';
 
 import 'package:flutter/material.dart';
@@ -18,15 +19,15 @@ class PickerPanel extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
-      color: const Color(0xfffffdf7),
+      color: PickerColors.panelFill,
       border: Border.all(
-        color: const Color(0xffe8dcc8),
+        color: PickerColors.panelBorder,
         width: IslandTheme.borderWidth(context, borderWidth),
       ),
       borderRadius: BorderRadius.circular(20),
       boxShadow: const [
         BoxShadow(
-          color: Color(0x1f3d3428),
+          color: PickerColors.panelShadow,
           offset: Offset(0, 6),
           blurRadius: 18,
         ),
@@ -40,7 +41,7 @@ class PickerPanel extends StatelessWidget {
           margin: const EdgeInsets.only(top: 10),
           padding: const EdgeInsets.only(top: 10),
           decoration: const BoxDecoration(
-            border: Border(top: BorderSide(color: Color(0xfff0e8d8))),
+            border: Border(top: BorderSide(color: PickerColors.footerDivider)),
           ),
           child: footer,
         ),
@@ -88,7 +89,7 @@ class PickerFooterAction extends StatelessWidget {
           color: primary && hover
               ? (primaryHoverColor ?? IslandTokens.light.ink)
               : primary || hover
-              ? const Color(0x1a725d42)
+              ? PickerColors.footerActionFill
               : null,
           borderRadius: BorderRadius.circular(primary ? 12 : 10),
         ),
@@ -98,7 +99,9 @@ class PickerFooterAction extends StatelessWidget {
             fontSize: fontSize,
             fontWeight: FontWeight.w700,
             height: 1.5,
-            color: primary && hover ? Colors.white : IslandTokens.light.ink,
+            color: primary && hover
+                ? PickerColors.footerPrimaryHoverInk
+                : IslandTokens.light.ink,
           ),
         ),
       );

@@ -1,3 +1,4 @@
+import '../foundation/recipes/picker.dart';
 import '../foundation/theme.dart';
 import '../internal/focus_outline.dart';
 
@@ -277,7 +278,7 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                     PickerFooterAction(
                       '确定',
                       primary: true,
-                      primaryHoverColor: const Color(0xff796c5a),
+                      primaryHoverColor: PickerColors.confirmHover,
                       onPressed: confirm,
                     ),
                   ],
@@ -339,10 +340,10 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           color: selected == value
-                              ? const Color(0xffffb400)
+                              ? PickerColors.timeSelected
                               : states.contains(WidgetState.hovered) ||
                                     states.contains(WidgetState.focused)
-                              ? const Color(0xffffd54f)
+                              ? PickerColors.timeHover
                               : null,
                         ),
                         child: ExcludeSemantics(
@@ -356,7 +357,7 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                                   : FontWeight.w500,
                               color: selected == value
                                   ? IslandTokens.light.onSun
-                                  : const Color(0xff725d42),
+                                  : PickerColors.text,
                             ),
                           ),
                         ),

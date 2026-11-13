@@ -1,3 +1,4 @@
+import '../foundation/recipes/picker.dart';
 import '../foundation/theme.dart';
 import 'focus_outline.dart';
 
@@ -51,23 +52,16 @@ class PickerTrigger extends StatelessWidget {
       label: label,
       onActivate: disabled ? null : onActivate,
       builder: (_, states) {
-        // Reference underlines on the owned #fffbe7 fill: `.trigger-error`
-        // #c94444 (4.6:1); `.trigger-warning` #dba90e fails 3:1 and deepens in
-        // hue to #af8600 (3.2:1). Hover/focus #c4b89e and open #e0b800 are
-        // decorative cues under the 1.5px outline, so they keep the reference.
+        // Reference status/hover/open underlines on the owned fill.
         final Color? shadow = disabled
             ? null
-            : switch (status) {
-                IslandFieldStatus.error => const Color(0xffc94444),
-                IslandFieldStatus.warning => const Color(0xffaf8600),
-                IslandFieldStatus.normal =>
-                  open
-                      ? const Color(0xffe0b800)
-                      : states.contains(WidgetState.hovered) ||
-                            states.contains(WidgetState.focused)
-                      ? const Color(0xffc4b89e)
-                      : null,
-              };
+            : PickerColors.triggerUnderline(
+                status,
+                open: open,
+                active:
+                    states.contains(WidgetState.hovered) ||
+                    states.contains(WidgetState.focused),
+              );
         // Reference `.value`/`.placeholder` are `flex: 1` inside a
         // shrink-to-fit trigger: hug content under loose constraints, and let
         // the value slot take the free width (icon at the right edge) when the
@@ -87,13 +81,18 @@ class PickerTrigger extends StatelessWidget {
               ),
               padding: EdgeInsets.symmetric(horizontal: padding),
               decoration: BoxDecoration(
-                color: Color(disabled ? 0xffece8dc : 0xfffffbe7),
+                color: disabled
+                    ? PickerColors.triggerFillDisabled
+                    : PickerColors.triggerFill,
                 borderRadius: BorderRadius.circular(50),
                 boxShadow: [
                   if (shadow != null)
                     BoxShadow(color: shadow, offset: const Offset(0, 3)),
                   if (open && !disabled)
-                    const BoxShadow(color: Color(0x26ffcc00), spreadRadius: 3),
+                    const BoxShadow(
+                      color: PickerColors.triggerOpenGlow,
+                      spreadRadius: 3,
+                    ),
                 ],
               ),
               child: Row(
@@ -112,7 +111,7 @@ class PickerTrigger extends StatelessWidget {
                           // Reference `.wrapper-disabled .value/.placeholder`
                           // #c4b89e; disabled controls are contrast-exempt.
                           color: disabled
-                              ? const Color(0xffc4b89e)
+                              ? PickerColors.disabledText
                               : hasValue
                               ? IslandTokens.light.ink
                               : IslandTokens.light.muted,
@@ -142,7 +141,7 @@ class PickerTrigger extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: states.contains(WidgetState.hovered)
-                                ? const Color(0x1a725d42)
+                                ? PickerColors.clearHoverFill
                                 : null,
                           ),
                           child: ExcludeSemantics(
@@ -152,7 +151,7 @@ class PickerTrigger extends StatelessWidget {
                               '×',
                               style: TextStyle(
                                 color: states.contains(WidgetState.hovered)
-                                    ? const Color(0xff725d42)
+                                    ? PickerColors.clearHover
                                     : IslandTokens.light.muted,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,

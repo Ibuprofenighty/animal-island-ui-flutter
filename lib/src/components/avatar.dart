@@ -1,4 +1,5 @@
 import '../internal/content_scope.dart';
+import '../foundation/recipes/avatar.dart';
 import '../foundation/theme.dart';
 import '../internal/managed_image.dart';
 
@@ -72,7 +73,7 @@ class _IslandAvatarState extends State<IslandAvatar> {
     );
     Widget fallback() => DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xfff8f8f0), width: 2),
+        border: Border.all(color: AvatarColors.ring, width: 2),
         borderRadius: radius,
       ),
       child: Padding(
@@ -82,7 +83,7 @@ class _IslandAvatarState extends State<IslandAvatar> {
             fit: BoxFit.scaleDown,
             child: ContentScope(
               textStyle: TextStyle(
-                color: const Color(0xff794f27),
+                color: AvatarColors.text,
                 fontSize: font,
                 height: 1,
                 fontWeight: FontWeight.w600,
@@ -90,7 +91,7 @@ class _IslandAvatarState extends State<IslandAvatar> {
               ),
               // Reference icon artwork keeps its own near-black ink (12:1+ on
               // the #e6f9f6 avatar fill), distinct from the text role.
-              iconColor: const Color(0xff2a2a2a),
+              iconColor: AvatarColors.icon,
               child:
                   widget.icon ??
                   widget.child ??
@@ -116,15 +117,12 @@ class _IslandAvatarState extends State<IslandAvatar> {
       width: px,
       height: px,
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: const Color(0xffe6f9f6),
-        borderRadius: radius,
-      ),
+      decoration: BoxDecoration(color: AvatarColors.fill, borderRadius: radius),
       foregroundDecoration: defaults == null
           ? null
           : BoxDecoration(
               borderRadius: radius,
-              border: Border.all(color: const Color(0xfff8f8f0), width: 2),
+              border: Border.all(color: AvatarColors.ring, width: 2),
             ),
       child: content,
     );
@@ -176,12 +174,9 @@ class IslandAvatarGroup extends StatelessWidget {
             moreBuilder?.call(rest) ??
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xffe6f9f6),
+                    color: AvatarColors.fill,
                     borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: const Color(0xfff8f8f0),
-                      width: 2,
-                    ),
+                    border: Border.all(color: AvatarColors.ring, width: 2),
                   ),
                   child: Text(
                     '+$rest',

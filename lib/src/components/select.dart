@@ -5,6 +5,7 @@ import '../internal/light_surface_scope.dart';
 
 import 'dart:math' as math;
 
+import '../foundation/recipes/select.dart';
 import '../foundation/theme.dart';
 import '../foundation/icon.dart';
 import '../internal/option_cursor.dart';
@@ -388,7 +389,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       height: 1.5,
       letterSpacing: 0,
       fontWeight: FontWeight.w600,
-      color: const Color(0xff725d42),
+      color: SelectColors.option,
     );
     var panelWidth = 80.0;
     for (final option in visible) {
@@ -403,7 +404,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
     final panel = Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xffffeea0),
+        color: SelectColors.panel,
         borderRadius: BorderRadius.circular(28),
       ),
       child: SingleChildScrollView(
@@ -494,10 +495,10 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
       decoration: BoxDecoration(
         color: !enabled
-            ? const Color(0xfff5f5f0)
+            ? SelectColors.triggerDisabled
             : hovered && !open
-            ? const Color(0xfffffdf7)
-            : Colors.white,
+            ? SelectColors.triggerHover
+            : SelectColors.trigger,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           width: 2,
@@ -569,16 +570,16 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
                       height: 20,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: const Color(0xff725d42)
-                            .withValues(alpha: hover ? .1 : 0),
+                        color: SelectColors.clearHover.withValues(
+                          alpha: hover ? .1 : 0,
+                        ),
                       ),
                       child: Center(
                         child: IslandIcon(
                           IslandGlyph.close,
                           size: 12,
-                          // Reference `.clear:hover` #725d42 (6.2:1).
                           color: hover
-                              ? const Color(0xff725d42)
+                              ? SelectColors.clearHover
                               : IslandTokens.light.muted,
                         ),
                       ),
@@ -731,7 +732,7 @@ class _SelectPill extends CustomPainter {
         ),
         const Radius.circular(7),
       ),
-      Paint()..color = const Color(0x4dffcc00),
+      Paint()..color = SelectColors.selectedPill,
     );
   }
 

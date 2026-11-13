@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../foundation/recipes/card.dart';
 import '../foundation/theme.dart';
 import '../foundation/colorway.dart';
 import '../foundation/dashed_border.dart';
@@ -131,20 +132,20 @@ class IslandCard extends StatelessWidget {
               : colorway != IslandColorway.neutral
               ? colorway.accent
               : dashed
-              ? const Color(0xfffaf8f2)
-              : const Color(0xfff7f3df),
+              ? CardColors.neutralDashed
+              : CardColors.neutral,
         ),
         border: ActionSurface.resolveStyleValue(
           states,
           style?.borderColor,
           themed?.borderColor,
           hovering && dashed
-              ? const Color(0xffd4c4a8)
+              ? CardColors.accentBorder
               : patterned
               ? (pattern == IslandColorway.neutral
-                    ? const Color(0xffd4c4a8)
+                    ? CardColors.accentBorder
                     : pattern!.accent)
-              : const Color(0xffe8dcc8),
+              : CardColors.border,
         ),
         focus: ActionSurface.resolveStyleValue(
           states,
@@ -156,14 +157,14 @@ class IslandCard extends StatelessWidget {
           states,
           style?.dividerColor,
           themed?.dividerColor,
-          const Color(0xffe8dcc8),
+          CardColors.divider,
         ),
         largeDot: ActionSurface.resolveStyleValue(
           states,
           style?.largeDotColor,
           themed?.largeDotColor,
           (pattern == IslandColorway.neutral
-                  ? const Color(0xffc4b89e)
+                  ? CardColors.neutralDot
                   : (pattern ?? colorway).accent)
               .withValues(alpha: pattern == IslandColorway.neutral ? .15 : .18),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/rendering.dart';
 
+import '../foundation/recipes/pagination.dart';
 import '../foundation/theme.dart';
 import '../internal/option_cursor.dart';
 
@@ -17,7 +18,7 @@ const _sizeLabelStyle = TextStyle(
   fontSize: 13,
   height: 1,
   fontWeight: FontWeight.w600,
-  color: Color(0xff725d42),
+  color: PaginationColors.text,
 );
 String _sizeDisplayLabel(String label) => label.replaceAllMapped(
   RegExp(r'(?<=[\u3400-\u9fff]/)(?=[\u3400-\u9fff])'),
@@ -290,10 +291,10 @@ class _IslandPaginationState extends State<IslandPagination> {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xff725d42),
+                      color: PaginationColors.text,
                       height: 1,
                     ),
-                    cursorColor: const Color(0xff725d42),
+                    cursorColor: PaginationColors.text,
                     decoration: InputDecoration(
                       visualDensity: VisualDensity.standard,
                       constraints: const BoxConstraints(minHeight: 32),
@@ -301,8 +302,8 @@ class _IslandPaginationState extends State<IslandPagination> {
                       contentPadding: const EdgeInsets.symmetric(vertical: 9),
                       filled: true,
                       fillColor: widget.disabled
-                          ? const Color(0xffece8dc)
-                          : const Color(0xfffffbe7),
+                          ? PaginationColors.jumperFillDisabled
+                          : PaginationColors.jumperFill,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
                         borderSide: BorderSide.none,
@@ -358,15 +359,19 @@ class _IslandPaginationState extends State<IslandPagination> {
       builder: (context, states) {
         final tokens = IslandTheme.of(context);
         final restFill = selected
-            ? (teal ? const Color(0xff19c8b9) : const Color(0xffffc107))
+            ? (teal
+                  ? PaginationColors.tealSelected
+                  : PaginationColors.sunSelected)
             : tokens.paper.withValues(alpha: 0);
         final hoverFill = selected
-            ? (teal ? const Color(0xff3dd4c6) : const Color(0xffffb400))
-            : (teal ? const Color(0xffe6f9f6) : const Color(0xffffd54f));
+            ? (teal
+                  ? PaginationColors.tealSelectedHover
+                  : PaginationColors.sunSelectedHover)
+            : (teal ? PaginationColors.tealHover : PaginationColors.sunHover);
         final restInk = selected
             ? (teal ? IslandTokens.light.onLeaf : IslandTokens.light.onSun)
             : !enabled
-            ? const Color(0xffd4c9b4)
+            ? PaginationColors.disabledInk
             : tokens.ink;
         final hoverInk = selected || !enabled
             ? restInk
@@ -489,8 +494,12 @@ class _IslandPaginationState extends State<IslandPagination> {
     padding: const EdgeInsets.symmetric(horizontal: 12),
     decoration: BoxDecoration(
       color: widget.disabled
-          ? const Color(0xfff5f5f0)
-          : Color.lerp(Colors.white, const Color(0xfffffdf7), hover),
+          ? PaginationColors.sizeTriggerDisabled
+          : Color.lerp(
+              PaginationColors.sizeTrigger,
+              PaginationColors.sizeTriggerHover,
+              hover,
+            ),
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
         width: 2,
@@ -539,11 +548,11 @@ class _IslandPaginationState extends State<IslandPagination> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: const Color(0xffffeea0),
+          color: PaginationColors.sizeMenu,
           borderRadius: BorderRadius.circular(28),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x1f3d3428),
+              color: PaginationColors.sizeMenuShadow,
               offset: Offset(0, 6),
               blurRadius: 18,
             ),
@@ -581,7 +590,7 @@ class _IslandPaginationState extends State<IslandPagination> {
                             // like the Select pill bar.
                             child: DecoratedBox(
                               decoration: BoxDecoration(
-                                color: Color(0x4dffcc00),
+                                color: PaginationColors.sizeSelectedPill,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(7),
                                 ),
@@ -613,7 +622,7 @@ class _IslandPaginationState extends State<IslandPagination> {
                               strings.perPage(size),
                               style: TextStyle(
                                 fontSize: 13,
-                                color: const Color(0xff725d42),
+                                color: PaginationColors.text,
                                 fontWeight:
                                     highlighted || size == current.pageSize
                                     ? FontWeight.w700

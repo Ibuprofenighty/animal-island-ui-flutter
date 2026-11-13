@@ -16,6 +16,8 @@ The revoked custom-design APIs and their completed Button migration command are 
 
 The existing `tool/verify.py` source policy checks maintained-file coverage, contract declaration references, component export owners and reachability from both package entries and Gallery main. Conditional platform imports remain distinct adapters. These structural checks do not prove the absence of all semantic duplication or dead branches; review behavior and callback lifetimes separately.
 
+The policy also rejects raw colors (`Color(...)`, `Color.from*`, ARGB hex, `Colors.*` except transparent) outside the named owners in `COLOR_OWNERS`; `test/color_literal_policy_test.dart` is the same guard in `flutter test`. Add a named token instead of extending the owner list. 源码检查与该测试拒绝所有者文件以外的原始颜色值。
+
 
 ## Full-content visual capture / 全内容视觉采集
 

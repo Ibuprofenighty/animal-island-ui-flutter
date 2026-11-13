@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class CursorStory extends StatelessWidget {
   const CursorStory({super.key});
@@ -23,9 +24,12 @@ class CursorStory extends StatelessWidget {
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: const RoundedRectangleBorder(),
-            side: const BorderSide(color: Color(0xff767676), width: 2),
-            backgroundColor: const Color(0xfff0f0f0),
-            disabledBackgroundColor: const Color(0xfff0f0f0),
+            side: const BorderSide(
+              color: GalleryPalette.nativeControlBorder,
+              width: 2,
+            ),
+            backgroundColor: GalleryPalette.nativeControlFill,
+            disabledBackgroundColor: GalleryPalette.nativeControlFill,
             foregroundColor: IslandTokens.light.ink,
             disabledForegroundColor: IslandTokens.light.muted,
             // Bundled metric-compatible Arimo stands in for the UA Arial.
@@ -127,7 +131,7 @@ class CursorStory extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        foregroundColor: const Color(0xff0000ee),
+                        foregroundColor: GalleryPalette.nativeLink,
                       ),
                       onPressed: () {},
                       child: const Text(
@@ -163,12 +167,12 @@ class CursorStory extends StatelessWidget {
                     width: 189,
                     height: 27,
                     child: TextField(
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'IslandGalleryControls',
-                        fontFamilyFallback: ['IslandGallerySans'],
+                        fontFamilyFallback: const ['IslandGallerySans'],
                         fontSize: 13.333333,
                         height: 15 / 13.333333,
-                        color: Color(0xff714821),
+                        color: IslandTokens.light.ink,
                       ),
                       strutStyle: const StrutStyle(
                         fontSize: 13.333333,
@@ -192,18 +196,18 @@ class CursorStory extends StatelessWidget {
                           vertical: 6,
                         ),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: GalleryPalette.nativeInputFill,
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
                           borderSide: BorderSide(
-                            color: Color(0xff767676),
+                            color: GalleryPalette.nativeControlBorder,
                             width: 2,
                           ),
                         ),
                         enabledBorder: const OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
                           borderSide: BorderSide(
-                            color: Color(0xff767676),
+                            color: GalleryPalette.nativeControlBorder,
                             width: 2,
                           ),
                         ),

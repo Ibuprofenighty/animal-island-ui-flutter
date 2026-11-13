@@ -7,6 +7,7 @@ import '../shared/catalog.dart';
 import '../shared/background_preview.dart';
 import 'stories/registry.dart';
 import 'home.dart';
+import '../shared/palette.dart';
 
 class GalleryPage extends StatefulWidget {
   const GalleryPage({
@@ -91,18 +92,18 @@ class _GalleryPageState extends State<GalleryPage> {
     width: mobile ? 240 : 220,
     margin: const EdgeInsets.fromLTRB(12, 12, 0, 8),
     decoration: BoxDecoration(
-      color: const Color(0xfffaf8f3),
-      border: Border.all(color: const Color(0xfffafafa), width: 2),
+      color: GalleryPalette.sidebar,
+      border: Border.all(color: GalleryPalette.sidebarBorder, width: 2),
       borderRadius: BorderRadius.circular(16),
       boxShadow: [
         mobile
             ? const BoxShadow(
-                color: Color(0x26000000),
+                color: GalleryPalette.sidebarShadowMobile,
                 offset: Offset(4, 0),
                 blurRadius: 24,
               )
             : const BoxShadow(
-                color: Color(0x1a3d3428),
+                color: GalleryPalette.sidebarShadow,
                 offset: Offset(0, 4),
                 blurRadius: 16,
               ),
@@ -122,7 +123,7 @@ class _GalleryPageState extends State<GalleryPage> {
             child: Container(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
               decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: Color(0xffe8e2d6))),
+                border: Border(bottom: BorderSide(color: GalleryPalette.rule)),
               ),
               child: Row(
                 children: [
@@ -205,7 +206,7 @@ class _GalleryPageState extends State<GalleryPage> {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             padding: const EdgeInsets.fromLTRB(26, 0, 12, 0),
             backgroundColor: active
-                ? const Color(0xffb7c6e5)
+                ? GalleryPalette.navActive
                 : Colors.transparent,
             foregroundColor: IslandTokens.light.onCanvas,
             splashFactory: NoSplash.splashFactory,
@@ -224,7 +225,7 @@ class _GalleryPageState extends State<GalleryPage> {
               (states) => states.contains(WidgetState.focused)
                   ? IslandTokens.light.onCanvas.withValues(alpha: .12)
                   : !active && states.contains(WidgetState.hovered)
-                  ? const Color(0xffd6dff0)
+                  ? GalleryPalette.navHover
                   : Colors.transparent,
             ),
           ),
@@ -334,7 +335,7 @@ class _GalleryPageState extends State<GalleryPage> {
       child: IslandDrawerHost(
         child: Scaffold(
           key: _scaffold,
-          backgroundColor: const Color(0xff88c9a1),
+          backgroundColor: IslandTokens.light.canvas,
           appBar: showMobileNavigation
               ? _GalleryMobileHeader(
                   title: info?.title ?? 'Animal Island UI',
@@ -345,7 +346,7 @@ class _GalleryPageState extends State<GalleryPage> {
           // Reference mobile drawer: the 240px sidebar aside with its 12px
           // margin over an rgba(0,0,0,.35) overlay. The Material Drawer keeps
           // its route semantics and focus scope but paints nothing itself.
-          drawerScrimColor: const Color(0x59000000),
+          drawerScrimColor: GalleryPalette.drawerScrim,
           drawer: showMobileNavigation
               ? Drawer(
                   width: 252,
@@ -437,12 +438,12 @@ class _GalleryMobileHeader extends StatelessWidget
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Material(
-          color: const Color.fromRGBO(255, 252, 244, .92),
+          color: GalleryPalette.headerGlass,
           child: Container(
             height: preferredSize.height,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color(0xffe8e2d6))),
+              border: Border(bottom: BorderSide(color: GalleryPalette.rule)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -560,7 +561,7 @@ class _MenuWave extends CustomPainter {
         ..lineTo(220, size.height)
         ..lineTo(0, size.height)
         ..close(),
-      Paint()..color = const Color(0xffa2b0e7),
+      Paint()..color = GalleryPalette.sidebarWave,
     );
   }
 
@@ -622,20 +623,23 @@ class _NewBadgeState extends State<_NewBadge>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
           decoration: BoxDecoration(
-            color: active ? Colors.white : null,
+            color: active ? GalleryPalette.newBadgeActive : null,
             gradient: active
                 ? null
-                : const LinearGradient(
+                : LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xfffc736d), Color(0xfff7825a)],
+                    colors: [
+                      IslandColorway.red.accent,
+                      GalleryPalette.newBadgeGradientEnd,
+                    ],
                   ),
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
                 color: active
-                    ? const Color(0x26725d42)
-                    : const Color(0x40725d42),
+                    ? GalleryPalette.newBadgeShadowActive
+                    : GalleryPalette.newBadgeShadow,
                 offset: const Offset(0, 1),
               ),
             ],
@@ -668,8 +672,8 @@ class _GalleryDots extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (final layer in [
-      (28.0, 3.0, const Color(0x665aa069)),
-      (14.0, 2.0, const Color(0x4d6eb47d)),
+      (28.0, 3.0, GalleryPalette.wallpaperLargeDot),
+      (14.0, 2.0, GalleryPalette.wallpaperSmallDot),
     ]) {
       final points = <Offset>[
         for (double x = 14; x < size.width; x += layer.$1)

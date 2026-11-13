@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../foundation/recipes/option_cursor.dart';
+
 /// Decorative hover cursor; option text and its stable backing carry meaning.
 class OptionCursor extends StatelessWidget {
   const OptionCursor({super.key, required this.reduced});
@@ -40,7 +42,7 @@ class _OptionTriangle extends CustomPainter {
         ..lineTo(size.width, size.height / 2)
         ..lineTo(0, size.height)
         ..close(),
-      Paint()..color = const Color(0xfff5a623),
+      Paint()..color = OptionCursorColors.arrow,
     );
   }
 

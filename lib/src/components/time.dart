@@ -1,4 +1,5 @@
 import '../internal/surface_motion.dart';
+import '../foundation/recipes/time.dart';
 import '../foundation/theme.dart';
 
 import 'dart:async';
@@ -103,11 +104,11 @@ class _IslandTimeState extends State<IslandTime>
           child: Container(
             padding: const EdgeInsets.fromLTRB(32, 20, 32, 15),
             decoration: BoxDecoration(
-              color: const Color(0xfff8f8f0),
+              color: TimeColors.surface,
               borderRadius: BorderRadius.circular(20),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0x0f3d3428),
+                  color: TimeColors.shadow,
                   offset: Offset(0, 2),
                   blurRadius: 4,
                 ),
@@ -118,7 +119,7 @@ class _IslandTimeState extends State<IslandTime>
               children: [
                 DefaultTextStyle.merge(
                   style: const TextStyle(
-                    color: Color(0xff794f27),
+                    color: TimeColors.digits,
                     fontSize: 44,
                     fontWeight: FontWeight.w900,
                     height: 1,
@@ -154,7 +155,7 @@ class _IslandTimeState extends State<IslandTime>
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xffe6f9f6),
+                    color: TimeColors.datePill,
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: DefaultTextStyle.merge(

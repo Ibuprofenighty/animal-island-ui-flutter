@@ -9,6 +9,7 @@ import '../internal/action_surface.dart';
 import '../internal/content_scope.dart';
 import '../internal/focus_outline.dart';
 import '../internal/viewport_overlay.dart';
+import '../foundation/recipes/notification.dart';
 
 enum IslandNotificationType { success, info, warning, error }
 
@@ -382,27 +383,27 @@ class _NotificationCardState extends State<_NotificationCard>
   static (Color, Color, Color, Color) _palette(IslandNotificationType type) =>
       switch (type) {
         IslandNotificationType.success => (
-          const Color(0xfff5fae9),
-          const Color(0xff6fba2c),
-          const Color(0xffd8efc1),
+          NotificationColors.successFill,
+          NotificationColors.successBorder,
+          NotificationColors.successIconFill,
           IslandTokens.light.onLeaf,
         ),
         IslandNotificationType.info => (
-          const Color(0xffecf9f6),
-          const Color(0xff19c8b9),
-          const Color(0xffc2ece6),
+          NotificationColors.infoFill,
+          NotificationColors.infoBorder,
+          NotificationColors.infoIconFill,
           IslandTokens.light.link,
         ),
         IslandNotificationType.warning => (
-          const Color(0xfffdf6d9),
-          const Color(0xfff5c31c),
-          const Color(0xfffbeaa1),
+          NotificationColors.warningFill,
+          NotificationColors.warningBorder,
+          NotificationColors.warningIconFill,
           IslandTokens.light.warning,
         ),
         IslandNotificationType.error => (
-          const Color(0xfffde8e8),
-          const Color(0xffe05a5a),
-          const Color(0xfff7c8c8),
+          NotificationColors.errorFill,
+          NotificationColors.errorBorder,
+          NotificationColors.errorIconFill,
           IslandTokens.light.dangerText,
         ),
       };
@@ -489,7 +490,7 @@ class _NotificationCardState extends State<_NotificationCard>
         boxShadow: [
           BoxShadow(
             color: hover
-                ? const Color(0x2e3d3428)
+                ? NotificationColors.hoverShadow
                 : border.withValues(
                     alpha: n.type == IslandNotificationType.warning ? .2 : .18,
                   ),
@@ -534,7 +535,7 @@ class _NotificationCardState extends State<_NotificationCard>
                     fontWeight: FontWeight.w700,
                     height: 1.4,
                     letterSpacing: .15,
-                    color: Color(0xff794f27),
+                    color: NotificationColors.message,
                   ),
                   child: n.message,
                 ),
@@ -582,15 +583,15 @@ class _NotificationCardState extends State<_NotificationCard>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: states.contains(WidgetState.hovered)
-                        ? const Color(0x1f725d42)
-                        : const Color(0x00725d42),
+                        ? NotificationColors.closeHoverFill
+                        : NotificationColors.closeFill,
                   ),
                   child: ContentScope(
                     textStyle: TextStyle(
                       fontSize: 18,
                       height: 1,
                       color: states.contains(WidgetState.hovered)
-                          ? const Color(0xff725d42)
+                          ? NotificationColors.closeHover
                           : IslandTokens.light.ink,
                     ),
                     // The action owns a 22px hit area. Visual close content

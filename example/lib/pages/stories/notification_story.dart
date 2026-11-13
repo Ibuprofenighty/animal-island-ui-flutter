@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class NotificationStory extends StatefulWidget {
   const NotificationStory({super.key});
@@ -115,7 +116,7 @@ class _NotificationStoryState extends State<NotificationStory> {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Color(0xff7c5734),
+              color: GalleryPalette.notificationDemoText,
             ),
           ),
         ),
@@ -342,7 +343,7 @@ notifications.dispose();""",
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: Color(0xff794f27),
+              color: GalleryPalette.demoStrongInk,
             ),
           ),
         ),

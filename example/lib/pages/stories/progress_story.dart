@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class ProgressStory extends StatefulWidget {
   const ProgressStory({super.key});
@@ -159,7 +160,7 @@ class _ProgressStoryState extends State<ProgressStory> {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xff725d42),
+                  color: GalleryPalette.storyInk,
                 ),
               ),
             ),
@@ -167,8 +168,8 @@ class _ProgressStoryState extends State<ProgressStory> {
               child: SliderTheme(
                 data: SliderTheme.of(context).copyWith(
                   trackHeight: 4,
-                  activeTrackColor: const Color(0xff725d42),
-                  thumbColor: const Color(0xff725d42),
+                  activeTrackColor: GalleryPalette.storyInk,
+                  thumbColor: GalleryPalette.storyInk,
                   // Native range input: no tick marks, ~16px thumb.
                   tickMarkShape: SliderTickMarkShape.noTickMark,
                   thumbShape: const RoundSliderThumbShape(

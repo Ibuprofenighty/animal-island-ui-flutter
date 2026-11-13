@@ -11,6 +11,7 @@ import '../internal/active_stack.dart';
 import '../internal/light_surface_scope.dart';
 import '../internal/focus_outline.dart';
 import '../foundation/localizations.dart';
+import '../foundation/recipes/carousel.dart';
 
 @immutable
 class IslandSlide<T extends Object> {
@@ -199,7 +200,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                 width: 2,
                 offset: 2,
                 backingColor: states.contains(WidgetState.focused)
-                    ? Colors.white
+                    ? CarouselColors.control
                     : null,
               );
               Widget arrow(bool next) => Align(
@@ -235,15 +236,15 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                                 const CircleBorder(),
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: CarouselColors.control,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: const Color(0x29794f27),
+                                  color: CarouselColors.controlBorder,
                                   width: 1.5,
                                 ),
                                 boxShadow: const [
                                   BoxShadow(
-                                    color: Color(0x0f3d3428),
+                                    color: CarouselColors.controlShadow,
                                     offset: Offset(0, 2),
                                     blurRadius: 4,
                                   ),
@@ -253,7 +254,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                                 painter: _CarouselArrow(
                                   next,
                                   Color.lerp(
-                                    const Color(0xff794f27),
+                                    CarouselColors.controlInk,
                                     IslandTokens.light.link,
                                     tint,
                                   )!,
@@ -288,7 +289,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                           ? constraints.maxWidth
                           : null,
                       decoration: BoxDecoration(
-                        color: const Color(0xfff7f3df),
+                        color: CarouselColors.slideBackplane,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       clipBehavior: Clip.antiAlias,
@@ -343,7 +344,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                               vertical: 7,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: CarouselColors.control,
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: Row(
@@ -424,10 +425,10 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                                   const StadiumBorder(),
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: CarouselColors.control,
                                   borderRadius: BorderRadius.circular(50),
                                   border: Border.all(
-                                    color: const Color(0x29794f27),
+                                    color: CarouselColors.controlBorder,
                                     width: 1.5,
                                   ),
                                 ),
@@ -439,7 +440,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700,
                                         color: Color.lerp(
-                                          const Color(0xff794f27),
+                                          CarouselColors.controlInk,
                                           IslandTokens.light.link,
                                           tint,
                                         ),

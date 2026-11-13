@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import 'palette.dart';
 import 'reference_source_link.dart';
 
 class StoryPanel extends StatelessWidget {
@@ -26,8 +27,8 @@ class StoryPanel extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     margin: const EdgeInsets.only(bottom: 36),
     decoration: BoxDecoration(
-      color: Colors.white,
-      border: dashed ? null : Border.all(color: const Color(0xffe8e2d6)),
+      color: GalleryPalette.demoSurface,
+      border: dashed ? null : Border.all(color: GalleryPalette.rule),
       borderRadius: BorderRadius.circular(12),
     ),
     child: CustomPaint(
@@ -36,7 +37,7 @@ class StoryPanel extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
-              color: Color(0xffe8e2d6),
+              color: GalleryPalette.rule,
               dash: 3,
               gap: 3,
             )
@@ -72,7 +73,7 @@ class StoryPanel extends StatelessWidget {
                   height: 1.333333,
                   letterSpacing: 0,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xff725d42),
+                  color: GalleryPalette.storyInk,
                 ),
               ),
               for (final label in tags)
@@ -222,9 +223,9 @@ class _StoryLinkState extends State<_StoryLink> {
           child: Text(
             widget.text,
             style: widget.style.copyWith(
-              color: const Color(0xff725d42),
+              color: GalleryPalette.storyInk,
               decoration: TextDecoration.underline,
-              decorationColor: const Color(0xff725d42),
+              decorationColor: GalleryPalette.storyInk,
             ),
           ),
         ),
@@ -518,7 +519,7 @@ class StoryApi extends StatelessWidget {
               bottomRight: Radius.circular(20),
             ),
             child: ColoredBox(
-              color: const Color(0xff2b2118),
+              color: GalleryPalette.apiTableBackground,
               child: LayoutBuilder(
                 builder: (_, constraints) => SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -535,18 +536,20 @@ class StoryApi extends StatelessWidget {
                       defaultVerticalAlignment:
                           TableCellVerticalAlignment.middle,
                       border: const TableBorder(
-                        horizontalInside: BorderSide(color: Color(0xff3d3028)),
+                        horizontalInside: BorderSide(
+                          color: GalleryPalette.apiTableRule,
+                        ),
                       ),
                       children: [
                         TableRow(
                           decoration: const BoxDecoration(
-                            color: Color(0xff3d3028),
+                            color: GalleryPalette.apiTableHeader,
                           ),
                           children: [
                             for (final heading in _headings)
                               _cell(
                                 heading,
-                                color: const Color(0xffe8d5bc),
+                                color: GalleryPalette.apiTableHeading,
                                 bold: true,
                               ),
                           ],
@@ -554,10 +557,13 @@ class StoryApi extends StatelessWidget {
                         for (final row in rows)
                           TableRow(
                             children: [
-                              _cell(row.$1, color: const Color(0xffe8c87a)),
+                              _cell(row.$1, color: GalleryPalette.apiTableName),
                               _cell(row.$2),
-                              _cell(row.$3, color: const Color(0xffd4a0e0)),
-                              _cell(row.$4, color: const Color(0xffa8d4a0)),
+                              _cell(row.$3, color: GalleryPalette.apiTableType),
+                              _cell(
+                                row.$4,
+                                color: GalleryPalette.apiTableDefault,
+                              ),
                             ],
                           ),
                       ],
@@ -581,7 +587,7 @@ class StoryApi extends StatelessWidget {
   Widget _cell(
     String text, {
     bool bold = false,
-    Color color = const Color(0xffc8bba8),
+    Color color = GalleryPalette.apiTableCell,
   }) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
     child: Text(text, style: _cellStyle(bold).copyWith(color: color)),
@@ -617,7 +623,7 @@ class _ContentColumnWidth extends TableColumnWidth {
 Widget _codeLabel(String label) => Container(
   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
   decoration: const BoxDecoration(
-    color: Color(0xff3d3028),
+    color: GalleryPalette.codeLabelFill,
     borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
   ),
   child: Text(
@@ -625,7 +631,7 @@ Widget _codeLabel(String label) => Container(
     style: const TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w600,
-      color: Color(0xffe7e4e0),
+      color: GalleryPalette.codeLabelText,
     ),
   ),
 );
@@ -659,9 +665,9 @@ class StoryDemoBox extends StatelessWidget {
     width: double.infinity,
     margin: margin,
     decoration: BoxDecoration(
-      color: dashed ? const Color(0xfffaf8f2) : const Color(0xfffaf8f3),
+      color: dashed ? GalleryPalette.demoPanelDashed : GalleryPalette.demoPanel,
       borderRadius: BorderRadius.circular(dashed ? 18 : 12),
-      border: dashed ? null : Border.all(color: const Color(0xffe8e2d6)),
+      border: dashed ? null : Border.all(color: GalleryPalette.rule),
     ),
     child: CustomPaint(
       foregroundPainter: dashed
@@ -669,7 +675,7 @@ class StoryDemoBox extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(18)),
               ),
-              color: Color(0xffe0d8c8),
+              color: GalleryPalette.demoPanelDashedBorder,
               dash: 3,
               gap: 3,
             )

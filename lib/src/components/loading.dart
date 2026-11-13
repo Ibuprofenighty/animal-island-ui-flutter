@@ -9,6 +9,7 @@ import '../foundation/localizations.dart';
 import '../internal/content_scope.dart';
 import '../internal/action_surface.dart';
 import '../internal/viewport_overlay.dart';
+import '../foundation/recipes/loading.dart';
 
 /// The host owns activity and work; this root overlay owns display delay,
 /// decoration and animation resources. Input is restored only after removal.
@@ -227,17 +228,17 @@ class _IslandLoadingState extends State<IslandLoading>
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: ColoredBox(
-                        color: const Color(0xff0b101a),
+                        color: LoadingColors.night,
                         child: ContentScope(
                           textStyle: const TextStyle(
-                            color: Color(0xfff8f8f0),
+                            color: LoadingColors.text,
                             fontSize: 18,
                             height: 1.5,
                             fontWeight: FontWeight.w800,
                             letterSpacing: .72,
                             shadows: [
                               Shadow(
-                                color: Color(0x99000000),
+                                color: LoadingColors.textShadow,
                                 offset: Offset(0, 2),
                                 blurRadius: 8,
                               ),
@@ -308,11 +309,9 @@ class _SnowPainter extends CustomPainter {
   final _SnowClock clock;
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = const Color(0xff0b101a),
-    );
-    final brush = Paint()..color = Colors.white.withValues(alpha: motion.value);
+    canvas.drawRect(Offset.zero & size, Paint()..color = LoadingColors.night);
+    final brush = Paint()
+      ..color = LoadingColors.snow.withValues(alpha: motion.value);
     for (final flake in clock.flakes) {
       final phase = (clock.seconds / flake.$3 + flake.$4) % 1;
       canvas.drawCircle(
@@ -333,7 +332,7 @@ class _SnowPainter extends CustomPainter {
         ..shader = ui.Gradient.radial(
           Offset.zero,
           math.sqrt2,
-          const [Color(0x00050a14), Color(0x99050a14)],
+          const [LoadingColors.vignetteInner, LoadingColors.vignetteOuter],
           const [.55, 1],
         ),
     );

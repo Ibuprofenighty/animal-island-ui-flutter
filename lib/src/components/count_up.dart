@@ -9,6 +9,7 @@ import '../foundation/size.dart';
 import '../internal/content_scope.dart';
 import '../internal/number_surface.dart';
 import '../internal/number_plate.dart';
+import '../foundation/recipes/count_up.dart';
 
 enum IslandCountUpVariant { normal, island }
 
@@ -367,18 +368,18 @@ class _IslandCountUpState extends State<IslandCountUp>
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
                                       colors: [
-                                        Color(0xffffe08a),
-                                        Color(0xfff7cd67),
+                                        CountUpColors.badgeTop,
+                                        CountUpColors.badgeBottom,
                                       ],
                                     ),
                                     border: Border.all(
-                                      color: const Color(0xffe0b800),
+                                      color: CountUpColors.badgeBorder,
                                       width: 1.5,
                                     ),
                                     borderRadius: BorderRadius.circular(50),
                                     boxShadow: const [
                                       BoxShadow(
-                                        color: Color(0x2e3d3428),
+                                        color: CountUpColors.badgeShadow,
                                         offset: Offset(0, 2),
                                         blurRadius: 6,
                                       ),
@@ -461,8 +462,8 @@ class _CelebrationPainter extends CustomPainter {
     // opacity .9→0 on the shared ease; the second ring (rgba(255,204,0,.7))
     // starts .12s later and holds its first keyframe meanwhile (fill: both).
     for (final (delay, color) in const [
-      (0.0, Color(0xd9f7cd67)),
-      (120.0, Color(0xb3ffcc00)),
+      (0.0, CountUpColors.ringFirst),
+      (120.0, CountUpColors.ringSecond),
     ]) {
       final t = ((progress * 900 - delay) / 700).clamp(0.0, 1.0);
       if (t >= 1) continue;
@@ -517,7 +518,7 @@ class _CelebrationPainter extends CustomPainter {
         ..close();
       c.drawPath(
         path,
-        Paint()..color = const Color(0xfff7cd67).withValues(alpha: alpha),
+        Paint()..color = CountUpColors.sparkle.withValues(alpha: alpha),
       );
       c.restore();
     }

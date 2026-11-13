@@ -2,6 +2,8 @@ import 'dart:ui' show Brightness;
 
 import 'package:flutter/painting.dart';
 
+import 'palette.dart';
+
 /// Fixed product color pairs. Pastel fills retain the reference; information
 /// colors incorporate the approved accessibility differences.
 enum IslandColorway {
@@ -80,7 +82,7 @@ Color outlineInk(IslandColorway value, Brightness brightness) => Color(
 /// Reference outlined/dashed Tag border: the accent itself (neutral #c4b89e).
 /// The text, not this decorative contour, identifies the tag.
 Color outlineBorder(IslandColorway value) =>
-    value == IslandColorway.neutral ? const Color(0xffc4b89e) : value.accent;
+    value == IslandColorway.neutral ? Primitive.sand786 : value.accent;
 
 // Badge dot fill: the accent moved along OKLCH lightness only until it keeps
 // 3:1 against the cream ring and the light/dark papers (brown already does).
@@ -173,18 +175,18 @@ Color dotFill(IslandColorway value) => Color(_dotFill[value.index]);
 };
 
 // Title fronts, backs, folds and their readable default foreground.
-const titlePalette = <(int, int, int, int)>[
-  (0xff27d039, 0xff20992a, 0xff115017, 0xff115017),
-  (0xfff8a6b2, 0xffe06880, 0xffa03060, 0xff7c254b),
-  (0xffb77dee, 0xff9050d0, 0xff5a1a9a, 0xff431373),
-  (0xff889df0, 0xff5068d8, 0xff2030a0, 0xff1d2b90),
-  (0xfff7cd67, 0xffd4a030, 0xff8a6010, 0xff625039),
-  (0xffe59266, 0xffc06a30, 0xff7a3a10, 0xff5a2a0c),
-  (0xff82d5bb, 0xff40a880, 0xff186048, 0xff155640),
-  (0xff8ac68a, 0xff509050, 0xff205020, 0xff205020),
-  (0xfffc736d, 0xffd43030, 0xff900010, 0xff6a000c),
-  (0xffd1da49, 0xff90a010, 0xff485800, 0xff3d5a1a),
-  (0xffecdf52, 0xffc0b010, 0xff706800, 0xff69563d),
-  (0xff9a835a, 0xff705830, 0xff3a2810, 0xff2a1d0c),
-  (0xffe18c6f, 0xffb85a30, 0xff6a2a10, 0xff5a240e),
+const titlePalette = <(Color, Color, Color, Color)>[
+  (Color(0xff27d039), Color(0xff20992a), Color(0xff115017), Color(0xff115017)),
+  (Color(0xfff8a6b2), Color(0xffe06880), Color(0xffa03060), Color(0xff7c254b)),
+  (Color(0xffb77dee), Color(0xff9050d0), Color(0xff5a1a9a), Color(0xff431373)),
+  (Color(0xff889df0), Color(0xff5068d8), Color(0xff2030a0), Color(0xff1d2b90)),
+  (Color(0xfff7cd67), Color(0xffd4a030), Color(0xff8a6010), Color(0xff625039)),
+  (Color(0xffe59266), Color(0xffc06a30), Color(0xff7a3a10), Color(0xff5a2a0c)),
+  (Color(0xff82d5bb), Color(0xff40a880), Color(0xff186048), Color(0xff155640)),
+  (Color(0xff8ac68a), Color(0xff509050), Color(0xff205020), Color(0xff205020)),
+  (Color(0xfffc736d), Color(0xffd43030), Color(0xff900010), Color(0xff6a000c)),
+  (Color(0xffd1da49), Color(0xff90a010), Color(0xff485800), Color(0xff3d5a1a)),
+  (Color(0xffecdf52), Color(0xffc0b010), Color(0xff706800), Color(0xff69563d)),
+  (Color(0xff9a835a), Color(0xff705830), Color(0xff3a2810), Color(0xff2a1d0c)),
+  (Color(0xffe18c6f), Color(0xffb85a30), Color(0xff6a2a10), Color(0xff5a240e)),
 ];

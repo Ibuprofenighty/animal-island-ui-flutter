@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class FormStory extends StatefulWidget {
   const FormStory({super.key});
@@ -265,15 +266,15 @@ class _FormStoryState extends State<FormStory> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xfffffbe6),
-                  border: Border.all(color: const Color(0xffffe58f)),
+                  color: GalleryPalette.formNoticeFill,
+                  border: Border.all(color: GalleryPalette.formNoticeBorder),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   result,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Color(0xff874d00),
+                    color: GalleryPalette.formNoticeText,
                   ),
                 ),
               ),

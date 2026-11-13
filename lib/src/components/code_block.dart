@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../internal/action_surface.dart';
 import '../internal/focus_outline.dart';
+import '../foundation/recipes/code_block.dart';
 import '../foundation/theme.dart';
 
 enum IslandCodeLanguage { dart, javascript, shell, plain }
@@ -58,13 +59,13 @@ class IslandCodeBlockTheme extends ThemeExtension<IslandCodeBlockTheme> {
 }
 
 const _syntaxRecipe = <IslandCodeToken, Color>{
-  IslandCodeToken.comment: Color(0xff9d8f7e),
-  IslandCodeToken.literal: Color(0xffa8d4a0),
-  IslandCodeToken.command: Color(0xfff0a870),
-  IslandCodeToken.keyword: Color(0xffd4a0e0),
-  IslandCodeToken.type: Color(0xff80c0e0),
-  IslandCodeToken.function: Color(0xff61afef),
-  IslandCodeToken.punctuation: Color(0xffd4b896),
+  IslandCodeToken.comment: CodeBlockColors.comment,
+  IslandCodeToken.literal: CodeBlockColors.literal,
+  IslandCodeToken.command: CodeBlockColors.command,
+  IslandCodeToken.keyword: CodeBlockColors.keyword,
+  IslandCodeToken.type: CodeBlockColors.type,
+  IslandCodeToken.function: CodeBlockColors.function,
+  IslandCodeToken.punctuation: CodeBlockColors.punctuation,
 };
 
 class IslandCodeBlock extends StatefulWidget {
@@ -140,13 +141,13 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
       background:
           local?.backgroundColor ??
           themed?.backgroundColor ??
-          const Color(0xff2b2118),
+          CodeBlockColors.background,
       foreground:
           local?.foregroundColor ??
           themed?.foregroundColor ??
-          const Color(0xffe8d5bc),
+          CodeBlockColors.foreground,
       border:
-          local?.borderColor ?? themed?.borderColor ?? const Color(0xff3d3028),
+          local?.borderColor ?? themed?.borderColor ?? CodeBlockColors.border,
       syntax: <IslandCodeToken, Color>{
         for (final role in IslandCodeToken.values)
           role:
@@ -213,21 +214,21 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
                       states,
                       local?.copyForegroundColor,
                       themed?.copyForegroundColor,
-                      const Color(0xffe8d5bc),
+                      CodeBlockColors.copyForeground,
                     ),
                     background: ActionSurface.resolveStyleValue(
                       states,
                       local?.copyBackgroundColor,
                       themed?.copyBackgroundColor,
                       states.contains(WidgetState.hovered)
-                          ? const Color(0xff4b3b31)
-                          : const Color(0xf03d3028),
+                          ? CodeBlockColors.copyBackgroundHover
+                          : CodeBlockColors.copyBackground,
                     ),
                     border: ActionSurface.resolveStyleValue(
                       states,
                       local?.copyBorderColor,
                       themed?.copyBorderColor,
-                      const Color(0x4de8d5bc),
+                      CodeBlockColors.copyBorder,
                     ),
                     // Reference focus-visible: a 2px ring 2px outside the
                     // pill. A caller's focused copyBorderColor also colours
@@ -236,7 +237,7 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
                       states,
                       local?.copyBorderColor,
                       themed?.copyBorderColor,
-                      const Color(0xff19c8b9),
+                      CodeBlockColors.copyFocusRing,
                     ),
                   );
                   final focused = states.contains(WidgetState.focused);

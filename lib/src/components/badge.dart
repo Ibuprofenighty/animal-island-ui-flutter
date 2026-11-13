@@ -5,6 +5,7 @@ import '../internal/surface_motion.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/colorway.dart';
+import '../foundation/recipes/badge.dart';
 
 enum IslandBadgeSize { small, medium }
 
@@ -105,7 +106,7 @@ class IslandBadge extends StatelessWidget {
         color: point ? dotFill(color) : color.accent,
         // Reference ring: cream when attached to content, none standalone.
         border: Border.all(
-          color: child == null ? Colors.transparent : const Color(0xfff8f8f0),
+          color: child == null ? Colors.transparent : BadgeColors.ring,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(999),
@@ -113,7 +114,7 @@ class IslandBadge extends StatelessWidget {
             ? null
             : const [
                 BoxShadow(
-                  color: Color(0x0f3d3428),
+                  color: BadgeColors.shadow,
                   offset: Offset(0, 2),
                   blurRadius: 4,
                 ),

@@ -1,3 +1,4 @@
+import '../foundation/recipes/tag.dart';
 import '../foundation/theme.dart';
 
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class IslandTag extends StatelessWidget {
         ? colorway.soft
         : solid
         ? neutral
-              ? const Color(0xfff7f3df)
+              ? TagColors.neutralSolidFill
               : colorway.accent
         : Colors.transparent;
     final borderWidth = IslandTheme.borderWidth(context, 1.5);
@@ -63,7 +64,7 @@ class IslandTag extends StatelessWidget {
           ? Colors.transparent
           : solid
           ? neutral
-                ? const Color(0xffd4c4a8)
+                ? TagColors.neutralSolidBorder
                 : colorway.accent
           : outlineBorder(colorway),
     );
@@ -106,7 +107,7 @@ class IslandTag extends StatelessWidget {
             shadows: states.contains(WidgetState.hovered)
                 ? const [
                     BoxShadow(
-                      color: Color(0x1f3d3428),
+                      color: TagColors.hoverShadow,
                       offset: Offset(0, 2),
                       blurRadius: 6,
                     ),
@@ -200,7 +201,7 @@ class IslandTag extends StatelessWidget {
                                 // Reference resting disc rgb(149 143 143 / 8%).
                                 color: closeStates.contains(WidgetState.hovered)
                                     ? colorway.soft
-                                    : const Color(0x14958f8f),
+                                    : TagColors.closeDisc,
                               ),
                               child: Center(
                                 child: ExcludeSemantics(
