@@ -402,6 +402,7 @@ class _FormStoryState extends State<FormStory> {
         "final form = IslandFormController(initialValues: {'name': ''});\nIslandForm(\n  controller: form,\n  layout: IslandFormLayout.vertical,\n  children: [\n    IslandFormTextField(\n      name: 'name', label: '姓名',\n      validators: [(value, _) => value == null || value.isEmpty ? '请输入姓名' : null],\n    ),\n    IslandButton(onPressed: form.submit, child: Text('提交')),\n  ],\n)\n// Creator disposes form; child controls are bound through explicit builders.",
       ),
       const StoryApi(
+        title: 'Form API',
         rows: [
           (
             'controller / initialValues',
@@ -444,6 +445,7 @@ class _FormStoryState extends State<FormStory> {
         ],
       ),
       const StoryApi(
+        title: 'FormItem API',
         rows: [
           (
             'name / builder',

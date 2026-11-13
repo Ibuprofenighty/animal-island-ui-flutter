@@ -576,8 +576,9 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
                         child: IslandIcon(
                           IslandGlyph.close,
                           size: 12,
+                          // Reference `.clear:hover` #725d42 (6.2:1).
                           color: hover
-                              ? IslandTokens.light.ink
+                              ? const Color(0xff725d42)
                               : IslandTokens.light.muted,
                         ),
                       ),

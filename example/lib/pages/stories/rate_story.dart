@@ -102,10 +102,22 @@ class _RateStoryState extends State<RateStory> {
         margin: const EdgeInsets.only(top: 4),
         child: Padding(
           padding: const EdgeInsets.only(bottom: 6),
-          child: IslandRate(
-            count: 10,
-            value: countScore,
-            onChanged: (v) => setState(() => countScore = v),
+          // One IslandRate cannot wrap its stars; below its 314px row the
+          // explicit horizontal scroll region keeps every star inside the
+          // demo box and reachable (docs/DESIGN.md#gallery-parent-layout).
+          // Only the horizontal overflow is clipped, at the box's 16px inner
+          // edge, so focus rings, hover lift and pop stay whole.
+          child: ClipRect(
+            clipper: const _DemoBoxHorizontalClip(16),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              clipBehavior: Clip.none,
+              child: IslandRate(
+                count: 10,
+                value: countScore,
+                onChanged: (v) => setState(() => countScore = v),
+              ),
+            ),
           ),
         ),
       ),
@@ -153,4 +165,16 @@ class _RateStoryState extends State<RateStory> {
       ),
     ],
   );
+}
+
+/// Clips horizontal overflow at the demo box's inner edge [inset] outside
+/// the scroll viewport; vertical overflow (focus ring, lift, pop) is kept.
+class _DemoBoxHorizontalClip extends CustomClipper<Rect> {
+  const _DemoBoxHorizontalClip(this.inset);
+  final double inset;
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTRB(-inset, -1e4, size.width + inset, size.height + 1e4);
+  @override
+  bool shouldReclip(_DemoBoxHorizontalClip old) => old.inset != inset;
 }

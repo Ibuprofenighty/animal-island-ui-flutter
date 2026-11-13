@@ -128,4 +128,40 @@ void main() {
       expect(t.takeException(), isNull);
     },
   );
+
+  testWidgets('wrapped text uses the reference line-height 1 under the dot', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(
+        const DefaultTextStyle(
+          style: TextStyle(fontSize: 14, height: 1.5),
+          child: IslandBadge(dot: true, child: Text('一段文字')),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final text = t.getRect(find.text('一段文字'));
+    // A 14px line box (not 21px), so the dot centre sits on the glyph top.
+    expect(text.height, closeTo(14, .5));
+    final dot = t.getRect(
+      find
+          .descendant(
+            of: find.byType(IslandBadge),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    expect(dot.center.dy, closeTo(text.top, .5));
+    // An explicit child height still wins.
+    await t.pumpWidget(
+      host(
+        const IslandBadge(
+          dot: true,
+          child: Text('一段文字', style: TextStyle(fontSize: 14, height: 2)),
+        ),
+      ),
+    );
+    expect(t.getSize(find.text('一段文字')).height, closeTo(28, .5));
+  });
 }

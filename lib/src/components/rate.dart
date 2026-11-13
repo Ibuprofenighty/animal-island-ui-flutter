@@ -168,9 +168,15 @@ class _IslandRateState extends State<IslandRate>
     final reduced = MediaQuery.disableAnimationsOf(context);
     // Reference selected stroke #dba90e (warning-active): kept on dark paper
     // (5.5:1); on light papers (1.9:1) the same hue is OKLCH-deepened to 3:1.
-    final selectedOutline = Theme.of(context).brightness == Brightness.dark
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final selectedOutline = dark
         ? const Color(0xffdba90e)
         : const Color(0xffaf8600);
+    // Reference unselected stroke #c4b89e (text-color-disabled): kept on dark
+    // paper (6.0:1); 1.8:1 on light papers, deepened in hue to #978b73.
+    final idleOutline = dark
+        ? const Color(0xffc4b89e)
+        : const Color(0xff978b73);
     final duration = reduced
         ? Duration.zero
         : const Duration(milliseconds: 250);
@@ -251,8 +257,7 @@ class _IslandRateState extends State<IslandRate>
                                     i < (_preview ?? value),
                                     i < (_preview ?? value)
                                         ? selectedOutline
-                                        : IslandTheme.of(context).ink,
-                                    IslandTheme.of(context).onSun,
+                                        : idleOutline,
                                   ),
                                 ),
                               ),
@@ -297,9 +302,15 @@ class _RateSplash extends CustomPainter {
 }
 
 class _StarPainter extends CustomPainter {
-  const _StarPainter(this.fill, this.outline, this.eyes);
+  const _StarPainter(this.fill, this.outline);
   final bool fill;
-  final Color outline, eyes;
+  final Color outline;
+
+  /// Reference `.icon circle { fill: var(--animal-text-color) }` with the
+  /// inherited `.active` stroke #dba90e painted over it (SVG order), so the
+  /// eyes read as faint tonal dots. They are decorative and keep the
+  /// reference stroke even where the star outline deepens for contrast.
+  static const eyeFill = Color(0xff794f27), eyeStroke = Color(0xffdba90e);
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
@@ -330,20 +341,20 @@ class _StarPainter extends CustomPainter {
         ..color = outline,
     );
     if (fill) {
+      final face = Paint()..color = eyeFill;
+      canvas.drawCircle(const Offset(20, 22), 1.3, face);
+      canvas.drawCircle(const Offset(28, 22), 1.3, face);
       final stroke = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3.5
-        ..color = eyes;
+        ..color = eyeStroke;
       canvas.drawCircle(const Offset(20, 22), 1.3, stroke);
       canvas.drawCircle(const Offset(28, 22), 1.3, stroke);
-      final face = Paint()..color = eyes;
-      canvas.drawCircle(const Offset(20, 22), 1.3, face);
-      canvas.drawCircle(const Offset(28, 22), 1.3, face);
     }
     canvas.restore();
   }
 
   @override
   bool shouldRepaint(_StarPainter old) =>
-      old.fill != fill || old.outline != outline || old.eyes != eyes;
+      old.fill != fill || old.outline != outline;
 }

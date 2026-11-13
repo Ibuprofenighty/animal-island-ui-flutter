@@ -450,11 +450,43 @@ void registerMeasuredColorOracles() {
           ? const Color(0xffaf8600)
           : const Color(0xffdba90e);
       expect(outlines.take(3), everyElement(selected));
+      // Unselected: reference #c4b89e on dark paper, #978b73 on light.
+      final idle = brightness == Brightness.light
+          ? const Color(0xff978b73)
+          : const Color(0xffc4b89e);
+      expect(outlines.skip(3), everyElement(idle));
       for (final paper
           in brightness == Brightness.light ? _lightPapers : _darkPapers) {
         readable(selected, paper, minimum: 3);
+        readable(idle, paper, minimum: 3);
       }
     }
+  });
+
+  testWidgets('Rate eyes are faint reference dots, not solid dark dots', (
+    t,
+  ) async {
+    final boundary = GlobalKey();
+    await t.pumpWidget(
+      host(
+        RepaintBoundary(
+          key: boundary,
+          child: const IslandRate(initialValue: 1, count: 1),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    // 26px middle star on a 48-unit grid: left eye centre at (20, 22).
+    final origin = t.getTopLeft(find.byType(IslandRate));
+    final eye = await pixel(
+      t,
+      boundary,
+      origin + const Offset(20 * 26 / 48, 22 * 26 / 48),
+    );
+    // The #dba90e stroke covers the #794f27 fill, as in the reference SVG.
+    expect(eye.r * 255, closeTo(0xdb, 12));
+    expect(eye.g * 255, closeTo(0xa9, 12));
+    expect(eye.b * 255, closeTo(0x0e, 16));
   });
 
   testWidgets(

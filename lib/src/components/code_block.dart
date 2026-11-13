@@ -78,7 +78,7 @@ class IslandCodeBlock extends StatefulWidget {
     this.style,
     this.padding,
     this.borderRadius,
-    this.margin = const EdgeInsets.symmetric(vertical: 14),
+    this.margin = const EdgeInsets.symmetric(vertical: 16),
   });
   final String code;
   final IslandCodeLanguage language;
@@ -90,6 +90,9 @@ class IslandCodeBlock extends StatefulWidget {
   /// Explicit content padding; null retains the default copy-action reserve.
   final EdgeInsetsGeometry? padding;
   final BorderRadius? borderRadius;
+
+  /// Outer spacing; defaults to the reference `.wrapper { margin: 1em 0 }`
+  /// at the Gallery's 16px root font size.
   final EdgeInsetsGeometry margin;
   @override
   State<IslandCodeBlock> createState() => _IslandCodeBlockState();

@@ -9,6 +9,7 @@ import '../foundation/size.dart';
 import '../internal/action_surface.dart';
 import '../internal/choice_control.dart';
 import '../internal/focus_outline.dart';
+import '../internal/light_surface_scope.dart';
 
 class IslandTextField extends StatefulWidget {
   const IslandTextField({
@@ -132,18 +133,26 @@ class _IslandTextFieldState extends State<IslandTextField> {
     // Reference `.wrapper-disabled .input` and placeholder #c4b89e; disabled
     // controls are exempt from the text contrast budget.
     const disabledText = Color(0xffc4b89e);
+    // On the reference palette the status colors are the reference
+    // `.wrapper-error` #c94444 (4.7:1 on the field fill) and the 3:1
+    // same-hue deepening of `.wrapper-warning` #dba90e (#af8600, 3.3:1 on the
+    // field fill); the decorative shadow bar keeps #d4c9b4 / hover #c4b89e
+    // because the 1px outline carries the boundary. Other palettes keep roles.
+    final reference = usesReferencePalette(context);
+    final errorColor = reference ? const Color(0xffc94444) : tokens.dangerText;
+    final warningColor = reference ? const Color(0xffaf8600) : tokens.warning;
     final borderColor = field.hasError
-        ? tokens.dangerText
+        ? errorColor
         : switch (widget.status) {
-            IslandFieldStatus.error => tokens.dangerText,
-            IslandFieldStatus.warning => tokens.warning,
+            IslandFieldStatus.error => errorColor,
+            IslandFieldStatus.warning => warningColor,
             IslandFieldStatus.normal => tokens.outline,
           };
     final statusColor = field.hasError
-        ? tokens.dangerText
+        ? errorColor
         : switch (widget.status) {
-            IslandFieldStatus.error => tokens.dangerText,
-            IslandFieldStatus.warning => tokens.warning,
+            IslandFieldStatus.error => errorColor,
+            IslandFieldStatus.warning => warningColor,
             IslandFieldStatus.normal => null,
           };
     // Reference `.wrapper` shadow: status fields always carry a 3px status
@@ -156,9 +165,9 @@ class _IslandTextFieldState extends State<IslandTextField> {
         : !widget.shadow
         ? null
         : _hovered
-        ? (tokens.muted, 3)
+        ? (reference ? const Color(0xffc4b89e) : tokens.muted, 3)
         : (
-            tokens.outline,
+            reference ? const Color(0xffd4c9b4) : tokens.outline,
             switch (widget.size) {
               IslandSize.small => 2.0,
               IslandSize.middle => 3.0,
@@ -173,7 +182,7 @@ class _IslandTextFieldState extends State<IslandTextField> {
           side: widget.enabled
               ? BorderSide(
                   color: field.hasError
-                      ? tokens.dangerText
+                      ? errorColor
                       : focus.hasFocus
                       ? tokens.focus
                       : borderColor,
@@ -649,18 +658,25 @@ class IslandSwitch extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: const Color(0xfff7f3df),
+                                        // Reference `.handle` #c4b89e /
+                                        // checked #6fba2c, each deepened in
+                                        // hue to 3:1 on the thumb fill.
                                         border: Border.all(
-                                          color: IslandTokens.light.onLeaf,
+                                          color: value
+                                              ? const Color(0xff579d00)
+                                              : const Color(0xff978b73),
                                           width: border,
                                         ),
                                       ),
                                       child: busy
-                                          ? const OverflowBox(
+                                          ? OverflowBox(
                                               minWidth: 11,
                                               maxWidth: 11,
                                               minHeight: 11,
                                               maxHeight: 11,
-                                              child: _SwitchSpinner(),
+                                              child: _SwitchSpinner(
+                                                checked: value,
+                                              ),
                                             )
                                           : null,
                                     ),
@@ -688,7 +704,8 @@ class IslandSwitch extends StatelessWidget {
 }
 
 class _SwitchSpinner extends StatefulWidget {
-  const _SwitchSpinner();
+  const _SwitchSpinner({required this.checked});
+  final bool checked;
   @override
   State<_SwitchSpinner> createState() => _SwitchSpinnerState();
 }
@@ -719,12 +736,20 @@ class _SwitchSpinnerState extends State<_SwitchSpinner>
   @override
   Widget build(BuildContext context) => RotationTransition(
     turns: motion,
-    child: const CustomPaint(size: Size.square(11), painter: _SwitchRing()),
+    child: CustomPaint(
+      size: const Size.square(11),
+      // Reference `.spinner` #6fba2c / unchecked #a89878, deepened in hue to
+      // 3:1 against the busy (0.7) thumb they are drawn on.
+      painter: _SwitchRing(
+        widget.checked ? const Color(0xff3d7200) : const Color(0xff716244),
+      ),
+    ),
   );
 }
 
 class _SwitchRing extends CustomPainter {
-  const _SwitchRing();
+  const _SwitchRing(this.color);
+  final Color color;
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawArc(
@@ -733,12 +758,12 @@ class _SwitchRing extends CustomPainter {
       math.pi * 1.5,
       false,
       Paint()
-        ..color = IslandTokens.light.onLeaf
+        ..color = color
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
   }
 
   @override
-  bool shouldRepaint(_SwitchRing old) => false;
+  bool shouldRepaint(_SwitchRing old) => old.color != color;
 }

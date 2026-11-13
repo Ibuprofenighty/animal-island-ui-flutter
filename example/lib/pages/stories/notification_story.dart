@@ -100,7 +100,9 @@ class _NotificationStoryState extends State<NotificationStory> {
                 const TextSpan(text: 'Notification 采用命令式 API — 通过控制器调用 '),
                 TextSpan(
                   text: 'show(...)',
+                  // UA monospace `<code>`: 13/16 of the inherited 14px.
                   style: TextStyle(
+                    fontSize: 14 * 13 / 16,
                     fontFamily: IslandTheme.codeFontFamily,
                     fontFamilyFallback: DefaultTextStyle.of(context)
                         .style

@@ -153,7 +153,10 @@ class StoryLabel extends StatelessWidget {
         if (text.indexOf(run) case final start when start >= 0)
           (start, run, null),
     ]..sort((a, b) => a.$1.compareTo(b.$1));
+    // Browser `<code>` inherits the label size through the UA monospace
+    // default, which Chromium scales by 13/16.
     final codeStyle = TextStyle(
+      fontSize: style.fontSize! * 13 / 16,
       fontFamily: IslandTheme.codeFontFamily,
       fontFamilyFallback: DefaultTextStyle.of(context).style.fontFamilyFallback,
     );
@@ -456,21 +459,33 @@ class StoryApi extends StatelessWidget {
   static const _headings = ['属性', '说明', '类型', '默认值'];
   static final _minContentToken = RegExp(r'[⺀-鿿豈-﫿＀-￯]|[^\s⺀-鿿豈-﫿＀-￯]+');
 
-  /// Browser min-content of one column: its widest unbreakable run.
+  /// Readable floor of the 说明 column: four CJK characters per line, as the
+  /// reference shows at phone width. Below the summed floors the table
+  /// scrolls horizontally instead of collapsing the description to one
+  /// character per line.
+  static const _descriptionFloor = '说明文字';
+
+  /// Browser min-content of one column: its widest unbreakable run, with the
+  /// 说明 column held at [_descriptionFloor].
   List<double> _minWidths(BuildContext context) {
     final base = DefaultTextStyle.of(context).style;
     final scaler = MediaQuery.textScalerOf(context);
     final direction = Directionality.of(context);
+    double measure(String run, bool bold) {
+      final painter = TextPainter(
+        text: TextSpan(text: run, style: base.merge(_cellStyle(bold))),
+        textScaler: scaler,
+        textDirection: direction,
+      )..layout();
+      final width = painter.width;
+      painter.dispose();
+      return width;
+    }
+
     double widest(String text, bool bold) {
       var result = 0.0;
       for (final token in _minContentToken.allMatches(text)) {
-        final painter = TextPainter(
-          text: TextSpan(text: token[0], style: base.merge(_cellStyle(bold))),
-          textScaler: scaler,
-          textDirection: direction,
-        )..layout();
-        result = math.max(result, painter.width);
-        painter.dispose();
+        result = math.max(result, measure(token[0]!, bold));
       }
       return result + 32;
     }
@@ -479,6 +494,8 @@ class StoryApi extends StatelessWidget {
       for (var column = 0; column < 4; column++)
         [
           widest(_headings[column], true),
+          if (column == 1)
+            measure(_descriptionFloor, false).ceilToDouble() + 32,
           for (final row in rows)
             widest([row.$1, row.$2, row.$3, row.$4][column], false),
         ].reduce(math.max),

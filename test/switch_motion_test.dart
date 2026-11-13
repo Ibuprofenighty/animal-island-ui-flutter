@@ -286,4 +286,64 @@ void main() {
     expect(track().color, const Color(0xff7ccc70));
     expect(borderOf(track()), IslandTokens.light.onLeaf);
   });
+
+  testWidgets('thumb border and busy spinner keep the reference hues at 3:1', (
+    t,
+  ) async {
+    Color thumbBorder() {
+      final circle = t
+          .widgetList<AnimatedContainer>(
+            find.descendant(
+              of: find.byType(IslandSwitch),
+              matching: find.byType(AnimatedContainer),
+            ),
+          )
+          .map((c) => c.decoration)
+          .whereType<BoxDecoration>()
+          .firstWhere((d) => d.shape == BoxShape.circle);
+      return (circle.border! as Border).top.color;
+    }
+
+    Color spinner() =>
+        (t
+                        .widgetList<CustomPaint>(
+                          find.descendant(
+                            of: find.byType(IslandSwitch),
+                            matching: find.byType(CustomPaint),
+                          ),
+                        )
+                        .map((p) => p.painter)
+                        .firstWhere(
+                          (p) => p.runtimeType.toString() == '_SwitchRing',
+                        )
+                    as dynamic)
+                .color
+            as Color;
+    for (final (value, border, ring) in [
+      (false, const Color(0xff978b73), const Color(0xff716244)),
+      (true, const Color(0xff579d00), const Color(0xff3d7200)),
+    ]) {
+      for (final busy in [false, true]) {
+        await t.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: IslandSwitch(
+                  label: 'S',
+                  value: value,
+                  busy: busy,
+                  showLabel: false,
+                  onChanged: (_) {},
+                ),
+              ),
+            ),
+          ),
+        );
+        await t.pump();
+        expect(thumbBorder(), border, reason: 'value $value busy $busy');
+        if (busy) expect(spinner(), ring, reason: 'spinner $value');
+      }
+    }
+    await t.pumpWidget(const SizedBox());
+  });
 }

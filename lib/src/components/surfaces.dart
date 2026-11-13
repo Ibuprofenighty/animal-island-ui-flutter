@@ -259,6 +259,13 @@ class IslandCard extends StatelessWidget {
                     child: LightSurfaceScope(
                       onSurface: roles.foreground,
                       surfaceTheme: roles.surfaceTheme,
+                      // Pattern and neutral papers are light product papers
+                      // on which nested controls keep the reference recipe;
+                      // accent fills and caller backgrounds keep token roles.
+                      referencePaper:
+                          (patterned || colorway == IslandColorway.neutral) &&
+                          style?.backgroundColor == null &&
+                          themed?.backgroundColor == null,
                       child: body,
                     ),
                   ),

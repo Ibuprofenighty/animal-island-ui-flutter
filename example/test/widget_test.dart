@@ -373,12 +373,17 @@ void main() {
         }
         expect(
           find.text('API'),
-          id == 'skill'
+          id == 'skill' || id == 'form'
               ? findsNothing
-              : (id == 'avatar' || id == 'notification' || id == 'form'
+              : (id == 'avatar' || id == 'notification'
                     ? findsNWidgets(2)
                     : findsOneWidget),
         );
+        if (id == 'form') {
+          // Reference Form demo titles its two tables.
+          expect(find.text('Form API'), findsOneWidget);
+          expect(find.text('FormItem API'), findsOneWidget);
+        }
       });
     }
   }
@@ -891,6 +896,70 @@ void main() {
         ),
       );
       expect(viewport.width, 375 - 40);
+    });
+
+    testWidgets('StoryLabel inline code uses the UA monospace 13/16 size', (
+      t,
+    ) async {
+      await showStory(
+        t,
+        const StoryLabel('可选 stampYear 邮戳', code: {'stampYear'}),
+        800,
+      );
+      final rich = t.widget<RichText>(
+        find.descendant(
+          of: find.byType(StoryLabel),
+          matching: find.byType(RichText),
+        ),
+      );
+      final spans = <TextSpan>[];
+      rich.text.visitChildren((span) {
+        if (span is TextSpan && span.text == 'stampYear') spans.add(span);
+        return true;
+      });
+      expect(spans.single.style!.fontSize, 14 * 13 / 16);
+      expect(spans.single.style!.fontFamily, IslandTheme.codeFontFamily);
+    });
+
+    testWidgets('StoryApi keeps 说明 readable at 375 and scrolls beyond it', (
+      t,
+    ) async {
+      const desc = '轮播项列表，每一项包含图片、标题和描述文字';
+      await showStory(
+        t,
+        const StoryApi(
+          rows: [
+            ('semanticLabelBuilder', desc, 'List<IslandSlide<T>>', 'required'),
+            ('onPositionChanged', '位置变化', 'IslandNotificationPosition', '-'),
+          ],
+        ),
+        375,
+      );
+      // Four 13px CJK characters per line plus the 16px cell padding on each
+      // side, instead of one character per line.
+      final cell = t.getSize(find.text(desc));
+      expect(cell.width, greaterThanOrEqualTo(4 * 13 - .5));
+      // Five or six lines (kinsoku may carry punctuation), not twenty.
+      expect(t.getSize(find.text(desc)).height, lessThan(13 * 1.5 * 8));
+      // The wider-than-viewport table scrolls horizontally; 默认值 stays
+      // reachable inside the scroll region instead of being pushed out.
+      final table = t.getSize(
+        find.descendant(
+          of: find.byType(StoryApi),
+          matching: find.byType(Table),
+        ),
+      );
+      expect(table.width, greaterThan(375 - 40));
+      final scroll = find.descendant(
+        of: find.byType(StoryApi),
+        matching: find.byType(Scrollable),
+      );
+      await t.drag(scroll, const Offset(-600, 0));
+      await t.pumpAndSettle();
+      expect(
+        t.getRect(find.text('required')).right,
+        lessThanOrEqualTo(375 - 20),
+      );
     });
 
     testWidgets('StoryPanel dashed keeps the solid panel geometry', (t) async {

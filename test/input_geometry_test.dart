@@ -42,12 +42,13 @@ void main() {
     },
   );
 
-  Widget host(Widget child) => MaterialApp(
-    theme: IslandTheme.create(),
-    home: Scaffold(
-      body: Center(child: SizedBox(width: 300, child: child)),
-    ),
-  );
+  Widget host(Widget child, {Brightness brightness = Brightness.light}) =>
+      MaterialApp(
+        theme: IslandTheme.create(brightness: brightness),
+        home: Scaffold(
+          body: Center(child: SizedBox(width: 300, child: child)),
+        ),
+      );
   BoxShadow? bar(WidgetTester t) {
     // The painted (possibly mid-transition) decoration of the outer layer.
     final box = t.widget<DecoratedBox>(
@@ -70,24 +71,40 @@ void main() {
   testWidgets('status fields keep a 3px status bar even without shadow', (
     t,
   ) async {
-    for (final (status, color) in [
-      (IslandFieldStatus.error, IslandTokens.light.dangerText),
-      (IslandFieldStatus.warning, IslandTokens.light.warning),
+    // Reference error #c94444; warning #dba90e deepened in hue to #af8600.
+    // A light Card paper keeps them although it rewrites passive ink; the
+    // dark palette keeps its own status roles.
+    for (final (status, color, dark) in [
+      (
+        IslandFieldStatus.error,
+        const Color(0xffc94444),
+        IslandTokens.dark.dangerText,
+      ),
+      (
+        IslandFieldStatus.warning,
+        const Color(0xffaf8600),
+        IslandTokens.dark.warning,
+      ),
     ]) {
       for (final shadow in [false, true]) {
-        await t.pumpWidget(
-          host(
-            IslandTextField(
-              label: 'Field',
-              showLabel: false,
-              status: status,
-              shadow: shadow,
-            ),
-          ),
+        final field = IslandTextField(
+          label: 'Field',
+          showLabel: false,
+          status: status,
+          shadow: shadow,
         );
+        await t.pumpWidget(host(field));
         await t.pumpAndSettle();
         expect(bar(t)!.offset, const Offset(0, 3), reason: '$status $shadow');
         expect(bar(t)!.color, color);
+        await t.pumpWidget(
+          host(IslandCard(pattern: IslandColorway.brown, child: field)),
+        );
+        await t.pumpAndSettle();
+        expect(bar(t)!.color, color, reason: '$status in a brown Card');
+        await t.pumpWidget(host(field, brightness: Brightness.dark));
+        await t.pumpAndSettle();
+        expect(bar(t)!.color, dark, reason: '$status dark');
       }
     }
     await t.pumpWidget(host(const IslandTextField(label: 'Field')));
@@ -115,7 +132,7 @@ void main() {
       );
       await t.pumpAndSettle();
       expect(bar(t)!.offset.dy, depth, reason: '$size');
-      expect(bar(t)!.color, IslandTokens.light.outline);
+      expect(bar(t)!.color, const Color(0xffd4c9b4));
     }
     final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
     await mouse.addPointer(location: Offset.zero);
@@ -123,13 +140,13 @@ void main() {
     await mouse.moveTo(t.getCenter(find.byType(TextField)));
     await t.pump();
     await t.pump(const Duration(milliseconds: 125));
-    // 0.25s eased transition: halfway is between outline and muted.
+    // 0.25s eased transition between the reference #d4c9b4 and #c4b89e.
     final mid = bar(t)!;
-    expect(mid.color, isNot(IslandTokens.light.muted));
-    expect(mid.color, isNot(IslandTokens.light.outline));
+    expect(mid.color, isNot(const Color(0xffc4b89e)));
+    expect(mid.color, isNot(const Color(0xffd4c9b4)));
     await t.pumpAndSettle();
     expect(bar(t)!.offset.dy, 3);
-    expect(bar(t)!.color, IslandTokens.light.muted);
+    expect(bar(t)!.color, const Color(0xffc4b89e));
   });
 
   testWidgets('text starts 2px inside the size padding; disabled dims', (

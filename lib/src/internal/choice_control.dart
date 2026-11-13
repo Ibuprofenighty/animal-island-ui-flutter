@@ -8,6 +8,7 @@ import '../foundation/theme.dart';
 import '../foundation/size.dart';
 import 'action_surface.dart';
 import 'focus_outline.dart';
+import 'light_surface_scope.dart';
 
 class ChoiceControl extends StatefulWidget {
   const ChoiceControl({
@@ -83,11 +84,15 @@ class _ChoiceControlState extends State<ChoiceControl>
     final disabled = widget.onActivate == null;
     final reduced = MediaQuery.disableAnimationsOf(context);
     final tokens = IslandTheme.of(context);
-    // The default light product palette restores the reference recipe:
+    // The reference palette (default light tokens, or a light Card paper
+    // declared by its surface owner) restores the reference recipe:
     // unchecked rgb(247,243,223) fill and #725d42/#794f27 labels (both 5.1:1+
     // on every light paper, so the 150ms color change stays readable).
-    // Customized, dark or surface-scoped token sets keep their own ink/paper.
-    final reference = identical(tokens, IslandTokens.light);
+    // Failing reference graphics deepen in their own hue only to 3:1:
+    // unchecked ring #c4b89e -> #978b73 (against its own fill), checked ring
+    // #50b9ab -> #259689 (every light paper) and the white mark -> #5f5f5f
+    // (on the #19c8b9 fill). Dark or customized token sets keep their roles.
+    final reference = usesReferencePalette(context);
     final labelColor = disabled
         ? const Color(0xffc4b89e)
         : !reference
@@ -115,8 +120,8 @@ class _ChoiceControlState extends State<ChoiceControl>
                 width: 2,
                 offset: 2,
               ),
-              // Reference `transition: border-color .25s`; every intermediate
-              // boundary stays at least as dark as `outline`. Fill and mark
+              // Reference `transition: border-color .25s`; both endpoint
+              // rings reach 3:1, as do their intermediates. Fill and mark
               // still commit atomically in the painter.
               child: AnimatedContainer(
                 duration: reduced
@@ -131,8 +136,8 @@ class _ChoiceControlState extends State<ChoiceControl>
                     color: disabled
                         ? const Color(0xffd4c9b4)
                         : widget.checked
-                        ? tokens.onLeaf
-                        : tokens.outline,
+                        ? (reference ? _checkedRing : tokens.onLeaf)
+                        : (reference ? _uncheckedRing : tokens.outline),
                     width: 2,
                   ),
                 ),
@@ -144,7 +149,7 @@ class _ChoiceControlState extends State<ChoiceControl>
                     reduced: reduced,
                     extent: extent,
                     fill: tokens.leaf,
-                    mark: tokens.onLeaf,
+                    mark: reference ? _mark : tokens.onLeaf,
                     paper: reference ? const Color(0xfff7f3df) : tokens.paper,
                   ),
                 ),
@@ -183,6 +188,10 @@ class _ChoiceControlState extends State<ChoiceControl>
     );
   }
 }
+
+const _uncheckedRing = Color(0xff978b73);
+const _checkedRing = Color(0xff259689);
+const _mark = Color(0xff5f5f5f);
 
 class _ChoicePaint extends CustomPainter {
   _ChoicePaint({

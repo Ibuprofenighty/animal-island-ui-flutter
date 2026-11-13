@@ -2,6 +2,7 @@ import 'support/gallery_fonts.dart';
 
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:island_gallery/pages/gallery.dart';
 import 'package:island_gallery/shared/story.dart';
@@ -115,4 +116,88 @@ void main() {
       }
     });
   }
+
+  Future<void> showRoute(WidgetTester t, String route, double width) async {
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.resetDevicePixelRatio);
+    addTearDown(t.view.resetPhysicalSize);
+    t.view.physicalSize = Size(width, 1000);
+    await t.pumpWidget(
+      MaterialApp(
+        theme: galleryTheme(),
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child!,
+        ),
+        home: GalleryPage(
+          key: ValueKey('$route-$width'),
+          path: '/$route',
+          onNavigate: (_) {},
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+  }
+
+  testWidgets('rate count=10 stars stay reachable inside their demo box', (
+    t,
+  ) async {
+    for (final width in [320.0, 375.0, 1440.0]) {
+      await showRoute(t, 'rate', width);
+      final rate = find.byWidgetPredicate(
+        (w) => w is IslandRate && w.count == 10,
+      );
+      await t.ensureVisible(rate);
+      await t.pumpAndSettle();
+      final box = t.getRect(
+        find.ancestor(of: rate, matching: find.byType(StoryDemoBox)).first,
+      );
+      final viewport = t.getRect(
+        find.ancestor(of: rate, matching: find.byType(Scrollable)).first,
+      );
+      expect(viewport.left, greaterThanOrEqualTo(box.left), reason: '$width');
+      expect(viewport.right, lessThanOrEqualTo(box.right), reason: '$width');
+      final last = find.descendant(
+        of: rate,
+        matching: find.bySemanticsLabel('10 星'),
+      );
+      await t.ensureVisible(last);
+      await t.pumpAndSettle();
+      final star = t.getRect(last);
+      expect(star.right, lessThanOrEqualTo(viewport.right + .001));
+      expect(star.left, greaterThanOrEqualTo(viewport.left - .001));
+      expect(t.takeException(), isNull);
+    }
+  });
+
+  testWidgets('Form API tables carry the reference titles', (t) async {
+    await showRoute(t, 'form', 1440);
+    expect(find.text('Form API'), findsOneWidget);
+    expect(find.text('FormItem API'), findsOneWidget);
+  });
+
+  testWidgets('cursor native-control labels use bundled Arimo and fit', (
+    t,
+  ) async {
+    await showRoute(t, 'cursor', 375);
+    for (final label in ['按钮 (pointer)', '禁用 (not-allowed)']) {
+      final text = find.text(label);
+      final style = t.widget<DefaultTextStyle>(
+        find.ancestor(of: text, matching: find.byType(DefaultTextStyle)).first,
+      );
+      expect(style.style.fontFamily, 'IslandGalleryControls', reason: label);
+      // The label's natural width fits the line box it is given, so its
+      // glyphs stay inside the native-control box.
+      expect(
+        t
+            .renderObject<RenderParagraph>(text)
+            .getMaxIntrinsicWidth(double.infinity),
+        lessThanOrEqualTo(t.getSize(text).width + .5),
+        reason: label,
+      );
+    }
+  });
 }

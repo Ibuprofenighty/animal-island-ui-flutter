@@ -70,9 +70,10 @@ void main() {
                   x < 58 &&
                   y >= 44 &&
                   y < 57 &&
-                  r == 23 &&
-                  g == 58 &&
-                  b == 39)
+                  // Reference white mark deepened to 3:1 on the fill.
+                  r == 0x5f &&
+                  g == 0x5f &&
+                  b == 0x5f)
                 mark++;
               if ((x < 38 || y < 38 || y > 64) &&
                   g > 40 &&
@@ -183,13 +184,15 @@ void main() {
       return ((box.decoration as BoxDecoration).border! as Border).top.color;
     }
 
-    expect(border(), IslandTokens.light.outline);
+    // Reference #c4b89e / #50b9ab rings, deepened in hue to 3:1.
+    const unchecked = Color(0xff978b73), checked = Color(0xff259689);
+    expect(border(), unchecked);
     update(() => value = 'b');
     await t.pump();
     await t.pump(const Duration(milliseconds: 125));
-    expect(border(), isNot(IslandTokens.light.outline));
-    expect(border(), isNot(IslandTokens.light.onLeaf));
+    expect(border(), isNot(unchecked));
+    expect(border(), isNot(checked));
     await t.pumpAndSettle();
-    expect(border(), IslandTokens.light.onLeaf);
+    expect(border(), checked);
   });
 }

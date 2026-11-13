@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -298,4 +299,57 @@ void main() {
     );
     expect(t.getSize(find.byType(IslandDatePicker)).width, lessThan(200));
   });
+
+  testWidgets(
+    'trigger underlines and clear hover follow the reference colors',
+    (t) async {
+      List<Color> shadows() => t
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(IslandDatePicker),
+              matching: find.byType(Container),
+            ),
+          )
+          .map((c) => c.decoration)
+          .whereType<BoxDecoration>()
+          .expand((d) => d.boxShadow ?? const <BoxShadow>[])
+          .where((s) => s.offset == const Offset(0, 3))
+          .map((s) => s.color)
+          .toList();
+      for (final (status, color) in [
+        (IslandFieldStatus.error, const Color(0xffc94444)),
+        (IslandFieldStatus.warning, const Color(0xffaf8600)),
+      ]) {
+        await t.pumpWidget(
+          host(
+            IslandDatePicker.uncontrolled(
+              initialValue: DateTime(2026, 8, 10),
+              status: status,
+            ),
+          ),
+        );
+        expect(shadows(), [color], reason: '$status');
+      }
+      await t.pumpWidget(
+        host(
+          IslandDatePicker.uncontrolled(
+            initialValue: DateTime(2026, 8, 10),
+            allowClear: true,
+          ),
+        ),
+      );
+      expect(shadows(), isEmpty);
+      final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      addTearDown(mouse.removePointer);
+      await mouse.moveTo(t.getCenter(find.text('×')));
+      await t.pump();
+      // Decorative hover underline #c4b89e; the clear glyph turns #725d42.
+      expect(shadows(), [const Color(0xffc4b89e)]);
+      expect(
+        t.widget<Text>(find.text('×')).style!.color,
+        const Color(0xff725d42),
+      );
+    },
+  );
 }

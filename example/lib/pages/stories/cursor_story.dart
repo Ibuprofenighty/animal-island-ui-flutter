@@ -28,12 +28,13 @@ class CursorStory extends StatelessWidget {
             disabledBackgroundColor: const Color(0xfff0f0f0),
             foregroundColor: IslandTokens.light.ink,
             disabledForegroundColor: IslandTokens.light.muted,
+            // Bundled metric-compatible Arimo stands in for the UA Arial.
+            // It must be the primary family: an unbundled 'Arial' resolves to
+            // the host default face before any fallback (test-font boxes in
+            // the harness, no Arial on Web), so Latin never reached Arimo.
             textStyle: const TextStyle(
-              fontFamily: 'Arial',
-              fontFamilyFallback: [
-                'IslandGalleryControls',
-                'IslandGallerySans',
-              ],
+              fontFamily: 'IslandGalleryControls',
+              fontFamilyFallback: ['IslandGallerySans'],
               fontSize: 13.333333,
               fontWeight: FontWeight.w400,
               height: 1,
@@ -49,7 +50,9 @@ class CursorStory extends StatelessWidget {
         ),
       );
   Widget intro(BuildContext context) {
+    // UA monospace `<code>`: 13/16 of the inherited 14px label size.
     final code = TextStyle(
+      fontSize: 14 * 13 / 16,
       fontFamily: IslandTheme.codeFontFamily,
       fontFamilyFallback: DefaultTextStyle.of(context).style.fontFamilyFallback,
     );
@@ -161,11 +164,8 @@ class CursorStory extends StatelessWidget {
                     height: 27,
                     child: TextField(
                       style: const TextStyle(
-                        fontFamily: 'Arial',
-                        fontFamilyFallback: [
-                          'IslandGalleryControls',
-                          'IslandGallerySans',
-                        ],
+                        fontFamily: 'IslandGalleryControls',
+                        fontFamilyFallback: ['IslandGallerySans'],
                         fontSize: 13.333333,
                         height: 15 / 13.333333,
                         color: Color(0xff714821),
@@ -182,11 +182,8 @@ class CursorStory extends StatelessWidget {
                         isCollapsed: false,
                         visualDensity: VisualDensity.standard,
                         hintStyle: TextStyle(
-                          fontFamily: 'Arial',
-                          fontFamilyFallback: const [
-                            'IslandGalleryControls',
-                            'IslandGallerySans',
-                          ],
+                          fontFamily: 'IslandGalleryControls',
+                          fontFamilyFallback: const ['IslandGallerySans'],
                           fontSize: 13.333333,
                           color: IslandTokens.light.muted,
                         ),

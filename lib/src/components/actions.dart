@@ -127,7 +127,19 @@ class IslandButton extends StatelessWidget {
               ? tokens.dangerHover
               : tokens.danger;
           ink = primary ? tokens.onDanger : tokens.dangerText;
-          if (!plain) outline = tokens.dangerText;
+          // Reference danger default/dashed border: error #e05a5a, hover
+          // #e87878 (2.7:1 on the button fill, deepened in hue to #dd6e6f),
+          // active #c94444; all reach 3:1 on the owned fill. Other palettes
+          // and the primary recipe keep the dangerText boundary.
+          if (!plain) {
+            outline = !primary && !ghost && usesReferencePalette(context)
+                ? (pressed
+                      ? const Color(0xffc94444)
+                      : hover
+                      ? const Color(0xffdd6e6f)
+                      : const Color(0xffe05a5a))
+                : tokens.dangerText;
+          }
           if (primary) background = dangerState;
         }
         if (ghost) {

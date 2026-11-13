@@ -59,7 +59,10 @@ class _SkeletonStoryState extends State<SkeletonStory> {
             onChanged: (v) => setState(() => loading = v),
           ),
           const SizedBox(width: 12),
-          Text(loading ? '加载中' : '已加载', style: const TextStyle(fontSize: 13)),
+          Text(
+            loading ? '加载中' : '已加载',
+            style: const TextStyle(fontSize: 13, color: Color(0xff725d42)),
+          ),
         ],
       ),
       const SizedBox(height: 16),
@@ -138,7 +141,10 @@ class _SkeletonStoryState extends State<SkeletonStory> {
             'Input',
             loading
                 ? const IslandSkeletonInput()
-                : const Text('输入框已加载', style: TextStyle(fontSize: 14)),
+                : const Text(
+                    '输入框已加载',
+                    style: TextStyle(fontSize: 14, color: Color(0xff725d42)),
+                  ),
           ),
           card(
             context,
@@ -153,7 +159,10 @@ class _SkeletonStoryState extends State<SkeletonStory> {
                       IslandSkeletonAvatar(size: IslandSize.large),
                     ],
                   )
-                : const Text('头像已加载', style: TextStyle(fontSize: 14)),
+                : const Text(
+                    '头像已加载',
+                    style: TextStyle(fontSize: 14, color: Color(0xff725d42)),
+                  ),
           ),
         ],
       ),

@@ -52,7 +52,16 @@ class IslandBadge extends StatelessWidget {
       return Stack(
         clipBehavior: Clip.none,
         children: [
-          child!,
+          // Reference `.badge { line-height: 1 }`: inherited text in the
+          // wrapped child gets a font-size line box, so the corner indicator
+          // sits on the glyph top. Explicit child styles still win.
+          DefaultTextStyle.merge(
+            style: const TextStyle(
+              height: 1,
+              leadingDistribution: TextLeadingDistribution.even,
+            ),
+            child: child!,
+          ),
           if (badge != null)
             Positioned(
               top: 0,

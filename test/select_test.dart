@@ -236,4 +236,30 @@ void main() {
     await t.pumpAndSettle();
     expect(circle().color, const Color(0xff725d42).withValues(alpha: .1));
   });
+
+  testWidgets('Select clear glyph turns the reference #725d42 on hover', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(
+        IslandSelect<String>(
+          options: options,
+          value: 'a',
+          onChanged: (_) {},
+          allowClear: true,
+        ),
+      ),
+    );
+    final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(t.getCenter(find.byType(IslandSelect<String>)));
+    await t.pumpAndSettle();
+    final glyph = find.byWidgetPredicate(
+      (w) => w is IslandIcon && w.glyph == IslandGlyph.close,
+    );
+    await mouse.moveTo(t.getCenter(glyph));
+    await t.pumpAndSettle();
+    expect(t.widget<IslandIcon>(glyph).color, const Color(0xff725d42));
+  });
 }

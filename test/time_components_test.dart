@@ -291,4 +291,34 @@ void main() {
       await t.pumpWidget(const SizedBox());
     },
   );
+
+  testWidgets('wrapped Countdown surface fills its width like fit-content', (
+    t,
+  ) async {
+    final now = DateTime(2026, 1, 1);
+    Widget at(double width) => host(
+      SizedBox(
+        width: width,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: IslandCountdown(
+            value: now.add(const Duration(seconds: 1)),
+            now: () => now,
+            prefix: const Text('商店关门还有'),
+          ),
+        ),
+      ),
+    );
+    await t.pumpWidget(at(1000));
+    final single = t.getSize(find.byType(IslandCountdown)).width;
+    expect(single, lessThan(1000), reason: 'hugs its single run');
+    // Below the single-run width the content wraps and the surface takes
+    // the whole available width, as the reference max-width:100% does.
+    await t.pumpWidget(at(single - 20));
+    expect(t.getSize(find.byType(IslandCountdown)).width, single - 20);
+    final prefix = t.getRect(find.text('商店关门还有'));
+    final surface = t.getRect(find.byType(IslandCountdown));
+    expect(prefix.center.dx, closeTo(surface.center.dx, 1), reason: 'centred');
+    await t.pumpWidget(const SizedBox());
+  });
 }

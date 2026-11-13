@@ -51,17 +51,21 @@ class PickerTrigger extends StatelessWidget {
       label: label,
       onActivate: disabled ? null : onActivate,
       builder: (_, states) {
+        // Reference underlines on the owned #fffbe7 fill: `.trigger-error`
+        // #c94444 (4.6:1); `.trigger-warning` #dba90e fails 3:1 and deepens in
+        // hue to #af8600 (3.2:1). Hover/focus #c4b89e and open #e0b800 are
+        // decorative cues under the 1.5px outline, so they keep the reference.
         final Color? shadow = disabled
             ? null
             : switch (status) {
-                IslandFieldStatus.error => IslandTokens.light.dangerText,
-                IslandFieldStatus.warning => IslandTokens.light.warning,
+                IslandFieldStatus.error => const Color(0xffc94444),
+                IslandFieldStatus.warning => const Color(0xffaf8600),
                 IslandFieldStatus.normal =>
                   open
-                      ? IslandTokens.light.warning
+                      ? const Color(0xffe0b800)
                       : states.contains(WidgetState.hovered) ||
                             states.contains(WidgetState.focused)
-                      ? IslandTokens.light.muted
+                      ? const Color(0xffc4b89e)
                       : null,
               };
         // Reference `.value`/`.placeholder` are `flex: 1` inside a
@@ -142,10 +146,14 @@ class PickerTrigger extends StatelessWidget {
                                 : null,
                           ),
                           child: ExcludeSemantics(
+                            // Reference `.clear:hover` #725d42 (6.0:1);
+                            // the failing rest #c4b89e keeps the muted role.
                             child: Text(
                               '×',
                               style: TextStyle(
-                                color: IslandTokens.light.muted,
+                                color: states.contains(WidgetState.hovered)
+                                    ? const Color(0xff725d42)
+                                    : IslandTokens.light.muted,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
                               ),
