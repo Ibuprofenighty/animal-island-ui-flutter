@@ -143,4 +143,53 @@ void main() {
       expect(t.takeException(), isNull);
     },
   );
+  testWidgets('choice border eases over the reference 250ms on commit', (
+    t,
+  ) async {
+    var value = 'a';
+    late StateSetter update;
+    await t.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (_, set) {
+              update = set;
+              return IslandRadioGroup<String>(
+                options: const [
+                  IslandOption(value: 'a', label: 'A'),
+                  IslandOption(value: 'b', label: 'B'),
+                ],
+                value: value,
+                onChanged: (_) {},
+              );
+            },
+          ),
+        ),
+      ),
+    );
+    Color border() {
+      final box = t.widget<DecoratedBox>(
+        find
+            .descendant(
+              of: find
+                  .ancestor(of: find.text('B'), matching: find.byType(Row))
+                  .first,
+              matching: find.byWidgetPredicate(
+                (w) => w is DecoratedBox && w.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      return ((box.decoration as BoxDecoration).border! as Border).top.color;
+    }
+
+    expect(border(), IslandTokens.light.outline);
+    update(() => value = 'b');
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 125));
+    expect(border(), isNot(IslandTokens.light.outline));
+    expect(border(), isNot(IslandTokens.light.onLeaf));
+    await t.pumpAndSettle();
+    expect(border(), IslandTokens.light.onLeaf);
+  });
 }

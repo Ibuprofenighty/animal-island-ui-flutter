@@ -14,12 +14,19 @@ class IconStory extends StatelessWidget {
       const StoryLabel(
         '图标来自 naive-icons —— 手绘 naive folk art 风格的 SVG 图标库，150+ 个原创图标；Flutter 包已内置固定版本资源。',
         spaceAfter: 0,
+        links: {'naive-icons': 'https://github.com/guokaigdg/naive-icons'},
       ),
       const StoryCode(
         'dependencies:\n  animal_island_ui:\n    path: ../animal_island_ui',
         label: '安装',
       ),
-      const StoryLabel('文档与完整示例参考 https://github.com/guokaigdg/naive-icons'),
+      const StoryLabel(
+        '文档与完整示例参考 https://github.com/guokaigdg/naive-icons',
+        links: {
+          'https://github.com/guokaigdg/naive-icons':
+              'https://github.com/guokaigdg/naive-icons',
+        },
+      ),
       const StoryLabel('基础用法', spaceBefore: 0),
       Wrap(
         spacing: 20,
@@ -99,9 +106,11 @@ class IconStory extends StatelessWidget {
           },
         ),
       ),
-      const StoryLabel('使用示例', strutStyle: storyCaptionStrut),
-      const IslandCodeBlock(
-        code: "const IslandIcon(IslandGlyph.flower, size: 32, color: Color(0xffe05260), strokeWidth: 3)",
+      // Reference: the 使用示例 label, then the demo CodeBlock with its own tab
+      // label; the label's 20px margin collapses into the block's 36px.
+      const StoryLabel('使用示例', strutStyle: storyCaptionStrut, spaceAfter: 0),
+      const StoryCode(
+        "const IslandIcon(IslandGlyph.flower, size: 32, color: Color(0xffe05260), strokeWidth: 3)",
       ),
       const StoryApi(
         rows: [

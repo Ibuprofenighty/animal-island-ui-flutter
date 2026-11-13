@@ -1,3 +1,5 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -180,6 +182,89 @@ void main() {
       expect(find.text('Survivor'), findsOneWidget);
     },
   );
+  testWidgets('dismiss removes entries at once and fires callbacks once', (
+    t,
+  ) async {
+    final controller = IslandNotificationsController();
+    addTearDown(controller.dispose);
+    await t.pumpWidget(host(controller));
+    final log = <String>[];
+    for (final name in ['A', 'B']) {
+      controller.show(
+        IslandNotification(
+          message: Text(name),
+          duration: Duration.zero,
+          onDismiss: () => log.add('dismiss $name'),
+          onClose: () => log.add('close $name'),
+        ),
+        id: name,
+      );
+    }
+    await t.pumpAndSettle();
+    controller
+        .show(
+          IslandNotification(
+            message: const Text('Leaving'),
+            duration: Duration.zero,
+            onClose: () => log.add('close Leaving'),
+          ),
+          id: 'leaving',
+        )
+        .close();
+    await t.pump(const Duration(milliseconds: 100));
+    controller.dismiss('A');
+    expect(log, ['dismiss A', 'close A']);
+    await t.pump();
+    expect(find.text('A'), findsNothing);
+    expect(find.text('B'), findsOneWidget);
+    controller.dismiss();
+    // Reference destroy: no 250ms exit; already-leaving entries end too.
+    expect(log, [
+      'dismiss A',
+      'close A',
+      'dismiss B',
+      'close B',
+      'close Leaving',
+    ]);
+    await t.pump();
+    expect(find.text('B'), findsNothing);
+    expect(find.text('Leaving'), findsNothing);
+    await t.pump(const Duration(milliseconds: 300));
+    expect(log, hasLength(5));
+    expect(t.takeException(), isNull);
+  });
+  testWidgets('clickable hover lifts 1px; focus outline keeps card geometry', (
+    t,
+  ) async {
+    final controller = IslandNotificationsController();
+    addTearDown(controller.dispose);
+    await t.pumpWidget(host(controller));
+    controller.show(
+      IslandNotification(
+        message: const Text('Click'),
+        duration: Duration.zero,
+        onPressed: () {},
+      ),
+    );
+    await t.pumpAndSettle();
+    final rest = t.getRect(find.text('Click'));
+    final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(rest.center);
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 100));
+    final mid = t.getRect(find.text('Click')).top - rest.top;
+    expect(mid, inExclusiveRange(-1, 0));
+    await t.pumpAndSettle();
+    expect(t.getRect(find.text('Click')).top - rest.top, closeTo(-1, .001));
+    await mouse.moveTo(Offset.zero);
+    await t.pumpAndSettle();
+    expect(t.getRect(find.text('Click')), rest);
+    await t.sendKeyEvent(LogicalKeyboardKey.tab);
+    await t.pumpAndSettle();
+    expect(t.getRect(find.text('Click')), rest);
+    await mouse.removePointer();
+  });
   testWidgets('six positions and bottom ordering remain viewport owned', (
     t,
   ) async {

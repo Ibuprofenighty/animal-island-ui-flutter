@@ -76,8 +76,8 @@ void main() {
           ),
         ),
       );
-      expect(find.bySemanticsLabel('清空'), findsOneWidget);
-      await tester.tap(find.bySemanticsLabel('清空'));
+      expect(find.bySemanticsLabel('清除'), findsOneWidget);
+      await tester.tap(find.bySemanticsLabel('清除'));
       expect(controller.text, isEmpty);
       await tester.pumpWidget(const SizedBox());
     } finally {

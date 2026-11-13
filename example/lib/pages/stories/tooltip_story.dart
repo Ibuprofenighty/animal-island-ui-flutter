@@ -259,6 +259,26 @@ IslandTooltip(
   trigger: IslandTooltipTrigger.focus,
   placement: IslandTooltipPlacement.right,
   child: TextField(),
+)
+IslandTooltip(
+  message: '小岛风格',
+  variant: IslandTooltipVariant.island,
+  child: IslandButton(onPressed: action, child: Text('island')),
+)
+IslandTooltip(
+  message: '无边框',
+  variant: IslandTooltipVariant.island,
+  bordered: false,
+  child: IslandButton(onPressed: action, child: Text('borderless')),
+)
+IslandTooltip(
+  message: '底部起始对齐',
+  placement: IslandTooltipPlacement.bottomStart,
+  child: IslandButton(onPressed: action, child: Text('bottomStart')),
+)
+IslandTooltip(
+  message: '第一行\\n第二行：多行提示',
+  child: IslandButton(onPressed: action, child: Text('多行')),
 )"""),
       const StoryApi(
         rows: [

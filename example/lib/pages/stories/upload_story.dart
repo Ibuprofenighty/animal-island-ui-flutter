@@ -267,7 +267,9 @@ class _UploadStoryState extends State<UploadStory> {
                         ],
                       ),
                       SizedBox(height: 8),
-                      Text('把文件拖进这片空地'),
+                      // Inherits the zone colour; 16 is the reference page's
+                      // inherited body size for this unstyled span.
+                      Text('把文件拖进这片空地', style: TextStyle(fontSize: 16)),
                     ],
                   ),
                 ),

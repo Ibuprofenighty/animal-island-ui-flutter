@@ -120,9 +120,11 @@ class _SkeletonStoryState extends State<SkeletonStory> {
         'Skeleton.Button / Skeleton.Input / Skeleton.Avatar',
         lineHeight: 20 / 14,
       ),
+      // Reference row: flex, gap 32, alignItems center.
       Wrap(
         spacing: 32,
         runSpacing: 32,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           card(
             context,
@@ -134,7 +136,9 @@ class _SkeletonStoryState extends State<SkeletonStory> {
           card(
             context,
             'Input',
-            loading ? const IslandSkeletonInput() : const Text('输入框已加载'),
+            loading
+                ? const IslandSkeletonInput()
+                : const Text('输入框已加载', style: TextStyle(fontSize: 14)),
           ),
           card(
             context,
@@ -149,7 +153,7 @@ class _SkeletonStoryState extends State<SkeletonStory> {
                       IslandSkeletonAvatar(size: IslandSize.large),
                     ],
                   )
-                : const Text('头像已加载'),
+                : const Text('头像已加载', style: TextStyle(fontSize: 14)),
           ),
         ],
       ),
@@ -180,7 +184,7 @@ class _SkeletonStoryState extends State<SkeletonStory> {
         ),
       ),
       const StoryCode(
-        'IslandSkeleton(loading: loading, child: content)\nconst IslandSkeleton(variant: IslandSkeletonVariant.paragraph, rows: 4)\nconst IslandSkeletonButton()',
+        'const IslandSkeleton()\nconst IslandSkeleton(variant: IslandSkeletonVariant.circle, width: 56)\nconst IslandSkeleton(\n  variant: IslandSkeletonVariant.rect,\n  width: 200,\n  height: 120,\n)\nconst IslandSkeleton(variant: IslandSkeletonVariant.paragraph, rows: 4)\nconst IslandSkeletonButton()\nconst IslandSkeletonInput()\nconst IslandSkeletonAvatar(size: IslandSize.large)\nIslandSkeleton(loading: loading, child: content)',
       ),
       const StoryApi(
         rows: [

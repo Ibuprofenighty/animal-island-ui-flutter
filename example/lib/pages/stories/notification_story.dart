@@ -91,9 +91,31 @@ class _NotificationStoryState extends State<NotificationStory> {
       title: 'Notification',
       tags: ["命令式", "4 types", "6 positions"],
       children: [
-        const Text(
-          'Notification 采用命令式 API — 通过控制器调用 show(...) 即可触发，通知挂到视口根容器。',
-          style: TextStyle(fontSize: 14, color: Color(0xff7c5734)),
+        // Reference <p>: labelStyle (14/500, margin 20 / 12) with inline <code>.
+        Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 12),
+          child: Text.rich(
+            TextSpan(
+              children: [
+                const TextSpan(text: 'Notification 采用命令式 API — 通过控制器调用 '),
+                TextSpan(
+                  text: 'show(...)',
+                  style: TextStyle(
+                    fontFamily: IslandTheme.codeFontFamily,
+                    fontFamilyFallback: DefaultTextStyle.of(context)
+                        .style
+                        .fontFamilyFallback,
+                  ),
+                ),
+                const TextSpan(text: ' 即可触发，通知挂到视口根容器。'),
+              ],
+            ),
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff7c5734),
+            ),
+          ),
         ),
         const StoryLabel('4 种 type + 字符串简写'),
         row([
@@ -308,7 +330,20 @@ notifications.dispose();""",
             ('onClose', '退场完成后触发', 'VoidCallback?', 'null'),
           ],
         ),
-        const StoryLabel('控制器方法', strutStyle: storyCaptionStrut),
+        // Reference "静态方法" heading: labelStyle + marginTop 16, #794f27/700.
+        // Its bottom margin collapses into the table's 24px top spacing.
+        const Padding(
+          padding: EdgeInsets.only(top: 16),
+          child: Text(
+            '控制器方法',
+            strutStyle: storyCaptionStrut,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: Color(0xff794f27),
+            ),
+          ),
+        ),
         const StoryApi(
           rows: [
             (

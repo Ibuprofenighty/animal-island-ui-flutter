@@ -21,7 +21,7 @@ class _FormStoryState extends State<FormStory> {
   // captures repeatable and use only colors in its documented random pool.
   static const patterns = [
     IslandColorway.teal,
-    IslandColorway.teal,
+    IslandColorway.neutral,
     IslandColorway.yellow,
     IslandColorway.orange,
     IslandColorway.green,
@@ -318,7 +318,7 @@ class _FormStoryState extends State<FormStory> {
                 style: TextStyle(
                   fontSize: 12,
                   color: IslandColorway.blue.ink,
-                  fontFamily: 'monospace',
+                  fontFamily: IslandTheme.codeFontFamily,
                 ),
               ),
             ),

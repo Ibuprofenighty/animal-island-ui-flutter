@@ -287,4 +287,92 @@ void main() {
       expect(done, 1);
     },
   );
+  testWidgets('default curve is the exact reference easeOutCubic', (t) async {
+    final values = <double>[];
+    await t.pumpWidget(
+      host(
+        IslandCountUp(
+          end: 1000,
+          isCounting: true,
+          duration: const Duration(seconds: 1),
+          onUpdate: values.add,
+        ),
+      ),
+    );
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 500));
+    // 1 - (1 - .5)^3 = .875 (Flutter's bezier easeOutCubic gives ~.88+).
+    expect(values.last, closeTo(875, .5));
+    await t.pumpAndSettle();
+  });
+  testWidgets(
+    'celebration badge sits 6px above the plate with the reference border and rotation',
+    (t) async {
+      await t.pumpWidget(
+        host(
+          const Center(
+            child: IslandCountUp(
+              end: 10,
+              isCounting: true,
+              duration: Duration(milliseconds: 1),
+              bordered: true,
+              celebration: Text('Done'),
+            ),
+          ),
+        ),
+      );
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 2));
+      await t.pump();
+      final plate = find.ancestor(
+        of: find.text('10'),
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w is Container &&
+              w.decoration is BoxDecoration &&
+              (w.decoration! as BoxDecoration).gradient != null,
+        ),
+      );
+      final plateBox = t.widget<Container>(plate.first);
+      expect(
+        ((plateBox.decoration! as BoxDecoration).border! as Border).top.width,
+        1.5,
+      );
+      final badge = find
+          .ancestor(
+            of: find.text('Done'),
+            matching: find.byWidgetPredicate(
+              (w) =>
+                  w is Container &&
+                  w.decoration is BoxDecoration &&
+                  (w.decoration! as BoxDecoration).gradient != null,
+            ),
+          )
+          .first;
+      expect(
+        ((t.widget<Container>(badge).decoration! as BoxDecoration).border!
+                as Border)
+            .top
+            .width,
+        1.5,
+      );
+      // Badge entrance rotates (-8deg at the start) as well as scaling.
+      final matrix = t
+          .widget<Transform>(
+            find.ancestor(of: badge, matching: find.byType(Transform)).first,
+          )
+          .transform;
+      expect(matrix.storage[1], lessThan(0));
+      // After the 500ms badge and 700ms plate pop, before the 900ms removal.
+      await t.pump(const Duration(milliseconds: 750));
+      final plateTop = t.getRect(plate.first).top;
+      final badgeRect = t.getRect(badge);
+      expect(plateTop - badgeRect.bottom, closeTo(6, .01));
+      expect(
+        badgeRect.center.dx,
+        closeTo(t.getRect(plate.first).center.dx, .01),
+      );
+      await t.pump(const Duration(seconds: 1));
+    },
+  );
 }

@@ -441,4 +441,128 @@ void main() {
       h.dispose();
     }
   });
+
+  group('CodeBlock', () {
+    Map<String, Color?> roles(WidgetTester t) {
+      final result = <String, Color?>{};
+      void visit(InlineSpan span) {
+        if (span is! TextSpan) return;
+        if (span.text case final text? when text.trim().isNotEmpty) {
+          result[text] = span.style?.color;
+        }
+        span.children?.forEach(visit);
+      }
+
+      visit(
+        t
+            .state<EditableTextState>(find.byType(EditableText))
+            .renderEditable
+            .text!,
+      );
+      return result;
+    }
+
+    testWidgets(
+      'shell highlights reference # comments, tree, flags and files',
+      (t) async {
+        const code =
+            '# 复制技能 PowerShell\n'
+            'Copy-Item -Recurse skills/animal-island-ui-flutter ~/.agents/\n'
+            '├── SKILL.md   # 方法\n'
+            'flutter pub add a#b';
+        await t.pumpWidget(
+          host(
+            const IslandCodeBlock(
+              code: code,
+              language: IslandCodeLanguage.shell,
+            ),
+          ),
+        );
+        final spans = roles(t);
+        const comment = Color(0xff9d8f7e);
+        expect(spans['# 复制技能 PowerShell'], comment);
+        expect(spans['# 方法'], comment);
+        expect(spans['-Recurse'], const Color(0xffd4b896));
+        expect(spans['├──'], const Color(0xffd4b896));
+        expect(spans['SKILL.md'], const Color(0xff80c0e0));
+        expect(spans['~/.agents/'], const Color(0xffa8d4a0));
+        // A path keeps its embedded words, such as `flutter`, as plain source.
+        expect(spans['skills/animal-island-ui-flutter'], isNull);
+        expect(spans['flutter'], const Color(0xfff0a870));
+        // `#` inside a word is not a comment.
+        expect(spans.keys.where((k) => k.startsWith('#b')), isEmpty);
+        // Dart keeps `#` as source.
+        await t.pumpWidget(
+          host(const IslandCodeBlock(code: '# not a comment', copyable: false)),
+        );
+        expect(roles(t).values.whereType<Color>(), isNot(contains(comment)));
+      },
+    );
+
+    testWidgets('copy button lifts 1px on hover and rings focus outside', (
+      t,
+    ) async {
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      addTearDown(
+        () => FocusManager.instance.highlightStrategy =
+            FocusHighlightStrategy.automatic,
+      );
+      await t.pumpWidget(host(const IslandCodeBlock(code: 'final a = 1;')));
+      final copy = find.text('复制');
+      final rest = t.getRect(copy);
+      final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      addTearDown(mouse.removePointer);
+      await mouse.moveTo(t.getCenter(copy));
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 125));
+      final mid = t.getRect(copy).top - rest.top;
+      expect(mid, inExclusiveRange(-1, 0));
+      await t.pumpAndSettle();
+      expect(t.getRect(copy).top - rest.top, closeTo(-1, .001));
+      await mouse.down(t.getCenter(copy));
+      await t.pumpAndSettle();
+      expect(t.getRect(copy).top, closeTo(rest.top, .001));
+      // Leave before release so the press cancels without copying.
+      await mouse.moveTo(Offset.zero);
+      await mouse.up();
+      await t.pumpAndSettle();
+
+      Finder pill() =>
+          find.ancestor(of: copy, matching: find.byType(Container)).first;
+      expect(t.widget<Container>(pill()).foregroundDecoration, isNull);
+      // Selectable source may take focus first; the copy action follows it.
+      for (var i = 0; i < 3; i++) {
+        if (t.widget<Container>(pill()).foregroundDecoration != null) break;
+        await t.sendKeyEvent(LogicalKeyboardKey.tab);
+        await t.pumpAndSettle();
+      }
+      final decoration =
+          t.widget<Container>(pill()).decoration! as BoxDecoration;
+      expect(
+        (decoration.border! as Border).top.color,
+        const Color(0x4de8d5bc),
+        reason: 'the resting border stays; focus is a separate outer ring',
+      );
+      expect(t.widget<Container>(pill()).foregroundDecoration, isNotNull);
+    });
+
+    testWidgets('copy lift settles immediately under reduced motion', (
+      t,
+    ) async {
+      await t.pumpWidget(
+        host(const IslandCodeBlock(code: 'final a = 1;'), reduced: true),
+      );
+      final copy = find.text('复制');
+      final rest = t.getRect(copy);
+      final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      addTearDown(mouse.removePointer);
+      await mouse.moveTo(t.getCenter(copy));
+      await t.pump();
+      await t.pump();
+      expect(t.getRect(copy).top - rest.top, closeTo(-1, .001));
+    });
+  });
 }

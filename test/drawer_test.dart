@@ -10,6 +10,52 @@ Widget host(Widget child) => MaterialApp(
   home: IslandDrawerHost(child: Scaffold(body: child)),
 );
 void main() {
+  testWidgets('Escape closes an open drawer after focus leaves its panel', (
+    t,
+  ) async {
+    var closes = 0;
+    var open = true;
+    late StateSetter update;
+    await t.pumpWidget(
+      host(
+        StatefulBuilder(
+          builder: (_, set) {
+            update = set;
+            return IslandDrawer(
+              open: open,
+              onClose: () => closes++,
+              title: const Text('Panel'),
+              child: const Text('Body'),
+            );
+          },
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final panelScope = FocusScope.of(t.element(find.text('Body')));
+    // Walk focus out of the panel scope, as a pointer elsewhere would.
+    for (var i = 0; i < 4 && panelScope.hasFocus; i++) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      await t.pump();
+    }
+    expect(panelScope.hasFocus, isFalse);
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(closes, 1);
+    // Inside the panel the scoped handler alone closes, once.
+    Focus.of(t.element(find.text('×').first)).requestFocus();
+    await t.pump();
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(closes, 2);
+    update(() => open = false);
+    await t.pumpAndSettle();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(closes, 2);
+    await t.pumpWidget(const SizedBox());
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(closes, 2);
+  });
+
   testWidgets('empty drawer consumes Tab without entering its excluded host', (
     t,
   ) async {
@@ -314,5 +360,47 @@ void main() {
     }
     await t.sendKeyEvent(LogicalKeyboardKey.escape);
     expect(closes, 1);
+  });
+
+  testWidgets('reduced motion opens and closes when the caller rebuilds', (
+    t,
+  ) async {
+    var open = false;
+    late StateSetter update;
+    await t.pumpWidget(
+      MaterialApp(
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child!,
+        ),
+        home: IslandDrawerHost(
+          child: Scaffold(
+            body: StatefulBuilder(
+              builder: (_, set) {
+                update = set;
+                return IslandDrawer(
+                  open: open,
+                  onClose: () => set(() => open = false),
+                  title: const Text('Panel'),
+                  child: const Text('Body'),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(find.text('Body'), findsNothing);
+    update(() => open = true);
+    await t.pump();
+    await t.pump();
+    expect(t.takeException(), isNull);
+    expect(find.text('Body'), findsOneWidget);
+    update(() => open = false);
+    await t.pump();
+    await t.pump();
+    expect(t.takeException(), isNull);
+    expect(find.text('Body'), findsNothing);
   });
 }

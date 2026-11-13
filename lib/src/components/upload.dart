@@ -480,60 +480,79 @@ class _IslandUploadState extends State<IslandUpload> {
         if (widget.drag || cards) {
           final active = (hover || dragging) && !widget.disabled;
           final radius = cards ? 16.0 : 20.0;
-          return CustomPaint(
-            foregroundPainter: IslandDashedBorderPainter(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius),
+          // Reference `.dragZone` / `.cardAddBtn`: border and content colour
+          // (inherited by default and custom children alike) turn teal on
+          // hover or drag over 0.2s ease; the drag zone gains the teal
+          // background only while dragging, the card tile on hover too
+          // (transparent at rest). The focus ring switches atomically.
+          final tint = active
+              ? IslandTokens.light.link
+              : IslandTokens.light.muted;
+          final duration = MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : const Duration(milliseconds: 200);
+          return TweenAnimationBuilder<Color?>(
+            tween: ColorTween(end: tint),
+            duration: duration,
+            curve: Curves.ease,
+            builder: (context, color, _) => CustomPaint(
+              foregroundPainter: IslandDashedBorderPainter(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(radius),
+                ),
+                color: highlight ? IslandTokens.light.focus : color!,
+                strokeWidth: cards ? IslandTheme.borderWidth(context, 1.5) : 2,
+                dash: 6,
+                gap: 4,
               ),
-              color: highlight
-                  ? IslandTokens.light.focus
-                  : active
-                  ? IslandTokens.light.link
-                  : IslandTokens.light.muted,
-              strokeWidth: cards ? IslandTheme.borderWidth(context, 1.5) : 2,
-              dash: 6,
-              gap: 4,
-            ),
-            child: Container(
-              width: cards ? 84 : double.infinity,
-              height: cards ? 84 : null,
-              padding: cards
-                  ? EdgeInsets.zero
-                  : const EdgeInsets.symmetric(vertical: 30, horizontal: 22),
-              decoration: BoxDecoration(
-                color: dragging
-                    ? const Color(0xffe6f9f6)
-                    : const Color(0xfffffdf7),
-                borderRadius: BorderRadius.circular(radius),
-              ),
-              child: Center(
-                child:
-                    widget.child ??
-                    (cards
-                        ? const IslandIcon(IslandGlyph.upload, size: 28)
-                        : Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Transform.scale(
-                                scale: 1.5,
-                                child: const IslandIcon(
-                                  IslandGlyph.upload,
-                                  size: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                '点击或拖拽文件到这里',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  color: active
-                                      ? IslandTokens.light.link
-                                      : IslandTokens.light.muted,
-                                ),
-                              ),
-                            ],
-                          )),
+              child: AnimatedContainer(
+                duration: duration,
+                curve: Curves.ease,
+                width: cards ? 84 : double.infinity,
+                height: cards ? 84 : null,
+                padding: cards
+                    ? EdgeInsets.zero
+                    : const EdgeInsets.symmetric(vertical: 30, horizontal: 22),
+                decoration: BoxDecoration(
+                  color: dragging || cards && active
+                      ? const Color(0xffe6f9f6)
+                      : cards
+                      ? const Color(0x00e6f9f6)
+                      : const Color(0xfffffdf7),
+                  borderRadius: BorderRadius.circular(radius),
+                ),
+                child: IconTheme.merge(
+                  data: IconThemeData(color: color),
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(color: color),
+                    child: Center(
+                      child:
+                          widget.child ??
+                          (cards
+                              ? const IslandIcon(IslandGlyph.upload, size: 28)
+                              : Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Transform.scale(
+                                      scale: 1.5,
+                                      child: const IslandIcon(
+                                        IslandGlyph.upload,
+                                        size: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    const Text(
+                                      '点击或拖拽文件到这里',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                    ),
+                  ),
+                ),
               ),
             ),
           );

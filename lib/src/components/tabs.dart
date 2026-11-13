@@ -218,6 +218,14 @@ class _IslandTabsState<T extends Object> extends State<IslandTabs<T>> {
                                   builder: (_, states) {
                                     final selected =
                                         widget.items[i].value == value;
+                                    final light =
+                                        Theme.of(context).brightness !=
+                                        Brightness.dark;
+                                    // Reference `.tabItem.active` #0cc0b5 on
+                                    // the light page; dark keeps its paired leaf.
+                                    final activeFill = light
+                                        ? const Color(0xff0cc0b5)
+                                        : tokens.leaf;
                                     return AnimatedContainer(
                                       duration: duration,
                                       curve: const Cubic(.4, 0, .2, 1),
@@ -232,83 +240,110 @@ class _IslandTabsState<T extends Object> extends State<IslandTabs<T>> {
                                               ]
                                             : null,
                                       ),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 8,
+                                      // Hover tint moves on the reference .25s
+                                      // timeline with unchanged ink; the
+                                      // selected fill and ink switch together.
+                                      child: TweenAnimationBuilder<double>(
+                                        tween: Tween(
+                                          end:
+                                              !selected &&
+                                                  states.contains(
+                                                    WidgetState.hovered,
+                                                  )
+                                              ? 1
+                                              : 0,
                                         ),
-                                        decoration: BoxDecoration(
-                                          color: selected
-                                              ? tokens.leaf
-                                              : states.contains(
-                                                  WidgetState.hovered,
-                                                )
-                                              ? tokens.leaf.withValues(
-                                                  alpha: .1,
-                                                )
-                                              : Colors.transparent,
-                                          borderRadius: BorderRadius.circular(
-                                            24,
-                                          ),
-                                        ),
-                                        foregroundDecoration:
-                                            states.contains(WidgetState.focused)
-                                            ? BoxDecoration(
-                                                border: Border.all(
-                                                  color: selected
-                                                      ? tokens.onLeaf
-                                                      : tokens.focus,
-                                                  width: 2,
-                                                ),
+                                        duration: duration,
+                                        curve: const Cubic(.4, 0, .2, 1),
+                                        builder: (context, hover, child) =>
+                                            DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: selected
+                                                    ? activeFill
+                                                    : tokens.leaf.withValues(
+                                                        alpha: .1 * hover,
+                                                      ),
                                                 borderRadius:
                                                     BorderRadius.circular(24),
+                                              ),
+                                              child: child,
+                                            ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          foregroundDecoration:
+                                              states.contains(
+                                                WidgetState.focused,
                                               )
-                                            : const BoxDecoration(),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            ExcludeSemantics(
-                                              child: Transform.scale(
-                                                scale: selected ? 1.2 : 1,
-                                                child: Text(
-                                                  selected ? '●' : '○',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                    height: kTextHeightNone,
+                                              ? BoxDecoration(
+                                                  border: Border.all(
                                                     color: selected
                                                         ? tokens.onLeaf
-                                                        : tokens.ink,
-                                                    fontWeight: selected
-                                                        ? FontWeight.w600
-                                                        : FontWeight.w500,
+                                                        : tokens.focus,
+                                                    width: 2,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(24),
+                                                )
+                                              : const BoxDecoration(),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              ExcludeSemantics(
+                                                // Reference `.tabIcon` transform
+                                                // .25s (.4,0,.2,1) to scale(1.2).
+                                                child: AnimatedScale(
+                                                  scale: selected ? 1.2 : 1,
+                                                  duration: duration,
+                                                  curve: const Cubic(
+                                                    .4,
+                                                    0,
+                                                    .2,
+                                                    1,
+                                                  ),
+                                                  child: Text(
+                                                    selected ? '●' : '○',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                      height: kTextHeightNone,
+                                                      color: selected
+                                                          ? tokens.onLeaf
+                                                          : tokens.ink,
+                                                      fontWeight: selected
+                                                          ? FontWeight.w600
+                                                          : FontWeight.w500,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Flexible(
-                                              child: ContentScope(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  height: kTextHeightNone,
-                                                  fontWeight: selected
-                                                      ? FontWeight.w600
-                                                      : FontWeight.w500,
-                                                  color: selected
-                                                      ? tokens.onLeaf
-                                                      : tokens.ink,
-                                                ),
-                                                child: ExcludeSemantics(
-                                                  excluding:
-                                                      widget
-                                                          .items[i]
-                                                          .semanticLabel !=
-                                                      null,
-                                                  child: widget.items[i].label,
+                                              const SizedBox(width: 8),
+                                              Flexible(
+                                                child: ContentScope(
+                                                  textStyle: TextStyle(
+                                                    fontSize: 14,
+                                                    height: kTextHeightNone,
+                                                    fontWeight: selected
+                                                        ? FontWeight.w600
+                                                        : FontWeight.w500,
+                                                    color: selected
+                                                        ? tokens.onLeaf
+                                                        : tokens.ink,
+                                                  ),
+                                                  child: ExcludeSemantics(
+                                                    excluding:
+                                                        widget
+                                                            .items[i]
+                                                            .semanticLabel !=
+                                                        null,
+                                                    child:
+                                                        widget.items[i].label,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     );
@@ -326,22 +361,34 @@ class _IslandTabsState<T extends Object> extends State<IslandTabs<T>> {
                   child: Semantics(
                     container: true,
                     label: active?.semanticLabel,
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(minHeight: 40),
-                        child: ContentScope(
-                          textStyle: TextStyle(
-                            color: tokens.muted,
-                            fontSize: 14,
-                            height: 1.5715,
+                    // Reference `.tabContent { animation: fadeIn .25s ease }`
+                    // plays once on mount (no replay on switch). Readable
+                    // motion keeps the panel opaque: only the 4px rise remains.
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 4, end: 0),
+                      duration: duration,
+                      curve: Curves.ease,
+                      builder: (context, dy, child) => Transform.translate(
+                        offset: Offset(0, dy),
+                        child: child,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 40),
+                          child: ContentScope(
+                            textStyle: TextStyle(
+                              color: tokens.muted,
+                              fontSize: 14,
+                              height: 1.5715,
+                            ),
+                            child: active == null
+                                ? const SizedBox.shrink()
+                                : KeyedSubtree(
+                                    key: ValueKey(active.value),
+                                    child: active.child,
+                                  ),
                           ),
-                          child: active == null
-                              ? const SizedBox.shrink()
-                              : KeyedSubtree(
-                                  key: ValueKey(active.value),
-                                  child: active.child,
-                                ),
                         ),
                       ),
                     ),

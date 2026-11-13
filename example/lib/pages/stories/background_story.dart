@@ -28,6 +28,32 @@ class BackgroundStory extends StatelessWidget {
     '暖桃粉',
     '浅灰波点',
   ];
+
+  /// Reference CARD_COLORS tile text, in IslandBackgroundType order. Two
+  /// values are deepened to reach 4.5:1 on their dot composite: dots-dark-green
+  /// #3a6b3a (3.79) -> #2f5d2f, and dots-pink #a85565 (3.75) -> #8b4654, the
+  /// shared pink paper ink.
+  static const inks = [
+    Color(0xff725d42),
+    Color(0xff725d42),
+    Color(0xff2f5d2f),
+    Color(0xff725d42),
+    Color(0xff725d42),
+    Color(0xff725d42),
+    Color(0xff8b4654),
+    Color(0xff6a3a9a),
+    Color(0xff4a5a8a),
+    Color(0xff7a6528),
+    Color(0xff8a4a2a),
+    Color(0xff2a6b5a),
+    Color(0xff3a6b3a),
+    Color(0xff9a3a3a),
+    Color(0xff5a6b28),
+    Color(0xff6a5a28),
+    Color(0xff5a4a2a),
+    Color(0xff8a4a2a),
+    Color(0xff5a5a5a),
+  ];
   Widget _isolatePreview(IslandBackgroundType type, Widget child) {
     // Keep scene vectors in the parent canvas: a new local layer changes a few
     // SVG edge samples at fractional scroll transforms on Windows Impeller.
@@ -64,7 +90,7 @@ class BackgroundStory extends StatelessWidget {
                     child: Center(
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
-                          color: IslandTokens.light.ink,
+                          color: inks[type.index],
                           backgroundColor: type.index >= 3 && type.index <= 5
                               ? IslandTokens.light.paper
                               : null,
@@ -95,7 +121,7 @@ class BackgroundStory extends StatelessWidget {
             ),
         ],
       ),
-      const StoryLabel('承载内容（children 渲染在图案之上）'),
+      const StoryLabel('承载内容（children 渲染在图案之上）', spaceBefore: 24),
       SizedBox(
         height: 180,
         width: double.infinity,

@@ -165,8 +165,8 @@ class _TitleStoryState extends State<TitleStory> {
       const _TitleDemoBox(
         tone: 5,
         child: Wrap(
-          spacing: 24,
-          runSpacing: 24,
+          spacing: 40,
+          runSpacing: 28,
           children: [
             IslandTitle(
               variant: IslandTitleVariant.layer,
@@ -185,8 +185,8 @@ class _TitleStoryState extends State<TitleStory> {
       const _TitleDemoBox(
         tone: 2,
         child: Wrap(
-          spacing: 24,
-          runSpacing: 24,
+          spacing: 40,
+          runSpacing: 28,
           children: [
             IslandTitle(
               variant: IslandTitleVariant.tab,

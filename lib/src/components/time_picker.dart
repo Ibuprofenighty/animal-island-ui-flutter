@@ -272,7 +272,14 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                       },
                     ),
                     const SizedBox(width: 6),
-                    PickerFooterAction('确定', primary: true, onPressed: confirm),
+                    // Reference hover #8a7b66 gives white text 4.1:1; the
+                    // sibling DatePicker reference hover #796c5a passes 4.5:1.
+                    PickerFooterAction(
+                      '确定',
+                      primary: true,
+                      primaryHoverColor: const Color(0xff796c5a),
+                      onPressed: confirm,
+                    ),
                   ],
                 ),
               ),

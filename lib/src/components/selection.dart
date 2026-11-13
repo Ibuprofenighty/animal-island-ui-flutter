@@ -1,3 +1,4 @@
+import 'dart:async' show scheduleMicrotask;
 import 'dart:ui' show SemanticsRole;
 
 import 'package:flutter/material.dart';
@@ -111,25 +112,72 @@ class _ChoiceGroup<T> extends StatefulWidget {
 
 class _ChoiceGroupState<T> extends State<_ChoiceGroup<T>> {
   final _nodes = <T, FocusNode>{};
+
+  /// Radio roving tab stop (reference `focusedIndex`): the checked option,
+  /// then the last focused enabled option. Checkbox options are independent
+  /// tab stops.
+  T? _rover;
+  bool _enabled(T value) =>
+      widget.onToggle != null &&
+      widget.options.any((e) => e.value == value && !e.disabled);
+  T? get _tabStop {
+    final rover = _rover;
+    if (rover != null && _enabled(rover)) return rover;
+    return widget.options
+        .where((e) => _enabled(e.value))
+        .map((e) => e.value)
+        .firstOrNull;
+  }
+
+  void _applyTraversal() {
+    final stop = _tabStop;
+    for (final MapEntry(:key, :value) in _nodes.entries) {
+      value.skipTraversal = widget.radio && key != stop;
+    }
+  }
+
   void sync() {
     final ids = widget.options.map((e) => e.value).toSet();
     for (final key in _nodes.keys.where((key) => !ids.contains(key)).toList()) {
       _nodes.remove(key)!.dispose();
     }
     for (final id in ids) {
-      _nodes.putIfAbsent(id, () => FocusNode());
+      _nodes.putIfAbsent(id, () {
+        late final FocusNode node;
+        // Listeners also fire for property changes (skipTraversal), so only a
+        // focus gain moves the roving stop.
+        var had = false;
+        node = FocusNode()
+          ..addListener(() {
+            final gained = node.hasFocus && !had;
+            had = node.hasFocus;
+            if (gained && _enabled(id)) {
+              _rover = id;
+              // FocusManager is still iterating its dirty nodes here.
+              scheduleMicrotask(() {
+                if (mounted) _applyTraversal();
+              });
+            }
+          });
+        return node;
+      });
     }
+    _applyTraversal();
   }
 
   @override
   void initState() {
     super.initState();
+    _rover = widget.selected.firstOrNull;
     sync();
   }
 
   @override
   void didUpdateWidget(covariant _ChoiceGroup<T> old) {
     super.didUpdateWidget(old);
+    final checked = widget.selected.firstOrNull;
+    if (widget.radio && checked != null && checked != old.selected.firstOrNull)
+      _rover = checked;
     sync();
   }
 
@@ -146,6 +194,7 @@ class _ChoiceGroupState<T> extends State<_ChoiceGroup<T>> {
     final available = widget.options.where((e) => !e.disabled).toList();
     if (available.isEmpty) return;
     var index = available.indexWhere((e) => _nodes[e.value]!.hasFocus);
+    if (index < 0) index = available.indexWhere((e) => e.value == _tabStop);
     if (edge) {
       index = delta < 0 ? 0 : available.length - 1;
     } else {

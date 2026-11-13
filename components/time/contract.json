@@ -15,7 +15,7 @@
     "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
     "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
     "localization": "Reference Chinese Gallery; host content and inherited directionality.",
-    "async_behavior": "Owner-local refresh timer; necessary colon remains visible. Opaque entry uses modest displacement and reduced motion settles the same wrapper.",
+    "async_behavior": "Owner-local refresh timer; necessary colon remains visible. Opaque entry uses modest displacement (4px) on the reference .35s cubic-bezier(.4,0,.2,1) timing and reduced motion settles the same wrapper.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
     "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
     "performance": "Platform profiling required before release.",

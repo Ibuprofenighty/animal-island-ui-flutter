@@ -178,11 +178,15 @@ void main() {
       final surface = t.widget<Container>(focusedTab);
       final border =
           (surface.foregroundDecoration as BoxDecoration).border! as Border;
+      // The selected fill is painted by the tab's nearest decorated ancestor
+      // (it animates the hover tint), directly behind the focus ring.
+      final fill = t.widget<DecoratedBox>(
+        find
+            .ancestor(of: focusedTab, matching: find.byType(DecoratedBox))
+            .first,
+      );
       expect(
-        contrast(
-          border.top.color,
-          (surface.decoration as BoxDecoration).color!,
-        ),
+        contrast(border.top.color, (fill.decoration as BoxDecoration).color!),
         greaterThanOrEqualTo(3),
       );
       for (final variant in IslandPaginationVariant.values) {

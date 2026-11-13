@@ -55,6 +55,7 @@ class IslandTextField extends StatefulWidget {
 }
 
 class _IslandTextFieldState extends State<IslandTextField> {
+  bool _hovered = false;
   TextEditingController? _owned;
   FocusNode? _ownedFocus;
   FocusNode get focus => widget.focusNode ?? _ownedFocus!;
@@ -135,7 +136,34 @@ class _IslandTextFieldState extends State<IslandTextField> {
             IslandFieldStatus.warning => tokens.warning,
             IslandFieldStatus.normal => tokens.outline,
           };
-    final input = Container(
+    final statusColor = field.hasError
+        ? tokens.dangerText
+        : switch (widget.status) {
+            IslandFieldStatus.error => tokens.dangerText,
+            IslandFieldStatus.warning => tokens.warning,
+            IslandFieldStatus.normal => null,
+          };
+    // Reference `.wrapper` shadow: status fields always carry a 3px status
+    // bar (`.wrapper-error/-warning` win over `.wrapper-no-shadow`); a
+    // `shadow` field draws 2/3/4px by size and a 3px darker bar on hover.
+    final (Color, double)? bar = !widget.enabled
+        ? null
+        : statusColor != null
+        ? (statusColor, 3)
+        : !widget.shadow
+        ? null
+        : _hovered
+        ? (tokens.muted, 3)
+        : (
+            tokens.outline,
+            switch (widget.size) {
+              IslandSize.small => 2.0,
+              IslandSize.middle => 3.0,
+              IslandSize.large => 4.0,
+            },
+          );
+    final reduced = MediaQuery.disableAnimationsOf(context);
+    final field0 = Container(
       foregroundDecoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50),
@@ -154,9 +182,6 @@ class _IslandTextFieldState extends State<IslandTextField> {
       decoration: BoxDecoration(
         color: widget.enabled ? tokens.inputSurface : const Color(0xffece8dc),
         borderRadius: BorderRadius.circular(50),
-        boxShadow: widget.shadow && widget.enabled
-            ? [BoxShadow(color: borderColor, offset: const Offset(0, 3))]
-            : null,
       ),
       child: TextField(
         controller: editing,
@@ -205,8 +230,9 @@ class _IslandTextFieldState extends State<IslandTextField> {
             color: tokens.muted,
             fontWeight: FontWeight.w400,
           ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: padding,
+          // Wrapper padding plus the reference input's 2px UA inline padding.
+          contentPadding: EdgeInsetsDirectional.symmetric(
+            horizontal: padding + 2,
             vertical: (targetHeight - (font * lineHeight).roundToDouble()) / 2,
           ),
           border: InputBorder.none,
@@ -243,33 +269,47 @@ class _IslandTextFieldState extends State<IslandTextField> {
                         Padding(
                           padding: const EdgeInsetsDirectional.only(start: 4),
                           child: ActionSurface(
-                            label: '清空',
+                            label: '清除',
                             onActivate: () {
                               editing.clear();
                               widget.onChanged?.call('');
                             },
+                            // Reference `.clear`: 150ms hover background;
+                            // focus-visible 2px outline, offset 1px.
+                            // The focus ring itself switches atomically.
                             builder: (_, states) => Container(
-                              width: 20,
-                              height: 20,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: states.contains(WidgetState.hovered)
-                                    ? tokens.ink.withValues(alpha: .1)
-                                    : null,
-                                border: states.contains(WidgetState.focused)
-                                    ? Border.all(color: tokens.ink)
-                                    : null,
+                              foregroundDecoration: FocusOutline(
+                                const CircleBorder(),
+                                states.contains(WidgetState.focused)
+                                    ? tokens.ink
+                                    : Colors.transparent,
+                                width: 2,
+                                offset: 1,
                               ),
-                              child: ExcludeSemantics(
-                                child: Text(
-                                  '×',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                    color: states.contains(WidgetState.hovered)
-                                        ? tokens.ink
-                                        : tokens.muted,
+                              child: AnimatedContainer(
+                                duration: reduced
+                                    ? Duration.zero
+                                    : const Duration(milliseconds: 150),
+                                width: 20,
+                                height: 20,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: states.contains(WidgetState.hovered)
+                                      ? tokens.ink.withValues(alpha: .1)
+                                      : tokens.ink.withValues(alpha: 0),
+                                ),
+                                child: ExcludeSemantics(
+                                  child: Text(
+                                    '×',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      color:
+                                          states.contains(WidgetState.hovered)
+                                          ? tokens.ink
+                                          : tokens.muted,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -289,6 +329,33 @@ class _IslandTextFieldState extends State<IslandTextField> {
             minWidth: 0,
             minHeight: 0,
           ),
+        ),
+      ),
+    );
+    // The bar is a separate decorative layer under the opaque fill, so only
+    // the shadow eases (reference `transition: all .25s`); fill, border and
+    // text stay atomic. A status bar appears without interpolation.
+    final input = MouseRegion(
+      cursor: widget.enabled ? MouseCursor.defer : SystemMouseCursors.forbidden,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: Opacity(
+        opacity: widget.enabled ? 1 : .6,
+        child: AnimatedContainer(
+          duration: reduced || statusColor != null
+              ? Duration.zero
+              : const Duration(milliseconds: 250),
+          curve: const Cubic(.4, 0, .2, 1),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            boxShadow: [
+              BoxShadow(
+                color: bar?.$1 ?? tokens.outline.withValues(alpha: 0),
+                offset: Offset(0, bar?.$2 ?? 0),
+              ),
+            ],
+          ),
+          child: field0,
         ),
       ),
     );
@@ -450,9 +517,15 @@ class IslandSwitch extends StatelessWidget {
       builder: (_, states) {
         final hover =
             !busy && onChanged != null && states.contains(WidgetState.hovered);
+        // Reference `.switch-loading { opacity: .7 }` wins over
+        // `.switch-disabled { opacity: .5 }`.
         return ExcludeSemantics(
           child: Opacity(
-            opacity: onChanged == null ? .5 : 1,
+            opacity: busy
+                ? .7
+                : onChanged == null
+                ? .5
+                : 1,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -467,90 +540,105 @@ class IslandSwitch extends StatelessWidget {
                     width: 2,
                     offset: 2,
                   ),
-                  decoration: BoxDecoration(
-                    color: value
-                        ? (hover
-                              ? const Color(0xff7ccc70)
-                              : const Color(0xff86d67a))
-                        : const Color(0xffd4c9b4),
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(
-                      color: IslandTokens.light.onLeaf,
-                      width: border,
-                    ),
-                  ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: value ? (small ? 6 : 8) : (small ? 20 : 28),
-                          right: value ? (small ? 20 : 28) : (small ? 6 : 8),
-                        ),
-                        child: SizedBox(
-                          height: h - border * 2,
-                          child: Center(
-                            widthFactor: 1,
-                            child: Text(
-                              text,
-                              softWrap: false,
-                              style: TextStyle(
-                                fontSize: small ? 9 : 11,
-                                height: 1,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: (small ? 9 : 11) * .02,
-                                color: IslandTokens.light.onLeaf,
-                                shadows: const [
-                                  Shadow(
-                                    color: Color(0x1a000000),
-                                    offset: Offset(0, 1),
-                                    blurRadius: 1,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                  // Track fill/border ease with the reference
+                  // `transition: all .25s`; every intermediate border stays
+                  // at least as dark as `outline` (3:1 boundary). The focus
+                  // ring above switches atomically.
+                  child: AnimatedContainer(
+                    duration: duration,
+                    curve: curve,
+                    decoration: BoxDecoration(
+                      color: value
+                          ? (hover
+                                ? const Color(0xff7ccc70)
+                                : const Color(0xff86d67a))
+                          : const Color(0xffd4c9b4),
+                      borderRadius: BorderRadius.circular(50),
+                      // Unchecked: outline at rest, darker muted on hover
+                      // (reference #c4b89e -> #a89878). Checked keeps the
+                      // darkest onLeaf boundary; its hover delta is the fill.
+                      border: Border.all(
+                        color: value
+                            ? IslandTokens.light.onLeaf
+                            : hover
+                            ? IslandTokens.light.muted
+                            : IslandTokens.light.outline,
+                        width: border,
                       ),
-                      Positioned.fill(
-                        child: Padding(
+                    ),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Padding(
                           padding: EdgeInsets.only(
-                            left: small ? 1 : 2,
-                            right: small ? 2 : 3,
+                            left: value ? (small ? 6 : 8) : (small ? 20 : 28),
+                            right: value ? (small ? 20 : 28) : (small ? 6 : 8),
                           ),
-                          child: AnimatedAlign(
-                            duration: duration,
-                            curve: curve,
-                            alignment: value
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: AnimatedContainer(
-                              duration: duration,
-                              curve: curve,
-                              width: thumb,
-                              height: thumb,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: const Color(0xfff7f3df),
-                                border: Border.all(
+                          child: SizedBox(
+                            height: h - border * 2,
+                            child: Center(
+                              widthFactor: 1,
+                              child: Text(
+                                text,
+                                softWrap: false,
+                                style: TextStyle(
+                                  fontSize: small ? 9 : 11,
+                                  height: 1,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: (small ? 9 : 11) * .02,
                                   color: IslandTokens.light.onLeaf,
-                                  width: border,
+                                  shadows: const [
+                                    Shadow(
+                                      color: Color(0x1a000000),
+                                      offset: Offset(0, 1),
+                                      blurRadius: 1,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              child: busy
-                                  ? const OverflowBox(
-                                      minWidth: 11,
-                                      maxWidth: 11,
-                                      minHeight: 11,
-                                      maxHeight: 11,
-                                      child: _SwitchSpinner(),
-                                    )
-                                  : null,
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        Positioned.fill(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              left: small ? 1 : 2,
+                              right: small ? 2 : 3,
+                            ),
+                            child: AnimatedAlign(
+                              duration: duration,
+                              curve: curve,
+                              alignment: value
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: AnimatedContainer(
+                                duration: duration,
+                                curve: curve,
+                                width: thumb,
+                                height: thumb,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: const Color(0xfff7f3df),
+                                  border: Border.all(
+                                    color: IslandTokens.light.onLeaf,
+                                    width: border,
+                                  ),
+                                ),
+                                child: busy
+                                    ? const OverflowBox(
+                                        minWidth: 11,
+                                        maxWidth: 11,
+                                        minHeight: 11,
+                                        maxHeight: 11,
+                                        child: _SwitchSpinner(),
+                                      )
+                                    : null,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 if (showLabel) ...[

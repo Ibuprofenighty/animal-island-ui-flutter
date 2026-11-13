@@ -207,4 +207,49 @@ void main() {
       expect(values.single, DateTime(2026, 9));
     },
   );
+  testWidgets(
+    'range trigger values share a fixed width; icon sits at the right edge',
+    (t) async {
+      await t.pumpWidget(
+        host(
+          SizedBox(
+            width: 300,
+            child: IslandDatePicker.rangeUncontrolled(
+              initialValue: DateTimeRange(
+                start: DateTime(2026, 8, 10),
+                end: DateTime(2026, 8, 20),
+              ),
+            ),
+          ),
+        ),
+      );
+      final box = t.getRect(find.byType(IslandDatePicker));
+      final start = t.getRect(find.text('2026-08-10'));
+      final end = t.getRect(find.text('2026-08-20'));
+      final icon = t
+          .widgetList<CustomPaint>(
+            find.descendant(
+              of: find.byType(IslandDatePicker),
+              matching: find.byType(CustomPaint),
+            ),
+          )
+          .map((w) => t.getRect(find.byWidget(w)))
+          .firstWhere((r) => r.width == 14 && r.height == 14);
+      expect(box.width, 300);
+      expect(start.left, box.left + 18);
+      expect(end.width, closeTo(start.width, .01));
+      // value | 10 | divider 1 | 10 | value | 8 | icon 14 | padding 18
+      expect(end.left, closeTo(start.right + 21, .01));
+      expect(icon.right, closeTo(box.right - 18, .01));
+      expect(end.right, closeTo(icon.left - 8, .01));
+    },
+  );
+  testWidgets('single trigger still hugs its content under loose width', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(IslandDatePicker.uncontrolled(initialValue: DateTime(2026, 8, 10))),
+    );
+    expect(t.getSize(find.byType(IslandDatePicker)).width, lessThan(200));
+  });
 }

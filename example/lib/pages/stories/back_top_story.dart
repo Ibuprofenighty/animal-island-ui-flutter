@@ -61,9 +61,18 @@ class _BackTopStoryState extends State<BackTopStory> {
               color: const Color(0xfff0e8d8),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: const Text(
+            // Reference <code>: monospace. Muted measures 4.49:1 on the
+            // #f0e8d8 chip, so the chip keeps the readable ink role.
+            child: Text(
               'visibilityHeight=400',
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: IslandTheme.codeFontFamily,
+                fontFamilyFallback: DefaultTextStyle.of(context)
+                    .style
+                    .fontFamilyFallback,
+                color: IslandTokens.light.ink,
+              ),
             ),
           ),
           Text(

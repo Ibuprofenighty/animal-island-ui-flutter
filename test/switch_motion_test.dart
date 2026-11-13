@@ -1,5 +1,7 @@
 import 'dart:ui' show Tristate, CheckedState;
 
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
+
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -199,7 +201,7 @@ void main() {
                   .first,
             )
             .opacity,
-        1,
+        .7, // reference `.switch-loading { opacity: .7 }`
       );
       await t.pump(const Duration(milliseconds: 300));
       expect(t.widget<RotationTransition>(spin).turns.value, closeTo(.5, .01));
@@ -232,4 +234,59 @@ void main() {
       expect(t.hasRunningAnimations, isFalse);
     },
   );
+  testWidgets('hover darkens the unchecked border; track eases over 250ms', (
+    t,
+  ) async {
+    var value = false;
+    await t.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: StatefulBuilder(
+              builder: (_, set) => IslandSwitch(
+                label: 'Hover',
+                value: value,
+                showLabel: false,
+                onChanged: (v) => set(() => value = v),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    BoxDecoration track() =>
+        t
+                .widget<DecoratedBox>(
+                  find
+                      .descendant(
+                        of: find
+                            .descendant(
+                              of: find.byType(IslandSwitch),
+                              matching: find.byType(AnimatedContainer),
+                            )
+                            .first,
+                        matching: find.byType(DecoratedBox),
+                      )
+                      .first,
+                )
+                .decoration
+            as BoxDecoration;
+    Color borderOf(BoxDecoration d) => (d.border! as Border).top.color;
+    expect(borderOf(track()), IslandTokens.light.outline);
+    final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(t.getCenter(find.byType(IslandSwitch)));
+    await t.pumpAndSettle();
+    expect(borderOf(track()), IslandTokens.light.muted);
+    await t.tap(find.byType(IslandSwitch));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 125));
+    final mid = track().color!;
+    expect(mid, isNot(const Color(0xff7ccc70)));
+    expect(mid, isNot(const Color(0xffd4c9b4)));
+    await t.pumpAndSettle();
+    expect(track().color, const Color(0xff7ccc70));
+    expect(borderOf(track()), IslandTokens.light.onLeaf);
+  });
 }

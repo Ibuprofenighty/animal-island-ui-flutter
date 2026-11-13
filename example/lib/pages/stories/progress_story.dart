@@ -156,7 +156,11 @@ class _ProgressStoryState extends State<ProgressStory> {
               width: 56,
               child: Text(
                 'percent:',
-                style: TextStyle(fontSize: 13, color: Color(0xff725d42)),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff725d42),
+                ),
               ),
             ),
             Expanded(
@@ -165,8 +169,10 @@ class _ProgressStoryState extends State<ProgressStory> {
                   trackHeight: 4,
                   activeTrackColor: const Color(0xff725d42),
                   thumbColor: const Color(0xff725d42),
+                  // Native range input: no tick marks, ~16px thumb.
+                  tickMarkShape: SliderTickMarkShape.noTickMark,
                   thumbShape: const RoundSliderThumbShape(
-                    enabledThumbRadius: 6,
+                    enabledThumbRadius: 8,
                   ),
                 ),
                 child: Slider(
@@ -174,8 +180,8 @@ class _ProgressStoryState extends State<ProgressStory> {
                   value: percent,
                   min: 0,
                   max: 100,
-                  divisions: 100,
-                  onChanged: (v) => setState(() => percent = v),
+                  // Integer steps like the reference parseInt(range.value).
+                  onChanged: (v) => setState(() => percent = v.roundToDouble()),
                 ),
               ),
             ),
@@ -185,6 +191,8 @@ class _ProgressStoryState extends State<ProgressStory> {
                 '${percent.round()}%',
                 textAlign: TextAlign.right,
                 style: TextStyle(
+                  fontSize: 16,
+                  height: 22 / 16,
                   color: IslandTokens.light.link,
                   fontWeight: FontWeight.w700,
                 ),

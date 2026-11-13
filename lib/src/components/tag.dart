@@ -188,9 +188,10 @@ class IslandTag extends StatelessWidget {
                               ),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
+                                // Reference resting disc rgb(149 143 143 / 8%).
                                 color: closeStates.contains(WidgetState.hovered)
                                     ? colorway.soft
-                                    : Colors.transparent,
+                                    : const Color(0x14958f8f),
                               ),
                               child: Center(
                                 child: ExcludeSemantics(

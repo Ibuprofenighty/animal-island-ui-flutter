@@ -48,26 +48,59 @@ class CursorStory extends StatelessWidget {
           ),
         ),
       );
+  Widget intro(BuildContext context) {
+    final code = TextStyle(
+      fontFamily: IslandTheme.codeFontFamily,
+      fontFamilyFallback: DefaultTextStyle.of(context).style.fontFamilyFallback,
+    );
+    TextSpan c(String text) => TextSpan(text: text, style: code);
+    // Reference <p style={labelStyle}> with inline <code> spans.
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Text.rich(
+        TextSpan(
+          children: [
+            const TextSpan(text: 'Cursor 将鼠标光标替换为自定义图标，提供 '),
+            c('arrow'),
+            const TextSpan(text: '（手指箭头）与 '),
+            c('raindrop'),
+            const TextSpan(text: '（蓝色雨滴）两种风格。默认 '),
+            c('forceAll=true'),
+            const TextSpan(text: ' 全覆盖所有后代；'),
+            c('forceAll=false'),
+            const TextSpan(text: ' 保留子控件的 pointer / text / not-allowed 语义。'),
+          ],
+        ),
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          height: kTextHeightNone,
+          color: IslandTokens.light.muted,
+        ),
+      ),
+    );
+  }
+
+  // Reference section root is a `demo-raindrop-zone`: the panel shows the
+  // raindrop cursor; each preview IslandCursor keeps its own cursor.
   @override
-  Widget build(BuildContext context) => StoryPanel(
+  Widget build(BuildContext context) => IslandCursor(
+    variant: IslandCursorVariant.raindrop,
+    child: panel(context),
+  );
+
+  Widget panel(BuildContext context) => StoryPanel(
     title: 'Cursor',
     tags: ["光标"],
     children: [
-      const StoryLabel(
-        'Cursor 将鼠标光标替换为自定义图标，提供 arrow（手指箭头）与 raindrop（蓝色雨滴）两种风格。默认 forceAll=true 全覆盖所有后代；forceAll=false 保留子控件的 pointer / text / not-allowed 语义。',
-      ),
+      intro(context),
       const StoryLabel('type="default"（默认）：手指箭头'),
-      IslandCursor(
-        child: box(
-          const StoryText('鼠标移入此区域将显示自定义光标', textAlign: TextAlign.center),
-        ),
-      ),
+      // Reference flex box: the anonymous text item sits at the start.
+      IslandCursor(child: box(const StoryText('鼠标移入此区域将显示自定义光标'))),
       const StoryLabel('type="raindrop"：蓝色雨滴'),
       IslandCursor(
         variant: IslandCursorVariant.raindrop,
-        child: box(
-          const StoryText('鼠标移入此区域将显示雨滴光标', textAlign: TextAlign.center),
-        ),
+        child: box(const StoryText('鼠标移入此区域将显示雨滴光标')),
       ),
       const StoryLabel('forceAll=false：保留原生光标语义'),
       IslandCursor(

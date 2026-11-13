@@ -68,6 +68,7 @@ class ImageStory extends StatelessWidget {
       const StoryLabel(
         '相框类型（variant）— default 卡片大阴影+大圆角（默认），bordered 柔和阴影+小圆角（原样式）',
         strutStyle: storyCaptionStrut,
+        code: {'default', 'bordered'},
       ),
       storyRow([
         caption(photo(1, '默认类型'), 'default（默认）'),
@@ -77,8 +78,9 @@ class ImageStory extends StatelessWidget {
         ),
       ]),
       const StoryLabel(
-        '邮票类型（variant="stamp"）— 四周齿孔 + 暖白底纸 + 半色调网点；可选 stampYear 在右上角印发行年份',
+        '邮票类型（variant="stamp"）— 四周齿孔 + 暖白底纸 + 半色调网点；可选stampYear 在右上角印发行年份',
         strutStyle: storyCaptionStrut,
+        code: {'stampYear'},
       ),
       storyRow([
         caption(

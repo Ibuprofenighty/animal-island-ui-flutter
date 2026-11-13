@@ -8,6 +8,20 @@ import '../shared/version.g.dart';
 import '../shared/story.dart';
 import '../shared/reference_source_link.dart';
 
+/// Reference Home wallpaper text colours (demo/HomePage.tsx). Text over the
+/// Home wallpaper is the reference-priority contrast exception in
+/// docs/DESIGN.md#home-host-and-photo-gradient; card text keeps product roles.
+abstract final class HomeWallpaperInk {
+  /// Hero title and scroll hint (`#FFF9E6`).
+  static const cream = Color(0xFFFFF9E6);
+
+  /// Section titles (`#725d42`).
+  static const title = Color(0xFF725D42);
+
+  /// Hero subtitle, section descriptions and footer (`#7c5734`).
+  static const body = Color(0xFF7C5734);
+}
+
 /// Same reference composition. Random wallpaper is stable for a page lifetime.
 class GalleryHome extends StatefulWidget {
   const GalleryHome({super.key, required this.onNavigate, this.wallpaperSeed});
@@ -25,6 +39,18 @@ class _GalleryHomeState extends State<GalleryHome>
     duration: const Duration(seconds: 30),
   );
   List<_Giant>? giants;
+
+  /// Reference hint lifecycle: visible until the page scrolls past 70px.
+  bool showScrollHint = true;
+  @override
+  void initState() {
+    super.initState();
+    scroll.addListener(() {
+      final show = scroll.offset <= 70;
+      if (show != showScrollHint) setState(() => showScrollHint = show);
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -64,6 +90,16 @@ class _GalleryHomeState extends State<GalleryHome>
       IslandGlyph.sailboat,
       IslandGlyph.balloon,
       IslandGlyph.icecream,
+      IslandGlyph.coffee,
+      IslandGlyph.music,
+      IslandGlyph.snowflake,
+      IslandGlyph.gift,
+      IslandGlyph.rocket,
+      IslandGlyph.bear,
+      IslandGlyph.cat,
+      IslandGlyph.rabbit,
+      IslandGlyph.frog,
+      IslandGlyph.owl,
       IslandGlyph.penguin,
       IslandGlyph.apple,
       IslandGlyph.cherry,
@@ -175,10 +211,10 @@ class _GalleryHomeState extends State<GalleryHome>
                     height: 33 / 24,
                     forceStrutHeight: true,
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
-                    color: IslandTokens.light.onCanvas,
+                    color: HomeWallpaperInk.title,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -190,9 +226,9 @@ class _GalleryHomeState extends State<GalleryHome>
                     forceStrutHeight: true,
                   ),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
-                    color: IslandTokens.light.onCanvas,
+                    color: HomeWallpaperInk.body,
                   ),
                 ),
               ],
@@ -380,7 +416,7 @@ class _GalleryHomeState extends State<GalleryHome>
                                         fontFamily: 'GROBOLD',
                                         fontSize: mobile ? 37 : 60,
                                         height: 1.1,
-                                        color: IslandTokens.light.onCanvas,
+                                        color: HomeWallpaperInk.cream,
                                         shadows: const [
                                           Shadow(
                                             color: Color(0x66000000),
@@ -397,7 +433,7 @@ class _GalleryHomeState extends State<GalleryHome>
                                       style: TextStyle(
                                         fontSize: mobile ? 14 : 17,
                                         height: 1.7,
-                                        color: IslandTokens.light.onCanvas,
+                                        color: HomeWallpaperInk.body,
                                       ),
                                     ),
                                     const SizedBox(height: 28),
@@ -420,29 +456,68 @@ class _GalleryHomeState extends State<GalleryHome>
                         left: 0,
                         right: 0,
                         child: Center(
-                          child: GestureDetector(
-                            onTap: () => scroll.animateTo(
-                              viewport.height,
-                              duration: const Duration(milliseconds: 400),
-                              curve: Curves.easeInOut,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  '向下滑动',
-                                  style: TextStyle(
-                                    color: IslandTokens.light.onCanvas,
-                                    fontSize: 12,
+                          // Reference hint: pointer cursor without an action,
+                          // a 2s ease-in-out bounce on the page motion clock,
+                          // and a 0.3s exit once the page scrolls past 70px.
+                          // The bounce keeps the text opaque (readable motion).
+                          child: IgnorePointer(
+                            ignoring: !showScrollHint,
+                            child: AnimatedOpacity(
+                              opacity: showScrollHint ? 1 : 0,
+                              duration: MediaQuery.disableAnimationsOf(context)
+                                  ? Duration.zero
+                                  : const Duration(milliseconds: 300),
+                              curve: Curves.ease,
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: AnimatedBuilder(
+                                  animation: motion,
+                                  builder: (_, child) {
+                                    final phase = (motion.value * 30 % 2) / 2;
+                                    final rise = Curves.easeInOut.transform(
+                                      phase < .5 ? phase * 2 : 2 - phase * 2,
+                                    );
+                                    return Transform.translate(
+                                      offset: Offset(
+                                        0,
+                                        showScrollHint &&
+                                                !MediaQuery.disableAnimationsOf(
+                                                  context,
+                                                )
+                                            ? -8 * rise
+                                            : 0,
+                                      ),
+                                      child: child,
+                                    );
+                                  },
+                                  child: const Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    spacing: 4,
+                                    children: [
+                                      Text(
+                                        '向下滑动',
+                                        style: TextStyle(
+                                          color: HomeWallpaperInk.cream,
+                                          fontSize: 12,
+                                          shadows: [
+                                            Shadow(
+                                              color: Color(0x4D000000),
+                                              offset: Offset(0, 1),
+                                              blurRadius: 2,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox.square(
+                                        dimension: 16,
+                                        child: CustomPaint(
+                                          painter: _ScrollHintArrow(),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Icon(
-                                  Icons.arrow_downward,
-                                  color: IslandTokens.light.onCanvas,
-                                  size: 16,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
@@ -530,7 +605,7 @@ class _GalleryHomeState extends State<GalleryHome>
                       style: IslandCodeBlockStyle(
                         textStyle: TextStyle(fontSize: 13, height: 1.8),
                       ),
-                      code: 'dependencies:\n  animal_island_ui:\n    path: ../animal_island_ui',
+                      code: '# 在 pubspec.yaml 中添加依赖\ndependencies:\n  animal_island_ui:\n    path: ../animal_island_ui',
                       language: IslandCodeLanguage.shell,
                       copyable: false,
                     ),
@@ -550,7 +625,7 @@ class _GalleryHomeState extends State<GalleryHome>
                       style: IslandCodeBlockStyle(
                         textStyle: TextStyle(fontSize: 13, height: 1.8),
                       ),
-                      code: "import 'package:animal_island_ui/animal_island_ui.dart';\n\nIslandButton(onPressed: () {}, child: const Text('开始'));",
+                      code: "// 1. 引入组件\nimport 'package:animal_island_ui/animal_island_ui.dart';\n\nIslandButton(onPressed: () {}, child: const Text('开始'));",
                       copyable: false,
                     ),
                   ),
@@ -569,7 +644,7 @@ class _GalleryHomeState extends State<GalleryHome>
                       style: IslandCodeBlockStyle(
                         textStyle: TextStyle(fontSize: 13, height: 1.8),
                       ),
-                      code: "MaterialApp(\n  theme: IslandTheme.create(),\n  home: const MyPage(),\n)",
+                      code: "// 覆盖主题变量\nMaterialApp(\n  theme: IslandTheme.create(),\n  home: const MyPage(),\n)",
                       copyable: false,
                     ),
                   ),
@@ -598,16 +673,16 @@ class _GalleryHomeState extends State<GalleryHome>
                           ],
                         ),
                         const SizedBox(height: 12),
-                        Text(
+                        const Text(
                           'Flutter + Dart · Reference Gallery',
-                          strutStyle: const StrutStyle(
+                          strutStyle: StrutStyle(
                             fontSize: 12,
                             height: 16 / 12,
                             forceStrutHeight: true,
                           ),
                           style: TextStyle(
                             fontSize: 12,
-                            color: IslandTokens.light.onCanvas,
+                            color: HomeWallpaperInk.body,
                           ),
                         ),
                       ],
@@ -642,29 +717,96 @@ class _Feature extends StatefulWidget {
   State<_Feature> createState() => _FeatureState();
 }
 
-class _FeatureState extends State<_Feature> {
+/// Reference FeatureCard hover: the card lifts 4px with a decorative
+/// `0 8px 24px rgba(114,93,66,.15)` shadow (`all 0.3s ease`); the icon plays
+/// `iconBounce` (0.4s: scale 1 -> 1.2 / -5deg -> 1.1 / -4deg) and returns to
+/// rest over 0.3s ease on exit. Reduced motion settles the same end states.
+class _FeatureState extends State<_Feature>
+    with SingleTickerProviderStateMixin {
   bool hover = false;
+  late final icon = AnimationController(vsync: this);
+  bool entering = false;
+  (double, double) exitFrom = (1, 0);
+
+  (double, double) iconPose() {
+    final t = icon.value;
+    if (entering) {
+      if (t < .5) {
+        final k = Curves.ease.transform(t * 2);
+        return (1 + .2 * k, -5 * k);
+      }
+      final k = Curves.ease.transform(t * 2 - 1);
+      return (1.2 - .1 * k, -5 + k);
+    }
+    final k = Curves.ease.transform(t);
+    return (exitFrom.$1 + (1 - exitFrom.$1) * k, exitFrom.$2 * (1 - k));
+  }
+
+  void setHover(bool value) {
+    if (value == hover) return;
+    final reduced = MediaQuery.disableAnimationsOf(context);
+    setState(() {
+      hover = value;
+      if (!value) exitFrom = iconPose();
+      entering = value;
+    });
+    icon.duration = Duration(milliseconds: value ? 400 : 300);
+    if (reduced) {
+      icon.value = 1;
+    } else {
+      icon.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    icon.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => MouseRegion(
-    onEnter: (_) => setState(() => hover = true),
-    onExit: (_) => setState(() => hover = false),
-    child: TweenAnimationBuilder<Matrix4>(
-      tween: Matrix4Tween(end: Matrix4.translationValues(0, hover ? -4 : 0, 0)),
+    onEnter: (_) => setHover(true),
+    onExit: (_) => setHover(false),
+    child: TweenAnimationBuilder<double>(
+      tween: Tween(end: hover ? 1 : 0),
       duration: MediaQuery.disableAnimationsOf(context)
           ? Duration.zero
           : const Duration(milliseconds: 300),
-      curve: Curves.linear,
-      builder: (_, matrix, child) => Transform(
-        transform: matrix,
+      curve: Curves.ease,
+      builder: (_, lift, child) => Transform(
+        transform: Matrix4.translationValues(0, -4 * lift, 0),
         filterQuality: FilterQuality.low,
-
-        child: child,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              if (lift > 0)
+                BoxShadow(
+                  color: Color.fromRGBO(114, 93, 66, .15 * lift),
+                  offset: Offset(0, 8 * lift),
+                  blurRadius: 24 * lift,
+                ),
+            ],
+          ),
+          child: child,
+        ),
       ),
       child: IslandCard(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           children: [
-            IslandIcon(widget.icon, size: 42),
+            AnimatedBuilder(
+              animation: icon,
+              builder: (_, child) {
+                final pose = iconPose();
+                return Transform.rotate(
+                  angle: pose.$2 * math.pi / 180,
+                  child: Transform.scale(scale: pose.$1, child: child),
+                );
+              },
+              child: IslandIcon(widget.icon, size: 42),
+            ),
             Text(
               widget.title,
               strutStyle: const StrutStyle(
@@ -705,18 +847,31 @@ class _HomeFooterAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TextButton(
     onPressed: onPressed,
-    style: TextButton.styleFrom(
-      padding: EdgeInsets.zero,
-      minimumSize: Size.zero,
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      foregroundColor: IslandTokens.light.onCanvas,
-      textStyle: const TextStyle(
-        fontFamily: 'Nunito',
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0,
-      ),
-    ),
+    style:
+        TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          foregroundColor: HomeWallpaperInk.body,
+          // Reference footer links are plain pointer spans: no hover wash or
+          // ripple. Keyboard focus keeps a visible highlight.
+          splashFactory: NoSplash.splashFactory,
+          textStyle: const TextStyle(
+            fontFamily: 'Nunito',
+            // The style replaces the theme label style, so it restates the CJK
+            // fallback; without it 组件文档 has no glyphs.
+            fontFamilyFallback: ['IslandGallerySans'],
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0,
+          ),
+        ).copyWith(
+          overlayColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.focused)
+                ? HomeWallpaperInk.body.withValues(alpha: .12)
+                : Colors.transparent,
+          ),
+        ),
     child: Text(
       label,
       strutStyle: const StrutStyle(
@@ -726,4 +881,31 @@ class _HomeFooterAction extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// Reference scroll-hint arrow: `M12 5v14M5 12l7 7 7-7`, stroke 2 on a 24
+/// viewBox drawn at 16px, round caps and joins.
+class _ScrollHintArrow extends CustomPainter {
+  const _ScrollHintArrow();
+  @override
+  void paint(Canvas canvas, Size size) {
+    final s = size.width / 24;
+    canvas.drawPath(
+      Path()
+        ..moveTo(12 * s, 5 * s)
+        ..lineTo(12 * s, 19 * s)
+        ..moveTo(5 * s, 12 * s)
+        ..lineTo(12 * s, 19 * s)
+        ..lineTo(19 * s, 12 * s),
+      Paint()
+        ..color = HomeWallpaperInk.cream
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2 * s
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ScrollHintArrow old) => false;
 }

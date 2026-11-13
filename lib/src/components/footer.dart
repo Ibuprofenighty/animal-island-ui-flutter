@@ -24,7 +24,8 @@ class IslandFooter extends StatelessWidget {
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 12,
-          height: 1.5,
+          // Reference .footer sets no line-height: the font's normal metrics.
+          height: kTextHeightNone,
           color: IslandTheme.of(context).muted,
           letterSpacing: 0,
         ).merge(style),

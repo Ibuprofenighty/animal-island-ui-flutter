@@ -55,7 +55,8 @@ class IslandModal extends StatelessWidget {
                 child: ContentScope(
                   textStyle: const TextStyle(
                     fontSize: 28,
-                    height: 1.5,
+                    // Reference .title sets no line-height (font normal).
+                    height: kTextHeightNone,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff725d42),
                   ),

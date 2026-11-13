@@ -350,7 +350,9 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
               ? Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Flexible(
+                    // Reference `.value { flex: 1 }`: both endpoints share
+                    // the free width equally.
+                    Expanded(
                       child: Text(
                         first == null ? widget.placeholder : format(first),
                         overflow: TextOverflow.ellipsis,
@@ -362,7 +364,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                       margin: const EdgeInsets.symmetric(horizontal: 10),
                       color: const Color(0xffe8dcc8),
                     ),
-                    Flexible(
+                    Expanded(
                       child: Text(
                         last == null ? widget.placeholder : format(last),
                         overflow: TextOverflow.ellipsis,
@@ -845,27 +847,28 @@ class _CalendarIcon extends CustomPainter {
   const _CalendarIcon();
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.scale(size.width / 16, size.height / 16);
+    // Reference 14-unit SVG: rect 1.5,2.5 11x10 rx2; header y5.5; ticks
+    // x4.7/x9.3 from y1 to y3.4 (round caps); stroke 1.4.
+    canvas.scale(size.width / 14, size.height / 14);
     final paint = Paint()
       ..color = IslandTokens.light.muted
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..strokeCap = StrokeCap.round;
+      ..strokeWidth = 1.4;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(2.5, 3.5, 11, 10),
-        const Radius.circular(1.5),
+        const Rect.fromLTWH(1.5, 2.5, 11, 10),
+        const Radius.circular(2),
       ),
       paint,
     );
+    canvas.drawLine(const Offset(1.5, 5.5), const Offset(12.5, 5.5), paint);
+    paint.strokeCap = StrokeCap.round;
     canvas.drawPath(
       Path()
-        ..moveTo(5, 2)
-        ..lineTo(5, 5)
-        ..moveTo(11, 2)
-        ..lineTo(11, 5)
-        ..moveTo(2.5, 7)
-        ..lineTo(13.5, 7),
+        ..moveTo(4.7, 1)
+        ..lineTo(4.7, 3.4)
+        ..moveTo(9.3, 1)
+        ..lineTo(9.3, 3.4),
       paint,
     );
   }

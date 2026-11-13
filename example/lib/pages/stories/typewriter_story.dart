@@ -3,6 +3,9 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
 
+const _lines = '第一行：钓到石头了！\n第二行：竟然连这种都能钓起来...\n第三行：继续加油吧！';
+final _lineCount = _lines.split('\n').length;
+
 class TypewriterStory extends StatefulWidget {
   const TypewriterStory({super.key});
   @override
@@ -38,29 +41,38 @@ class _TypewriterStoryState extends State<TypewriterStory> {
       const StoryLabel('保留多行与富内容 (速度 40ms)'),
       box(
         IslandTypewriter.builder(
-          '第一行：钓到石头了！\n第二行：竟然连这种都能钓起来...\n第三行：继续加油吧！',
+          _lines,
           speed: const Duration(milliseconds: 40),
           trigger: replay,
+          // Like the reference's cloned <div>s, every line slot (and its 8px
+          // gap) exists from the first frame; an untyped line is empty and
+          // collapses to zero height, then grows in place as it is typed.
           builder: (context, text) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              for (final (index, line) in text.split('\n').indexed)
-                Text(
-                  line,
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: kTextHeightNone,
-                    color: index == 2 ? IslandColorway.orange.ink : null,
-                    fontWeight: index == 2 ? FontWeight.w700 : null,
+              for (final (index, line) in [
+                ...text.split('\n'),
+                for (var i = text.split('\n').length; i < _lineCount; i++) '',
+              ].indexed)
+                if (line.isEmpty)
+                  const SizedBox.shrink()
+                else
+                  Text(
+                    line,
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: kTextHeightNone,
+                      color: index == 2 ? IslandColorway.orange.ink : null,
+                      fontWeight: index == 2 ? FontWeight.w700 : null,
+                    ),
+                    strutStyle: const StrutStyle(
+                      fontSize: 16,
+                      height: 25 / 16,
+                      forceStrutHeight: true,
+                    ),
                   ),
-                  strutStyle: const StrutStyle(
-                    fontSize: 16,
-                    height: 25 / 16,
-                    forceStrutHeight: true,
-                  ),
-                ),
             ],
           ),
         ),

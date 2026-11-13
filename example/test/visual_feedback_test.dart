@@ -168,10 +168,13 @@ void visualFeedbackOracles({VisualCapture? capture}) {
               );
             }
           });
+          // This oracle samples the real 300ms Carousel motion, so animations
+          // stay on. The 4s warmup settles the page and the focus-paused
+          // Carousel; pumpAndSettle cannot return while the Gallery sidebar
+          // NEW badge runs its endless reference pulse.
           for (var warmup = 0; warmup < 40; warmup++) {
             await t.pump(const Duration(milliseconds: 100));
           }
-          await t.pumpAndSettle();
           final frame = t.getRect(carousel);
           final live = t.binding is LiveTestWidgetsFlutterBinding
               ? t.binding as LiveTestWidgetsFlutterBinding
@@ -216,9 +219,16 @@ void visualFeedbackOracles({VisualCapture? capture}) {
             expect(br.top - tr.bottom, closeTo(6, .001));
             expect(t.getRect(carousel), frame);
             final movement = tr.left - frame.left - 28;
+            // Reference slide transition: .3s cubic-bezier(.4,0,.2,1).
             final expectedMovement =
                 18 *
-                (1 - Curves.easeInOut.transform(elapsed.clamp(0, 300) / 300));
+                (1 -
+                    const Cubic(
+                      .4,
+                      0,
+                      .2,
+                      1,
+                    ).transform(elapsed.clamp(0, 300) / 300));
             expect(
               movement,
               closeTo(expectedMovement, .02),

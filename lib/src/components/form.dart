@@ -102,11 +102,7 @@ class _IslandFormState extends State<IslandForm> {
     child: Opacity(
       opacity: widget.disabled ? .6 : 1,
       child: DefaultTextStyle.merge(
-        style: TextStyle(
-          color: IslandTheme.of(context).ink,
-          fontSize: 14,
-          height: 1.6,
-        ),
+        style: TextStyle(color: _formInk(context), fontSize: 14, height: 1.6),
         child: widget.layout == IslandFormLayout.inline
             ? Wrap(spacing: 8, runSpacing: 8, children: widget.children)
             : Column(
@@ -261,7 +257,7 @@ class IslandFormItem extends StatelessWidget {
                 fontSize: font,
                 fontWeight: FontWeight.w400,
                 height: 1.6,
-                color: IslandTheme.of(context).ink,
+                color: _formInk(context),
               ),
             ),
           ),
@@ -608,3 +604,11 @@ class _FormTextEditorState extends State<_FormTextEditor> {
     onSubmitted: (_) => widget.binding.submit(),
   );
 }
+
+/// Reference `@label-color` / form colour `rgba(0,0,0,.85)`: a fixed near-black
+/// on light surfaces, independent of a surrounding card's passive ink. Dark
+/// surfaces (no reference counterpart) keep the theme ink for contrast.
+Color _formInk(BuildContext context) =>
+    Theme.of(context).colorScheme.brightness == Brightness.light
+    ? const Color(0xd9000000)
+    : IslandTheme.of(context).ink;

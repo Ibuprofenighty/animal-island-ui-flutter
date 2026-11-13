@@ -103,7 +103,14 @@ class _ChoiceControlState extends State<ChoiceControl>
                 width: 2,
                 offset: 2,
               ),
-              child: Container(
+              // Reference `transition: border-color .25s`; every intermediate
+              // boundary stays at least as dark as `outline`. Fill and mark
+              // still commit atomically in the painter.
+              child: AnimatedContainer(
+                duration: reduced
+                    ? Duration.zero
+                    : const Duration(milliseconds: 250),
+                curve: Curves.ease,
                 width: extent,
                 height: extent,
                 decoration: BoxDecoration(

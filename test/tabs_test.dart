@@ -203,6 +203,88 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'Tabs use the reference active fill, animate the dot scale and rise the panel once on mount',
+    (tester) async {
+      String value = 'a';
+      late StateSetter update;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (_, set) {
+                update = set;
+                return IslandTabs(
+                  value: value,
+                  onChanged: (_) {},
+                  items: const [
+                    IslandTab(
+                      value: 'a',
+                      label: Text('Alpha'),
+                      child: Text('Alpha panel'),
+                    ),
+                    IslandTab(
+                      value: 'b',
+                      label: Text('Beta'),
+                      child: Text('Beta panel'),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      );
+      double panelTop() => tester.getTopLeft(find.text('Alpha panel')).dy;
+      final first = panelTop();
+      await tester.pumpAndSettle();
+      final settled = panelTop();
+      expect(first - settled, closeTo(4, .01));
+      // Opaque throughout: no Opacity/FadeTransition wraps required content.
+      expect(
+        find.ancestor(
+          of: find.text('Alpha panel'),
+          matching: find.descendant(
+            of: find.byType(IslandTabs<String>),
+            matching: find.byWidgetPredicate(
+              (w) => w is Opacity || w is FadeTransition,
+            ),
+          ),
+        ),
+        findsNothing,
+      );
+      bool hasFill(String label, Color color) => tester
+          .widgetList<DecoratedBox>(
+            find.ancestor(
+              of: find.text(label),
+              matching: find.byType(DecoratedBox),
+            ),
+          )
+          .any((box) => (box.decoration as BoxDecoration).color == color);
+      expect(hasFill('Alpha', const Color(0xff0cc0b5)), isTrue);
+      double dotScale(String glyph) => tester
+          .widget<AnimatedScale>(
+            find.ancestor(
+              of: find.text(glyph),
+              matching: find.byType(AnimatedScale),
+            ),
+          )
+          .scale;
+      expect(dotScale('●'), 1.2);
+      update(() => value = 'b');
+      await tester.pump();
+      expect(hasFill('Beta', const Color(0xff0cc0b5)), isTrue);
+      final base = tester.getSize(find.text('●')).width;
+      double painted() => tester.getRect(find.text('●')).width;
+      expect(painted(), closeTo(base, .01));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(painted(), inExclusiveRange(base, base * 1.2));
+      await tester.pumpAndSettle();
+      expect(painted(), closeTo(base * 1.2, .01));
+      // Switching does not replay the mount entrance.
+      expect(tester.getTopLeft(find.text('Beta panel')).dy, settled);
+    },
+  );
 }
 
 class _MountProbe extends StatefulWidget {

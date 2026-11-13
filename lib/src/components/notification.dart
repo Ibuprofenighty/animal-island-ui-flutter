@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../internal/action_surface.dart';
 import '../internal/content_scope.dart';
+import '../internal/focus_outline.dart';
 import '../internal/viewport_overlay.dart';
 
 enum IslandNotificationType { success, info, warning, error }
@@ -152,9 +153,41 @@ class IslandNotificationsController extends ChangeNotifier {
     }
   }
 
+  /// Reference destroy: removes the current matching entries at once, with no
+  /// exit motion. Each entry's onDismiss (if not already leaving) and frozen
+  /// onClose then fire once, synchronously; reentrant additions survive.
   void dismiss([Object? id]) {
-    for (final entry in List<_Entry>.of(_entries.values)) {
-      if (id == null || entry.id == id) _close(entry);
+    if (_disposed) return;
+    final removed = [
+      for (final entry in _entries.values)
+        if (id == null || entry.id == id) entry,
+    ];
+    if (removed.isEmpty) return;
+    final dismissals = <VoidCallback>[];
+    for (final entry in removed) {
+      if (!entry.leaving) {
+        entry.leaving = true;
+        entry.closed = entry.notification.onClose;
+        if (entry.notification.onDismiss case final onDismiss?) {
+          dismissals.add(onDismiss);
+        }
+      }
+      entry.cancel();
+      _entries.remove(entry.id);
+    }
+    final closes = [
+      for (final entry in removed)
+        if (entry.closed case final closed?) closed,
+    ];
+    for (final entry in removed) {
+      entry.closed = null;
+    }
+    notifyListeners();
+    for (final onDismiss in dismissals) {
+      onDismiss();
+    }
+    for (final closed in closes) {
+      closed();
     }
   }
 
@@ -251,8 +284,10 @@ class _IslandNotificationsState extends State<IslandNotifications> {
                 (e) => e.notification.position == position,
               ))
                 Positioned.fill(
+                  // 24px viewport inset = 20 outside the scroll view + 4
+                  // inside it, so the outside focus outline is not clipped.
                   child: Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(20),
                     child: Align(
                       alignment: switch (position) {
                         IslandNotificationPosition.top => Alignment.topCenter,
@@ -268,6 +303,7 @@ class _IslandNotificationsState extends State<IslandNotifications> {
                       },
                       child: SingleChildScrollView(
                         reverse: position.index >= 3,
+                        padding: const EdgeInsets.all(4),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           spacing: 12,
@@ -343,168 +379,61 @@ class _NotificationCardState extends State<_NotificationCard>
     super.dispose();
   }
 
+  static (Color, Color, Color, Color) _palette(IslandNotificationType type) =>
+      switch (type) {
+        IslandNotificationType.success => (
+          const Color(0xfff5fae9),
+          const Color(0xff6fba2c),
+          const Color(0xffd8efc1),
+          IslandTokens.light.onLeaf,
+        ),
+        IslandNotificationType.info => (
+          const Color(0xffecf9f6),
+          const Color(0xff19c8b9),
+          const Color(0xffc2ece6),
+          IslandTokens.light.link,
+        ),
+        IslandNotificationType.warning => (
+          const Color(0xfffdf6d9),
+          const Color(0xfff5c31c),
+          const Color(0xfffbeaa1),
+          IslandTokens.light.warning,
+        ),
+        IslandNotificationType.error => (
+          const Color(0xfffde8e8),
+          const Color(0xffe05a5a),
+          const Color(0xfff7c8c8),
+          IslandTokens.light.dangerText,
+        ),
+      };
+
   @override
   Widget build(BuildContext context) {
     final n = widget.entry.notification;
-    final (fill, border, iconFill, iconInk) = switch (n.type) {
-      IslandNotificationType.success => (
-        const Color(0xfff5fae9),
-        const Color(0xff6fba2c),
-        const Color(0xffd8efc1),
-        IslandTokens.light.onLeaf,
-      ),
-      IslandNotificationType.info => (
-        const Color(0xffecf9f6),
-        const Color(0xff19c8b9),
-        const Color(0xffc2ece6),
-        IslandTokens.light.link,
-      ),
-      IslandNotificationType.warning => (
-        const Color(0xfffdf6d9),
-        const Color(0xfff5c31c),
-        const Color(0xfffbeaa1),
-        IslandTokens.light.warning,
-      ),
-      IslandNotificationType.error => (
-        const Color(0xfffde8e8),
-        const Color(0xffe05a5a),
-        const Color(0xfff7c8c8),
-        IslandTokens.light.dangerText,
-      ),
-    };
+    final reduced = MediaQuery.disableAnimationsOf(context);
     Widget surface(BuildContext context, Set<WidgetState> states) {
       final hover = n.onPressed != null && states.contains(WidgetState.hovered);
+      // Reference .clickable: hover lifts 1px and deepens the shadow over
+      // 0.2s ease; focus-visible is a 2px outline offset 2px outside.
+      const hoverMotion = Duration(milliseconds: 200);
       return LightSurfaceScope(
-        child: Container(
-          width: 384,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: fill,
-            border: Border.all(color: border, width: 2),
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: hover
-                    ? const Color(0x2e3d3428)
-                    : border.withValues(
-                        alpha: n.type == IslandNotificationType.warning
-                            ? .2
-                            : .18,
-                      ),
-                offset: Offset(0, hover ? 10 : 6),
-                blurRadius: hover ? 26 : 18,
-              ),
-            ],
-          ),
-          foregroundDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: states.contains(WidgetState.focused)
-                ? Border.all(color: IslandTokens.light.focus, width: 2)
-                : null,
-          ),
-          child: Row(
-            spacing: 12,
-            children: [
-              ExcludeSemantics(
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: iconFill,
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: ContentScope(
-                    iconColor: iconInk,
-                    iconSize: 18,
-                    child:
-                        n.icon ??
-                        CustomPaint(
-                          size: const Size.square(18),
-                          painter: _NotificationIcon(n.type, iconInk),
-                        ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 4,
-                  children: [
-                    ContentScope(
-                      textStyle: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        height: 1.4,
-                        letterSpacing: .15,
-                        color: Color(0xff794f27),
-                      ),
-                      child: n.message,
-                    ),
-                    if (n.description != null)
-                      ContentScope(
-                        textStyle: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          height: 1.55,
-                          letterSpacing: .13,
-                          color: IslandTokens.light.muted,
-                        ),
-                        child: n.description!,
-                      ),
-                  ],
-                ),
-              ),
-              if (n.action != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: n.action!,
-                ),
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: ActionSurface(
-                  label: n.closeLabel,
-                  onActivate: widget.onClose,
-                  builder: (context, states) => Container(
-                    width: 22,
-                    height: 22,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: states.contains(WidgetState.hovered)
-                          ? const Color(0x1f725d42)
-                          : Colors.transparent,
-                    ),
-                    foregroundDecoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: states.contains(WidgetState.focused)
-                          ? Border.all(
-                              color: IslandTokens.light.focus,
-                              width: 2,
-                            )
-                          : null,
-                    ),
-                    child: ContentScope(
-                      textStyle: TextStyle(
-                        fontSize: 18,
-                        height: 1,
-                        color: states.contains(WidgetState.hovered)
-                            ? const Color(0xff725d42)
-                            : IslandTokens.light.ink,
-                      ),
-                      // The action owns a 22px hit area. Visual close content
-                      // uses its intrinsic width, centered like the reference.
-                      child: OverflowBox(
-                        minWidth: 0,
-                        maxWidth: double.infinity,
-                        child: n.closeIcon ?? const Text('×'),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(end: hover ? -1 : 0),
+          duration: reduced ? Duration.zero : hoverMotion,
+          curve: Curves.ease,
+          builder: (_, lift, child) =>
+              Transform.translate(offset: Offset(0, lift), child: child),
+          child: DecoratedBox(
+            position: DecorationPosition.foreground,
+            decoration: FocusOutline(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(21)),
+              states.contains(WidgetState.focused)
+                  ? IslandTokens.light.focus
+                  : Colors.transparent,
+              width: 2,
+              offset: 2,
+            ),
+            child: surfaceBody(states, hover, hoverMotion),
           ),
         ),
       );
@@ -536,6 +465,147 @@ class _NotificationCardState extends State<_NotificationCard>
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget surfaceBody(
+    Set<WidgetState> states,
+    bool hover,
+    Duration hoverMotion,
+  ) {
+    final n = widget.entry.notification;
+    final reduced = MediaQuery.disableAnimationsOf(context);
+    final (fill, border, iconFill, iconInk) = _palette(n.type);
+    return AnimatedContainer(
+      duration: reduced ? Duration.zero : hoverMotion,
+      curve: Curves.ease,
+      width: 384,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: fill,
+        border: Border.all(color: border, width: 2),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: hover
+                ? const Color(0x2e3d3428)
+                : border.withValues(
+                    alpha: n.type == IslandNotificationType.warning ? .2 : .18,
+                  ),
+            offset: Offset(0, hover ? 10 : 6),
+            blurRadius: hover ? 26 : 18,
+          ),
+        ],
+      ),
+      child: Row(
+        spacing: 12,
+        children: [
+          ExcludeSemantics(
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: iconFill,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: ContentScope(
+                iconColor: iconInk,
+                iconSize: 18,
+                child:
+                    n.icon ??
+                    CustomPaint(
+                      size: const Size.square(18),
+                      painter: _NotificationIcon(n.type, iconInk),
+                    ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                ContentScope(
+                  textStyle: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    height: 1.4,
+                    letterSpacing: .15,
+                    color: Color(0xff794f27),
+                  ),
+                  child: n.message,
+                ),
+                if (n.description != null)
+                  ContentScope(
+                    textStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      height: 1.55,
+                      letterSpacing: .13,
+                      color: IslandTokens.light.muted,
+                    ),
+                    child: n.description!,
+                  ),
+              ],
+            ),
+          ),
+          if (n.action != null)
+            Padding(padding: const EdgeInsets.only(left: 4), child: n.action!),
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: ActionSurface(
+              label: n.closeLabel,
+              onActivate: widget.onClose,
+              // Reference .close: `transition: all .15s ease` for the
+              // hover disc; focus-visible outline 2px offset 2px.
+              builder: (context, states) => DecoratedBox(
+                position: DecorationPosition.foreground,
+                decoration: FocusOutline(
+                  const CircleBorder(),
+                  states.contains(WidgetState.focused)
+                      ? IslandTokens.light.focus
+                      : Colors.transparent,
+                  width: 2,
+                  offset: 2,
+                ),
+                child: AnimatedContainer(
+                  duration: reduced
+                      ? Duration.zero
+                      : const Duration(milliseconds: 150),
+                  curve: Curves.ease,
+                  width: 22,
+                  height: 22,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: states.contains(WidgetState.hovered)
+                        ? const Color(0x1f725d42)
+                        : const Color(0x00725d42),
+                  ),
+                  child: ContentScope(
+                    textStyle: TextStyle(
+                      fontSize: 18,
+                      height: 1,
+                      color: states.contains(WidgetState.hovered)
+                          ? const Color(0xff725d42)
+                          : IslandTokens.light.ink,
+                    ),
+                    // The action owns a 22px hit area. Visual close content
+                    // uses its intrinsic width, centered like the reference.
+                    child: OverflowBox(
+                      minWidth: 0,
+                      maxWidth: double.infinity,
+                      child: n.closeIcon ?? const Text('×'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

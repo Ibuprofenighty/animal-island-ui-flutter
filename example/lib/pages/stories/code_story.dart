@@ -35,7 +35,37 @@ class CodeStory extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(5)),
         ),
       ),
-      const StoryCode("const IslandCodeBlock(code: 'final value = 42;')"),
+      // Reference usage sample: basic use plus custom style, adapted to Dart.
+      const StoryCode(
+        r"""import 'package:animal_island_ui/animal_island_ui.dart';
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      // 基础用法
+      const IslandCodeBlock(
+        code: '''
+import 'package:animal_island_ui/animal_island_ui.dart';
+
+// 默认 © 2026 All Rights Reserved.
+const IslandFooter();
+// 自定义文案
+const IslandFooter(text: 'Acme Ltd.');
+''',
+      ),
+      // 自定义样式
+      IslandCodeBlock(
+        code: codeString,
+        style: const IslandCodeBlockStyle(backgroundColor: Color(0xff242c46)),
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+      ),
+    ],
+  );
+}""",
+      ),
       const StoryApi(
         rows: [
           ('code', '代码字符串', 'String', 'required'),

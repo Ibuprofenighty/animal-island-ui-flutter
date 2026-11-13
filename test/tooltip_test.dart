@@ -1,6 +1,7 @@
 import 'dart:ui' show PointerDeviceKind;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
@@ -130,6 +131,63 @@ void main() {
       await t.pump(const Duration(seconds: 1));
       focus.requestFocus();
       expect(t.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'default bordered arrow sits on the reference padding-edge position',
+    (t) async {
+      final boundary = GlobalKey();
+      await t.pumpWidget(
+        RepaintBoundary(
+          key: boundary,
+          child: host(
+            IslandTooltip.click(
+              message: 'Hint',
+              placement: IslandTooltipPlacement.topStart,
+              builder: (_, toggle) =>
+                  IslandButton(onPressed: toggle, child: const Text('Anchor')),
+            ),
+          ),
+        ),
+      );
+      await t.tap(find.text('Anchor'));
+      await t.pumpAndSettle();
+      final bubble = t.getRect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is CustomPaint &&
+              w.painter?.runtimeType.toString() == '_BubblePainter',
+        ),
+      );
+      final render =
+          boundary.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final image = await t.runAsync(() => render.toImage());
+      final bytes = (await t.runAsync(image!.toByteData))!;
+      bool border(int x, int y) {
+        final i = (y * image.width + x) * 4;
+        final r = bytes.getUint8(i), g = bytes.getUint8(i + 1);
+        final b = bytes.getUint8(i + 2);
+        // Tooltip border #c4b89e, well away from paper and page white.
+        return r < 225 && g < 215 && b < 190 && r > 150;
+      }
+
+      // Reference: 8px border-box diamond centred 22px from the outer start
+      // corner and 1px inside the outer bottom edge.
+      final row = (bubble.bottom + 2).floor();
+      final xs = [
+        for (var x = bubble.left.floor(); x < bubble.left + 40; x++)
+          if (border(x, row)) x + .5,
+      ];
+      expect(xs, isNotEmpty);
+      expect((xs.first + xs.last) / 2 - bubble.left, closeTo(22, .75));
+      final column = (bubble.left + 22).floor();
+      var lowest = 0;
+      // The 10px gap ends at the anchor; scan only the gap.
+      for (var y = bubble.bottom.floor(); y < bubble.bottom + 9; y++) {
+        if (border(column, y)) lowest = y;
+      }
+      expect(lowest + .5 - bubble.bottom, inInclusiveRange(3, 5.5));
+      image.dispose();
     },
   );
   testWidgets(

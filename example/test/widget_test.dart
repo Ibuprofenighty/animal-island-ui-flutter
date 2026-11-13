@@ -506,12 +506,34 @@ void main() {
       expect(t.takeException(), isNull);
     },
   );
+  testWidgets('Image labels render reference inline code in the code font', (
+    t,
+  ) async {
+    await _showVisualStory(t, '/image', const Size(1440, 1000));
+    final codeRuns = <String>[];
+    for (final paragraph in t.widgetList<RichText>(find.byType(RichText))) {
+      final plain = paragraph.text.toPlainText();
+      if (!plain.startsWith('相框类型') && !plain.startsWith('邮票类型')) continue;
+      paragraph.text.visitChildren((span) {
+        if (span is TextSpan &&
+            span.text != null &&
+            span.style?.fontFamily == IslandTheme.codeFontFamily) {
+          codeRuns.add(span.text!);
+        }
+        return true;
+      });
+    }
+    // Reference <code> runs; the muted label colour is inherited.
+    expect(codeRuns, ['default', 'bordered', 'stampYear']);
+  });
   testWidgets('Footer page title differs from its navigation caption', (
     t,
   ) async {
     await _showVisualStory(t, '/footer', const Size(375, 812));
     expect(find.text('Footer 底部装饰'), findsNWidgets(2));
-    expect(t.getSize(find.byType(IslandFooter).first).height, 50);
+    // Reference .footer: 16px vertical padding around 12px text with no
+    // line-height (the font's normal metrics), measured 48 with Gallery fonts.
+    expect(t.getSize(find.byType(IslandFooter).first).height, 48);
   });
   testWidgets(
     'Background menu action previews sprinkles after navigation commits',
@@ -641,6 +663,339 @@ void main() {
       }
     },
   );
+
+  group('Home reference parity', () {
+    Future<void> showHome(WidgetTester t, {bool reduced = true}) async {
+      t.view.devicePixelRatio = 1;
+      t.view.physicalSize = const Size(1440, 1000);
+      addTearDown(t.view.resetPhysicalSize);
+      addTearDown(t.view.resetDevicePixelRatio);
+      await t.pumpWidget(
+        MaterialApp(
+          theme: galleryTheme(),
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
+            child: child!,
+          ),
+          home: Scaffold(
+            body: GalleryHome(wallpaperSeed: 17, onNavigate: (_) {}),
+          ),
+        ),
+      );
+      if (reduced) {
+        await t.pumpAndSettle();
+      } else {
+        await t.pump();
+      }
+    }
+
+    Color? colorOf(WidgetTester t, String text) {
+      final paragraph = find.byWidgetPredicate(
+        (w) => w is RichText && w.text.toPlainText().startsWith(text),
+      );
+      return t.widget<RichText>(paragraph.first).text.style?.color;
+    }
+
+    testWidgets('wallpaper text keeps the reference-priority colours', (
+      t,
+    ) async {
+      await showHome(t);
+      expect(colorOf(t, 'Animal'), HomeWallpaperInk.cream);
+      expect(colorOf(t, '向下滑动'), HomeWallpaperInk.cream);
+      expect(colorOf(t, '特性'), HomeWallpaperInk.title);
+      expect(colorOf(t, '为什么选择'), HomeWallpaperInk.body);
+      expect(colorOf(t, 'Flutter + Dart'), HomeWallpaperInk.body);
+      final footer = t.widget<RichText>(
+        find.descendant(
+          of: find.widgetWithText(TextButton, '组件文档'),
+          matching: find.byType(RichText),
+        ),
+      );
+      expect(footer.text.style!.color, HomeWallpaperInk.body);
+      expect(
+        footer.text.style!.fontFamilyFallback,
+        contains('IslandGallerySans'),
+        reason: 'the footer label must resolve CJK glyphs',
+      );
+      expect(t.takeException(), isNull);
+    });
+
+    testWidgets('scroll hint has no action and exits past 70px', (t) async {
+      await showHome(t);
+      double opacity() => t
+          .widget<AnimatedOpacity>(
+            find.ancestor(
+              of: find.text('向下滑动'),
+              matching: find.byType(AnimatedOpacity),
+            ),
+          )
+          .opacity;
+      expect(opacity(), 1);
+      final scrollable = find.byType(Scrollable).first;
+      final position = t.state<ScrollableState>(scrollable).position;
+      await t.tap(find.text('向下滑动'), warnIfMissed: false);
+      await t.pumpAndSettle();
+      expect(position.pixels, 0, reason: 'the reference hint has no action');
+      position.jumpTo(60);
+      await t.pumpAndSettle();
+      expect(opacity(), 1);
+      position.jumpTo(71);
+      await t.pumpAndSettle();
+      expect(opacity(), 0);
+      expect(
+        t
+            .widget<IgnorePointer>(
+              find
+                  .ancestor(
+                    of: find.text('向下滑动'),
+                    matching: find.byType(IgnorePointer),
+                  )
+                  .first,
+            )
+            .ignoring,
+        isTrue,
+      );
+      position.jumpTo(0);
+      await t.pumpAndSettle();
+      expect(opacity(), 1);
+    });
+
+    testWidgets('scroll hint bounces 8px on the 2s motion clock', (t) async {
+      await showHome(t, reduced: false);
+      final rest = t.getTopLeft(find.text('向下滑动')).dy;
+      await t.pump(const Duration(milliseconds: 1000));
+      expect(t.getTopLeft(find.text('向下滑动')).dy, closeTo(rest - 8, .01));
+      await t.pump(const Duration(milliseconds: 1000));
+      expect(t.getTopLeft(find.text('向下滑动')).dy, closeTo(rest, .01));
+      // The bounce keeps the hint opaque (readable motion).
+      expect(
+        find.ancestor(
+          of: find.text('向下滑动'),
+          matching: find.byWidgetPredicate(
+            (w) => w is Opacity && w.opacity < 1,
+          ),
+        ),
+        findsNothing,
+      );
+      await t.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('feature card hover lifts with shadow and bounces its icon', (
+      t,
+    ) async {
+      await showHome(t, reduced: false);
+      final title = find.text('治愈系风格');
+      t
+          .state<ScrollableState>(find.byType(Scrollable).first)
+          .position
+          .jumpTo(800);
+      await t.pump();
+      final rest = t.getTopLeft(title).dy;
+      final mouse = await t.createGesture(kind: ui.PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      addTearDown(mouse.removePointer);
+      await mouse.moveTo(t.getCenter(title));
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 200));
+      final icon = find.descendant(
+        of: find.ancestor(of: title, matching: find.byType(IslandCard)),
+        matching: find.byType(IslandIcon),
+      );
+      double scale() => t
+          .widget<Transform>(
+            find.ancestor(of: icon, matching: find.byType(Transform)).first,
+          )
+          .transform
+          .getMaxScaleOnAxis();
+      expect(scale(), closeTo(1.2, .01), reason: 'iconBounce 50% keyframe');
+      await t.pump(const Duration(milliseconds: 250));
+      expect(t.getTopLeft(title).dy, closeTo(rest - 4, .01));
+      expect(scale(), closeTo(1.1, .001));
+      final shadow = t
+          .widgetList<DecoratedBox>(
+            find.ancestor(of: title, matching: find.byType(DecoratedBox)),
+          )
+          .map((b) => b.decoration)
+          .whereType<BoxDecoration>()
+          .expand((d) => d.boxShadow ?? const <BoxShadow>[])
+          .toList();
+      expect(
+        shadow,
+        contains(
+          const BoxShadow(
+            color: Color.fromRGBO(114, 93, 66, .15),
+            offset: Offset(0, 8),
+            blurRadius: 24,
+          ),
+        ),
+      );
+      await mouse.moveTo(Offset.zero);
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 350));
+      expect(t.getTopLeft(title).dy, closeTo(rest, .01));
+      expect(scale(), closeTo(1, .001));
+      await t.pumpWidget(const SizedBox());
+    });
+  });
+
+  group('Shared story chrome', () {
+    Future<void> showStory(WidgetTester t, Widget child, double width) async {
+      t.view.devicePixelRatio = 1;
+      t.view.physicalSize = Size(width, 1000);
+      addTearDown(t.view.resetPhysicalSize);
+      addTearDown(t.view.resetDevicePixelRatio);
+      await t.pumpWidget(
+        MaterialApp(
+          theme: galleryTheme(),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: child,
+            ),
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+    }
+
+    testWidgets('StoryApi titles, centres and sizes columns by content', (
+      t,
+    ) async {
+      const long = '一段很长的说明文字，用来让这一行的说明列在窄宽度下换成多行，从而检查同一行其它单元格的垂直居中位置是否正确';
+      await showStory(
+        t,
+        const StoryApi(
+          title: 'FormItem API',
+          rows: [('name', long, 'String', '-'), ('a', '短', 'int', '0')],
+        ),
+        700,
+      );
+      expect(find.text('FormItem API'), findsOneWidget);
+      expect(find.text('API'), findsNothing);
+      final desc = t.getRect(find.text(long));
+      expect(desc.height, greaterThan(30), reason: 'description wraps');
+      expect(t.getCenter(find.text('name')).dy, closeTo(desc.center.dy, 1));
+      // Columns follow their content: the long description column is the
+      // widest, and the one-word columns are narrower than an even split.
+      final prop = t.getTopLeft(find.text('name')).dx;
+      final type = t.getTopLeft(find.text('String')).dx;
+      final def = t.getTopLeft(find.text('-')).dx;
+      expect(desc.left - prop, lessThan(150));
+      expect(type - desc.left, greaterThan(def - type));
+      // At phone width the table keeps wrapping instead of a fixed minimum.
+      await showStory(t, const StoryApi(rows: [('a', '短', 'int', '0')]), 375);
+      final viewport = t.getSize(
+        find.descendant(
+          of: find.byType(StoryApi),
+          matching: find.byType(Table),
+        ),
+      );
+      expect(viewport.width, 375 - 40);
+    });
+
+    testWidgets('StoryPanel dashed keeps the solid panel geometry', (t) async {
+      Future<Rect> heading(bool dashed) async {
+        await showStory(
+          t,
+          StoryPanel(
+            title: '许可证',
+            dashed: dashed,
+            children: const [Text('body')],
+          ),
+          800,
+        );
+        return t.getRect(find.text('许可证'));
+      }
+
+      final solid = await heading(false);
+      expect(
+        find.descendant(
+          of: find.byType(StoryPanel),
+          matching: find.byWidgetPredicate(
+            (w) => w is CustomPaint && w.foregroundPainter != null,
+          ),
+        ),
+        findsNothing,
+      );
+      final dashed = await heading(true);
+      expect(dashed, solid);
+      final painter =
+          t
+                  .widget<CustomPaint>(
+                    find.ancestor(
+                      of: find.text('许可证'),
+                      matching: find.byWidgetPredicate(
+                        (w) =>
+                            w is CustomPaint &&
+                            w.foregroundPainter is IslandDashedBorderPainter,
+                      ),
+                    ),
+                  )
+                  .foregroundPainter!
+              as IslandDashedBorderPainter;
+      expect(painter.color, const Color(0xffe8e2d6));
+    });
+
+    testWidgets('StoryLabel links open reference anchors', (t) async {
+      final semantics = t.ensureSemantics();
+      try {
+        await showStory(
+          t,
+          const StoryLabel(
+            '图标来自 naive-icons —— 手绘',
+            links: {'naive-icons': 'https://example.invalid/naive-icons'},
+          ),
+          800,
+        );
+        final link = find.text('naive-icons');
+        expect(link, findsOneWidget);
+        final style = t.widget<Text>(link).style!;
+        expect(style.decoration, TextDecoration.underline);
+        expect(style.color, const Color(0xff725d42));
+        expect(
+          t.getSemantics(link).getSemanticsData().flagsCollection.isLink,
+          isTrue,
+        );
+      } finally {
+        semantics.dispose();
+      }
+    });
+  });
+
+  testWidgets('Skill License is dashed and catalog categories are centred', (
+    t,
+  ) async {
+    await _showVisualStory(t, '/skill', const Size(1440, 1000));
+    final license = t.widget<StoryPanel>(
+      find.ancestor(of: find.text('许可证'), matching: find.byType(StoryPanel)),
+    );
+    expect(license.dashed, isTrue);
+    final general = find.text('General');
+    final tag = find.ancestor(of: general, matching: find.byType(IslandTag));
+    expect(t.getSize(tag).width, closeTo(128, .01));
+    expect(t.getCenter(general).dx, closeTo(t.getCenter(tag).dx, .5));
+    expect(t.takeException(), isNull);
+  });
+
+  testWidgets('Title Layer and Tab demos use the reference 40px gap', (
+    t,
+  ) async {
+    await _showVisualStory(t, '/title', const Size(1440, 1000));
+    for (final pair in [('蜂蜜阳光', '海风信箱'), ('青柠苏打', '热可可')]) {
+      final first = find.ancestor(
+        of: find.text(pair.$1),
+        matching: find.byType(IslandTitle),
+      );
+      final second = find.ancestor(
+        of: find.text(pair.$2),
+        matching: find.byType(IslandTitle),
+      );
+      expect(
+        t.getTopLeft(second).dx - t.getTopRight(first).dx,
+        closeTo(40, .01),
+      );
+    }
+  });
 }
 
 void _ignoreNavigation(String _) {}

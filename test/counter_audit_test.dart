@@ -430,7 +430,7 @@ void main() {
       await t.enterText(find.byType(TextField), 'edited');
       await t.pump();
       expect(fieldName(), 'Name');
-      await t.tap(button('清空'));
+      await t.tap(button('清除'));
       await t.pump();
       expect(fieldName(), 'Name');
       expect(find.text('edited'), findsNothing);

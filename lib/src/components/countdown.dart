@@ -176,13 +176,16 @@ class _IslandCountdownState extends State<IslandCountdown> {
                   0,
                   parts[index].$2.contains(RegExp('[:：]')) ? -font * .08 : 0,
                 ),
+                // Reference `.colon` keeps 900 at the digit size; other
+                // literals are `.sep` at weight 700 and the body size.
                 child: Text(
                   parts[index].$2,
-                  style: digitStyle.copyWith(
-                    fontSize: parts[index].$2.contains(RegExp('[:：]'))
-                        ? font
-                        : bodyFont,
-                  ),
+                  style: parts[index].$2.contains(RegExp('[:：]'))
+                      ? digitStyle
+                      : digitStyle.copyWith(
+                          fontSize: bodyFont,
+                          fontWeight: FontWeight.w700,
+                        ),
                 ),
               ),
           ],

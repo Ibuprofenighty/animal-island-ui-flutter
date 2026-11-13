@@ -271,7 +271,17 @@ class _BubblePainter extends CustomPainter {
     );
     canvas.restore();
     canvas.drawPath(path, Paint()..color = paper);
-    if (bordered) {
+    if (bordered && island) {
+      // Reference SVG: 2px non-scaling stroke centred on the silhouette.
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = border
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
+    } else if (bordered) {
+      // CSS border: 2px fully inside the box.
       canvas.save();
       canvas.clipPath(path);
       canvas.drawPath(
@@ -292,15 +302,18 @@ class _BubblePainter extends CustomPainter {
         : 8.0;
     final horizontal = side < 2;
     final length = horizontal ? size.width : size.height;
-    final inset = island
-        ? (horizontal ? 20.0 : 16.0)
-        : (horizontal ? 16.0 : 12.0);
+    // A bordered non-island bubble positions its arrow from the padding edge,
+    // 2px inside the CSS border (reference ::after, border-box sizing).
+    final edge = !island && bordered ? 2.0 : 0.0;
+    final inset =
+        edge +
+        (island ? (horizontal ? 20.0 : 16.0) : (horizontal ? 16.0 : 12.0));
     final along = switch (alignment) {
       1 => inset + extent / 2,
       2 => length - inset - extent / 2,
       _ => length / 2,
     };
-    final across = extent / 2 - 5;
+    final across = edge + extent / 2 - 5;
     final center = switch (side) {
       0 => Offset(along, size.height - across),
       1 => Offset(along, across),
@@ -324,7 +337,8 @@ class _BubblePainter extends CustomPainter {
       );
       if (bordered) {
         final tail = Path();
-        final half = extent / 2;
+        // Border-box arrow: the 2px border lies inside the arrow square.
+        final half = extent / 2 - 1;
         switch (side) {
           case 0:
             tail

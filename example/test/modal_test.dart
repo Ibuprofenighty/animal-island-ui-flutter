@@ -34,6 +34,12 @@ void main() {
       await t.pumpWidget(
         MaterialApp(
           theme: galleryTheme(),
+          // Not a motion test: settle the Gallery's endlessly
+          // pulsing sidebar NEW badge with the reduced-motion contract.
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: true),
+            child: child!,
+          ),
           home: GalleryPage(path: '/modal', onNavigate: (_) {}),
         ),
       );
@@ -122,7 +128,7 @@ void main() {
         final rect = t.getRect(clip);
         expect(rect.width, width == 1280 ? 520 : 343);
         expect(rect.center.dx, width / 2);
-        if (width == 375 && label == '带标题 Modal') expect(rect.height, 330);
+        if (width == 375 && label == '带标题 Modal') expect(rect.height, 326);
         expect(find.byType(IconButton), findsNothing);
         final route = ModalRoute.of(t.element(find.byType(IslandModal)))!;
         expect(
@@ -135,8 +141,8 @@ void main() {
         );
         if (width == 1280) {
           final h = (label == '带标题 Modal' || label == '深色遮罩')
-              ? 266.0
-              : (label == '异形 Modal' || label == '基础 Modal' ? 217.0 : 234.0);
+              ? 262.0
+              : (label == '异形 Modal' || label == '基础 Modal' ? 217.0 : 230.0);
           expect(rect.height, closeTo(h, .1), reason: label);
         }
         if (label == '异形 Modal' || label == '基础 Modal') {

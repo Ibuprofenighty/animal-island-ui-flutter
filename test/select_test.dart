@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
@@ -140,5 +141,99 @@ void main() {
     expect(cleared, 1);
     expect(find.text('Berry'), findsOneWidget);
     expect(find.text('Apple'), findsNWidgets(2));
+  });
+  testWidgets(
+    'Selected option has no extra ring; the active ring is keyboard-only',
+    (t) async {
+      await t.pumpWidget(
+        host(
+          IslandSelect<String>(options: options, value: 'a', onChanged: (_) {}),
+        ),
+      );
+      Finder ring(String label) => find.descendant(
+        of: find
+            .ancestor(of: find.text(label).last, matching: find.byType(Stack))
+            .first,
+        matching: find.byWidgetPredicate(
+          (w) => w is DecoratedBox && w.decoration is! BoxDecoration,
+        ),
+      );
+      await t.tap(find.text('Apple'));
+      await t.pumpAndSettle();
+      expect(ring('Apple'), findsNothing);
+      expect(ring('Berry'), findsNothing);
+      await t.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await t.pumpAndSettle();
+      expect(ring('Berry'), findsOneWidget);
+      expect(ring('Apple'), findsNothing);
+    },
+  );
+  testWidgets('Select trigger hover darkens its border', (t) async {
+    await t.pumpWidget(
+      host(
+        IslandSelect<String>(options: options, value: 'a', onChanged: (_) {}),
+      ),
+    );
+    Color border() =>
+        ((t
+                            .widget<AnimatedContainer>(
+                              find
+                                  .descendant(
+                                    of: find.byType(IslandSelect<String>),
+                                    matching: find.byType(AnimatedContainer),
+                                  )
+                                  .first,
+                            )
+                            .decoration!
+                        as BoxDecoration)
+                    .border!
+                as Border)
+            .top
+            .color;
+    expect(border(), IslandTokens.light.outline);
+    final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(t.getCenter(find.text('Apple')));
+    await t.pumpAndSettle();
+    expect(border(), IslandTokens.light.muted);
+  });
+  testWidgets('Select clear hover fills its 20px circle', (t) async {
+    await t.pumpWidget(
+      host(
+        IslandSelect<String>(
+          options: options,
+          value: 'a',
+          onChanged: (_) {},
+          allowClear: true,
+        ),
+      ),
+    );
+    final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(t.getCenter(find.text('Apple')));
+    await t.pumpAndSettle();
+    final clear = find.bySemanticsLabel('清除');
+    BoxDecoration circle() =>
+        t
+                .widget<AnimatedContainer>(
+                  find.descendant(
+                    of: clear,
+                    matching: find.byType(AnimatedContainer),
+                  ),
+                )
+                .decoration!
+            as BoxDecoration;
+    expect(
+      t.getSize(
+        find.descendant(of: clear, matching: find.byType(AnimatedContainer)),
+      ),
+      const Size(20, 20),
+    );
+    expect(circle().color!.a, 0);
+    await mouse.moveTo(t.getCenter(clear));
+    await t.pumpAndSettle();
+    expect(circle().color, const Color(0xff725d42).withValues(alpha: .1));
   });
 }

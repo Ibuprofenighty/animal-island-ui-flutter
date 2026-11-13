@@ -64,96 +64,102 @@ class PickerTrigger extends StatelessWidget {
                       ? IslandTokens.light.muted
                       : null,
               };
+        // Reference `.value`/`.placeholder` are `flex: 1` inside a
+        // shrink-to-fit trigger: hug content under loose constraints, and let
+        // the value slot take the free width (icon at the right edge) when the
+        // parent fixes the width.
         return Opacity(
           opacity: disabled ? .6 : 1,
-          child: Container(
-            constraints: BoxConstraints(minHeight: height),
-            foregroundDecoration: FocusOutline(
-              const StadiumBorder(),
-              states.contains(WidgetState.focused)
-                  ? IslandTokens.light.focus
-                  : IslandTokens.light.outline,
-              width: 1.5,
-              offset: -1.5,
-            ),
-            padding: EdgeInsets.symmetric(horizontal: padding),
-            decoration: BoxDecoration(
-              color: Color(disabled ? 0xffece8dc : 0xfffffbe7),
-              borderRadius: BorderRadius.circular(50),
-              boxShadow: [
-                if (shadow != null)
-                  BoxShadow(color: shadow, offset: const Offset(0, 3)),
-                if (open && !disabled)
-                  const BoxShadow(color: Color(0x26ffcc00), spreadRadius: 3),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: DefaultTextStyle(
-                    style: DefaultTextStyle.of(context).style.merge(
-                      TextStyle(
-                        fontSize: font,
-                        height: 1.5,
-                        letterSpacing: font * .01,
-                        fontWeight: hasValue
-                            ? FontWeight.w500
-                            : FontWeight.w400,
-                        color: hasValue
-                            ? IslandTokens.light.ink
-                            : IslandTokens.light.muted,
+          child: IntrinsicWidth(
+            child: Container(
+              constraints: BoxConstraints(minHeight: height),
+              foregroundDecoration: FocusOutline(
+                const StadiumBorder(),
+                states.contains(WidgetState.focused)
+                    ? IslandTokens.light.focus
+                    : IslandTokens.light.outline,
+                width: 1.5,
+                offset: -1.5,
+              ),
+              padding: EdgeInsets.symmetric(horizontal: padding),
+              decoration: BoxDecoration(
+                color: Color(disabled ? 0xffece8dc : 0xfffffbe7),
+                borderRadius: BorderRadius.circular(50),
+                boxShadow: [
+                  if (shadow != null)
+                    BoxShadow(color: shadow, offset: const Offset(0, 3)),
+                  if (open && !disabled)
+                    const BoxShadow(color: Color(0x26ffcc00), spreadRadius: 3),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: DefaultTextStyle(
+                      style: DefaultTextStyle.of(context).style.merge(
+                        TextStyle(
+                          fontSize: font,
+                          height: 1.5,
+                          letterSpacing: font * .01,
+                          fontWeight: hasValue
+                              ? FontWeight.w500
+                              : FontWeight.w400,
+                          color: hasValue
+                              ? IslandTokens.light.ink
+                              : IslandTokens.light.muted,
+                        ),
                       ),
+                      child: valueContent ?? Text(text),
                     ),
-                    child: valueContent ?? Text(text),
                   ),
-                ),
-                if (onClear != null && !disabled && hasValue)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: ActionSurface(
-                      label: clearLabel,
-                      onActivate: onClear,
-                      builder: (_, states) => Container(
-                        width: 20,
-                        height: 20,
-                        foregroundDecoration: FocusOutline(
-                          const CircleBorder(),
-                          states.contains(WidgetState.focused)
-                              ? IslandTokens.light.focus
-                              : Colors.transparent,
-                          width: 2,
-                          offset: 0,
-                        ),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: states.contains(WidgetState.hovered)
-                              ? const Color(0x1a725d42)
-                              : null,
-                        ),
-                        child: ExcludeSemantics(
-                          child: Text(
-                            '×',
-                            style: TextStyle(
-                              color: IslandTokens.light.muted,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
+                  if (onClear != null && !disabled && hasValue)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: ActionSurface(
+                        label: clearLabel,
+                        onActivate: onClear,
+                        builder: (_, states) => Container(
+                          width: 20,
+                          height: 20,
+                          foregroundDecoration: FocusOutline(
+                            const CircleBorder(),
+                            states.contains(WidgetState.focused)
+                                ? IslandTokens.light.focus
+                                : Colors.transparent,
+                            width: 2,
+                            offset: 0,
+                          ),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: states.contains(WidgetState.hovered)
+                                ? const Color(0x1a725d42)
+                                : null,
+                          ),
+                          child: ExcludeSemantics(
+                            child: Text(
+                              '×',
+                              style: TextStyle(
+                                color: IslandTokens.light.muted,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
+                  const SizedBox(width: 8),
+                  IconTheme(
+                    data: IconThemeData(
+                      size: 14,
+                      color: IslandTokens.light.muted,
+                    ),
+                    child: icon,
                   ),
-                const SizedBox(width: 8),
-                IconTheme(
-                  data: IconThemeData(
-                    size: 14,
-                    color: IslandTokens.light.muted,
-                  ),
-                  child: icon,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

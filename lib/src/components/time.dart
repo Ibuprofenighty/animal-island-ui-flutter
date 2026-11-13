@@ -87,7 +87,9 @@ class _IslandTimeState extends State<IslandTime>
         child: AnimatedBuilder(
           animation: motion,
           builder: (_, child) => SurfaceMotion(
-            progress: Curves.ease.transform(motion.value),
+            // Reference fade-in timing: .35s cubic-bezier(.4,0,.2,1); readable
+            // motion replaces the opacity ramp with an opaque 4px rise.
+            progress: const Cubic(.4, 0, .2, 1).transform(motion.value),
             offset: const Offset(0, 4),
             child: child!,
           ),

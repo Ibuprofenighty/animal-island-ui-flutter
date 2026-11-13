@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../internal/action_surface.dart';
+import '../internal/focus_outline.dart';
 import '../foundation/theme.dart';
 
 enum IslandCodeLanguage { dart, javascript, shell, plain }
@@ -223,28 +224,60 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
                       states,
                       local?.copyBorderColor,
                       themed?.copyBorderColor,
-                      states.contains(WidgetState.focused)
-                          ? const Color(0xff19c8b9)
-                          : const Color(0x4de8d5bc),
+                      const Color(0x4de8d5bc),
+                    ),
+                    // Reference focus-visible: a 2px ring 2px outside the
+                    // pill. A caller's focused copyBorderColor also colours
+                    // the ring so custom recipes keep one focus colour.
+                    ring: ActionSurface.resolveStyleValue(
+                      states,
+                      local?.copyBorderColor,
+                      themed?.copyBorderColor,
+                      const Color(0xff19c8b9),
                     ),
                   );
-                  return Container(
-                    height: 32,
-                    constraints: const BoxConstraints(minWidth: 62),
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: copyRoles.background,
-                      border: Border.all(color: copyRoles.border),
+                  final focused = states.contains(WidgetState.focused);
+                  // Reference hover lifts 1px; :active returns to rest.
+                  final lift =
+                      states.contains(WidgetState.hovered) &&
+                      !states.contains(WidgetState.pressed);
+                  return TweenAnimationBuilder<double>(
+                    tween: Tween(end: lift ? -1 : 0),
+                    duration: MediaQuery.disableAnimationsOf(context)
+                        ? Duration.zero
+                        : const Duration(milliseconds: 250),
+                    curve: const Cubic(.4, 0, .2, 1),
+                    builder: (_, dy, child) => Transform(
+                      transform: Matrix4.translationValues(0, dy, 0),
+                      filterQuality: FilterQuality.low,
+                      child: child,
                     ),
-                    child: ExcludeSemantics(
-                      child: Text(
-                        status,
-                        style: TextStyle(
-                          color: copyRoles.foreground,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                    child: Container(
+                      height: 32,
+                      constraints: const BoxConstraints(minWidth: 62),
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      foregroundDecoration: focused
+                          ? FocusOutline(
+                              const StadiumBorder(),
+                              copyRoles.ring,
+                              width: 2,
+                              offset: 2,
+                            )
+                          : null,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: copyRoles.background,
+                        border: Border.all(color: copyRoles.border),
+                      ),
+                      child: ExcludeSemantics(
+                        child: Text(
+                          status,
+                          style: TextStyle(
+                            color: copyRoles.foreground,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
@@ -264,8 +297,18 @@ TextSpan _highlight(
   Map<IslandCodeToken, Color> colors,
 ) {
   if (language == IslandCodeLanguage.plain) return TextSpan(text: code);
+  final shell = language == IslandCodeLanguage.shell;
+  // Shell adds the reference shell vocabulary to the same lexer: `#`
+  // comments (at line start or after whitespace), tree connectors, `~/`
+  // paths, `-x`/`--flag` options, paths and file names, and hyphenated words
+  // kept whole so `ui-flutter` never highlights an embedded `flutter`.
   final matcher = RegExp(
-    r'''(/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b\d+(?:\.\d+)?\b|\b[A-Za-z_$][\w$]*\b|[{}()\[\];,:=<>!+*/%-])''',
+    shell
+        ? r'''((?<!\S)#[^\n]*|/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[├└]──|│|~/[\w./-]*|(?<!\S)--?[A-Za-z][\w-]*|[\w.-]*[\w-]/[\w./-]*|\b[\w-]+(?:\.[\w-]+)*\.(?:md|dart|yaml|yml|json|lock|ts|tsx|js|less|css|html|txt)\b|\b\d+(?:\.\d+)?\b|\b[A-Za-z_$][\w$]*(?:-[\w$]+)*|[{}()\[\];,:=<>!+*/%-])'''
+        : r'''(/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b\d+(?:\.\d+)?\b|\b[A-Za-z_$][\w$]*\b|[{}()\[\];,:=<>!+*/%-])''',
+  );
+  final fileName = RegExp(
+    r'\.(?:md|dart|yaml|yml|json|lock|ts|tsx|js|less|css|html|txt)$',
   );
   const keywords = {
     'import',
@@ -316,8 +359,22 @@ TextSpan _highlight(
     if (match.start > offset)
       spans.add(TextSpan(text: code.substring(offset, match.start)));
     final token = match[0]!;
-    final comment = token.startsWith('//') || token.startsWith('/*');
-    final string = token.startsWith("'") || token.startsWith('"');
+    final comment =
+        token.startsWith('//') ||
+        token.startsWith('/*') ||
+        (shell && token.startsWith('#'));
+    final string =
+        token.startsWith("'") ||
+        token.startsWith('"') ||
+        (shell && token.startsWith('~/'));
+    final shellPath = shell && token.contains('/') && token.length > 1;
+    final shellFile = shell && fileName.hasMatch(token);
+    final shellMark =
+        shell &&
+        (token.startsWith('-') && token.length > 1 ||
+            token.startsWith('├') ||
+            token.startsWith('└') ||
+            token == '│');
     final number = RegExp(r'^\d').hasMatch(token);
     final shellCommand =
         language == IslandCodeLanguage.shell &&
@@ -348,6 +405,12 @@ TextSpan _highlight(
         ? IslandCodeToken.comment
         : string || number || shellSub
         ? IslandCodeToken.literal
+        : shellFile
+        ? IslandCodeToken.type
+        : shellPath
+        ? null
+        : shellMark
+        ? IslandCodeToken.punctuation
         : shellCommand
         ? IslandCodeToken.command
         : keywords.contains(token)

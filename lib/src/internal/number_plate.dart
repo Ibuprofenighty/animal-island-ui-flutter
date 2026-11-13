@@ -24,7 +24,11 @@ class NumberPlate extends StatelessWidget {
         ],
       ),
       border: bordered
-          ? Border.all(color: Color(island ? 0xffd4c4a8 : 0xffd4c9b4), width: 1)
+          // Reference `.bordered .unit/.plate { border: 1.5px solid }`.
+          ? Border.all(
+              color: Color(island ? 0xffd4c4a8 : 0xffd4c9b4),
+              width: 1.5,
+            )
           : null,
     ),
     child: child,

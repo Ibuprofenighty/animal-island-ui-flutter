@@ -390,9 +390,13 @@ void homeWallpaperContrastOracle({
           Finder paragraph(String text) => find.byWidgetPredicate(
             (w) => w is RichText && w.text.toPlainText() == text,
           );
+          // Reference HomePage.tsx paints each wallpaper text role in its own
+          // HomeWallpaperInk colour; the oracle requires those exact opaque
+          // foreground pixels and records the measured ratios honestly.
           Future<void> inspect(
             String role,
             Finder ink,
+            Color foreground,
             List<Offset> backings,
           ) async {
             final render =
@@ -422,7 +426,7 @@ void homeWallpaperContrastOracle({
             ) {
               for (var x = rect.left.ceil(); x < rect.right.floor(); x++) {
                 final color = pixel(Offset(x.toDouble(), y.toDouble()));
-                if (color == IslandTokens.light.onCanvas) {
+                if (color == foreground) {
                   actualCore = color;
                   break;
                 }
@@ -449,11 +453,13 @@ void homeWallpaperContrastOracle({
               });
             }
             if (capture != null) {
-              final roleIndex = role == 'hero typewriter copy'
-                  ? 'hero'
-                  : role == 'footer credit'
-                  ? 'footer'
-                  : 'section-${sections.indexOf(role.substring(8))}';
+              final roleIndex = switch (role) {
+                'hero title' => 'hero-title',
+                'hero typewriter copy' => 'hero',
+                'scroll hint' => 'scroll-hint',
+                'footer credit' => 'footer',
+                _ => 'section-${sections.indexOf(role.substring(8))}',
+              };
               await capture(
                 'home-${width.toInt()}-seed$seed-$roleIndex',
                 image,
@@ -491,7 +497,31 @@ void homeWallpaperContrastOracle({
               spaces.add(render.localToGlobal(box.toRect().center));
           }
           expect(spaces, isNotEmpty);
-          await inspect('hero typewriter copy', body, spaces);
+          final heroTitle = find.byWidgetPredicate(
+            (w) =>
+                w is RichText &&
+                w.text.toPlainText().startsWith('Animal') &&
+                w.text.style?.fontFamily == 'GROBOLD',
+          );
+          expect(heroTitle, findsOneWidget);
+          final hero = t.getRect(heroTitle);
+          await inspect('hero title', heroTitle, HomeWallpaperInk.cream, [
+            for (final fraction in [.1, .3, .5])
+              Offset(hero.left + hero.width * fraction, hero.top - 6),
+          ]);
+          await inspect(
+            'hero typewriter copy',
+            body,
+            HomeWallpaperInk.body,
+            spaces,
+          );
+          final hint = find.text('向下滑动');
+          expect(hint, findsOneWidget);
+          final hintRect = t.getRect(hint);
+          await inspect('scroll hint', hint, HomeWallpaperInk.cream, [
+            Offset(hintRect.left - 6, hintRect.center.dy),
+            Offset(hintRect.right + 6, hintRect.center.dy),
+          ]);
           for (var i = 0; i < sections.length; i++) {
             final title = find.byWidgetPredicate(
               (w) =>
@@ -506,10 +536,15 @@ void homeWallpaperContrastOracle({
             expect(b.top - a.bottom, 8);
             final left = a.left < b.left ? a.left : b.left;
             final extent = a.width > b.width ? a.width : b.width;
-            await inspect('section ' + sections[i], title, [
-              for (final fraction in [.05, .25, .5, .75, .95])
-                Offset(left + extent * fraction, a.bottom + 4),
-            ]);
+            await inspect(
+              'section ' + sections[i],
+              title,
+              HomeWallpaperInk.title,
+              [
+                for (final fraction in [.05, .25, .5, .75, .95])
+                  Offset(left + extent * fraction, a.bottom + 4),
+              ],
+            );
           }
           final credit = find.text('Flutter + Dart · Reference Gallery');
           await t.ensureVisible(credit);
@@ -523,7 +558,7 @@ void homeWallpaperContrastOracle({
                 TextSelection(baseOffset: i, extentOffset: i + 1),
               ))
                 points.add(cr.localToGlobal(b.toRect().center));
-          await inspect('footer credit', credit, points);
+          await inspect('footer credit', credit, HomeWallpaperInk.body, points);
           await t.pumpWidget(const SizedBox());
         }
       }
