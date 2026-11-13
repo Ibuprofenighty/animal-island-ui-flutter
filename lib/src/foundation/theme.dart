@@ -28,6 +28,7 @@ class IslandTokens extends ThemeExtension<IslandTokens> {
     required this.dangerPressed,
     required this.leafHover,
     required this.leafPressed,
+    required this.leafSelected,
     required this.warning,
     required this.inputSurface,
   });
@@ -52,6 +53,10 @@ class IslandTokens extends ThemeExtension<IslandTokens> {
   final Color dangerPressed;
   final Color leafHover;
   final Color leafPressed;
+
+  /// Fill of a selected navigation item (Tabs), read with [onLeaf]. The light
+  /// default is the reference `.tabItem.active` #0cc0b5.
+  final Color leafSelected;
   final Color warning;
   final Color inputSurface;
 
@@ -77,6 +82,7 @@ class IslandTokens extends ThemeExtension<IslandTokens> {
     dangerPressed: Color(0xFFD85555),
     leafHover: Color(0xFF3DD4C6),
     leafPressed: Color(0xFF50B9AB),
+    leafSelected: Color(0xFF0CC0B5),
     warning: Color(0xFF886300),
     inputSurface: Color(0xFFFFFDF7),
   );
@@ -103,6 +109,7 @@ class IslandTokens extends ThemeExtension<IslandTokens> {
     dangerPressed: Color(0xFFF29D91),
     leafHover: Color(0xFFC5E1C6),
     leafPressed: Color(0xFF92C294),
+    leafSelected: Color(0xFFABD2AC),
     warning: Color(0xFFF5C31C),
     inputSurface: Color(0xFF243C33),
   );
@@ -130,6 +137,7 @@ class IslandTokens extends ThemeExtension<IslandTokens> {
     Color? dangerPressed,
     Color? leafHover,
     Color? leafPressed,
+    Color? leafSelected,
     Color? warning,
     Color? inputSurface,
   }) => IslandTokens(
@@ -154,6 +162,7 @@ class IslandTokens extends ThemeExtension<IslandTokens> {
     dangerPressed: dangerPressed ?? this.dangerPressed,
     leafHover: leafHover ?? this.leafHover,
     leafPressed: leafPressed ?? this.leafPressed,
+    leafSelected: leafSelected ?? this.leafSelected,
     warning: warning ?? this.warning,
     inputSurface: inputSurface ?? this.inputSurface,
   );

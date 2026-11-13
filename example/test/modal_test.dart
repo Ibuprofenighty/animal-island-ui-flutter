@@ -81,6 +81,27 @@ void main() {
         expect(find.text('钓', findRichText: true), findsOneWidget);
         await t.pump(const Duration(milliseconds: 400));
         expect(find.text('钓到石头了!', findRichText: true), findsOneWidget);
+        // Reference demo #FD9303 deepened in hue to 4.5:1 on the modal paper.
+        TextSpan? stone;
+        t
+            .widget<RichText>(
+              find.descendant(
+                of: find.byType(IslandModal),
+                matching: find.byWidgetPredicate(
+                  (w) => w is RichText && w.text.toPlainText() == '钓到石头了!',
+                ),
+              ),
+            )
+            .text
+            .visitChildren((span) {
+              if (span is TextSpan && span.text == '石头') stone = span;
+              return stone == null;
+            });
+        final ink = stone!.style!.color!;
+        expect(ink, const Color(0xffa45d01));
+        final x = ink.computeLuminance(),
+            y = const Color(0xfff7f3df).computeLuminance();
+        expect((y + .05) / (x + .05), greaterThanOrEqualTo(4.5));
         expect(find.text('竟'), findsNothing);
         await t.pump(const Duration(milliseconds: 80));
         expect(find.text('竟'), findsOneWidget);

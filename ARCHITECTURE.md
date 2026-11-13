@@ -131,7 +131,7 @@ Input 保留一个 FormField 和 TextField；辅助/错误消息与主题切换�
 
 Fixed light surfaces use one internal LightSurfaceScope for readable token/text/icon defaults while preserving unrelated extensions and explicit child styles. ContentScope defaults IconTheme color to its explicit text role unless the slot supplies a distinct icon role. Card, Drawer, Modal, Notification, Tooltip and Table share the fixed-surface mechanism; Avatar/Badge/Title/Countdown, CountUp, Select, Tabs and Loading pair icon defaults with their owned text roles. This scopes inheritance; it never inspects or rewrites child widgets. 固定浅色表面统一提供可读的语义主题；默认图标跟随对应文字角色，显式子样式不被覆盖。
 
-Tag owns its close-state colors: hover atomically pairs colorway.ink with colorway.soft; resting transparent variants retain surface ink. The16px target, separate keyboard/parent dispatch and host-owned removal remain unchanged. Explicit opaque child styles/state are preserved.
+Tag owns its close-state colors: hover atomically pairs colorway.ink with colorway.soft; resting close glyphs use the Tag foreground (per-hue on transparent variants). The16px target, separate keyboard/parent dispatch and host-owned removal remain unchanged. Explicit opaque child styles/state are preserved.
 
 CodeBlock instance/theme use one typed style for surface, semantic syntax colors and copy states, with the same lexer/render path. Caller Paint remains opaque; see components/codeblock/contract.json. CodeBlock实例／主题以同一typed style和lexer／绘制路径覆盖表面、语法Color角色与复制状态，显式Paint仍归调用方。 Carousel reuses the existing light-surface scope for its fixed pale slide backplane, preserving unrelated theme extensions and explicit opaque slide styles/state. ActiveStack still owns active-only painting/hit/semantics; Carousel owns selection, timers and focus.
 

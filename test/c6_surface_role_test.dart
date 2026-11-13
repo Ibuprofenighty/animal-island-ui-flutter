@@ -75,7 +75,7 @@ void main() {
   );
 
   testWidgets(
-    'all colorway Badge dot outlines retain required contrast on actual fills',
+    'all colorway Badge dots retain required contrast against their actual surface',
     (t) async {
       for (final brightness in Brightness.values) {
         for (final color in IslandColorway.values) {
@@ -85,7 +85,15 @@ void main() {
               host(
                 RepaintBoundary(
                   key: boundary,
-                  child: IslandBadge(dot: true, color: color, size: size),
+                  child: ColoredBox(
+                    color: brightness == Brightness.light
+                        ? IslandTokens.light.paper
+                        : IslandTokens.dark.paper,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: IslandBadge(dot: true, color: color, size: size),
+                    ),
+                  ),
                 ),
                 brightness: brightness,
               ),
@@ -95,17 +103,26 @@ void main() {
             final stroke = await pixel(
               t,
               boundary,
-              Offset(rect.left + 1, rect.center.dy),
+              Offset(rect.left - 2, rect.center.dy),
             );
             final backing = await pixel(t, boundary, rect.center);
             readable(
               stroke,
               backing,
               minimum: 3,
-              reason: '${color.name}/$brightness/$size actual dot border',
+              reason: '${color.name}/$brightness/$size actual dot edge',
+            );
+            // Standalone dots have the reference transparent ring, so the
+            // sample beside the dot is the host paper and the dot itself is the
+            // same-hue 3:1 graphic (docs/DESIGN.md#measured-color-differences).
+            expect(
+              stroke,
+              brightness == Brightness.light
+                  ? IslandTokens.light.paper
+                  : IslandTokens.dark.paper,
             );
             if (color == IslandColorway.yellowGreen)
-              expect(stroke, const Color(0xff625a11));
+              expect(backing, const Color(0xff998e03));
           }
         }
       }

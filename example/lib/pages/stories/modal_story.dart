@@ -204,7 +204,9 @@ class _FishingCopy extends StatelessWidget {
                   TextSpan(text: first.characters.take(2).toString()),
                   TextSpan(
                     text: first.characters.skip(2).take(2).toString(),
-                    style: TextStyle(color: IslandTokens.light.warning),
+                    // Reference demo span #FD9303 (2.0:1 on the #f7f3df
+                    // modal paper), OKLCH-deepened in the same hue to 4.5:1.
+                    style: const TextStyle(color: Color(0xffa45d01)),
                   ),
                   TextSpan(text: first.characters.skip(4).toString()),
                 ],

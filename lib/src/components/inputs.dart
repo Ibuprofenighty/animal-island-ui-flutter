@@ -129,6 +129,9 @@ class _IslandTextFieldState extends State<IslandTextField> {
       IslandSize.large => 48.0,
     };
     const lineHeight = 1.5715;
+    // Reference `.wrapper-disabled .input` and placeholder #c4b89e; disabled
+    // controls are exempt from the text contrast budget.
+    const disabledText = Color(0xffc4b89e);
     final borderColor = field.hasError
         ? tokens.dangerText
         : switch (widget.status) {
@@ -200,7 +203,7 @@ class _IslandTextFieldState extends State<IslandTextField> {
           fontWeight: FontWeight.w500,
           height: lineHeight,
           letterSpacing: font * .01,
-          color: tokens.ink,
+          color: widget.enabled ? tokens.ink : disabledText,
         ),
         decoration: InputDecoration(
           visualDensity: VisualDensity.standard,
@@ -219,7 +222,7 @@ class _IslandTextFieldState extends State<IslandTextField> {
                       fontSize: font,
                       height: lineHeight,
                       letterSpacing: font * .01,
-                      color: tokens.muted,
+                      color: widget.enabled ? tokens.muted : disabledText,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -227,7 +230,7 @@ class _IslandTextFieldState extends State<IslandTextField> {
           hintFadeDuration: Duration.zero,
           hintStyle: TextStyle(
             fontSize: font,
-            color: tokens.muted,
+            color: widget.enabled ? tokens.muted : disabledText,
             fontWeight: FontWeight.w400,
           ),
           // Wrapper padding plus the reference input's 2px UA inline padding.
@@ -518,14 +521,14 @@ class IslandSwitch extends StatelessWidget {
         final hover =
             !busy && onChanged != null && states.contains(WidgetState.hovered);
         // Reference `.switch-loading { opacity: .7 }` wins over
-        // `.switch-disabled { opacity: .5 }`.
+        // `.switch-disabled { opacity: .5 }`. Disabled dims the whole group
+        // (exempt). Busy dims only the track decoration and thumb, composited
+        // over the reference #f8f8f0 page so the opaque in-track text keeps
+        // its readable backing on any host; the text itself never dims.
+        final decorationOpacity = busy ? .7 : 1.0;
         return ExcludeSemantics(
           child: Opacity(
-            opacity: busy
-                ? .7
-                : onChanged == null
-                ? .5
-                : 1,
+            opacity: !busy && onChanged == null ? .5 : 1,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -540,105 +543,135 @@ class IslandSwitch extends StatelessWidget {
                     width: 2,
                     offset: 2,
                   ),
-                  // Track fill/border ease with the reference
-                  // `transition: all .25s`; every intermediate border stays
-                  // at least as dark as `outline` (3:1 boundary). The focus
-                  // ring above switches atomically.
-                  child: AnimatedContainer(
-                    duration: duration,
-                    curve: curve,
-                    decoration: BoxDecoration(
-                      color: value
-                          ? (hover
-                                ? const Color(0xff7ccc70)
-                                : const Color(0xff86d67a))
-                          : const Color(0xffd4c9b4),
-                      borderRadius: BorderRadius.circular(50),
-                      // Unchecked: outline at rest, darker muted on hover
-                      // (reference #c4b89e -> #a89878). Checked keeps the
-                      // darkest onLeaf boundary; its hover delta is the fill.
-                      border: Border.all(
-                        color: value
-                            ? IslandTokens.light.onLeaf
-                            : hover
-                            ? IslandTokens.light.muted
-                            : IslandTokens.light.outline,
-                        width: border,
-                      ),
-                    ),
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: value ? (small ? 6 : 8) : (small ? 20 : 28),
-                            right: value ? (small ? 20 : 28) : (small ? 6 : 8),
+                  child: Stack(
+                    fit: StackFit.passthrough,
+                    children: [
+                      Positioned.fill(
+                        child: DecoratedBox(
+                          decoration: ShapeDecoration(
+                            shape: const StadiumBorder(),
+                            color: busy
+                                ? const Color(0xfff8f8f0)
+                                : Colors.transparent,
                           ),
-                          child: SizedBox(
-                            height: h - border * 2,
-                            child: Center(
-                              widthFactor: 1,
-                              child: Text(
-                                text,
-                                softWrap: false,
-                                style: TextStyle(
-                                  fontSize: small ? 9 : 11,
-                                  height: 1,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: (small ? 9 : 11) * .02,
-                                  color: IslandTokens.light.onLeaf,
-                                  shadows: const [
-                                    Shadow(
-                                      color: Color(0x1a000000),
-                                      offset: Offset(0, 1),
-                                      blurRadius: 1,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              left: small ? 1 : 2,
-                              right: small ? 2 : 3,
-                            ),
-                            child: AnimatedAlign(
+                          child: Opacity(
+                            opacity: decorationOpacity,
+                            // Track fill/border ease with the reference
+                            // `transition: all .25s`; every intermediate
+                            // border keeps the 3:1 boundary. The focus ring
+                            // above switches atomically.
+                            child: AnimatedContainer(
                               duration: duration,
                               curve: curve,
-                              alignment: value
-                                  ? Alignment.centerRight
-                                  : Alignment.centerLeft,
-                              child: AnimatedContainer(
-                                duration: duration,
-                                curve: curve,
-                                width: thumb,
-                                height: thumb,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xfff7f3df),
-                                  border: Border.all(
-                                    color: IslandTokens.light.onLeaf,
-                                    width: border,
-                                  ),
+                              decoration: BoxDecoration(
+                                color: value
+                                    ? (hover
+                                          ? const Color(0xff7ccc70)
+                                          : const Color(0xff86d67a))
+                                    : const Color(0xffd4c9b4),
+                                borderRadius: BorderRadius.circular(50),
+                                // Unchecked rest: reference #c4b89e (1.8:1)
+                                // OKLCH-deepened in hue to the 3:1 boundary
+                                // #978b73; hover darkens to muted. Checked
+                                // keeps the darkest onLeaf boundary; its
+                                // hover delta is the fill.
+                                border: Border.all(
+                                  color: value
+                                      ? IslandTokens.light.onLeaf
+                                      : hover
+                                      ? IslandTokens.light.muted
+                                      : const Color(0xff978b73),
+                                  width: border,
                                 ),
-                                child: busy
-                                    ? const OverflowBox(
-                                        minWidth: 11,
-                                        maxWidth: 11,
-                                        minHeight: 11,
-                                        maxHeight: 11,
-                                        child: _SwitchSpinner(),
-                                      )
-                                    : null,
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(border),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: value
+                                    ? (small ? 6 : 8)
+                                    : (small ? 20 : 28),
+                                right: value
+                                    ? (small ? 20 : 28)
+                                    : (small ? 6 : 8),
+                              ),
+                              child: SizedBox(
+                                height: h - border * 2,
+                                child: Center(
+                                  widthFactor: 1,
+                                  child: Text(
+                                    text,
+                                    softWrap: false,
+                                    style: TextStyle(
+                                      fontSize: small ? 9 : 11,
+                                      height: 1,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: (small ? 9 : 11) * .02,
+                                      color: IslandTokens.light.onLeaf,
+                                      shadows: const [
+                                        Shadow(
+                                          color: Color(0x1a000000),
+                                          offset: Offset(0, 1),
+                                          blurRadius: 1,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned.fill(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: small ? 1 : 2,
+                                  right: small ? 2 : 3,
+                                ),
+                                child: AnimatedAlign(
+                                  duration: duration,
+                                  curve: curve,
+                                  alignment: value
+                                      ? Alignment.centerRight
+                                      : Alignment.centerLeft,
+                                  child: Opacity(
+                                    opacity: decorationOpacity,
+                                    child: AnimatedContainer(
+                                      duration: duration,
+                                      curve: curve,
+                                      width: thumb,
+                                      height: thumb,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: const Color(0xfff7f3df),
+                                        border: Border.all(
+                                          color: IslandTokens.light.onLeaf,
+                                          width: border,
+                                        ),
+                                      ),
+                                      child: busy
+                                          ? const OverflowBox(
+                                              minWidth: 11,
+                                              maxWidth: 11,
+                                              minHeight: 11,
+                                              maxHeight: 11,
+                                              child: _SwitchSpinner(),
+                                            )
+                                          : null,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 if (showLabel) ...[

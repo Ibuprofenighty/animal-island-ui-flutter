@@ -166,6 +166,11 @@ class _IslandRateState extends State<IslandRate>
       _nodes[i].skipTraversal = widget.readOnly || i != math.max(0, value - 1);
     }
     final reduced = MediaQuery.disableAnimationsOf(context);
+    // Reference selected stroke #dba90e (warning-active): kept on dark paper
+    // (5.5:1); on light papers (1.9:1) the same hue is OKLCH-deepened to 3:1.
+    final selectedOutline = Theme.of(context).brightness == Brightness.dark
+        ? const Color(0xffdba90e)
+        : const Color(0xffaf8600);
     final duration = reduced
         ? Duration.zero
         : const Duration(milliseconds: 250);
@@ -245,8 +250,9 @@ class _IslandRateState extends State<IslandRate>
                                   painter: _StarPainter(
                                     i < (_preview ?? value),
                                     i < (_preview ?? value)
-                                        ? IslandTheme.of(context).onSun
+                                        ? selectedOutline
                                         : IslandTheme.of(context).ink,
+                                    IslandTheme.of(context).onSun,
                                   ),
                                 ),
                               ),
@@ -291,9 +297,9 @@ class _RateSplash extends CustomPainter {
 }
 
 class _StarPainter extends CustomPainter {
-  const _StarPainter(this.fill, this.outline);
+  const _StarPainter(this.fill, this.outline, this.eyes);
   final bool fill;
-  final Color outline;
+  final Color outline, eyes;
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
@@ -327,17 +333,17 @@ class _StarPainter extends CustomPainter {
       final stroke = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3.5
-        ..color = outline;
+        ..color = eyes;
       canvas.drawCircle(const Offset(20, 22), 1.3, stroke);
       canvas.drawCircle(const Offset(28, 22), 1.3, stroke);
-      final eyes = Paint()..color = outline;
-      canvas.drawCircle(const Offset(20, 22), 1.3, eyes);
-      canvas.drawCircle(const Offset(28, 22), 1.3, eyes);
+      final face = Paint()..color = eyes;
+      canvas.drawCircle(const Offset(20, 22), 1.3, face);
+      canvas.drawCircle(const Offset(28, 22), 1.3, face);
     }
     canvas.restore();
   }
 
   @override
   bool shouldRepaint(_StarPainter old) =>
-      old.fill != fill || old.outline != outline;
+      old.fill != fill || old.outline != outline || old.eyes != eyes;
 }

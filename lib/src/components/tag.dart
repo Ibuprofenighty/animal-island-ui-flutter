@@ -41,8 +41,11 @@ class IslandTag extends StatelessWidget {
     final solid = variant == IslandTagVariant.solid;
     final soft = variant == IslandTagVariant.soft;
     final neutral = colorway == IslandColorway.neutral;
+    // Transparent variants keep their own hue: readable per-hue text for the
+    // declared surface brightness, reference accent contour. Solid borders
+    // equal their fill, as in the reference.
     final color = !solid && !soft
-        ? IslandTheme.of(context).ink
+        ? outlineInk(colorway, Theme.of(context).brightness)
         : solid && !neutral
         ? colorway.onAccent
         : colorway.ink;
@@ -56,7 +59,13 @@ class IslandTag extends StatelessWidget {
     final borderWidth = IslandTheme.borderWidth(context, 1.5);
     final side = BorderSide(
       width: borderWidth,
-      color: soft ? Colors.transparent : color,
+      color: soft
+          ? Colors.transparent
+          : solid
+          ? neutral
+                ? const Color(0xffd4c4a8)
+                : colorway.accent
+          : outlineBorder(colorway),
     );
     final (height, font, pad) = switch (size) {
       IslandSize.small => (24.0, 12.0, 10.0),

@@ -174,6 +174,65 @@ void main() {
       );
     },
   );
+  testWidgets(
+    'time colon blinks on the reference 1s step-end cycle; digits never dim',
+    (t) async {
+      await t.pumpWidget(
+        host(IslandTime(now: () => DateTime(2026, 10, 13, 9, 5))),
+      );
+      double colon() => t
+          .widget<Opacity>(
+            find.ancestor(of: find.text(':'), matching: find.byType(Opacity)),
+          )
+          .opacity;
+      bool digitsOpaque() => [find.text('09'), find.text('05')].every(
+        (digit) => t
+            .widgetList<Opacity>(
+              find.ancestor(of: digit, matching: find.byType(Opacity)),
+            )
+            .every((o) => o.opacity == 1),
+      );
+      // Visible for the first half of each second, hidden for the second.
+      final observed = <double>[colon()];
+      for (var i = 0; i < 4; i++) {
+        await t.pump(const Duration(milliseconds: 500));
+        observed.add(colon());
+        expect(digitsOpaque(), isTrue);
+      }
+      expect(observed, [1, 0, 1, 0, 1]);
+      // Semantics always carries the complete clock.
+      expect(t.getSemantics(find.byType(IslandTime)).value, contains('09:05'));
+      await t.pumpWidget(const SizedBox());
+      await t.pump(const Duration(seconds: 1));
+      expect(t.takeException(), isNull);
+    },
+  );
+  testWidgets('reduced motion keeps the time colon steadily visible', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      MaterialApp(
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: Scaffold(
+            body: IslandTime(now: () => DateTime(2026, 10, 13, 9, 5)),
+          ),
+        ),
+      ),
+    );
+    for (var i = 0; i < 4; i++) {
+      await t.pump(const Duration(milliseconds: 500));
+      expect(
+        t
+            .widget<Opacity>(
+              find.ancestor(of: find.text(':'), matching: find.byType(Opacity)),
+            )
+            .opacity,
+        1,
+      );
+    }
+    await t.pumpWidget(const SizedBox());
+  });
   testWidgets('time entrance rises 4px on the reference .35s ease', (t) async {
     await t.pumpWidget(
       host(IslandTime(now: () => DateTime(2026, 10, 13, 9, 5))),

@@ -45,6 +45,40 @@ class _Photo extends ImageProvider<_Photo> {
 
 void main() {
   testWidgets(
+    'stamp year keeps the reference white .88 at 4.5:1 over any photo pixel',
+    (t) async {
+      await t.pumpWidget(
+        host(
+          IslandImage(
+            image: _Photo(picture()),
+            width: 210,
+            height: 154,
+            variant: IslandImageVariant.stamp,
+            stampYear: '2026',
+            preview: false,
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+      final style = t.widget<Text>(find.text('2026')).style!;
+      expect(style.color, const Color(0xe0ffffff));
+      double contrast(Color a, Color b) {
+        final x = a.computeLuminance(), y = b.computeLuminance();
+        return ((x > y ? x : y) + .05) / ((x > y ? y : x) + .05);
+      }
+
+      for (var g = 0; g <= 255; g += 5) {
+        final photo = Color.fromARGB(255, g, g, g);
+        final backing = Color.alphaBlend(style.backgroundColor!, photo);
+        expect(
+          contrast(Color.alphaBlend(style.color!, backing), backing),
+          greaterThanOrEqualTo(4.5),
+          reason: 'photo gray $g',
+        );
+      }
+    },
+  );
+  testWidgets(
     'stamp mask removes external filter shadows and includes corner perforations',
     (t) async {
       final key = GlobalKey();

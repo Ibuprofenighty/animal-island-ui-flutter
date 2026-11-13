@@ -484,6 +484,7 @@ class SkillStory extends StatelessWidget {
               'onLeaf': IslandTokens.light.onLeaf,
               'leafHover': IslandTokens.light.leafHover,
               'leafPressed': IslandTokens.light.leafPressed,
+              'leafSelected': IslandTokens.light.leafSelected,
               'link': IslandTokens.light.link,
               'linkHover': IslandTokens.light.linkHover,
               'linkPressed': IslandTokens.light.linkPressed,

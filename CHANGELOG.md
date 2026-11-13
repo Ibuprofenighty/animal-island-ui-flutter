@@ -2,6 +2,13 @@
 
 ## 0.0.1 — independent project, unreleased
 
+- Measured reference colors per `docs/DESIGN.md#measured-color-differences`: Tag outlined/dashed keep their hue (per-hue text, accent contour) and solid borders equal the fill; Badge dot uses a same-hue 3:1 fill with the reference cream ring only when attached; Progress fill edge is same-hue `#039d91`; Rate selected stroke `#dba90e` (dark) / `#af8600` (light); Avatar icons `#2A2A2A`; Checkbox/Radio unchecked fill `rgb(247,243,223)`, labels `#725d42`/`#794f27` with a 0.15s change; Image stamp year white .88 on a minimal `rgba(0,0,0,.58)` backing; DatePicker endpoint white ring; disabled Input/DatePicker/TimePicker text `#c4b89e`; Switch unchecked boundary `#978b73` and busy dims only track/thumb; Input keeps its 1px boundary.
+- Added `IslandTokens.leafSelected` (light `#0cc0b5`); Tabs reads it instead of a literal, so theme customization applies.
+- Time colon blinks on the reference 1s step-end cycle from the existing refresh timer; reduced motion keeps it visible; digits never dim.
+- Notification keeps the requested `type` (deliberate difference; the reference named methods override it).
+- Gallery: Modal `石头` `#a45d01`; Background tile text backing uses the tile base and subtitles stay opaque.
+- Drawer reduced-motion open/close from a caller rebuild no longer notifies the overlay during build. Input clear action label is `清除`. Footer uses normal line height (48px in the Gallery). Tabs light selected fill `#0cc0b5`. Carousel slide curve `cubic(.4,0,.2,1)`. Home wallpaper text uses reference colors under the existing named exception. Shell NEW badge pulse and sidebar hover.
+
 - Correct the independent Title foreground pairing through its existing owner; policy remains in `docs/DESIGN.md#title-foreground`, with unchanged APIs and contrast budgets.
 
 - Correct shared fixed-palette guidance and consolidate its decision authority in `docs/DESIGN.md#shared-accent-foreground`; component APIs and rendering mechanisms are unchanged.

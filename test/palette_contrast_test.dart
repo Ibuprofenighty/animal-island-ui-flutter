@@ -68,7 +68,7 @@ void main() {
             readable(fg, bg);
           }
         }
-        for (final bg in [t.leaf, t.leafHover, t.leafPressed]) {
+        for (final bg in [t.leaf, t.leafHover, t.leafPressed, t.leafSelected]) {
           readable(t.onLeaf, bg);
         }
         for (final bg in [t.danger, t.dangerHover, t.dangerPressed]) {

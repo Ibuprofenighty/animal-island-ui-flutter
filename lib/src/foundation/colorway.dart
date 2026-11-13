@@ -1,3 +1,5 @@
+import 'dart:ui' show Brightness;
+
 import 'package:flutter/painting.dart';
 
 /// Fixed product color pairs. Pastel fills retain the reference; information
@@ -31,6 +33,75 @@ enum IslandColorway {
   Color get ink => Color(_ink);
   Color get onAccent => Color(_onAccent);
 }
+
+// Transparent (outlined/dashed) Tag text on the product paper surfaces, in
+// enum order. Each is the reference `.color-<c>-outlined` hue (the accent;
+// neutral #8f734f) moved along OKLCH lightness only until it reaches 4.5:1 on
+// every light paper (white, paper, input surface, card and pattern papers) or
+// the dark paper; reference values that already pass are kept unchanged.
+const _outlineInkLight = <int>[
+  0xff816541,
+  0xff9d5461,
+  0xff884ebb,
+  0xff5364b2,
+  0xff856500,
+  0xffa25529,
+  0xff1d7761,
+  0xff3d763e,
+  0xffbe3a3a,
+  0xff696e02,
+  0xff736b02,
+  0xff7c663e,
+  0xffa25338,
+];
+const _outlineInkDark = <int>[
+  0xffb89b75,
+  0xfff8a6b2,
+  0xffc086f8,
+  0xff889df0,
+  0xfff7cd67,
+  0xffe59266,
+  0xff82d5bb,
+  0xff8ac68a,
+  0xfffe756f,
+  0xffd1da49,
+  0xffecdf52,
+  0xffb49d73,
+  0xffe18c6f,
+];
+
+/// Text color of a transparent Tag for the declared surface [brightness].
+Color outlineInk(IslandColorway value, Brightness brightness) => Color(
+  (brightness == Brightness.dark
+      ? _outlineInkDark
+      : _outlineInkLight)[value.index],
+);
+
+/// Reference outlined/dashed Tag border: the accent itself (neutral #c4b89e).
+/// The text, not this decorative contour, identifies the tag.
+Color outlineBorder(IslandColorway value) =>
+    value == IslandColorway.neutral ? const Color(0xffc4b89e) : value.accent;
+
+// Badge dot fill: the accent moved along OKLCH lightness only until it keeps
+// 3:1 against the cream ring and the light/dark papers (brown already does).
+const _dotFill = <int>[
+  0xff998a70,
+  0xffc37682,
+  0xffac72e2,
+  0xff7488d9,
+  0xffae8609,
+  0xffc9784d,
+  0xff479a82,
+  0xff5f9a60,
+  0xffe7605c,
+  0xff8c9202,
+  0xff998e03,
+  0xff9a835a,
+  0xffc9775a,
+];
+
+/// The status-dot graphic for [value]; a necessary graphic at 3:1.
+Color dotFill(IslandColorway value) => Color(_dotFill[value.index]);
 
 // Shared paper colors used by Card patterns and Image frames.
 (Color, Color, Color) paperPalette(IslandColorway value) => switch (value) {

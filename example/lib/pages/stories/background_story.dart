@@ -91,8 +91,13 @@ class BackgroundStory extends StatelessWidget {
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
                           color: inks[type.index],
+                          // Sprinkle/scene artwork drops #725d42 to 3.0-4.2:1,
+                          // so only the glyph runs keep a backing, in the
+                          // tile's own base color (5.7:1) rather than a white
+                          // strip. Subtitles stay opaque: the reference 0.85
+                          // opacity measures 3.6-4.3:1 on every tile.
                           backgroundColor: type.index >= 3 && type.index <= 5
-                              ? IslandTokens.light.paper
+                              ? type.color
                               : null,
                           fontWeight: FontWeight.w600,
                           height: 1.5,

@@ -105,6 +105,35 @@ The yellow-green Title palette's fourth role is `#69563D`. It is distinct from `
 
 黄绿 Title 配方第四项为 `#69563D`，与 `onAccent` 是不同角色。全部 Title 变体、尺寸、被动内容及嵌套默认值通过既有 renderer 和表面作用域读取；正面／背层／折角及显式子样式各自负责。
 
+<a id="measured-color-differences"></a>
+## Measured color differences / 实测配色差异（2026-11-12）
+
+User rule: measure each reference value on its actual composited backgrounds in the supported states and themes. Passing values, disabled controls and decorative graphics keep the reference; a failing value moves along OKLCH lightness in its own hue only until it passes (text 4.5:1, necessary graphics 3:1). Restored: Tag solid border = fill and outlined/dashed accent contours (decorative; text identifies the tag), Avatar icon ink `#2A2A2A`, Checkbox/Radio unchecked fill `rgb(247,243,223)` and `#725d42`/`#794f27` labels with the 0.15s change (default light palette), DatePicker endpoint white 1px ring, disabled Input/DatePicker/TimePicker text `#c4b89e`, Tabs selected fill `#0cc0b5` through `IslandTokens.leafSelected`. Authorized deepened differences, each at its owner:
+
+用户规则：在支持的状态与主题下按实际合成背景测量参考值。达标值、禁用控件和装饰图形恢复参考；不达标值只沿自身色相的 OKLCH 明度移动至刚好达标（文字 4.5:1，必要图形 3:1）。已恢复：Tag 实心边框同填色、描边/虚线色相轮廓（装饰，文字识别标签）、Avatar 图标墨色 `#2A2A2A`、Checkbox/Radio 未选填色与 `#725d42`/`#794f27` 标签及 0.15s 变色（默认浅色配色）、DatePicker 端点白色 1px 圈、禁用 Input/DatePicker/TimePicker 文字 `#c4b89e`、Tabs 选中填色 `#0cc0b5`（经 `IslandTokens.leafSelected`）。以下为授权加深差异及其所有者：
+
+| Owner / 所有者 | Reference → product / 参考 → 产品 |
+| --- | --- |
+| Tag outlined/dashed text (`colorway.dart` `outlineInk`) / 描边、虚线标签文字 | per-hue accent (1.1–3.7:1 on light papers) → same-hue 4.5:1 light set, e.g. pink `#f8a6b2`→`#9d5461`; dark papers keep passing accents, others lighten (neutral `#b89b75`, purple `#c086f8`, red `#fe756f`, brown `#b49d73`) / 浅色纸面逐色加深，深色纸面达标保留、其余提亮 |
+| Badge dot (`colorway.dart` `dotFill`) / 徽标圆点 | accent (1.2–2.6:1) → same-hue 3:1 fill, e.g. red `#e7605c`; cream ring only when attached, as reference / 同色相 3:1 填色，仅附着时奶油圈 |
+| Progress fill edge (`progress.dart`) / 进度填充边 | none; `#19c8b9` is 1.9:1 on the track → 2px `#039d91` beside the reference inset highlight / 填充仅 1.9:1，加同色相 2px 边 |
+| Rate selected stroke (`rate.dart`) / 评分选中描边 | `#dba90e` kept on dark paper (5.5:1); 1.9:1 on light → `#af8600` / 深色保留，浅色加深 |
+| Switch unchecked boundary (`inputs.dart`) / 开关未选边框 | `#c4b89e` (1.8:1) → `#978b73`; busy dims only track/thumb over a `#f8f8f0` base, text stays opaque (reference .7 group opacity gives 3.97:1, 4.42:1 on dark) / busy 仅淡化轨道与滑块，文字不透明 |
+| Input boundary (`inputs.dart`) / 输入框边界 | no border; `#fffdf7` fill and `#d4c9b4` shadow are 1.1–1.6:1 on paper/card → existing 1px `outline` kept / 填色与阴影不足 3:1，保留 1px 边框 |
+| Image stamp year (`image.dart`) / 邮票年份 | white .88 + shadow over an unknown photo → same text on `rgba(0,0,0,.58)` glyph backing, the least alpha with 4.5:1 over any pixel / 照片未知，按最小透明度加黑色字底 |
+| Gallery Modal `石头` (`modal_story.dart`) / 示例强调色 | demo `#FD9303` (2.0:1) → `#a45d01` / 示例内联色加深 |
+| Gallery Background tiles (`background_story.dart`) / 背景示例块 | sprinkles/scenes drop text to 3.0–4.2:1 → glyph backing in the tile base `#fdf3e3`; 0.85 subtitles measure 3.6–4.3:1 → opaque / 图案处字底改为块底色；副标题保持不透明 |
+
+Transparent per-hue Tag text is validated on the product papers; caller-filled or accent surfaces need a filled variant or an explicit style. 透明 Tag 色相文字仅在产品纸面验证，强调色或调用方表面请用填色变体或显式样式。
+
+<a id="time-colon-blink"></a>
+The Time colon is a decorative separator: it blinks on the reference 1s step-end cycle, the clock value stays complete in semantics, digits never dim and reduced motion keeps it visible. Time 冒号是装饰分隔符，按参考 1s step-end 闪烁；语义值完整、数字不变暗，减少动态时常亮。
+
+<a id="notification-type"></a>
+## Notification type / 通知类型
+
+Deliberately better than reference: a requested `type` is always shown. The reference named methods override `type`, which the user ruled a reference bug. 有意优于参考：始终显示调用方指定的 `type`；参考具名方法覆盖 `type`，经用户裁定为参考缺陷。
+
 Verification limitations and SDK role support are recorded in [ACCEPTANCE](ACCEPTANCE.md); design contracts alone are not acceptance evidence.
 
 验收限制及 SDK 角色支持见 [ACCEPTANCE](ACCEPTANCE.md)，设计契约本身不构成通过证据。

@@ -190,19 +190,15 @@ void main() {
         of: switches.at(2),
         matching: find.byType(RotationTransition),
       );
-      expect(
-        t
-            .widget<Opacity>(
-              find
-                  .descendant(
-                    of: switches.at(2),
-                    matching: find.byType(Opacity),
-                  )
-                  .first,
-            )
-            .opacity,
-        .7, // reference `.switch-loading { opacity: .7 }`
-      );
+      // Reference `.switch-loading { opacity: .7 }` dims only the track
+      // decoration and thumb; the group and in-track text stay opaque.
+      final opacities = t
+          .widgetList<Opacity>(
+            find.descendant(of: switches.at(2), matching: find.byType(Opacity)),
+          )
+          .map((o) => o.opacity)
+          .toList();
+      expect(opacities, [1, .7, .7]);
       await t.pump(const Duration(milliseconds: 300));
       expect(t.widget<RotationTransition>(spin).turns.value, closeTo(.5, .01));
       await t.pumpWidget(const SizedBox());
@@ -272,7 +268,8 @@ void main() {
                 .decoration
             as BoxDecoration;
     Color borderOf(BoxDecoration d) => (d.border! as Border).top.color;
-    expect(borderOf(track()), IslandTokens.light.outline);
+    // Reference #c4b89e deepened in hue to the 3:1 boundary.
+    expect(borderOf(track()), const Color(0xff978b73));
     final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
     await mouse.addPointer(location: Offset.zero);
     addTearDown(mouse.removePointer);

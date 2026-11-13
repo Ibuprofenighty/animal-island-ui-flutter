@@ -218,14 +218,9 @@ class _IslandTabsState<T extends Object> extends State<IslandTabs<T>> {
                                   builder: (_, states) {
                                     final selected =
                                         widget.items[i].value == value;
-                                    final light =
-                                        Theme.of(context).brightness !=
-                                        Brightness.dark;
-                                    // Reference `.tabItem.active` #0cc0b5 on
-                                    // the light page; dark keeps its paired leaf.
-                                    final activeFill = light
-                                        ? const Color(0xff0cc0b5)
-                                        : tokens.leaf;
+                                    // Theme-owned selected fill (light default:
+                                    // reference `.tabItem.active` #0cc0b5).
+                                    final activeFill = tokens.leafSelected;
                                     return AnimatedContainer(
                                       duration: duration,
                                       curve: const Cubic(.4, 0, .2, 1),

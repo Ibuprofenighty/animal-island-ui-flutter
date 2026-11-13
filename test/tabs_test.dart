@@ -285,6 +285,51 @@ void main() {
       expect(tester.getTopLeft(find.text('Beta panel')).dy, settled);
     },
   );
+  testWidgets(
+    'selected Tab fill follows the IslandTokens.leafSelected theme role',
+    (tester) async {
+      expect(IslandTokens.light.leafSelected, const Color(0xff0cc0b5));
+      const custom = Color(0xff2e7d6b);
+      for (final (tokens, expected) in [
+        (IslandTokens.light, const Color(0xff0cc0b5)),
+        (IslandTokens.dark, IslandTokens.dark.leafSelected),
+        (IslandTokens.light.copyWith(leafSelected: custom), custom),
+      ]) {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: IslandTheme.create(
+              brightness: identical(tokens, IslandTokens.dark)
+                  ? Brightness.dark
+                  : Brightness.light,
+              tokens: tokens,
+            ),
+            home: Scaffold(
+              body: IslandTabs<String>(
+                value: 'a',
+                onChanged: (_) {},
+                items: const [
+                  IslandTab(value: 'a', label: Text('Alpha'), child: Text('A')),
+                  IslandTab(value: 'b', label: Text('Beta'), child: Text('B')),
+                ],
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final fills = tester
+            .widgetList<DecoratedBox>(
+              find.ancestor(
+                of: find.text('Alpha'),
+                matching: find.byType(DecoratedBox),
+              ),
+            )
+            .map((box) => box.decoration)
+            .whereType<BoxDecoration>()
+            .map((d) => d.color);
+        expect(fills, contains(expected));
+      }
+    },
+  );
 }
 
 class _MountProbe extends StatefulWidget {

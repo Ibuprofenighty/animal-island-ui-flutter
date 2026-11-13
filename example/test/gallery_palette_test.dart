@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:island_gallery/pages/gallery.dart';
 import 'package:island_gallery/pages/home.dart';
 import 'package:island_gallery/shared/theme.dart';
+import 'package:island_gallery/pages/stories/background_story.dart';
 
 double contrast(Color a, Color b) {
   final x = a.computeLuminance(), y = b.computeLuminance();
@@ -110,6 +111,55 @@ void main() {
     }
   });
 
+  testWidgets('Background tiles keep readable opaque labels on their artwork', (
+    t,
+  ) async {
+    await showStory(t, '/background');
+    for (final type in IslandBackgroundType.values) {
+      final tile = find.ancestor(
+        of: find.text(type.referenceName),
+        matching: find.byType(IslandBackground),
+      );
+      final style = DefaultTextStyle.of(
+        t.element(find.text(type.referenceName)),
+      ).style;
+      final ink = style.color!;
+      final scene = type.index >= 3 && type.index <= 5;
+      // Sprinkle/scene artwork: glyph runs keep a backing in the tile base.
+      expect(style.backgroundColor, scene ? type.color : null);
+      Color over(Color dot, Color base) => Color.alphaBlend(dot, base);
+      final surfaces = scene
+          ? [type.color]
+          : [
+              type.color,
+              over(type.largeDot, type.color),
+              over(type.smallDot, type.color),
+            ];
+      for (final surface in surfaces) {
+        expect(
+          contrast(ink, surface),
+          greaterThanOrEqualTo(4.5),
+          reason: '${type.referenceName} $surface',
+        );
+      }
+      // Subtitles stay opaque: the reference 0.85 measures below 4.5:1.
+      expect(
+        t
+            .widgetList<Opacity>(
+              find.ancestor(
+                of: find.text(BackgroundStory.labels[type.index]),
+                matching: find.descendant(
+                  of: tile,
+                  matching: find.byType(Opacity),
+                ),
+              ),
+            )
+            .every((o) => o.opacity == 1),
+        isTrue,
+      );
+    }
+  });
+
   testWidgets('Skill swatches and labels project the public product tokens', (
     t,
   ) async {
@@ -136,6 +186,7 @@ void main() {
       'dangerPressed': IslandTokens.light.dangerPressed,
       'leafHover': IslandTokens.light.leafHover,
       'leafPressed': IslandTokens.light.leafPressed,
+      'leafSelected': IslandTokens.light.leafSelected,
       'warning': IslandTokens.light.warning,
       'inputSurface': IslandTokens.light.inputSurface,
     };

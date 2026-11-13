@@ -370,7 +370,9 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                         overflow: TextOverflow.ellipsis,
                         style: last == null
                             ? TextStyle(
-                                color: IslandTokens.light.muted,
+                                color: widget.disabled
+                                    ? const Color(0xffc4b89e)
+                                    : IslandTokens.light.muted,
                                 fontWeight: FontWeight.w400,
                               )
                             : null,
@@ -792,8 +794,10 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
               : hover
               ? (range ? const Color(0xffffd54f) : const Color(0xffe6f9f6))
               : null,
+          // Reference `.dayCellRangeStart/End` 1px white contour: decorative;
+          // the contiguous amber run already locates its endpoints.
           border: edge && !disabled
-              ? Border.all(color: IslandTokens.light.onSun)
+              ? Border.all(color: Colors.white)
               : isToday
               ? Border.all(color: IslandTokens.light.link, width: 1.5)
               : null,

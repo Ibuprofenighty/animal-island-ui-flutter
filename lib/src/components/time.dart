@@ -6,7 +6,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 /// A wall-clock display. [now] supplies local time and may be replaced for a
-/// deterministic preview. This instance owns and cancels its refresh timer.
+/// deterministic preview. This instance owns and cancels its refresh timer,
+/// which also steps the reference 1s colon blink (visible, then hidden for
+/// half a second); with reduced motion the colon stays visible. Digits never
+/// dim.
 class IslandTime extends StatefulWidget {
   const IslandTime({super.key, this.now, this.semanticLabel});
   final DateTime Function()? now;
@@ -19,6 +22,9 @@ class _IslandTimeState extends State<IslandTime>
     with SingleTickerProviderStateMixin {
   late DateTime current;
   Timer? timer;
+  // Reference `animal-time-blink 1s step-end` (opacity 0 from 50%): each
+  // 500ms refresh tick flips the decorative colon.
+  bool colonShown = true;
   late final motion = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 350),
@@ -31,6 +37,7 @@ class _IslandTimeState extends State<IslandTime>
     timer = Timer.periodic(const Duration(milliseconds: 500), (_) {
       setState(() {
         current = read();
+        colonShown = !colonShown;
       });
     });
   }
@@ -126,7 +133,14 @@ class _IslandTimeState extends State<IslandTime>
                         padding: const EdgeInsets.symmetric(horizontal: 2),
                         child: Transform.translate(
                           offset: const Offset(0, -4.84),
-                          child: const Text(':'),
+                          child: Opacity(
+                            opacity:
+                                colonShown ||
+                                    MediaQuery.disableAnimationsOf(context)
+                                ? 1
+                                : 0,
+                            child: const Text(':'),
+                          ),
                         ),
                       ),
                       Text(pad(current.minute)),

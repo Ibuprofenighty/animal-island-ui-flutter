@@ -295,11 +295,15 @@ class _IslandImageState extends State<IslandImage> {
             child: ExcludeSemantics(
               child: Text(
                 widget.stampYear!,
+                // Reference white .88 with its rgba(0,0,0,.55) text shadow.
+                // The caller photo is unknown, so the shadow ink backs the
+                // glyphs at the least alpha (.58) that keeps 4.5:1 over any
+                // photo pixel, white included.
                 style: const TextStyle(
                   fontSize: 8,
                   letterSpacing: 1.44,
-                  color: Colors.white,
-                  backgroundColor: Color(0xff2b2118),
+                  color: Color(0xe0ffffff),
+                  backgroundColor: Color(0x94000000),
                   shadows: [
                     Shadow(
                       color: Color(0x8c000000),

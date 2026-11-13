@@ -83,6 +83,18 @@ class _ChoiceControlState extends State<ChoiceControl>
     final disabled = widget.onActivate == null;
     final reduced = MediaQuery.disableAnimationsOf(context);
     final tokens = IslandTheme.of(context);
+    // The default light product palette restores the reference recipe:
+    // unchecked rgb(247,243,223) fill and #725d42/#794f27 labels (both 5.1:1+
+    // on every light paper, so the 150ms color change stays readable).
+    // Customized, dark or surface-scoped token sets keep their own ink/paper.
+    final reference = identical(tokens, IslandTokens.light);
+    final labelColor = disabled
+        ? const Color(0xffc4b89e)
+        : !reference
+        ? tokens.ink
+        : widget.checked
+        ? const Color(0xff794f27)
+        : const Color(0xff725d42);
     return ActionSurface(
       inMutuallyExclusiveGroup: widget.radio,
       button: false,
@@ -133,20 +145,34 @@ class _ChoiceControlState extends State<ChoiceControl>
                     extent: extent,
                     fill: tokens.leaf,
                     mark: tokens.onLeaf,
-                    paper: tokens.paper,
+                    paper: reference ? const Color(0xfff7f3df) : tokens.paper,
                   ),
                 ),
               ),
             ),
             const SizedBox(width: 8),
             Flexible(
-              child: DefaultTextStyle(
-                style: DefaultTextStyle.of(context).style.copyWith(
-                  fontSize: font,
-                  height: 1.5,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: font * .01,
-                  color: disabled ? const Color(0xffc4b89e) : tokens.ink,
+              // Reference `.label { transition: color .15s }` for the checked
+              // pair only; palette, theme and disabled changes switch at once.
+              child: TweenAnimationBuilder<Color?>(
+                key: ValueKey((
+                  reference,
+                  disabled,
+                  reference ? null : tokens.ink,
+                )),
+                tween: ColorTween(end: labelColor),
+                duration: reduced
+                    ? Duration.zero
+                    : const Duration(milliseconds: 150),
+                builder: (context, color, child) => DefaultTextStyle(
+                  style: DefaultTextStyle.of(context).style.copyWith(
+                    fontSize: font,
+                    height: 1.5,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: font * .01,
+                    color: color,
+                  ),
+                  child: child!,
                 ),
                 child: Text(widget.label),
               ),

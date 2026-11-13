@@ -121,8 +121,11 @@ class IslandProgress extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(
                                           999,
                                         ),
+                                        // The reference fill (#19c8b9, 1.9:1 on
+                                        // the #f8f8f0 track) needs a 3:1 edge:
+                                        // the same hue, OKLCH-deepened.
                                         border: Border.all(
-                                          color: IslandTokens.light.onLeaf,
+                                          color: const Color(0xff039d91),
                                           width: 2,
                                         ),
                                       ),

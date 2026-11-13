@@ -88,6 +88,9 @@ class _IslandAvatarState extends State<IslandAvatar> {
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0,
               ),
+              // Reference icon artwork keeps its own near-black ink (12:1+ on
+              // the #e6f9f6 avatar fill), distinct from the text role.
+              iconColor: const Color(0xff2a2a2a),
               child:
                   widget.icon ??
                   widget.child ??

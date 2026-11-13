@@ -105,7 +105,11 @@ class PickerTrigger extends StatelessWidget {
                           fontWeight: hasValue
                               ? FontWeight.w500
                               : FontWeight.w400,
-                          color: hasValue
+                          // Reference `.wrapper-disabled .value/.placeholder`
+                          // #c4b89e; disabled controls are contrast-exempt.
+                          color: disabled
+                              ? const Color(0xffc4b89e)
+                              : hasValue
                               ? IslandTokens.light.ink
                               : IslandTokens.light.muted,
                         ),

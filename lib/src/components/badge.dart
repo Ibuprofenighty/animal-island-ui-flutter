@@ -91,13 +91,12 @@ class IslandBadge extends StatelessWidget {
               horizontal: size == IslandBadgeSize.small ? 4 : 6,
             ),
       decoration: BoxDecoration(
-        color: color.accent,
+        // The dot alone carries its status, so it is the hue-deepened 3:1
+        // graphic; text indicators keep the reference accent behind onAccent.
+        color: point ? dotFill(color) : color.accent,
+        // Reference ring: cream when attached to content, none standalone.
         border: Border.all(
-          color: point
-              ? color.onAccent
-              : child == null
-              ? Colors.transparent
-              : const Color(0xfff8f8f0),
+          color: child == null ? Colors.transparent : const Color(0xfff8f8f0),
           width: 2,
         ),
         borderRadius: BorderRadius.circular(999),

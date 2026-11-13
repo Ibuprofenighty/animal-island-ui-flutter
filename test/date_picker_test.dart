@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
@@ -86,6 +87,51 @@ void main() {
       focus.requestFocus(); // Borrower did not dispose it.
       await t.pump();
       expect(focus.hasFocus, isTrue);
+    },
+  );
+  testWidgets(
+    'range endpoints keep the reference white 1px ring; disabled text is #c4b89e',
+    (t) async {
+      t.view.physicalSize = const Size(1200, 900);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.resetPhysicalSize);
+      addTearDown(t.view.resetDevicePixelRatio);
+      await t.pumpWidget(
+        host(
+          IslandDatePicker.rangeUncontrolled(
+            initialValue: DateTimeRange(
+              start: DateTime(2026, 8, 10),
+              end: DateTime(2026, 8, 20),
+            ),
+          ),
+        ),
+      );
+      await choose(t, '选择日期');
+      Color? ring(String day) => t
+          .widgetList<Container>(
+            find.ancestor(
+              of: find.text(day).first,
+              matching: find.byType(Container),
+            ),
+          )
+          .map((c) => c.decoration)
+          .whereType<BoxDecoration>()
+          .map((d) => (d.border as Border?)?.top.color)
+          .first; // the nearest decorated Container is the day cell
+      expect(ring('10'), Colors.white);
+      expect(ring('20'), Colors.white);
+      expect(ring('15'), isNull);
+      await t.pumpWidget(
+        host(
+          IslandDatePicker(
+            value: DateTime(2026, 8, 10),
+            onChanged: (_) {},
+            disabled: true,
+          ),
+        ),
+      );
+      final text = t.renderObject<RenderParagraph>(find.text('2026-08-10'));
+      expect(text.text.style?.color, const Color(0xffc4b89e));
     },
   );
   testWidgets(
