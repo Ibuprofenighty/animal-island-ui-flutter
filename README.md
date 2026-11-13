@@ -167,7 +167,7 @@ The [Gallery guide](example/README.md) explains its setup and assets. The [origi
 
 ## 🔎 Verification status
 
-Windows and Web are the first acceptance targets; mobile acceptance is deferred. **Full-library acceptance remains incomplete.** The last independently reviewed runtime checkpoint retained **18 failing numerical measurements** for Notification/Tooltip under the documented accepted limitation; they are not reported as passing tests.
+Windows and Web are the first acceptance targets; mobile acceptance is deferred. **Full-library acceptance remains incomplete.** The 18 Notification/Tooltip motion measurements that failed at the last independently reviewed checkpoint now pass in the Flutter test host after a whole-device-pixel translation fix; the Windows-engine rerun and independent review are pending.
 
 Five boundaries remain: qualified browser hover intermediate frames, an actual Edge 375px after-frame, OS/physical presentation, current-build onsite checks including the complete actual Web comparison, and an all-content 60fps claim. Details and named exceptions belong to [the acceptance contract](docs/ACCEPTANCE.md) and [design authority](docs/DESIGN.md), rather than this README.
 

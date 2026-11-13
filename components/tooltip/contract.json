@@ -50,7 +50,7 @@
       "id": "tooltip.surface-sampling",
       "given": "The active fractional translation path with caller-owned content, including different text line origins",
       "when": "Sample visible entry/exit/reversal where that owner supports them, then settle or remove it",
-      "then": "Preserve one component-owned transform/timeline and opaque child identity under docs/DESIGN.md#surface-sampling. The user accepted retaining the original renderer and the bounded ink-centroid measurement limitation2026-10-21: keep raw0.25 output-image failures; rigid glyph controls also fail, so this is not product pixelPASS or proof of independent text motion/engine cause. No wrapper, text compensation, traversal, clone or timing replacement. Pending browser/outer-skin/physical presentation remains separate."
+      "then": "Preserve one component-owned transform/timeline and opaque child identity under docs/DESIGN.md#surface-sampling. The translation is rounded to whole device pixels so backing, border and glyphs share one pixel phase; the unchanged 0.25 output-image oracle passes in the test host (2026-11-13), superseding the 2026-10-21 accepted limitation. No filter, wrapper, text compensation, traversal, clone or timing replacement. Pending browser/outer-skin/physical presentation remains separate."
     }
   ]
 }

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../internal/action_surface.dart';
 import '../internal/content_scope.dart';
 import '../internal/focus_outline.dart';
+import '../internal/surface_motion.dart';
 import '../internal/viewport_overlay.dart';
 import '../foundation/recipes/notification.dart';
 
@@ -448,10 +449,13 @@ class _NotificationCardState extends State<_NotificationCard>
           excluding: widget.entry.leaving,
           child: AnimatedBuilder(
             animation: motion,
-            builder: (_, child) {
+            builder: (context, child) {
               final t = const Cubic(.4, 0, .2, 1).transform(motion.value);
               return Transform.translate(
-                offset: Offset(0, (n.position.index < 3 ? -16 : 16) * (1 - t)),
+                offset: snapToDevicePixels(
+                  Offset(0, (n.position.index < 3 ? -16 : 16) * (1 - t)),
+                  MediaQuery.devicePixelRatioOf(context),
+                ),
                 child: child,
               );
             },

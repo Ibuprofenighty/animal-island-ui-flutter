@@ -1,5 +1,12 @@
 import 'package:flutter/widgets.dart';
 
+/// Rounds a pure translation to whole device pixels so glyphs and vector
+/// edges of one moving surface land on the same pixel phase in every frame.
+Offset snapToDevicePixels(Offset offset, double devicePixelRatio) => Offset(
+  (offset.dx * devicePixelRatio).roundToDouble() / devicePixelRatio,
+  (offset.dy * devicePixelRatio).roundToDouble() / devicePixelRatio,
+);
+
 /// Moves one readable surface. Never fades, clones, or inspects its contents.
 /// The caller owns visibility, timers, focus, and the animation timeline.
 class SurfaceMotion extends StatelessWidget {

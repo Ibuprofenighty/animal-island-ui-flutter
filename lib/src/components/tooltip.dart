@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import '../internal/anchored_panel.dart';
 import '../internal/content_scope.dart';
 import '../internal/organic_bubble.dart';
+import '../internal/surface_motion.dart';
 import '../foundation/recipes/tooltip.dart';
 
 enum IslandTooltipPlacement {
@@ -184,7 +185,10 @@ class _IslandTooltipState extends State<IslandTooltip>
                           1,
                         ).transform(motion.value);
                         return Transform.translate(
-                          offset: offset * (-.4 * (1 - t)),
+                          offset: snapToDevicePixels(
+                            offset * (-.4 * (1 - t)),
+                            MediaQuery.devicePixelRatioOf(context),
+                          ),
                           child: child,
                         );
                       },
