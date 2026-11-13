@@ -16,6 +16,19 @@ This experimental library has scoped usability evidence, not complete production
 - **图标滚动：**实际负载下可能出现较长观测间隔；同时使用电脑可能贡献负载，但未证明是唯一原因，不承诺全内容、全平台 60fps。
 - **通知／气泡测量：**原阈值下仍有 18 项墨量质心数值测试失败。刚性对照也超限，因此不能仅凭此指标判定组件动效不同步；保留现有实现，不声称已确定引擎原因或感知延迟。CI 记录该根测试失败后继续执行后续检查与构建，最终结果仍为失败；本地构建通过不代表远端 CI 全绿。
 
+## Reference comparison / 参考对比（2026-11-13）
+
+All 42 routes (40 components, Home, Skill) were compared with the reference at 1440×1000 and 375×812 in three review passes; differences were fixed or registered in [DESIGN](DESIGN.md#measured-color-differences). After the last pass no page has an unresolved difference beyond the registered ones and low-impact notes. This is a scoped static review, not platform acceptance:
+
+- Our frames come from the Flutter test host at pixel ratio 1, not the Windows engine or a browser.
+- Reference frames come from the live site, now newer than the pinned version; for the 16 components changed upstream since the pin, the pinned source was the authority.
+- Stills show resting states. Hover, press, keyboard and motion were compared from source and covered by tests, not observed side by side.
+- Component and route statuses stay `NOT_ACCEPTED` until Windows and Web runs and the owner's sign-off exist.
+
+Open decisions: flame icon outline tint inside a coloured Tag; one shared dialog entrance for Modal and Image preview; CountUp named easings; Rate star silhouette; Tabs active dot colour; whether near-duplicate reference colours should be merged.
+
+42 个路由（40 组件、首页、Skill）在 1440×1000 与 375×812 下与参考经三轮比对，差异已修复或登记于[设计文档](DESIGN.md#measured-color-differences)；末轮后各页仅余已登记差异和低影响备注。此为有限范围的静态审查，不是平台验收：我方画面来自 Flutter 测试宿主（像素比 1），非 Windows 引擎或浏览器；参考画面来自线上站，已新于固定版本，上游在固定版本后改动的 16 个组件以固定源码为准；静态图只含静止状态，悬停、按压、键盘与动效依据源码比对并由测试覆盖，未并排观察；在取得 Windows、Web 实跑和所有者签收前，组件与路由状态保持 `NOT_ACCEPTED`。待决事项：彩色 Tag 内火焰图标轮廓着色、Modal 与图片预览共用入场动效、CountUp 具名缓动、Rate 星形轮廓、Tabs 选中圆点颜色、参考近似重复色是否合并。
+
 ## Not yet verified / 尚未验证
 
 | Area | Boundary / 边界 |
