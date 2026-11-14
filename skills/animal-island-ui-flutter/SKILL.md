@@ -18,11 +18,13 @@ Read the public declarations in `lib/animal_island_ui.dart` for signatures, the 
 
 ## Color and motion
 
+Every color is a named token: primitive palette → `IslandTokens`/`IslandColorway` → component recipe; Gallery colors live in `GalleryPalette`. Add a new value as a token at its owner; never write a color literal in a component or Gallery page, and never branch `reference ? literal : token`. `test/color_literal_policy_test.dart` and the `tool/verify.py` policy enforce this. Reference colors that differ for contrast are registered in [measured color differences](../../docs/DESIGN.md#measured-color-differences).
+
 Use existing theme/instance style roles with their documented precedence. Transparent is an explicit value. Typography and semantic foreground are separate; caller TextStyle.foreground Paint retains Flutter precedence. Arbitrary custom pairs require actual composited-background and state validation, not runtime color guessing.
 
 Follow [shared recipes](../../docs/DESIGN.md#original-color-restoration), [shared accent ink](../../docs/DESIGN.md#shared-accent-foreground) and [Title ink](../../docs/DESIGN.md#title-foreground). Passive slot ink and nested control surface data have different owners. Preserve unrelated ThemeExtensions and explicit content styles.
 
-Keep one content subtree and lifecycle across entry, exit, reverse, reopen, cancel, disposal, theme changes and reduced motion. [Surface sampling](../../docs/DESIGN.md#surface-sampling) does not authorize per-child offsets or a blanket filter. The [Home/photo exception](../../docs/DESIGN.md#home-host-and-photo-gradient) applies only to those named Gallery regions.
+Keep one content subtree and lifecycle across entry, exit, reverse, reopen, cancel, disposal, theme changes and reduced motion. [Surface sampling](../../docs/DESIGN.md#surface-sampling) does not authorize per-child offsets or a blanket filter; Notification and Tooltip move their whole surface in whole device pixels instead. The [Home/photo exception](../../docs/DESIGN.md#home-host-and-photo-gradient) applies only to those named Gallery regions.
 
 ## Extend atomically
 
