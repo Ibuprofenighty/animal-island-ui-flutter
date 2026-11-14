@@ -9,6 +9,8 @@ import 'package:island_gallery/pages/gallery.dart';
 import 'package:island_gallery/pages/home.dart';
 import 'package:island_gallery/shared/theme.dart';
 
+import '../../test/support/fake_clock_only.dart';
+
 void main() {
   for (final width in [375.0, 1440.0]) {
     testWidgets(
@@ -354,7 +356,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 900));
       expect(scale(), closeTo(1, 1e-6));
       await tester.pumpWidget(const SizedBox());
-    });
+    }, skip: fakeClockOnly);
 
     testWidgets('desktop sidebar and content follow reference geometry', (
       tester,
@@ -449,7 +451,7 @@ void main() {
       await tester.pump();
       expect(find.byType(IslandBackground), findsNothing);
       await tester.pumpWidget(const SizedBox());
-    });
+    }, skip: fakeClockOnly);
   });
 
   testWidgets('desktop Gallery has no mobile header actions', (tester) async {

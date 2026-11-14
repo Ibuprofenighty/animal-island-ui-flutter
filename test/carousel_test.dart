@@ -2,10 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import 'counter_audit_test.dart' show pixel;
 import 'foundation_test.dart' show contrast;
+import 'support/fake_clock_only.dart';
 
 Widget host(Widget child) => MaterialApp(
   home: Scaffold(body: SizedBox(width: 600, child: child)),
@@ -248,6 +250,7 @@ void main() {
         1.5,
       );
     },
+    skip: fakeClockOnly,
   );
   testWidgets(
     'Carousel region focus paints its external contour and hands off without relayout',

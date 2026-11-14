@@ -27,6 +27,12 @@ Open decisions: flame icon outline tint inside a coloured Tag; one shared dialog
 
 42 个路由（40 组件、首页、Skill）在 1440×1000 与 375×812 下与参考经三轮比对，差异已修复或登记于[设计文档](DESIGN.md#measured-color-differences)；末轮后各页仅余已登记差异和低影响备注。此为有限范围的静态审查，不是平台验收：我方画面来自 Flutter 测试宿主（像素比 1），非 Windows 引擎或浏览器；参考画面来自线上站，已新于固定版本，上游在固定版本后改动的 16 个组件以固定源码为准；静态图只含静止状态，悬停、按压、键盘与动效依据源码比对并由测试覆盖，未并排观察；在取得 Windows、Web 实跑和所有者签收前，组件与路由状态保持 `NOT_ACCEPTED`。待决事项：彩色 Tag 内火焰图标轮廓着色、Modal 与图片预览共用入场动效、CountUp 具名缓动、Rate 星形轮廓、Tabs 选中圆点颜色、参考近似重复色是否合并。
 
+## Windows engine run / Windows 引擎实跑（2026-11-13）
+
+All seven `example/integration_test` entries ran on the Windows engine (Debug, one workstation display) and pass: Gallery flow, catalog geometry, motion coverage, icon contexts (capture only, review pending), Select follow-up and the shared component scenarios. Three oracles that sample animation values at exact elapsed times run only under the fake clock of `flutter test` and are skipped on the engine (`test/support/fake_clock_only.dart`): Carousel curves, the sidebar NEW-badge pulse and the Background wallpaper fade. These runs do not establish OS outer-window, physical-display or frame-rate behaviour.
+
+七个 `example/integration_test` 入口已在 Windows 引擎（Debug，单台工作站显示器）上运行并全部通过：Gallery 流程、目录几何、动效覆盖、图标上下文（仅采集，待人工审阅）、Select 后续与共享组件场景。三项按精确经过时间采样动画数值的断言只在 `flutter test` 假时钟下运行，引擎上跳过（`test/support/fake_clock_only.dart`）：Carousel 曲线、侧栏 NEW 徽标脉冲、Background 壁纸淡入。这些运行不证明系统外窗、物理屏幕或帧率表现。
+
 ## Not yet verified / 尚未验证
 
 | Area | Boundary / 边界 |
@@ -35,7 +41,7 @@ Open decisions: flame icon outline tint inside a coloured Tag; one shared dialog
 | Edge narrow viewport | The required actual 375px after-state capture remains outstanding. / 仍缺实际 375px 的修复后画面。 |
 | Native presentation | Rendered application pixels do not establish OS outer-window or physical-panel presentation. / 应用像素不证明系统外窗或物理屏幕呈现。 |
 | Packaged onsite use | Fresh package hashes and builds do not replace a new mouse/keyboard/hover/performance run of those binaries. / 新包校验与构建不能替代对应二进制现场复测。 |
-| Notification/Tooltip motion | Entry/exit translation now rounds to whole device pixels (2026-11-13); all 42 surface-sampling cases pass at the unchanged 0.25 threshold in the Flutter test host at pixel ratios 1 and 1.25. The Windows-engine run of the same oracle has not been repeated; the earlier 18 failed measurements remain historical evidence, not passes. / 进出场位移现按整设备像素取整；测试宿主（像素比 1、1.25）下 42 项表面采样在原 0.25 阈值内全部通过。同一断言尚未在 Windows 引擎重跑；此前 18 项失败保留为历史证据。 |
+| Notification/Tooltip motion | Entry/exit translation rounds to whole device pixels (2026-11-13). The unchanged 0.25 oracle passes in the Flutter test host for all 42 cases (pixel ratios 1 and 1.25, three sample times) and on the Windows engine for the 20 cases its native entry registers (pixel ratio 1, one 16ms sample). Native pixel ratio 1.25 and the remaining sample times were not run on the engine; the earlier 18 failed measurements remain historical evidence. / 位移按整设备像素取整。测试宿主下 42 项（像素比 1、1.25，三个采样时刻）在原 0.25 阈值内全部通过；Windows 引擎下原生入口登记的 20 项（像素比 1，16ms 单次采样）全部通过。引擎上未跑像素比 1.25 与其余采样时刻；此前 18 项失败保留为历史证据。 |
 | Full performance | No quiet-load, all-component, all-state, all-platform 60fps certification. / 未证明低负载及全组件、全状态、全平台 60fps。 |
 
 Screen-reader execution is outside the completed scope; excluded does not mean tested or certified. Semantic contracts and keyboard tests remain maintained. Mobile platforms need separate validation.

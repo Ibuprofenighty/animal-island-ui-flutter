@@ -167,7 +167,7 @@ flutter run -d windows
 
 ## 🔎 验证状态
 
-首批验收目标为 Windows 和 Web，移动端验收后续进行。**整库验收仍未完成。** 上次独立核验时失败的 18 项 Notification／Tooltip 动效测量，在位移改为整设备像素取整后已于 Flutter 测试宿主中通过；Windows 引擎重跑与独立复核尚待进行。
+首批验收目标为 Windows 和 Web，移动端验收后续进行。**整库验收仍未完成。** 上次独立核验时失败的 18 项 Notification／Tooltip 动效测量，在位移改为整设备像素取整后已在 Flutter 测试宿主和 Windows 引擎上通过；独立复核尚待进行。
 
 仍有五项边界：合格浏览器真实悬停中间帧、Edge 实际 375px 修改后画面、OS／物理呈现、当前构建现场及完整实际 Web 前后对照，以及全内容 60fps 声明。具体范围和具名例外由[验收契约](docs/ACCEPTANCE.md)及[设计权威](docs/DESIGN.md)拥有，本 README 不复制具体机制或决定。
 

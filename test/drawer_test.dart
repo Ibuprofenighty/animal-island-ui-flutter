@@ -16,28 +16,40 @@ void main() {
     var closes = 0;
     var open = true;
     late StateSetter update;
+    // The open drawer excludes its host's content from focus, so the focus
+    // that leaves the panel lands outside the host, as app chrome would.
+    final outside = FocusNode(debugLabel: 'outside');
+    addTearDown(outside.dispose);
     await t.pumpWidget(
-      host(
-        StatefulBuilder(
-          builder: (_, set) {
-            update = set;
-            return IslandDrawer(
-              open: open,
-              onClose: () => closes++,
-              title: const Text('Panel'),
-              child: const Text('Body'),
-            );
-          },
+      MaterialApp(
+        home: Column(
+          children: [
+            Focus(focusNode: outside, child: const SizedBox(height: 1)),
+            Expanded(
+              child: IslandDrawerHost(
+                child: Scaffold(
+                  body: StatefulBuilder(
+                    builder: (_, set) {
+                      update = set;
+                      return IslandDrawer(
+                        open: open,
+                        onClose: () => closes++,
+                        title: const Text('Panel'),
+                        child: const Text('Body'),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
     await t.pumpAndSettle();
     final panelScope = FocusScope.of(t.element(find.text('Body')));
-    // Walk focus out of the panel scope, as a pointer elsewhere would.
-    for (var i = 0; i < 4 && panelScope.hasFocus; i++) {
-      FocusManager.instance.primaryFocus?.unfocus();
-      await t.pump();
-    }
+    outside.requestFocus();
+    await t.pump();
     expect(panelScope.hasFocus, isFalse);
     await t.sendKeyEvent(LogicalKeyboardKey.escape);
     expect(closes, 1);
@@ -48,7 +60,8 @@ void main() {
     expect(closes, 2);
     update(() => open = false);
     await t.pumpAndSettle();
-    FocusManager.instance.primaryFocus?.unfocus();
+    outside.requestFocus();
+    await t.pump();
     await t.sendKeyEvent(LogicalKeyboardKey.escape);
     expect(closes, 2);
     await t.pumpWidget(const SizedBox());
