@@ -23,9 +23,9 @@ All 42 routes (40 components, Home, Skill) were compared with the reference at 1
 - Stills show resting states. Hover, press, keyboard and motion were compared from source and covered by tests, not observed side by side.
 - Component and route statuses stay `NOT_ACCEPTED` until Windows and Web runs and the owner's sign-off exist.
 
-Open decisions: flame icon outline tint inside a coloured Tag; one shared dialog entrance for Modal and Image preview; CountUp named easings; Rate star silhouette; Tabs active dot colour; whether near-duplicate reference colours should be merged.
+Decided by the owner (2026-11-16): the checked Checkbox/Radio mark keeps the reference white as a registered exception; the flame icon outline keeps following the Tag colour; Modal and Image preview keep one shared dialog entrance; the Tabs active dot follows the pinned 2.2.1 source (it inherits the active label colour). Open decisions: CountUp named easings; Rate star silhouette; whether near-duplicate reference colours should be merged.
 
-42 个路由（40 组件、首页、Skill）在 1440×1000 与 375×812 下与参考经三轮比对，差异已修复或登记于[设计文档](DESIGN.md#measured-color-differences)；末轮后各页仅余已登记差异和低影响备注。此为有限范围的静态审查，不是平台验收：我方画面来自 Flutter 测试宿主（像素比 1），非 Windows 引擎或浏览器；参考画面来自线上站，已新于固定版本，上游在固定版本后改动的 16 个组件以固定源码为准；静态图只含静止状态，悬停、按压、键盘与动效依据源码比对并由测试覆盖，未并排观察；在取得 Windows、Web 实跑和所有者签收前，组件与路由状态保持 `NOT_ACCEPTED`。待决事项：彩色 Tag 内火焰图标轮廓着色、Modal 与图片预览共用入场动效、CountUp 具名缓动、Rate 星形轮廓、Tabs 选中圆点颜色、参考近似重复色是否合并。
+42 个路由（40 组件、首页、Skill）在 1440×1000 与 375×812 下与参考经三轮比对，差异已修复或登记于[设计文档](DESIGN.md#measured-color-differences)；末轮后各页仅余已登记差异和低影响备注。此为有限范围的静态审查，不是平台验收：我方画面来自 Flutter 测试宿主（像素比 1），非 Windows 引擎或浏览器；参考画面来自线上站，已新于固定版本，上游在固定版本后改动的 16 个组件以固定源码为准；静态图只含静止状态，悬停、按压、键盘与动效依据源码比对并由测试覆盖，未并排观察；在取得 Windows、Web 实跑和所有者签收前，组件与路由状态保持 `NOT_ACCEPTED`。所有者已决定（2026-11-16）：选中对勾保持参考白色并登记例外；火焰图标轮廓继续跟随 Tag 颜色；Modal 与图片预览保持共用入场；Tabs 选中圆点以固定 2.2.1 源码为准（继承选中标签颜色）。待决事项：CountUp 具名缓动、Rate 星形轮廓、参考近似重复色是否合并。
 
 ## Windows engine run / Windows 引擎实跑（2026-11-13）
 

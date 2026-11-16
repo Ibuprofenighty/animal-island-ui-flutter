@@ -12,7 +12,9 @@ import '../theme.dart';
 /// light paper, so the 150ms colour change stays readable). Failing reference
 /// graphics deepen in their own hue only to 3:1: unchecked ring #c4b89e →
 /// #978b73 (against its own fill), checked ring #50b9ab → #259689 (every
-/// light paper) and the white mark → #5f5f5f (on the #19c8b9 fill). Dark or
+/// light paper). The mark keeps the reference white (2.1:1 on the #19c8b9
+/// fill) as a registered exception: the filled box or disc already states
+/// the checked value, so the mark is not the only cue. Dark or
 /// customized token sets keep their roles.
 @immutable
 final class ChoiceColors {
@@ -35,7 +37,7 @@ final class ChoiceColors {
       ringUnchecked: reference ? Primitive.sand641 : tokens.outline,
       ringChecked: reference ? Primitive.teal609 : tokens.onLeaf,
       fill: tokens.leaf,
-      mark: reference ? Primitive.neutral485 : tokens.onLeaf,
+      mark: reference ? Primitive.neutral1000 : tokens.onLeaf,
       paper: reference ? Primitive.sand962 : tokens.paper,
       labelIdentity: (reference, reference ? null : tokens.ink),
     );

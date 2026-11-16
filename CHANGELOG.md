@@ -2,6 +2,7 @@
 
 ## 0.0.1 — independent project, unreleased
 
+- Checked Checkbox/Radio mark is the reference white again (owner-authorized exception; the fill already states the value). Owner decisions on the flame outline, shared dialog entrance and Tabs dot are recorded in `docs/DESIGN.md#owner-decisions-2026-11-16`.
 - Windows-engine integration entries run and pass; three exact-time animation oracles run only under the fake clock (`test/support/fake_clock_only.dart`). Native Gallery assertions follow the reference Modal title line height and the Select wrap rule.
 - Notification and Tooltip entry/exit translation rounds to whole device pixels; the 18 previously failing surface-sampling measurements pass at the unchanged 0.25 threshold in the test host and on the Windows engine. Timeline, curve and distance are unchanged.
 - Colors are named tokens (primitive palette → IslandTokens/IslandColorway → internal per-component recipes; Gallery `GalleryPalette`), with no rendering or public API change; guarded by `tool/verify.py` and `test/color_literal_policy_test.dart`.

@@ -31,7 +31,6 @@ abstract final class Primitive {
   static const neutral157A55 = Color(0x8c0f0c08);
   static const neutral157A82 = Color(0xd10f0c08);
   static const neutral285 = Color(0xff2a2a2a);
-  static const neutral485 = Color(0xff5f5f5f);
   static const neutral655A8 = Color(0x14958f8f);
   static const neutral834 = Color(0xffc4c9d0);
   static const neutral893 = Color(0xffd8dce2);

@@ -120,7 +120,7 @@ User rule: measure each reference value on its actual composited backgrounds in 
 | Rate selected stroke (`RateColors.selectedStroke`) / 评分选中描边 | `#dba90e` kept on dark paper (5.5:1); 1.9:1 on light → `#af8600` / 深色保留，浅色加深 |
 | Switch unchecked boundary (`SwitchColors.trackOffBorder`, busy base `SwitchColors.busyBase`) / 开关未选边框 | `#c4b89e` (1.8:1) → `#978b73`; busy dims only track/thumb over a `#f8f8f0` base, text stays opaque (reference .7 group opacity gives 3.97:1, 4.42:1 on dark) / busy 仅淡化轨道与滑块，文字不透明 |
 | Switch thumb and spinner (`SwitchColors.thumbBorderOff`/`thumbBorderOn`, `spinnerOff`/`spinnerOn`) / 开关滑块与加载圈 | thumb `#c4b89e` / checked `#6fba2c` (1.8/2.2:1 on the `#f7f3df` thumb) → `#978b73` / `#579d00`; spinner `#a89878` / `#6fba2c` over the busy 0.7 thumb → `#716244` / `#3d7200`. The checked track border stays onLeaf / 滑块边框与加载圈逐色加深 |
-| Checkbox/Radio rings and mark (`ChoiceColors.ringUnchecked`/`ringChecked`/`mark`) / 复选、单选圈与勾 | unchecked `#c4b89e` → `#978b73` (3.0:1 on its `#f7f3df` fill); checked `#50b9ab` (2.1:1) → `#259689`, 3:1 on every light paper and Card pattern paper; white mark (2.1:1 on `#19c8b9`) → neutral `#5f5f5f` / 圈与勾同色相加深 |
+| Checkbox/Radio rings and mark (`ChoiceColors.ringUnchecked`/`ringChecked`/`mark`) / 复选、单选圈与勾 | unchecked `#c4b89e` → `#978b73` (3.0:1 on its `#f7f3df` fill); checked `#50b9ab` (2.1:1) → `#259689`, 3:1 on every light paper and Card pattern paper; the mark keeps the reference white (2.1:1 on `#19c8b9`) as a user-authorized exception (2026-11-16): the filled box/disc already states the checked value, so the mark is not the only cue / 圈同色相加深；勾保持参考白色，属用户授权例外（填充已表达选中状态） |
 | Status warning (`InputColors.warning`, `PickerColors.triggerUnderline`) / 警告状态 | `#dba90e` (2.2:1) → the Rate value `#af8600`, 3.3:1 on the Input fill and 3.2:1 on the picker `#fffbe7` fill / 复用评分加深值 |
 | Rate unselected stroke (`RateColors.idleStroke`) / 评分未选描边 | `#c4b89e` kept on dark paper (6.0:1); 1.8:1 on light → `#978b73` / 深色保留，浅色加深 |
 | Button danger hover border (`ButtonColors.dangerBoundary`) / 危险按钮悬停边框 | `#e87878` (2.7:1 on the button fill) → `#dd6e6f` / 同色相加深 |
@@ -136,6 +136,15 @@ Transparent per-hue Tag text is validated on the product papers; caller-filled o
 
 <a id="time-colon-blink"></a>
 The Time colon is a decorative separator: it blinks on the reference 1s step-end cycle, the clock value stays complete in semantics, digits never dim and reduced motion keeps it visible. Time 冒号是装饰分隔符，按参考 1s step-end 闪烁；语义值完整、数字不变暗，减少动态时常亮。
+
+<a id="owner-decisions-2026-11-16"></a>
+## Owner decisions / 所有者决定（2026-11-16）
+
+| Item | Decision | Reason |
+|---|---|---|
+| Flame icon outline inside a coloured Tag / 彩色 Tag 内火焰轮廓 | Keeps following the Tag colour; differs from the reference fixed dark outline | Stays visible on light and dark hosts; the icon contrast oracle is unchanged |
+| Modal and Image preview entrance / 弹层入场 | One shared dialog route and entrance; differs slightly from the two reference entrances | One mechanism, no per-consumer parameter |
+| Tabs active dot / Tabs 选中圆点 | Follows the pinned 2.2.1 source: the dot inherits the active label colour | The live site (3.0.4) is outside this round's scope |
 
 <a id="notification-type"></a>
 ## Notification type / 通知类型

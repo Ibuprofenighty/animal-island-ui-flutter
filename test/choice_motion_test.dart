@@ -70,10 +70,10 @@ void main() {
                   x < 58 &&
                   y >= 44 &&
                   y < 57 &&
-                  // Reference white mark deepened to 3:1 on the fill.
-                  r == 0x5f &&
-                  g == 0x5f &&
-                  b == 0x5f)
+                  // Reference white mark (registered exception in DESIGN).
+                  r == 0xff &&
+                  g == 0xff &&
+                  b == 0xff)
                 mark++;
               if ((x < 38 || y < 38 || y > 64) &&
                   g > 40 &&
