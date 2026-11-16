@@ -2,6 +2,20 @@
 
 ## 0.0.1 — independent project, unreleased
 
+- Checked Checkbox/Radio mark is the reference white again (owner-authorized exception; the fill already states the value). Owner decisions on the flame outline, shared dialog entrance and Tabs dot are recorded in `docs/DESIGN.md#owner-decisions-2026-11-16`.
+- Windows-engine integration entries run and pass; three exact-time animation oracles run only under the fake clock (`test/support/fake_clock_only.dart`). Native Gallery assertions follow the reference Modal title line height and the Select wrap rule.
+- Notification and Tooltip entry/exit translation rounds to whole device pixels; the 18 previously failing surface-sampling measurements pass at the unchanged 0.25 threshold in the test host and on the Windows engine. Timeline, curve and distance are unchanged.
+- Colors are named tokens (primitive palette → IslandTokens/IslandColorway → internal per-component recipes; Gallery `GalleryPalette`), with no rendering or public API change; guarded by `tool/verify.py` and `test/color_literal_policy_test.dart`.
+- Measured reference colors per `docs/DESIGN.md#measured-color-differences`: Tag outlined/dashed keep their hue (per-hue text, accent contour) and solid borders equal the fill; Badge dot uses a same-hue 3:1 fill with the reference cream ring only when attached; Progress fill edge is same-hue `#039d91`; Rate selected stroke `#dba90e` (dark) / `#af8600` (light); Avatar icons `#2A2A2A`; Checkbox/Radio unchecked fill `rgb(247,243,223)`, labels `#725d42`/`#794f27` with a 0.15s change; Image stamp year white .88 on a minimal `rgba(0,0,0,.58)` backing; DatePicker endpoint white ring; disabled Input/DatePicker/TimePicker text `#c4b89e`; Switch unchecked boundary `#978b73` and busy dims only track/thumb; Input keeps its 1px boundary.
+- Second-pass reference colors (`docs/DESIGN.md#measured-color-differences`): Input/DatePicker/TimePicker error `#c94444` and warning `#af8600`, decorative Input bar `#d4c9b4`/`#c4b89e` and picker hover/open underlines; clear-hover `#725d42` (pickers, Select); Switch thumb `#978b73`/`#579d00` and spinner `#716244`/`#3d7200`; Checkbox/Radio rings `#978b73`/`#259689` and mark `#5f5f5f`, kept inside light Card papers through the surface-scope owner; Rate unselected `#978b73` (light) and faint reference eyes; Button danger default/dashed border `#e05a5a`/`#dd6e6f`/`#c94444`.
+- Badge wrapped child uses line-height 1; Countdown surface fills its width once wrapped (fit-content); CodeBlock default margin 16.
+- Gallery: Form/FormItem API titles; API tables keep a four-character 说明 column and scroll horizontally below it; Rate count=10 row scrolls inside its box; Cursor native controls use bundled Arimo; inline code at 13/16; BackTop chip `#746753`; Skeleton loaded text `#725d42`.
+- Added `IslandTokens.leafSelected` (light `#0cc0b5`); Tabs reads it instead of a literal, so theme customization applies.
+- Time colon blinks on the reference 1s step-end cycle from the existing refresh timer; reduced motion keeps it visible; digits never dim.
+- Notification keeps the requested `type` (deliberate difference; the reference named methods override it).
+- Gallery: Modal `石头` `#a45d01`; Background tile text backing uses the tile base and subtitles stay opaque.
+- Drawer reduced-motion open/close from a caller rebuild no longer notifies the overlay during build. Input clear action label is `清除`. Footer uses normal line height (48px in the Gallery). Tabs light selected fill `#0cc0b5`. Carousel slide curve `cubic(.4,0,.2,1)`. Home wallpaper text uses reference colors under the existing named exception. Shell NEW badge pulse and sidebar hover.
+
 - Correct the independent Title foreground pairing through its existing owner; policy remains in `docs/DESIGN.md#title-foreground`, with unchanged APIs and contrast budgets.
 
 - Correct shared fixed-palette guidance and consolidate its decision authority in `docs/DESIGN.md#shared-accent-foreground`; component APIs and rendering mechanisms are unchanged.

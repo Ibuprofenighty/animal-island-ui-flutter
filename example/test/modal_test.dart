@@ -34,6 +34,12 @@ void main() {
       await t.pumpWidget(
         MaterialApp(
           theme: galleryTheme(),
+          // Not a motion test: settle the Gallery's endlessly
+          // pulsing sidebar NEW badge with the reduced-motion contract.
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: true),
+            child: child!,
+          ),
           home: GalleryPage(path: '/modal', onNavigate: (_) {}),
         ),
       );
@@ -75,6 +81,27 @@ void main() {
         expect(find.text('钓', findRichText: true), findsOneWidget);
         await t.pump(const Duration(milliseconds: 400));
         expect(find.text('钓到石头了!', findRichText: true), findsOneWidget);
+        // Reference demo #FD9303 deepened in hue to 4.5:1 on the modal paper.
+        TextSpan? stone;
+        t
+            .widget<RichText>(
+              find.descendant(
+                of: find.byType(IslandModal),
+                matching: find.byWidgetPredicate(
+                  (w) => w is RichText && w.text.toPlainText() == '钓到石头了!',
+                ),
+              ),
+            )
+            .text
+            .visitChildren((span) {
+              if (span is TextSpan && span.text == '石头') stone = span;
+              return stone == null;
+            });
+        final ink = stone!.style!.color!;
+        expect(ink, const Color(0xffa45d01));
+        final x = ink.computeLuminance(),
+            y = const Color(0xfff7f3df).computeLuminance();
+        expect((y + .05) / (x + .05), greaterThanOrEqualTo(4.5));
         expect(find.text('竟'), findsNothing);
         await t.pump(const Duration(milliseconds: 80));
         expect(find.text('竟'), findsOneWidget);
@@ -122,7 +149,7 @@ void main() {
         final rect = t.getRect(clip);
         expect(rect.width, width == 1280 ? 520 : 343);
         expect(rect.center.dx, width / 2);
-        if (width == 375 && label == '带标题 Modal') expect(rect.height, 330);
+        if (width == 375 && label == '带标题 Modal') expect(rect.height, 326);
         expect(find.byType(IconButton), findsNothing);
         final route = ModalRoute.of(t.element(find.byType(IslandModal)))!;
         expect(
@@ -135,8 +162,8 @@ void main() {
         );
         if (width == 1280) {
           final h = (label == '带标题 Modal' || label == '深色遮罩')
-              ? 266.0
-              : (label == '异形 Modal' || label == '基础 Modal' ? 217.0 : 234.0);
+              ? 262.0
+              : (label == '异形 Modal' || label == '基础 Modal' ? 217.0 : 230.0);
           expect(rect.height, closeTo(h, .1), reason: label);
         }
         if (label == '异形 Modal' || label == '基础 Modal') {

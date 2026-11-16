@@ -42,7 +42,7 @@ class _CountdownStoryState extends State<CountdownStory> {
         prefix: const Text('活动结束还有'),
       ),
       const StoryLabel('无边框 / 带边框', strutStyle: storyCaptionStrut),
-      storyRow([
+      storyRow(align: WrapCrossAlignment.center, [
         for (final variant in IslandCountdownVariant.values)
           for (final bordered in [false, true])
             IslandCountdown(
@@ -69,7 +69,7 @@ class _CountdownStoryState extends State<CountdownStory> {
         ),
       ),
       const StoryLabel('尺寸', strutStyle: storyCaptionStrut),
-      storyRow([
+      storyRow(align: WrapCrossAlignment.center, spacing: 14, runSpacing: 14, [
         for (final size in IslandSize.values)
           IslandCountdown(value: deadline, size: size),
       ]),

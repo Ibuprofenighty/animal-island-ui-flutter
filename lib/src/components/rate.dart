@@ -1,5 +1,6 @@
 import 'package:flutter/rendering.dart' show OverflowBoxFit;
 
+import '../foundation/recipes/rate.dart';
 import '../foundation/theme.dart';
 
 import 'dart:ui' show SemanticsRole;
@@ -166,6 +167,9 @@ class _IslandRateState extends State<IslandRate>
       _nodes[i].skipTraversal = widget.readOnly || i != math.max(0, value - 1);
     }
     final reduced = MediaQuery.disableAnimationsOf(context);
+    final brightness = Theme.of(context).brightness;
+    final selectedOutline = RateColors.selectedStroke(brightness);
+    final idleOutline = RateColors.idleStroke(brightness);
     final duration = reduced
         ? Duration.zero
         : const Duration(milliseconds: 250);
@@ -245,8 +249,8 @@ class _IslandRateState extends State<IslandRate>
                                   painter: _StarPainter(
                                     i < (_preview ?? value),
                                     i < (_preview ?? value)
-                                        ? IslandTheme.of(context).onSun
-                                        : IslandTheme.of(context).ink,
+                                        ? selectedOutline
+                                        : idleOutline,
                                   ),
                                 ),
                               ),
@@ -275,13 +279,7 @@ class _RateSplash extends CustomPainter {
     canvas.save();
     canvas.translate(size.width / 2, size.height / 2);
     canvas.scale(scale);
-    paintSixDotSplash(
-      canvas,
-      Offset.zero,
-      22,
-      const Color(0xfff5c31c),
-      progress,
-    );
+    paintSixDotSplash(canvas, Offset.zero, 22, RateColors.splash, progress);
     canvas.restore();
   }
 
@@ -294,6 +292,8 @@ class _StarPainter extends CustomPainter {
   const _StarPainter(this.fill, this.outline);
   final bool fill;
   final Color outline;
+
+  static const eyeFill = RateColors.eyeFill, eyeStroke = RateColors.eyeStroke;
   @override
   void paint(Canvas canvas, Size size) {
     canvas.save();
@@ -312,7 +312,7 @@ class _StarPainter extends CustomPainter {
       ..close();
     canvas.drawPath(
       path,
-      Paint()..color = fill ? const Color(0xfff5c31c) : Colors.transparent,
+      Paint()..color = fill ? RateColors.starFill : Colors.transparent,
     );
     canvas.drawPath(
       path,
@@ -324,15 +324,15 @@ class _StarPainter extends CustomPainter {
         ..color = outline,
     );
     if (fill) {
+      final face = Paint()..color = eyeFill;
+      canvas.drawCircle(const Offset(20, 22), 1.3, face);
+      canvas.drawCircle(const Offset(28, 22), 1.3, face);
       final stroke = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3.5
-        ..color = outline;
+        ..color = eyeStroke;
       canvas.drawCircle(const Offset(20, 22), 1.3, stroke);
       canvas.drawCircle(const Offset(28, 22), 1.3, stroke);
-      final eyes = Paint()..color = outline;
-      canvas.drawCircle(const Offset(20, 22), 1.3, eyes);
-      canvas.drawCircle(const Offset(28, 22), 1.3, eyes);
     }
     canvas.restore();
   }

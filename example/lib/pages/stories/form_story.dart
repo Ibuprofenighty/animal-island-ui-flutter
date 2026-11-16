@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class FormStory extends StatefulWidget {
   const FormStory({super.key});
@@ -21,7 +22,7 @@ class _FormStoryState extends State<FormStory> {
   // captures repeatable and use only colors in its documented random pool.
   static const patterns = [
     IslandColorway.teal,
-    IslandColorway.teal,
+    IslandColorway.neutral,
     IslandColorway.yellow,
     IslandColorway.orange,
     IslandColorway.green,
@@ -265,15 +266,15 @@ class _FormStoryState extends State<FormStory> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xfffffbe6),
-                  border: Border.all(color: const Color(0xffffe58f)),
+                  color: GalleryPalette.formNoticeFill,
+                  border: Border.all(color: GalleryPalette.formNoticeBorder),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   result,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Color(0xff874d00),
+                    color: GalleryPalette.formNoticeText,
                   ),
                 ),
               ),
@@ -318,7 +319,7 @@ class _FormStoryState extends State<FormStory> {
                 style: TextStyle(
                   fontSize: 12,
                   color: IslandColorway.blue.ink,
-                  fontFamily: 'monospace',
+                  fontFamily: IslandTheme.codeFontFamily,
                 ),
               ),
             ),
@@ -402,6 +403,7 @@ class _FormStoryState extends State<FormStory> {
         "final form = IslandFormController(initialValues: {'name': ''});\nIslandForm(\n  controller: form,\n  layout: IslandFormLayout.vertical,\n  children: [\n    IslandFormTextField(\n      name: 'name', label: '姓名',\n      validators: [(value, _) => value == null || value.isEmpty ? '请输入姓名' : null],\n    ),\n    IslandButton(onPressed: form.submit, child: Text('提交')),\n  ],\n)\n// Creator disposes form; child controls are bound through explicit builders.",
       ),
       const StoryApi(
+        title: 'Form API',
         rows: [
           (
             'controller / initialValues',
@@ -444,6 +446,7 @@ class _FormStoryState extends State<FormStory> {
         ],
       ),
       const StoryApi(
+        title: 'FormItem API',
         rows: [
           (
             'name / builder',

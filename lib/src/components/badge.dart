@@ -5,6 +5,7 @@ import '../internal/surface_motion.dart';
 import 'package:flutter/material.dart';
 
 import '../foundation/colorway.dart';
+import '../foundation/recipes/badge.dart';
 
 enum IslandBadgeSize { small, medium }
 
@@ -52,7 +53,16 @@ class IslandBadge extends StatelessWidget {
       return Stack(
         clipBehavior: Clip.none,
         children: [
-          child!,
+          // Reference `.badge { line-height: 1 }`: inherited text in the
+          // wrapped child gets a font-size line box, so the corner indicator
+          // sits on the glyph top. Explicit child styles still win.
+          DefaultTextStyle.merge(
+            style: const TextStyle(
+              height: 1,
+              leadingDistribution: TextLeadingDistribution.even,
+            ),
+            child: child!,
+          ),
           if (badge != null)
             Positioned(
               top: 0,
@@ -91,13 +101,12 @@ class IslandBadge extends StatelessWidget {
               horizontal: size == IslandBadgeSize.small ? 4 : 6,
             ),
       decoration: BoxDecoration(
-        color: color.accent,
+        // The dot alone carries its status, so it is the hue-deepened 3:1
+        // graphic; text indicators keep the reference accent behind onAccent.
+        color: point ? dotFill(color) : color.accent,
+        // Reference ring: cream when attached to content, none standalone.
         border: Border.all(
-          color: point
-              ? color.onAccent
-              : child == null
-              ? Colors.transparent
-              : const Color(0xfff8f8f0),
+          color: child == null ? Colors.transparent : BadgeColors.ring,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(999),
@@ -105,7 +114,7 @@ class IslandBadge extends StatelessWidget {
             ? null
             : const [
                 BoxShadow(
-                  color: Color(0x0f3d3428),
+                  color: BadgeColors.shadow,
                   offset: Offset(0, 2),
                   blurRadius: 4,
                 ),

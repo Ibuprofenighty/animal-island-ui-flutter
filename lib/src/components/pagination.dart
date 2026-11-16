@@ -1,5 +1,6 @@
 import 'package:flutter/rendering.dart';
 
+import '../foundation/recipes/pagination.dart';
 import '../foundation/theme.dart';
 import '../internal/option_cursor.dart';
 
@@ -17,7 +18,7 @@ const _sizeLabelStyle = TextStyle(
   fontSize: 13,
   height: 1,
   fontWeight: FontWeight.w600,
-  color: Color(0xff725d42),
+  color: PaginationColors.text,
 );
 String _sizeDisplayLabel(String label) => label.replaceAllMapped(
   RegExp(r'(?<=[\u3400-\u9fff]/)(?=[\u3400-\u9fff])'),
@@ -192,6 +193,12 @@ class _IslandPaginationState extends State<IslandPagination> {
       inset: inset,
       child: child,
     );
+    // Reference `.jumper`: 13px / 500 (colour is the contrast-safe muted role).
+    final jumperText = TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: tokens.muted,
+    );
     final parts = <Widget>[
       if (widget.showTotal)
         Padding(
@@ -267,10 +274,7 @@ class _IslandPaginationState extends State<IslandPagination> {
             mainAxisSize: MainAxisSize.min,
             spacing: 6,
             children: [
-              Text(
-                strings.jumpTo,
-                style: TextStyle(fontSize: 13, color: tokens.muted),
-              ),
+              Text(strings.jumpTo, style: jumperText),
               SizedBox(
                 width: 52,
                 height: 32,
@@ -287,10 +291,10 @@ class _IslandPaginationState extends State<IslandPagination> {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xff725d42),
+                      color: PaginationColors.text,
                       height: 1,
                     ),
-                    cursorColor: const Color(0xff725d42),
+                    cursorColor: PaginationColors.text,
                     decoration: InputDecoration(
                       visualDensity: VisualDensity.standard,
                       constraints: const BoxConstraints(minHeight: 32),
@@ -298,8 +302,8 @@ class _IslandPaginationState extends State<IslandPagination> {
                       contentPadding: const EdgeInsets.symmetric(vertical: 9),
                       filled: true,
                       fillColor: widget.disabled
-                          ? const Color(0xffece8dc)
-                          : const Color(0xfffffbe7),
+                          ? PaginationColors.jumperFillDisabled
+                          : PaginationColors.jumperFill,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
                         borderSide: BorderSide.none,
@@ -321,10 +325,7 @@ class _IslandPaginationState extends State<IslandPagination> {
                   ),
                 ),
               ),
-              Text(
-                strings.pageSuffix,
-                style: TextStyle(fontSize: 13, color: tokens.muted),
-              ),
+              Text(strings.pageSuffix, style: jumperText),
             ],
           ),
         ),
@@ -357,56 +358,94 @@ class _IslandPaginationState extends State<IslandPagination> {
       onActivate: enabled ? onTap : null,
       builder: (context, states) {
         final tokens = IslandTheme.of(context);
-        final hover = states.contains(WidgetState.hovered);
-        final color = selected
+        final restFill = selected
             ? (teal
-                  ? (hover ? const Color(0xff3dd4c6) : const Color(0xff19c8b9))
-                  : (hover ? const Color(0xffffb400) : const Color(0xffffc107)))
-            : hover
-            ? (teal ? const Color(0xffe6f9f6) : const Color(0xffffd54f))
+                  ? PaginationColors.tealSelected
+                  : PaginationColors.sunSelected)
             : tokens.paper.withValues(alpha: 0);
-        final ink = selected
+        final hoverFill = selected
+            ? (teal
+                  ? PaginationColors.tealSelectedHover
+                  : PaginationColors.sunSelectedHover)
+            : (teal ? PaginationColors.tealHover : PaginationColors.sunHover);
+        final restInk = selected
             ? (teal ? IslandTokens.light.onLeaf : IslandTokens.light.onSun)
             : !enabled
-            ? const Color(0xffd4c9b4)
-            : hover
-            ? (teal ? IslandTokens.light.link : IslandTokens.light.onSun)
+            ? PaginationColors.disabledInk
             : tokens.ink;
-        return Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(50),
-            border: states.contains(WidgetState.focused) || selected
-                ? Border.all(
-                    color: selected
-                        ? (teal
-                              ? IslandTokens.light.onLeaf
-                              : IslandTokens.light.onSun)
-                        : hover
-                        ? IslandTokens.light.focus
-                        : tokens.focus,
-                    width: states.contains(WidgetState.focused) ? 2 : 1,
-                  )
-                : null,
-          ),
-          child: Center(
-            child: IconTheme(
-              data: IconThemeData(color: ink, size: 14),
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: ink,
-                  fontSize: 13,
-                  height: 1,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                ),
-                child: ExcludeSemantics(child: child),
-              ),
-            ),
+        final hoverInk = selected || !enabled
+            ? restInk
+            : (teal ? IslandTokens.light.link : IslandTokens.light.onSun);
+        // Reference `.item { transition: all .15s ease }`. The hover pair
+        // blends only when both inks are dark (fixed light fills, light host);
+        // otherwise, and for selection/enablement changes (which remount the
+        // blend), fill and ink switch together to avoid unsafe intermediates.
+        final safe =
+            restInk.computeLuminance() < .18 &&
+            hoverInk.computeLuminance() < .18;
+        return _HoverBlend(
+          key: ValueKey((selected, enabled)),
+          hovered: states.contains(WidgetState.hovered),
+          duration: safe && !MediaQuery.disableAnimationsOf(context)
+              ? const Duration(milliseconds: 150)
+              : Duration.zero,
+          builder: (context, t) => itemSurface(
+            tokens,
+            states,
+            selected,
+            t >= .5,
+            Color.lerp(restFill, hoverFill, t)!,
+            Color.lerp(restInk, hoverInk, t)!,
+            child,
           ),
         );
       },
+    );
+  }
+
+  Widget itemSurface(
+    IslandTokens tokens,
+    Set<WidgetState> states,
+    bool selected,
+    bool hover,
+    Color color,
+    Color ink,
+    Widget child,
+  ) {
+    final teal = widget.variant == IslandPaginationVariant.teal;
+    return Container(
+      width: 32,
+      height: 32,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(50),
+        border: states.contains(WidgetState.focused) || selected
+            ? Border.all(
+                color: selected
+                    ? (teal
+                          ? IslandTokens.light.onLeaf
+                          : IslandTokens.light.onSun)
+                    : hover
+                    ? IslandTokens.light.focus
+                    : tokens.focus,
+                width: states.contains(WidgetState.focused) ? 2 : 1,
+              )
+            : null,
+      ),
+      child: Center(
+        child: IconTheme(
+          data: IconThemeData(color: ink, size: 14),
+          child: DefaultTextStyle.merge(
+            style: TextStyle(
+              color: ink,
+              fontSize: 13,
+              height: 1,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+            ),
+            child: ExcludeSemantics(child: child),
+          ),
+        ),
+      ),
     );
   }
 
@@ -430,162 +469,198 @@ class _IslandPaginationState extends State<IslandPagination> {
         focusNode: sizeFocus,
         label: strings.perPage(current.pageSize),
         onActivate: widget.disabled ? null : () => setState(() => open = !open),
-        builder: (_, states) => Container(
-          height: 34,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: widget.disabled
-                ? const Color(0xfff5f5f0)
-                : states.contains(WidgetState.hovered)
-                ? const Color(0xfffffdf7)
-                : Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              width: 2,
-              color: states.contains(WidgetState.focused)
-                  ? IslandTokens.light.focus
-                  : IslandTokens.light.outline,
-            ),
-          ),
-          child: ExcludeSemantics(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 8,
-              children: [
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: Text(
-                    _sizeDisplayLabel(strings.perPage(current.pageSize)),
-                    style: _sizeLabelStyle,
-                  ),
-                ),
-                AnimatedRotation(
-                  turns: open ? .5 : 0,
-                  duration: MediaQuery.disableAnimationsOf(context)
-                      ? Duration.zero
-                      : const Duration(milliseconds: 200),
-                  child: CustomPaint(
-                    size: const Size(10, 10),
-                    painter: _SizeCaret(
-                      open
-                          ? (widget.variant == IslandPaginationVariant.teal
-                                ? IslandTokens.light.link
-                                : IslandTokens.light.warning)
-                          : IslandTokens.light.muted,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        builder: (context, states) => _HoverBlend(
+          // Reference `.sizeTrigger { transition: all .2s ease }`; only the
+          // light fill moves (the dark label and focus outline stay atomic).
+          key: ValueKey(widget.disabled),
+          hovered: !widget.disabled && states.contains(WidgetState.hovered),
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : const Duration(milliseconds: 200),
+          builder: (context, t) => sizeTrigger(strings, states, t),
         ),
       ),
-      panel: FocusTraversalGroup(
-        child: Semantics(
-          container: true,
-          label: strings.pageSize,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              color: const Color(0xffffeea0),
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x1f3d3428),
-                  offset: Offset(0, 6),
-                  blurRadius: 18,
-                ),
-              ],
+      panel: sizePanel(strings),
+    ),
+  );
+
+  Widget sizeTrigger(
+    IslandLocalizations strings,
+    Set<WidgetState> states,
+    double hover,
+  ) => Container(
+    // Grows rather than clipping when a constrained label wraps.
+    constraints: const BoxConstraints(minHeight: 34),
+    padding: const EdgeInsets.symmetric(horizontal: 12),
+    decoration: BoxDecoration(
+      color: widget.disabled
+          ? PaginationColors.sizeTriggerDisabled
+          : Color.lerp(
+              PaginationColors.sizeTrigger,
+              PaginationColors.sizeTriggerHover,
+              hover,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final size in sizes)
-                    ActionSurface(
-                      selected: size == current.pageSize,
-                      onActivate: () {
-                        commit(
-                          IslandPaginationValue(
-                            page: current.page,
-                            pageSize: size,
-                          ),
-                          sizeChanged: true,
-                        );
-                        close(restoreFocus: true);
-                      },
-                      builder: (_, states) {
-                        final highlighted =
-                            states.contains(WidgetState.hovered) ||
-                            states.contains(WidgetState.focused);
-                        return Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            if (size == current.pageSize)
-                              Positioned(
-                                left: 20,
-                                right: 20,
-                                top: 13,
-                                height: 14,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: const Color(0x4dffcc00),
-                                    border: Border.all(
-                                      color: IslandTokens.light.onSun,
-                                    ),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(7),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            if (highlighted)
-                              Positioned(
-                                left: -14,
-                                top: 11,
-                                child: OptionCursor(
-                                  reduced: MediaQuery.disableAnimationsOf(
-                                    context,
-                                  ),
-                                ),
-                              ),
-                            Container(
-                              foregroundDecoration:
-                                  states.contains(WidgetState.focused)
-                                  ? BoxDecoration(
-                                      border: Border.all(
-                                        color: IslandTokens.light.focus,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                    )
-                                  : null,
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Center(
-                                child: Text(
-                                  strings.perPage(size),
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: const Color(0xff725d42),
-                                    fontWeight:
-                                        highlighted || size == current.pageSize
-                                        ? FontWeight.w700
-                                        : FontWeight.w500,
-                                  ),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(
+        width: 2,
+        color: states.contains(WidgetState.focused)
+            ? IslandTokens.light.focus
+            : IslandTokens.light.outline,
+      ),
+    ),
+    child: ExcludeSemantics(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          Flexible(
+            fit: FlexFit.loose,
+            child: Text(
+              _sizeDisplayLabel(strings.perPage(current.pageSize)),
+              style: _sizeLabelStyle,
+            ),
+          ),
+          AnimatedRotation(
+            turns: open ? .5 : 0,
+            duration: MediaQuery.disableAnimationsOf(context)
+                ? Duration.zero
+                : const Duration(milliseconds: 200),
+            child: CustomPaint(
+              size: const Size(10, 10),
+              painter: _SizeCaret(
+                open
+                    ? (widget.variant == IslandPaginationVariant.teal
+                          ? IslandTokens.light.link
+                          : IslandTokens.light.warning)
+                    : IslandTokens.light.muted,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Widget sizePanel(IslandLocalizations strings) => FocusTraversalGroup(
+    child: Semantics(
+      container: true,
+      label: strings.pageSize,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: PaginationColors.sizeMenu,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: const [
+            BoxShadow(
+              color: PaginationColors.sizeMenuShadow,
+              offset: Offset(0, 6),
+              blurRadius: 18,
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final size in sizes)
+                ActionSurface(
+                  selected: size == current.pageSize,
+                  onActivate: () {
+                    commit(
+                      IslandPaginationValue(page: current.page, pageSize: size),
+                      sizeChanged: true,
+                    );
+                    close(restoreFocus: true);
+                  },
+                  builder: (_, states) {
+                    final highlighted =
+                        states.contains(WidgetState.hovered) ||
+                        states.contains(WidgetState.focused);
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        if (size == current.pageSize)
+                          const Positioned(
+                            left: 20,
+                            right: 20,
+                            top: 13,
+                            height: 14,
+                            // Decorative reference pill (selection is also
+                            // carried by weight and semantics); borderless
+                            // like the Select pill bar.
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: PaginationColors.sizeSelectedPill,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(7),
                                 ),
                               ),
                             ),
-                          ],
-                        );
-                      },
-                    ),
-                ],
-              ),
-            ),
+                          ),
+                        if (highlighted)
+                          Positioned(
+                            left: -14,
+                            top: 11,
+                            child: OptionCursor(
+                              reduced: MediaQuery.disableAnimationsOf(context),
+                            ),
+                          ),
+                        Container(
+                          foregroundDecoration:
+                              states.contains(WidgetState.focused)
+                              ? BoxDecoration(
+                                  border: Border.all(
+                                    color: IslandTokens.light.focus,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                )
+                              : null,
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Center(
+                            child: Text(
+                              strings.perPage(size),
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: PaginationColors.text,
+                                fontWeight:
+                                    highlighted || size == current.pageSize
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+            ],
           ),
         ),
       ),
     ),
+  );
+}
+
+/// One hover timeline: reports 0 (rest) .. 1 (hovered) along [duration] with
+/// the reference CSS `ease` curve. Starts settled, so first build never moves.
+class _HoverBlend extends StatelessWidget {
+  const _HoverBlend({
+    super.key,
+    required this.hovered,
+    required this.duration,
+    required this.builder,
+  });
+  final bool hovered;
+  final Duration duration;
+  final Widget Function(BuildContext context, double t) builder;
+  @override
+  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
+    tween: Tween(end: hovered ? 1 : 0),
+    duration: duration,
+    curve: Curves.ease,
+    builder: (context, t, _) => builder(context, t),
   );
 }
 
@@ -703,6 +778,7 @@ class _PaginationLine extends MultiChildRenderObjectWidget {
 // Match the owned CSS inline-flex controls: intrinsic contributions use declared
 // page widths and the size label's word minimum. Once that minimum is reached,
 // page/ellipsis/size cells share proportional shrink; margins never shrink.
+// Below the minimum, cells wrap into runs at their preferred widths.
 // Intrinsic queries do not mount or inspect widgets. Each child is laid out once.
 class _RenderPaginationLine extends RenderBox
     with
@@ -765,13 +841,13 @@ class _RenderPaginationLine extends RenderBox
       for (final child in children) {
         final data = child.parentData! as _PaginationData;
         if (data.flexible) {
+          // Wrapped runs no longer share one line, so each cell keeps its
+          // declared/preferred width (the size label stays unbroken) and is
+          // narrowed only by the run width itself.
           boxes[child] = measure(
             child,
             BoxConstraints.tightFor(
-              width: math.min(
-                data.inset + data.contribution,
-                constraints.maxWidth,
-              ),
+              width: math.min(data.inset + bases[child]!, constraints.maxWidth),
             ),
           );
         }

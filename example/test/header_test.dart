@@ -9,6 +9,8 @@ import 'package:island_gallery/pages/gallery.dart';
 import 'package:island_gallery/pages/home.dart';
 import 'package:island_gallery/shared/theme.dart';
 
+import '../../test/support/fake_clock_only.dart';
+
 void main() {
   for (final width in [375.0, 1440.0]) {
     testWidgets(
@@ -220,6 +222,236 @@ void main() {
     } finally {
       semantics.dispose();
     }
+  });
+
+  group('reference shell', () {
+    Future<void> showPath(
+      WidgetTester tester,
+      String path, {
+      double width = 1440,
+      bool reduced = true,
+    }) async {
+      tester.view.physicalSize = Size(width, 812);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      var current = path;
+      await tester.pumpWidget(
+        MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: galleryTheme(),
+          home: MediaQuery(
+            data: MediaQueryData(
+              size: Size(width, 812),
+              disableAnimations: reduced,
+            ),
+            child: StatefulBuilder(
+              builder: (_, set) => GalleryPage(
+                path: current,
+                onNavigate: (next) => set(() => current = next),
+              ),
+            ),
+          ),
+        ),
+      );
+      if (reduced) {
+        await tester.pumpAndSettle();
+      } else {
+        await tester.pump();
+      }
+    }
+
+    Finder item(String label) => find.widgetWithText(TextButton, label);
+    // The sidebar aside's painted box (its Container margin excluded).
+    Rect aside(WidgetTester tester) => tester.getRect(
+      find
+          .descendant(
+            of: find.byWidgetPredicate(
+              (w) =>
+                  w is Container &&
+                  w.margin == const EdgeInsets.fromLTRB(12, 12, 0, 8),
+            ),
+            matching: find.byType(DecoratedBox),
+          )
+          .first,
+    );
+    BoxDecoration badge(WidgetTester tester, String label) =>
+        tester
+                .widget<Container>(
+                  find
+                      .ancestor(
+                        of: find.descendant(
+                          of: item(label),
+                          matching: find.text('NEW'),
+                        ),
+                        matching: find.byType(Container),
+                      )
+                      .first,
+                )
+                .decoration!
+            as BoxDecoration;
+
+    testWidgets('sidebar items hover without ripple; NEW badge inverts', (
+      tester,
+    ) async {
+      await showPath(tester, '/skill');
+      Color? overlay(String label, Set<WidgetState> states) => tester
+          .widget<TextButton>(item(label))
+          .style!
+          .overlayColor!
+          .resolve(states);
+      expect(
+        overlay('Button 按钮', {WidgetState.hovered}),
+        const Color(0xffd6dff0),
+      );
+      expect(
+        overlay('Skill 介绍', {WidgetState.hovered}),
+        Colors.transparent,
+        reason: 'the active item keeps #B7C6E5',
+      );
+      expect(overlay('Button 按钮', {WidgetState.pressed}), Colors.transparent);
+      expect(
+        tester.widget<TextButton>(item('Button 按钮')).style!.splashFactory,
+        NoSplash.splashFactory,
+      );
+      final active = badge(tester, 'Skill 介绍');
+      expect(active.color, Colors.white);
+      expect(active.gradient, isNull);
+      expect(active.boxShadow!.single.color, const Color(0x26725d42));
+      final inactive = badge(tester, 'Title 标题');
+      expect((inactive.gradient! as LinearGradient).colors, const [
+        Color(0xfffc736d),
+        Color(0xfff7825a),
+      ]);
+      expect(inactive.boxShadow!.single.color, const Color(0x40725d42));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('NEW badge pulses 1.8s unless motion is reduced', (
+      tester,
+    ) async {
+      double scale() => tester
+          .widget<Transform>(
+            find
+                .ancestor(
+                  of: find.descendant(
+                    of: item('Title 标题'),
+                    matching: find.text('NEW'),
+                  ),
+                  matching: find.byType(Transform),
+                )
+                .first,
+          )
+          .transform
+          .getMaxScaleOnAxis();
+      await showPath(tester, '/title');
+      expect(scale(), 1);
+      await tester.pump(const Duration(seconds: 1));
+      expect(scale(), 1);
+
+      await showPath(tester, '/title', reduced: false);
+      expect(scale(), closeTo(1, 1e-6));
+      await tester.pump(const Duration(milliseconds: 900));
+      expect(scale(), closeTo(1.08, 1e-6));
+      await tester.pump(const Duration(milliseconds: 900));
+      expect(scale(), closeTo(1, 1e-6));
+      await tester.pumpWidget(const SizedBox());
+    }, skip: fakeClockOnly);
+
+    testWidgets('desktop sidebar and content follow reference geometry', (
+      tester,
+    ) async {
+      await showPath(tester, '/collapse');
+      expect(aside(tester), const Rect.fromLTRB(12, 12, 232, 812 - 8));
+      final scroll = tester.widget<SingleChildScrollView>(
+        find
+            .ancestor(
+              of: find.byType(IslandTitle).first,
+              matching: find.byType(SingleChildScrollView),
+            )
+            .first,
+      );
+      expect(scroll.padding, const EdgeInsets.fromLTRB(40, 32, 40, 32));
+      // Reference App root arrow cursor plus the sidebar Cursor raindrop.
+      expect(
+        tester
+            .widget<IslandCursor>(
+              find
+                  .ancestor(
+                    of: item('Cursor 光标'),
+                    matching: find.byType(IslandCursor),
+                  )
+                  .first,
+            )
+            .variant,
+        IslandCursorVariant.raindrop,
+      );
+      expect(
+        find.ancestor(
+          of: find.byType(Scaffold),
+          matching: find.byWidgetPredicate(
+            (w) => w is IslandCursor && w.variant == IslandCursorVariant.arrow,
+          ),
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('mobile drawer is the 240px aside over a .35 scrim', (
+      tester,
+    ) async {
+      await showPath(tester, '/collapse', width: 375);
+      final scroll = tester.widget<SingleChildScrollView>(
+        find
+            .ancestor(
+              of: find.byType(IslandTitle).first,
+              matching: find.byType(SingleChildScrollView),
+            )
+            .first,
+      );
+      expect(scroll.padding, const EdgeInsets.all(16));
+      expect(
+        tester.widget<Scaffold>(find.byType(Scaffold)).drawerScrimColor,
+        const Color(0x59000000),
+      );
+      await tester.tap(action('打开导航'));
+      await tester.pumpAndSettle();
+      expect(aside(tester), const Rect.fromLTRB(12, 12, 252, 812 - 8));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('background wallpaper fades over 0.45s and back', (
+      tester,
+    ) async {
+      await showPath(tester, '/title', reduced: false);
+      await tester.tap(item('Background 背景'));
+      await tester.pump();
+      await tester.pump();
+      double opacity() => tester
+          .widget<Opacity>(
+            find
+                .ancestor(
+                  of: find.byType(IslandBackground),
+                  matching: find.byType(Opacity),
+                )
+                .first,
+          )
+          .opacity;
+      final start = opacity();
+      await tester.pump(const Duration(milliseconds: 225));
+      expect(opacity(), allOf(greaterThan(start), lessThan(1)));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(opacity(), 1);
+      await tester.tap(item('Title 标题'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 225));
+      expect(opacity(), allOf(greaterThan(0), lessThan(1)));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+      expect(find.byType(IslandBackground), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    }, skip: fakeClockOnly);
   });
 
   testWidgets('desktop Gallery has no mobile header actions', (tester) async {

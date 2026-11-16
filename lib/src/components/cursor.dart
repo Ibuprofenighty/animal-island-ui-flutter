@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../internal/viewport_overlay.dart';
+import '../foundation/recipes/cursor.dart';
 
 enum IslandCursorVariant { arrow, raindrop }
 
@@ -226,11 +227,11 @@ class _CursorPainter extends CustomPainter {
         ..lineTo(13.8, 15.2)
         ..lineTo(20.5, 15.2)
         ..close();
-      canvas.drawPath(path, Paint()..color = const Color(0xfffff7e6));
+      canvas.drawPath(path, Paint()..color = CursorColors.arrowFill);
       canvas.drawPath(
         path,
         Paint()
-          ..color = const Color(0xff794f27)
+          ..color = CursorColors.arrowStroke
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.2
           ..strokeJoin = StrokeJoin.round,
@@ -246,11 +247,11 @@ class _CursorPainter extends CustomPainter {
         )
         ..cubicTo(25, 18, 16, 6, 16, 6)
         ..close();
-      canvas.drawPath(path, Paint()..color = const Color(0xff74ccff));
+      canvas.drawPath(path, Paint()..color = CursorColors.raindropFill);
       canvas.drawPath(
         path,
         Paint()
-          ..color = const Color(0xff2e86ab)
+          ..color = CursorColors.raindropStroke
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5,
       );
@@ -259,7 +260,7 @@ class _CursorPainter extends CustomPainter {
       canvas.rotate(-18 * math.pi / 180);
       canvas.drawOval(
         Rect.fromCenter(center: Offset.zero, width: 4, height: 6.4),
-        Paint()..color = const Color(0xffdff4ff),
+        Paint()..color = CursorColors.raindropHighlight,
       );
       canvas.restore();
     }

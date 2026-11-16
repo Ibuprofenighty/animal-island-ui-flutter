@@ -4,6 +4,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../foundation/recipes/choice.dart';
 import '../foundation/theme.dart';
 import '../foundation/size.dart';
 import 'action_surface.dart';
@@ -83,6 +84,12 @@ class _ChoiceControlState extends State<ChoiceControl>
     final disabled = widget.onActivate == null;
     final reduced = MediaQuery.disableAnimationsOf(context);
     final tokens = IslandTheme.of(context);
+    final colors = ChoiceColors.of(context, tokens);
+    final labelColor = disabled
+        ? ChoiceColors.disabledLabel
+        : widget.checked
+        ? colors.labelChecked
+        : colors.labelUnchecked;
     return ActionSurface(
       inMutuallyExclusiveGroup: widget.radio,
       button: false,
@@ -103,17 +110,24 @@ class _ChoiceControlState extends State<ChoiceControl>
                 width: 2,
                 offset: 2,
               ),
-              child: Container(
+              // Reference `transition: border-color .25s`; both endpoint
+              // rings reach 3:1, as do their intermediates. Fill and mark
+              // still commit atomically in the painter.
+              child: AnimatedContainer(
+                duration: reduced
+                    ? Duration.zero
+                    : const Duration(milliseconds: 250),
+                curve: Curves.ease,
                 width: extent,
                 height: extent,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: disabled
-                        ? const Color(0xffd4c9b4)
+                        ? ChoiceColors.disabledRing
                         : widget.checked
-                        ? tokens.onLeaf
-                        : tokens.outline,
+                        ? colors.ringChecked
+                        : colors.ringUnchecked,
                     width: 2,
                   ),
                 ),
@@ -124,22 +138,32 @@ class _ChoiceControlState extends State<ChoiceControl>
                     disabled: disabled,
                     reduced: reduced,
                     extent: extent,
-                    fill: tokens.leaf,
-                    mark: tokens.onLeaf,
-                    paper: tokens.paper,
+                    fill: colors.fill,
+                    mark: colors.mark,
+                    paper: colors.paper,
                   ),
                 ),
               ),
             ),
             const SizedBox(width: 8),
             Flexible(
-              child: DefaultTextStyle(
-                style: DefaultTextStyle.of(context).style.copyWith(
-                  fontSize: font,
-                  height: 1.5,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: font * .01,
-                  color: disabled ? const Color(0xffc4b89e) : tokens.ink,
+              // Reference `.label { transition: color .15s }` for the checked
+              // pair only; palette, theme and disabled changes switch at once.
+              child: TweenAnimationBuilder<Color?>(
+                key: ValueKey((colors.labelIdentity, disabled)),
+                tween: ColorTween(end: labelColor),
+                duration: reduced
+                    ? Duration.zero
+                    : const Duration(milliseconds: 150),
+                builder: (context, color, child) => DefaultTextStyle(
+                  style: DefaultTextStyle.of(context).style.copyWith(
+                    fontSize: font,
+                    height: 1.5,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: font * .01,
+                    color: color,
+                  ),
+                  child: child!,
                 ),
                 child: Text(widget.label),
               ),
@@ -177,7 +201,7 @@ class _ChoicePaint extends CustomPainter {
       radius - 2,
       Paint()
         ..color = disabled
-            ? const Color(0xfff0ece2)
+            ? ChoiceColors.disabledFill
             : checked
             ? fill
             : paper,
@@ -205,7 +229,7 @@ class _ChoicePaint extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = disabled ? const Color(0xffc4b89e) : mark
+        ..color = disabled ? ChoiceColors.disabledMark : mark
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round

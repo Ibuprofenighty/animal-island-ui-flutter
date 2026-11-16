@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:animal_island_ui/animal_island_upload_platform.dart';
 
+import '../../shared/palette.dart';
 import '../../shared/story.dart';
 
 class UploadStory extends StatefulWidget {
@@ -225,7 +226,7 @@ class _UploadStoryState extends State<UploadStory> {
                     horizontal: 16,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xfff8f8f0),
+                    color: IslandTokens.light.paper,
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: const Text(
@@ -233,7 +234,7 @@ class _UploadStoryState extends State<UploadStory> {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xff794f27),
+                      color: GalleryPalette.demoStrongInk,
                     ),
                   ),
                 ),
@@ -261,13 +262,15 @@ class _UploadStoryState extends State<UploadStory> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xff794f27),
+                              color: GalleryPalette.demoStrongInk,
                             ),
                           ),
                         ],
                       ),
                       SizedBox(height: 8),
-                      Text('把文件拖进这片空地'),
+                      // Inherits the zone colour; 16 is the reference page's
+                      // inherited body size for this unstyled span.
+                      Text('把文件拖进这片空地', style: TextStyle(fontSize: 16)),
                     ],
                   ),
                 ),

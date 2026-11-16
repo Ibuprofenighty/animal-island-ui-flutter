@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class TooltipStory extends StatelessWidget {
   const TooltipStory({super.key});
@@ -75,7 +76,9 @@ class TooltipStory extends StatelessWidget {
                     TextSpan(text: '钓到'),
                     TextSpan(
                       text: '石头',
-                      style: TextStyle(color: Color(0xffd4834a)),
+                      style: TextStyle(
+                        color: GalleryPalette.tooltipDemoEmphasis,
+                      ),
                     ),
                     TextSpan(text: '了！\n竟然连这种都能钓起来…'),
                   ],
@@ -129,7 +132,7 @@ class TooltipStory extends StatelessWidget {
                         height: 80,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: const Color(0xfff0e8d8),
+                          color: GalleryPalette.codeChip,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
@@ -197,7 +200,10 @@ class TooltipStory extends StatelessWidget {
               width: 194,
               height: 40,
               child: TextField(
-                style: const TextStyle(fontSize: 14, color: Color(0xff725d42)),
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: GalleryPalette.storyInk,
+                ),
                 decoration: InputDecoration(
                   visualDensity: VisualDensity.standard,
                   constraints: const BoxConstraints(minHeight: 40),
@@ -208,18 +214,18 @@ class TooltipStory extends StatelessWidget {
                     vertical: 8,
                   ),
                   filled: true,
-                  fillColor: const Color(0xfff7f3df),
+                  fillColor: GalleryPalette.tooltipDemoInputFill,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50),
                     borderSide: const BorderSide(
-                      color: Color(0xffc4b89e),
+                      color: GalleryPalette.tooltipDemoInputBorder,
                       width: 2,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50),
                     borderSide: const BorderSide(
-                      color: Color(0xffc4b89e),
+                      color: GalleryPalette.tooltipDemoInputBorder,
                       width: 2,
                     ),
                   ),
@@ -259,6 +265,26 @@ IslandTooltip(
   trigger: IslandTooltipTrigger.focus,
   placement: IslandTooltipPlacement.right,
   child: TextField(),
+)
+IslandTooltip(
+  message: '小岛风格',
+  variant: IslandTooltipVariant.island,
+  child: IslandButton(onPressed: action, child: Text('island')),
+)
+IslandTooltip(
+  message: '无边框',
+  variant: IslandTooltipVariant.island,
+  bordered: false,
+  child: IslandButton(onPressed: action, child: Text('borderless')),
+)
+IslandTooltip(
+  message: '底部起始对齐',
+  placement: IslandTooltipPlacement.bottomStart,
+  child: IslandButton(onPressed: action, child: Text('bottomStart')),
+)
+IslandTooltip(
+  message: '第一行\\n第二行：多行提示',
+  child: IslandButton(onPressed: action, child: Text('多行')),
 )"""),
       const StoryApi(
         rows: [

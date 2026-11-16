@@ -39,9 +39,9 @@ class _LoadingStoryState extends State<LoadingStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Loading',
-    tags: ["全屏落雪", "清晰退出"],
+    tags: ["全屏落雪", "渐变消失"],
     children: [
-      const StoryLabel('基础播放 — 全屏落雪覆盖 2.4s；雪花渐隐，提示与底板保持清晰直至移除'),
+      const StoryLabel('基础播放 — 点击后全屏落雪覆盖 2.4s，结束时渐变消失'),
       Wrap(
         spacing: 12,
         runSpacing: 12,
@@ -49,7 +49,7 @@ class _LoadingStoryState extends State<LoadingStory> {
           button('纯落雪', () => play()),
           button('带提示文字', () => play(text: '正在连接岛屿…')),
           button('delay 300ms', () => play(text: '等雪停…', delayMs: 300)),
-          button('fadeDuration 1.2s', () => play(text: '雪花缓慢退场')),
+          button('fadeDuration 1.2s', () => play(text: '慢速渐隐')),
         ],
       ),
       const SizedBox(height: 20),
@@ -88,7 +88,7 @@ IslandLoading(active: active, fadeDuration: Duration(milliseconds: 1200))"""),
         active: active,
         tip: tip == null ? null : Text(tip!),
         delay: delay,
-        fadeDuration: Duration(milliseconds: tip == '雪花缓慢退场' ? 1200 : 600),
+        fadeDuration: Duration(milliseconds: tip == '慢速渐隐' ? 1200 : 600),
       ),
     ],
   );

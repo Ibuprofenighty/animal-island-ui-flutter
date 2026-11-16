@@ -10,6 +10,65 @@ Widget host(Widget child) => MaterialApp(
   home: IslandDrawerHost(child: Scaffold(body: child)),
 );
 void main() {
+  testWidgets('Escape closes an open drawer after focus leaves its panel', (
+    t,
+  ) async {
+    var closes = 0;
+    var open = true;
+    late StateSetter update;
+    // The open drawer excludes its host's content from focus, so the focus
+    // that leaves the panel lands outside the host, as app chrome would.
+    final outside = FocusNode(debugLabel: 'outside');
+    addTearDown(outside.dispose);
+    await t.pumpWidget(
+      MaterialApp(
+        home: Column(
+          children: [
+            Focus(focusNode: outside, child: const SizedBox(height: 1)),
+            Expanded(
+              child: IslandDrawerHost(
+                child: Scaffold(
+                  body: StatefulBuilder(
+                    builder: (_, set) {
+                      update = set;
+                      return IslandDrawer(
+                        open: open,
+                        onClose: () => closes++,
+                        title: const Text('Panel'),
+                        child: const Text('Body'),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final panelScope = FocusScope.of(t.element(find.text('Body')));
+    outside.requestFocus();
+    await t.pump();
+    expect(panelScope.hasFocus, isFalse);
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(closes, 1);
+    // Inside the panel the scoped handler alone closes, once.
+    Focus.of(t.element(find.text('×').first)).requestFocus();
+    await t.pump();
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(closes, 2);
+    update(() => open = false);
+    await t.pumpAndSettle();
+    outside.requestFocus();
+    await t.pump();
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(closes, 2);
+    await t.pumpWidget(const SizedBox());
+    await t.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(closes, 2);
+  });
+
   testWidgets('empty drawer consumes Tab without entering its excluded host', (
     t,
   ) async {
@@ -314,5 +373,47 @@ void main() {
     }
     await t.sendKeyEvent(LogicalKeyboardKey.escape);
     expect(closes, 1);
+  });
+
+  testWidgets('reduced motion opens and closes when the caller rebuilds', (
+    t,
+  ) async {
+    var open = false;
+    late StateSetter update;
+    await t.pumpWidget(
+      MaterialApp(
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child!,
+        ),
+        home: IslandDrawerHost(
+          child: Scaffold(
+            body: StatefulBuilder(
+              builder: (_, set) {
+                update = set;
+                return IslandDrawer(
+                  open: open,
+                  onClose: () => set(() => open = false),
+                  title: const Text('Panel'),
+                  child: const Text('Body'),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(find.text('Body'), findsNothing);
+    update(() => open = true);
+    await t.pump();
+    await t.pump();
+    expect(t.takeException(), isNull);
+    expect(find.text('Body'), findsOneWidget);
+    update(() => open = false);
+    await t.pump();
+    await t.pump();
+    expect(t.takeException(), isNull);
+    expect(find.text('Body'), findsNothing);
   });
 }

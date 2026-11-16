@@ -1,3 +1,4 @@
+import '../foundation/recipes/tag.dart';
 import '../foundation/theme.dart';
 
 import 'package:flutter/material.dart';
@@ -41,8 +42,11 @@ class IslandTag extends StatelessWidget {
     final solid = variant == IslandTagVariant.solid;
     final soft = variant == IslandTagVariant.soft;
     final neutral = colorway == IslandColorway.neutral;
+    // Transparent variants keep their own hue: readable per-hue text for the
+    // declared surface brightness, reference accent contour. Solid borders
+    // equal their fill, as in the reference.
     final color = !solid && !soft
-        ? IslandTheme.of(context).ink
+        ? outlineInk(colorway, Theme.of(context).brightness)
         : solid && !neutral
         ? colorway.onAccent
         : colorway.ink;
@@ -50,13 +54,19 @@ class IslandTag extends StatelessWidget {
         ? colorway.soft
         : solid
         ? neutral
-              ? const Color(0xfff7f3df)
+              ? TagColors.neutralSolidFill
               : colorway.accent
         : Colors.transparent;
     final borderWidth = IslandTheme.borderWidth(context, 1.5);
     final side = BorderSide(
       width: borderWidth,
-      color: soft ? Colors.transparent : color,
+      color: soft
+          ? Colors.transparent
+          : solid
+          ? neutral
+                ? TagColors.neutralSolidBorder
+                : colorway.accent
+          : outlineBorder(colorway),
     );
     final (height, font, pad) = switch (size) {
       IslandSize.small => (24.0, 12.0, 10.0),
@@ -97,7 +107,7 @@ class IslandTag extends StatelessWidget {
             shadows: states.contains(WidgetState.hovered)
                 ? const [
                     BoxShadow(
-                      color: Color(0x1f3d3428),
+                      color: TagColors.hoverShadow,
                       offset: Offset(0, 2),
                       blurRadius: 6,
                     ),
@@ -188,9 +198,10 @@ class IslandTag extends StatelessWidget {
                               ),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
+                                // Reference resting disc rgb(149 143 143 / 8%).
                                 color: closeStates.contains(WidgetState.hovered)
                                     ? colorway.soft
-                                    : Colors.transparent,
+                                    : TagColors.closeDisc,
                               ),
                               child: Center(
                                 child: ExcludeSemantics(

@@ -361,6 +361,45 @@ void main() {
       expect(textColor(t), Colors.purple);
     },
   );
+  testWidgets('danger default border follows reference rest/hover/active', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(
+        IslandButton(
+          danger: true,
+          onPressed: () {},
+          child: const Text('Action'),
+        ),
+        reduced: true,
+      ),
+    );
+    Color side() => t
+        .widgetList<Container>(
+          find.descendant(
+            of: find.byType(IslandButton),
+            matching: find.byType(Container),
+          ),
+        )
+        .map((c) => c.decoration)
+        .whereType<ShapeDecoration>()
+        .map((d) => (d.shape as OutlinedBorder).side)
+        .firstWhere((s) => s != BorderSide.none)
+        .color;
+    expect(side(), const Color(0xffe05a5a));
+    final mouse = await t.createGesture(kind: ui.PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(t.getCenter(find.text('Action')));
+    await t.pump();
+    // #e87878 deepened in hue to 3:1 on the button fill.
+    expect(side(), const Color(0xffdd6e6f));
+    await mouse.down(t.getCenter(find.text('Action')));
+    await t.pump();
+    expect(side(), const Color(0xffc94444));
+    await mouse.up();
+    await t.pump();
+  });
 }
 
 class _Child extends StatefulWidget {

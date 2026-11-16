@@ -54,11 +54,21 @@ void registerCarouselConsumerCaptures({String? captureDirectory}) {
             precacheImage(AssetImage('assets/photos/$name'), context),
         ]);
       });
-      await t.pumpAndSettle();
+      // This test samples real motion, so it keeps animations on. The
+      // Gallery sidebar NEW badge pulses forever (reference menuBadgePulse),
+      // so pumpAndSettle can never return: pump bounded spans that cover the
+      // page and Carousel (300ms) timelines but stay below the 3.5s autoplay.
+      Future<void> settle() async {
+        for (var i = 0; i < 6; i++) {
+          await t.pump(const Duration(milliseconds: 100));
+        }
+      }
+
+      await settle();
       final carousel = find.byType(IslandCarousel<String>);
       expect(carousel, findsOneWidget);
       await t.ensureVisible(carousel);
-      await t.pumpAndSettle();
+      await settle();
       final next = IslandLocalizations.of(t.element(carousel)).nextSlide;
       final arrow = find.descendant(
         of: carousel,
@@ -113,7 +123,7 @@ void registerCarouselConsumerCaptures({String? captureDirectory}) {
         previous = ms;
         await capture('enter', ms);
       }
-      await t.pumpAndSettle();
+      await settle();
       await capture('settled', 300);
       expect(t.takeException(), isNull);
       await t.pumpWidget(const SizedBox());

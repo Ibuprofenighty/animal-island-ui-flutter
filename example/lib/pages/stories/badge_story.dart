@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class BadgeStory extends StatelessWidget {
   const BadgeStory({super.key});
@@ -79,7 +80,7 @@ class BadgeStory extends StatelessWidget {
             '一段文字',
             style: TextStyle(
               fontSize: 14,
-              color: Color(0xff725d42),
+              color: GalleryPalette.storyInk,
               fontWeight: FontWeight.w600,
             ),
           ),

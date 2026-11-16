@@ -17,7 +17,7 @@
     "localization": "Reference Chinese Gallery; host content and inherited directionality.",
     "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
-    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. On light surfaces the form text default and item labels use the reference fixed rgba(0,0,0,.85), independent of an enclosing card's passive ink; dark surfaces keep theme ink. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
     "performance": "Platform profiling required before release.",
     "migration": "Fresh implementation; no old-library compatibility track."
   },

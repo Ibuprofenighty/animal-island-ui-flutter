@@ -1,4 +1,8 @@
+import 'dart:ui' show Brightness;
+
 import 'package:flutter/painting.dart';
+
+import 'palette.dart';
 
 /// Fixed product color pairs. Pastel fills retain the reference; information
 /// colors incorporate the approved accessibility differences.
@@ -31,6 +35,75 @@ enum IslandColorway {
   Color get ink => Color(_ink);
   Color get onAccent => Color(_onAccent);
 }
+
+// Transparent (outlined/dashed) Tag text on the product paper surfaces, in
+// enum order. Each is the reference `.color-<c>-outlined` hue (the accent;
+// neutral #8f734f) moved along OKLCH lightness only until it reaches 4.5:1 on
+// every light paper (white, paper, input surface, card and pattern papers) or
+// the dark paper; reference values that already pass are kept unchanged.
+const _outlineInkLight = <int>[
+  0xff816541,
+  0xff9d5461,
+  0xff884ebb,
+  0xff5364b2,
+  0xff856500,
+  0xffa25529,
+  0xff1d7761,
+  0xff3d763e,
+  0xffbe3a3a,
+  0xff696e02,
+  0xff736b02,
+  0xff7c663e,
+  0xffa25338,
+];
+const _outlineInkDark = <int>[
+  0xffb89b75,
+  0xfff8a6b2,
+  0xffc086f8,
+  0xff889df0,
+  0xfff7cd67,
+  0xffe59266,
+  0xff82d5bb,
+  0xff8ac68a,
+  0xfffe756f,
+  0xffd1da49,
+  0xffecdf52,
+  0xffb49d73,
+  0xffe18c6f,
+];
+
+/// Text color of a transparent Tag for the declared surface [brightness].
+Color outlineInk(IslandColorway value, Brightness brightness) => Color(
+  (brightness == Brightness.dark
+      ? _outlineInkDark
+      : _outlineInkLight)[value.index],
+);
+
+/// Reference outlined/dashed Tag border: the accent itself (neutral #c4b89e).
+/// The text, not this decorative contour, identifies the tag.
+Color outlineBorder(IslandColorway value) =>
+    value == IslandColorway.neutral ? Primitive.sand786 : value.accent;
+
+// Badge dot fill: the accent moved along OKLCH lightness only until it keeps
+// 3:1 against the cream ring and the light/dark papers (brown already does).
+const _dotFill = <int>[
+  0xff998a70,
+  0xffc37682,
+  0xffac72e2,
+  0xff7488d9,
+  0xffae8609,
+  0xffc9784d,
+  0xff479a82,
+  0xff5f9a60,
+  0xffe7605c,
+  0xff8c9202,
+  0xff998e03,
+  0xff9a835a,
+  0xffc9775a,
+];
+
+/// The status-dot graphic for [value]; a necessary graphic at 3:1.
+Color dotFill(IslandColorway value) => Color(_dotFill[value.index]);
 
 // Shared paper colors used by Card patterns and Image frames.
 (Color, Color, Color) paperPalette(IslandColorway value) => switch (value) {
@@ -102,18 +175,18 @@ enum IslandColorway {
 };
 
 // Title fronts, backs, folds and their readable default foreground.
-const titlePalette = <(int, int, int, int)>[
-  (0xff27d039, 0xff20992a, 0xff115017, 0xff115017),
-  (0xfff8a6b2, 0xffe06880, 0xffa03060, 0xff7c254b),
-  (0xffb77dee, 0xff9050d0, 0xff5a1a9a, 0xff431373),
-  (0xff889df0, 0xff5068d8, 0xff2030a0, 0xff1d2b90),
-  (0xfff7cd67, 0xffd4a030, 0xff8a6010, 0xff625039),
-  (0xffe59266, 0xffc06a30, 0xff7a3a10, 0xff5a2a0c),
-  (0xff82d5bb, 0xff40a880, 0xff186048, 0xff155640),
-  (0xff8ac68a, 0xff509050, 0xff205020, 0xff205020),
-  (0xfffc736d, 0xffd43030, 0xff900010, 0xff6a000c),
-  (0xffd1da49, 0xff90a010, 0xff485800, 0xff3d5a1a),
-  (0xffecdf52, 0xffc0b010, 0xff706800, 0xff69563d),
-  (0xff9a835a, 0xff705830, 0xff3a2810, 0xff2a1d0c),
-  (0xffe18c6f, 0xffb85a30, 0xff6a2a10, 0xff5a240e),
+const titlePalette = <(Color, Color, Color, Color)>[
+  (Color(0xff27d039), Color(0xff20992a), Color(0xff115017), Color(0xff115017)),
+  (Color(0xfff8a6b2), Color(0xffe06880), Color(0xffa03060), Color(0xff7c254b)),
+  (Color(0xffb77dee), Color(0xff9050d0), Color(0xff5a1a9a), Color(0xff431373)),
+  (Color(0xff889df0), Color(0xff5068d8), Color(0xff2030a0), Color(0xff1d2b90)),
+  (Color(0xfff7cd67), Color(0xffd4a030), Color(0xff8a6010), Color(0xff625039)),
+  (Color(0xffe59266), Color(0xffc06a30), Color(0xff7a3a10), Color(0xff5a2a0c)),
+  (Color(0xff82d5bb), Color(0xff40a880), Color(0xff186048), Color(0xff155640)),
+  (Color(0xff8ac68a), Color(0xff509050), Color(0xff205020), Color(0xff205020)),
+  (Color(0xfffc736d), Color(0xffd43030), Color(0xff900010), Color(0xff6a000c)),
+  (Color(0xffd1da49), Color(0xff90a010), Color(0xff485800), Color(0xff3d5a1a)),
+  (Color(0xffecdf52), Color(0xffc0b010), Color(0xff706800), Color(0xff69563d)),
+  (Color(0xff9a835a), Color(0xff705830), Color(0xff3a2810), Color(0xff2a1d0c)),
+  (Color(0xffe18c6f), Color(0xffb85a30), Color(0xff6a2a10), Color(0xff5a240e)),
 ];

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 const _palettes = <(IslandPalette, String, String, IslandColorway)>[
   (IslandPalette.green, '默认绿', 'default', IslandColorway.green),
@@ -165,8 +166,8 @@ class _TitleStoryState extends State<TitleStory> {
       const _TitleDemoBox(
         tone: 5,
         child: Wrap(
-          spacing: 24,
-          runSpacing: 24,
+          spacing: 40,
+          runSpacing: 28,
           children: [
             IslandTitle(
               variant: IslandTitleVariant.layer,
@@ -185,8 +186,8 @@ class _TitleStoryState extends State<TitleStory> {
       const _TitleDemoBox(
         tone: 2,
         child: Wrap(
-          spacing: 24,
-          runSpacing: 24,
+          spacing: 40,
+          runSpacing: 28,
           children: [
             IslandTitle(
               variant: IslandTitleVariant.tab,
@@ -216,15 +217,7 @@ class _TitleStoryState extends State<TitleStory> {
   );
 }
 
-// These are Gallery demo backgrounds, not alternate Title implementations.
-const _tones = <(Color, Color, Color, Color)>[
-  (Color(0xffddf0fa), Color(0x2650aae6), Color(0x1a8cd2fa), Color(0xff90cce8)),
-  (Color(0xfffdf3d8), Color(0x26dcb450), Color(0x1ff0d278), Color(0xffe8d090)),
-  (Color(0xffede8f8), Color(0x26a078e6), Color(0x1fc8a0fa), Color(0xffc0a8e8)),
-  (Color(0xfffce8e0), Color(0x26f0785a), Color(0x1fffaa8c), Color(0xffe8b0a0)),
-  (Color(0xffd8f5f0), Color(0x2e3cbeaa), Color(0x1f78e6d2), Color(0xff88d8c8)),
-  (Color(0xffe8f5d8), Color(0x2e78c850), Color(0x1fb4e678), Color(0xffb8d890)),
-];
+const _tones = GalleryPalette.titleDemoTones;
 
 class _TitleDemoBox extends StatelessWidget {
   const _TitleDemoBox({required this.tone, required this.child});

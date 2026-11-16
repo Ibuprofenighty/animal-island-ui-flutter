@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import '../../shared/palette.dart';
 import '../../shared/story.dart';
 
 class CodeStory extends StatelessWidget {
@@ -31,18 +32,50 @@ class CodeStory extends StatelessWidget {
         margin: EdgeInsets.zero,
         child: const IslandCodeBlock(
           code: "IslandCodeBlock(\n  code: codeString,\n  style: IslandCodeBlockStyle(backgroundColor: Color(0xff242c46)),\n  borderRadius: BorderRadius.all(Radius.circular(5)),\n)",
-          style: IslandCodeBlockStyle(backgroundColor: Color(0xff242c46)),
+          style: IslandCodeBlockStyle(
+            backgroundColor: GalleryPalette.codeBlockDemoBackground,
+          ),
           borderRadius: BorderRadius.all(Radius.circular(5)),
         ),
       ),
-      const StoryCode("const IslandCodeBlock(code: 'final value = 42;')"),
+      // Reference usage sample: basic use plus custom style, adapted to Dart.
+      const StoryCode(
+        r"""import 'package:animal_island_ui/animal_island_ui.dart';
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      // 基础用法
+      const IslandCodeBlock(
+        code: '''
+import 'package:animal_island_ui/animal_island_ui.dart';
+
+// 默认 © 2026 All Rights Reserved.
+const IslandFooter();
+// 自定义文案
+const IslandFooter(text: 'Acme Ltd.');
+''',
+      ),
+      // 自定义样式
+      IslandCodeBlock(
+        code: codeString,
+        style: const IslandCodeBlockStyle(backgroundColor: Color(0xff242c46)),
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+      ),
+    ],
+  );
+}""",
+      ),
       const StoryApi(
         rows: [
           ('code', '代码字符串', 'String', 'required'),
           ('language', '高亮语言', 'IslandCodeLanguage', 'dart'),
           ('style', '完整表面、语法角色与复制状态配方；见组件契约', 'IslandCodeBlockStyle?', 'null'),
           ('borderRadius', '圆角', 'BorderRadius?', 'null'),
-          ('margin', '外边距', 'EdgeInsetsGeometry', 'vertical: 14'),
+          ('margin', '外边距', 'EdgeInsetsGeometry', 'vertical: 16'),
           ('padding', '内容内边距；显式值需给复制按钮留出空间', 'EdgeInsetsGeometry?', 'null'),
           ('copyable', '显示复制按钮', 'bool', 'true'),
           ('onCopied', '复制成功回调', 'ValueChanged<String>?', 'null'),

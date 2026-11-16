@@ -1,4 +1,4 @@
-import 'package:flutter/rendering.dart' show OverflowBoxFit;
+import 'package:flutter/rendering.dart';
 
 import '../internal/content_scope.dart';
 import '../foundation/theme.dart';
@@ -176,13 +176,16 @@ class _IslandCountdownState extends State<IslandCountdown> {
                   0,
                   parts[index].$2.contains(RegExp('[:：]')) ? -font * .08 : 0,
                 ),
+                // Reference `.colon` keeps 900 at the digit size; other
+                // literals are `.sep` at weight 700 and the body size.
                 child: Text(
                   parts[index].$2,
-                  style: digitStyle.copyWith(
-                    fontSize: parts[index].$2.contains(RegExp('[:：]'))
-                        ? font
-                        : bodyFont,
-                  ),
+                  style: parts[index].$2.contains(RegExp('[:：]'))
+                      ? digitStyle
+                      : digitStyle.copyWith(
+                          fontSize: bodyFont,
+                          fontWeight: FontWeight.w700,
+                        ),
                 ),
               ),
           ],
@@ -193,26 +196,72 @@ class _IslandCountdownState extends State<IslandCountdown> {
       value: parts.map((p) => p.$2).join(),
       child: ExcludeSemantics(child: group),
     );
-    return NumberSurface(
-      island: island,
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 8,
-        runSpacing: 8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          if (widget.prefix != null)
-            ContentScope(
-              textStyle: TextStyle(
-                color: IslandTokens.light.muted,
-                fontSize: bodyFont,
-                fontWeight: FontWeight.w600,
+    return _FitContent(
+      child: NumberSurface(
+        island: island,
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            if (widget.prefix != null)
+              ContentScope(
+                textStyle: TextStyle(
+                  color: IslandTokens.light.muted,
+                  fontSize: bodyFont,
+                  fontWeight: FontWeight.w600,
+                ),
+                child: widget.prefix!,
               ),
-              child: widget.prefix!,
-            ),
-          group,
-        ],
+            group,
+          ],
+        ),
       ),
     );
+  }
+}
+
+/// CSS `width: fit-content` for the reference `.countdown` surface: it hugs
+/// its single-run content, and once that run no longer fits (so the narrow
+/// `flex-wrap: wrap` applies) it takes the full available width, with the
+/// wrapped runs centred inside it.
+class _FitContent extends SingleChildRenderObjectWidget {
+  const _FitContent({required super.child});
+  @override
+  RenderObject createRenderObject(BuildContext context) => _RenderFitContent();
+}
+
+class _RenderFitContent extends RenderProxyBox {
+  BoxConstraints _resolve(
+    BoxConstraints constraints,
+    Size Function(BoxConstraints) measure,
+  ) {
+    if (!constraints.hasBoundedWidth) return constraints;
+    final single = measure(
+      constraints.copyWith(minWidth: 0, maxWidth: double.infinity),
+    );
+    return single.width > constraints.maxWidth
+        ? constraints.tighten(width: constraints.maxWidth)
+        : constraints;
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final box = child!;
+    return constraints.constrain(
+      box.getDryLayout(_resolve(constraints, box.getDryLayout)),
+    );
+  }
+
+  @override
+  void performLayout() {
+    final box = child!;
+    final resolved = _resolve(constraints, (c) {
+      box.layout(c, parentUsesSize: true);
+      return box.size;
+    });
+    box.layout(resolved, parentUsesSize: true);
+    size = constraints.constrain(box.size);
   }
 }

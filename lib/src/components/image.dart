@@ -1,5 +1,6 @@
 import '../foundation/dialog_route.dart';
 import '../internal/focus_outline.dart';
+import '../foundation/recipes/image.dart';
 import '../foundation/theme.dart';
 import '../internal/owned_route.dart';
 
@@ -91,7 +92,7 @@ class _IslandImageState extends State<IslandImage> {
     final source = widget.image, alt = widget.alt;
     final next = IslandDialogRoute<void>(
       context: context,
-      barrierColor: const Color(0x8c000000),
+      barrierColor: ImageColors.previewBarrier,
       barrierDismissible: true,
       barrierLabel: strings.closePreview,
       traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
@@ -120,7 +121,7 @@ class _IslandImageState extends State<IslandImage> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: const [
                         BoxShadow(
-                          color: Color(0x8c2b2118),
+                          color: ImageColors.previewShadow,
                           offset: Offset(0, 12),
                           blurRadius: 40,
                         ),
@@ -167,16 +168,16 @@ class _IslandImageState extends State<IslandImage> {
                             width: 2,
                             offset: 2,
                             backingColor: states.contains(WidgetState.focused)
-                                ? const Color(0xffd8dce2)
+                                ? ImageColors.closeFill
                                 : null,
                           ),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: states.contains(WidgetState.hovered)
-                                ? const Color(0xffc4c9d0)
-                                : const Color(0xffd8dce2),
+                                ? ImageColors.closeHoverFill
+                                : ImageColors.closeFill,
                             border: Border.all(
-                              color: const Color(0xbfffffff),
+                              color: ImageColors.closeBorder,
                               width: IslandTheme.borderWidth(context, 1.5),
                             ),
                           ),
@@ -219,11 +220,11 @@ class _IslandImageState extends State<IslandImage> {
         ? 14.0
         : 12.0;
     final color = stamp
-        ? const Color(0xfffbfaf5)
+        ? ImageColors.stampPaper
         : normal
         ? Colors.transparent
         : widget.colorway == null
-        ? Colors.white
+        ? ImageColors.framePaper
         : paperPalette(widget.colorway!).$1;
     final radius = normal
         ? 12.0
@@ -295,14 +296,18 @@ class _IslandImageState extends State<IslandImage> {
             child: ExcludeSemantics(
               child: Text(
                 widget.stampYear!,
+                // Reference white .88 with its rgba(0,0,0,.55) text shadow.
+                // The caller photo is unknown, so the shadow ink backs the
+                // glyphs at the least alpha (.58) that keeps 4.5:1 over any
+                // photo pixel, white included.
                 style: const TextStyle(
                   fontSize: 8,
                   letterSpacing: 1.44,
-                  color: Colors.white,
-                  backgroundColor: Color(0xff2b2118),
+                  color: ImageColors.stampYear,
+                  backgroundColor: ImageColors.stampYearBacking,
                   shadows: [
                     Shadow(
-                      color: Color(0x8c000000),
+                      color: ImageColors.stampYearShadow,
                       offset: Offset(0, 1),
                       blurRadius: 3,
                     ),
@@ -329,19 +334,19 @@ class _IslandImageState extends State<IslandImage> {
           boxShadow: normal
               ? const [
                   BoxShadow(
-                    color: Color(0x4032325d),
+                    color: ImageColors.normalShadowKey,
                     offset: Offset(0, 13),
                     blurRadius: 27,
                     spreadRadius: -5,
                   ),
                   BoxShadow(
-                    color: Color(0x4d000000),
+                    color: ImageColors.normalShadowAmbient,
                     offset: Offset(0, 8),
                     blurRadius: 16,
                     spreadRadius: -8,
                   ),
                   BoxShadow(
-                    color: Color(0x08000000),
+                    color: ImageColors.normalShadowTop,
                     offset: Offset(0, -6),
                     blurRadius: 16,
                     spreadRadius: -6,
@@ -349,7 +354,7 @@ class _IslandImageState extends State<IslandImage> {
                 ]
               : const [
                   BoxShadow(
-                    color: Color(0x14000000),
+                    color: ImageColors.frameShadow,
                     offset: Offset(0, 8),
                     blurRadius: 14,
                   ),
@@ -484,7 +489,7 @@ class _Halftone extends CustomPainter {
   const _Halftone();
   @override
   void paint(Canvas c, Size s) {
-    final paint = Paint()..color = const Color(0x1412121c);
+    final paint = Paint()..color = ImageColors.halftoneDot;
     for (double x = 2; x < s.width; x += 4)
       for (double y = 2; y < s.height; y += 4)
         c.drawCircle(Offset(x, y), .6, paint);

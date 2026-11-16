@@ -59,6 +59,15 @@ void main() {
         await tester.pump(const Duration(milliseconds: 600));
       }
 
+      // Bounded settle for motion-enabled sections: the sidebar NEW badge
+      // pulses forever (reference behaviour), so pumpAndSettle never settles.
+      Future<void> settleMotion() async {
+        await tester.pump();
+        for (var i = 0; i < 10; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+
       Future<void> readyVisibleImages() async {
         final viewport = Offset.zero & tester.getSize(find.byKey(boundaryKey));
         final images = find.byType(Image).evaluate().where((element) {
@@ -400,19 +409,11 @@ void main() {
         '底部抽屉': '快捷操作',
         '关闭景深': '无景深',
       }.entries) {
-        await tester.pumpAndSettle(
-          const Duration(milliseconds: 100),
-          EnginePhase.sendSemanticsUpdate,
-          const Duration(seconds: 5),
-        );
+        await settleMotion();
         final trigger = find.widgetWithText(IslandButton, entry.key).first;
         expect(trigger.hitTestable(), findsOneWidget, reason: entry.key);
         await tester.tap(trigger);
-        await tester.pumpAndSettle(
-          const Duration(milliseconds: 100),
-          EnginePhase.sendSemanticsUpdate,
-          const Duration(seconds: 5),
-        );
+        await settleMotion();
         expect(find.text(entry.value), findsOneWidget, reason: entry.key);
         expect(
           find.byWidgetPredicate((w) => w is IslandDrawer && w.open),
@@ -426,13 +427,13 @@ void main() {
             kind: ui.PointerDeviceKind.mouse,
           );
           await drawerMouse.addPointer(location: const Offset(1200, 400));
-          await tester.pumpAndSettle();
+          await settleMotion();
           await capture('drawer-cursor-panel');
           await tester.tap(find.text(entry.value));
-          await tester.pumpAndSettle();
+          await settleMotion();
           expect(find.text(entry.value), findsOneWidget);
           await drawerMouse.moveTo(const Offset(500, 500));
-          await tester.pumpAndSettle();
+          await settleMotion();
           await capture('drawer-cursor-mask');
           await tester.tapAt(const Offset(500, 500));
           await drawerMouse.removePointer();
@@ -452,11 +453,7 @@ void main() {
         } else {
           await tester.sendKeyEvent(LogicalKeyboardKey.escape);
         }
-        await tester.pumpAndSettle(
-          const Duration(milliseconds: 100),
-          EnginePhase.sendSemanticsUpdate,
-          const Duration(seconds: 5),
-        );
+        await settleMotion();
         expect(find.text(entry.value), findsNothing, reason: entry.key);
         expect(
           find.byWidgetPredicate((w) => w is IslandDrawer && w.open),
@@ -709,11 +706,11 @@ void main() {
       for (final entry in [
         ('异形 Modal', 'game', 217.0),
         ('基础 Modal', 'basic', 217.0),
-        ('带标题 Modal', 'title', 266.0),
-        ('自定义 Footer', 'custom', 234.0),
-        ('关闭打字机效果', 'weather', 234.0),
-        ('浅色遮罩', 'light', 234.0),
-        ('深色遮罩', 'dark', 266.0),
+        ('带标题 Modal', 'title', 262.0),
+        ('自定义 Footer', 'custom', 230.0),
+        ('关闭打字机效果', 'weather', 230.0),
+        ('浅色遮罩', 'light', 230.0),
+        ('深色遮罩', 'dark', 262.0),
       ]) {
         final trigger = find.widgetWithText(IslandButton, entry.$1);
         if (trigger.hitTestable().evaluate().isEmpty)
@@ -912,9 +909,12 @@ void main() {
         tester.getRect(narrowFields.at(1)),
         const Rect.fromLTWH(58, 505, 140, 41),
       );
+      // DESIGN#gallery-parent-layout: below the pair's combined 296px the
+      // second trigger wraps under the first with the 16px gap, inside its
+      // dashed demo box (the reference overflows it at this width).
       expect(
         tester.getRect(narrowFields.at(2)),
-        const Rect.fromLTWH(214, 505, 140, 41),
+        const Rect.fromLTWH(58, 505 + 41 + 16, 140, 41),
       );
       await capture('select-375-open');
       expect(tester.takeException(), isNull, reason: 'select-375-open');
@@ -981,7 +981,7 @@ void main() {
           matching: find.byType(ClipPath),
         );
         expect(tester.getSize(clip).width, 343);
-        if (label == '带标题 Modal') expect(tester.getSize(clip).height, 330);
+        if (label == '带标题 Modal') expect(tester.getSize(clip).height, 326);
         await capture('modal-375-$label');
         await tester.tap(
           find.widgetWithText(

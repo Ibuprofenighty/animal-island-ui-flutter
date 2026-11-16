@@ -1,4 +1,3 @@
-import '../internal/surface_motion.dart';
 import '../foundation/theme.dart';
 
 import 'dart:async';
@@ -10,6 +9,7 @@ import '../foundation/size.dart';
 import '../internal/content_scope.dart';
 import '../internal/number_surface.dart';
 import '../internal/number_plate.dart';
+import '../foundation/recipes/count_up.dart';
 
 enum IslandCountUpVariant { normal, island }
 
@@ -40,7 +40,7 @@ class IslandCountUp extends StatefulWidget {
     this.decimalPlaces,
     this.decimalSeparator = '.',
     this.thousandsSeparator = '',
-    this.curve = Curves.easeOutCubic,
+    this.curve = const _EaseOutCubic(),
     this.updateInterval = Duration.zero,
     this.prefix,
     this.suffix,
@@ -62,6 +62,9 @@ class IslandCountUp extends StatefulWidget {
   final bool isCounting, bordered, celebrate;
   final int? decimalPlaces;
   final String decimalSeparator, thousandsSeparator;
+
+  /// Maps timeline progress to value progress. Defaults to the reference
+  /// `easeOutCubic`, exactly `1 - (1 - t)^3`; any [Curve] may be supplied.
   final Curve curve;
   final Widget? prefix, suffix, celebration;
   final IslandSize size;
@@ -332,51 +335,67 @@ class _IslandCountUpState extends State<IslandCountUp>
                       ),
                     ),
                     if (active && widget.celebration != null)
-                      Positioned(
-                        bottom: 0,
-                        child: FractionalTranslation(
-                          translation: const Offset(0, -1.5),
-                          child: Transform.scale(
-                            scale: reduce
-                                ? 1
-                                : SurfaceMotion.bounce(
-                                    (t * 900 / 500).clamp(0.0, 1.0),
+                      // Reference `.badgeWrap { bottom: 100%; margin-bottom:
+                      // 6px }`: the badge bottom sits 6px above the plate top,
+                      // centred on the plate.
+                      Positioned.fill(
+                        child: OverflowBox(
+                          alignment: Alignment.topCenter,
+                          minWidth: 0,
+                          maxWidth: double.infinity,
+                          minHeight: 0,
+                          maxHeight: double.infinity,
+                          child: Transform.translate(
+                            offset: const Offset(0, -6),
+                            child: FractionalTranslation(
+                              translation: const Offset(0, -1),
+                              child: Transform(
+                                alignment: Alignment.center,
+                                transform: () {
+                                  final (s, a) = reduce
+                                      ? (1.0, 0.0)
+                                      : badge((t * 900 / 500).clamp(0.0, 1.0));
+                                  return Matrix4.rotationZ(a * math.pi / 180)
+                                    ..scaleByDouble(s, s, 1, 1);
+                                }(),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 2,
                                   ),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Color(0xffffe08a),
-                                    Color(0xfff7cd67),
-                                  ],
-                                ),
-                                border: Border.all(
-                                  color: const Color(0xffe0b800),
-                                ),
-                                borderRadius: BorderRadius.circular(50),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x2e3d3428),
-                                    offset: Offset(0, 2),
-                                    blurRadius: 6,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        CountUpColors.badgeTop,
+                                        CountUpColors.badgeBottom,
+                                      ],
+                                    ),
+                                    border: Border.all(
+                                      color: CountUpColors.badgeBorder,
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(50),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: CountUpColors.badgeShadow,
+                                        offset: Offset(0, 2),
+                                        blurRadius: 6,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              child: ContentScope(
-                                textStyle: TextStyle(
-                                  color: IslandTokens.light.onSun,
-                                  fontSize: body - 1,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.4,
-                                  letterSpacing: .04 * (body - 1),
+                                  child: ContentScope(
+                                    textStyle: TextStyle(
+                                      color: IslandTokens.light.onSun,
+                                      fontSize: body - 1,
+                                      fontWeight: FontWeight.w800,
+                                      height: 1.4,
+                                      letterSpacing: .04 * (body - 1),
+                                    ),
+                                    child: widget.celebration!,
+                                  ),
                                 ),
-                                child: widget.celebration!,
                               ),
                             ),
                           ),
@@ -402,11 +421,36 @@ class _IslandCountUpState extends State<IslandCountUp>
       (.72, .99, -.8),
       (1.0, 1.0, 0.0),
     ];
-    final i = frames.indexWhere((frame) => t <= frame.$1, 1);
-    final a = frames[i - 1], b = frames[i];
-    final p = Curves.easeInOut.transform((t - a.$1) / (b.$1 - a.$1));
-    return (a.$2 + (b.$2 - a.$2) * p, a.$3 + (b.$3 - a.$3) * p);
+    return _keyframes(frames, t);
   }
+
+  /// Reference `animal-countup-badge` scale/rotation keyframes (opacity is
+  /// dropped: the badge text stays opaque under readable motion).
+  (double, double) badge(double t) => _keyframes(const [
+    (0.0, .4, -8.0),
+    (.55, 1.12, 3.0),
+    (.76, .96, -2.0),
+    (1.0, 1.0, 0.0),
+  ], t);
+}
+
+/// CSS keyframes: the animation timing function applies per segment.
+(double, double) _keyframes(List<(double, double, double)> frames, double t) {
+  final i = frames.indexWhere((frame) => t <= frame.$1, 1);
+  final a = frames[i - 1], b = frames[i];
+  final p = _ease.transform((t - a.$1) / (b.$1 - a.$1));
+  return (a.$2 + (b.$2 - a.$2) * p, a.$3 + (b.$3 - a.$3) * p);
+}
+
+/// Reference `cubic-bezier(.4,0,.2,1)` used by every celebration animation.
+const _ease = Cubic(.4, 0, .2, 1);
+
+/// Exact reference `easeOutCubic`: 1 - (1 - t)^3 (Flutter's
+/// [Curves.easeOutCubic] is a cubic-bezier approximation).
+class _EaseOutCubic extends Curve {
+  const _EaseOutCubic();
+  @override
+  double transformInternal(double t) => 1 - math.pow(1 - t, 3).toDouble();
 }
 
 class _CelebrationPainter extends CustomPainter {
@@ -414,36 +458,54 @@ class _CelebrationPainter extends CustomPainter {
   final double progress;
   @override
   void paint(Canvas c, Size s) {
-    for (final delay in [0.0, 120.0]) {
+    // Reference `.ring`: 2px inside border, radius 14, scale 1→1.5 and
+    // opacity .9→0 on the shared ease; the second ring (rgba(255,204,0,.7))
+    // starts .12s later and holds its first keyframe meanwhile (fill: both).
+    for (final (delay, color) in const [
+      (0.0, CountUpColors.ringFirst),
+      (120.0, CountUpColors.ringSecond),
+    ]) {
       final t = ((progress * 900 - delay) / 700).clamp(0.0, 1.0);
-      if (t <= 0 || t >= 1) continue;
-      final scale = 1 + Curves.easeInOut.transform(t) * .5;
-      final rect = Rect.fromCenter(
-        center: s.center(Offset.zero),
-        width: s.width * scale,
-        height: s.height * scale,
-      );
+      if (t >= 1) continue;
+      final e = _ease.transform(t);
+      final scale = 1 + e * .5;
+      c.save();
+      c.translate(s.width / 2, s.height / 2);
+      c.scale(scale);
       c.drawRRect(
-        RRect.fromRectAndRadius(rect, const Radius.circular(14)),
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset.zero,
+            width: s.width - 2,
+            height: s.height - 2,
+          ),
+          const Radius.circular(13),
+        ),
         Paint()
-          ..color = const Color(0xfff7cd67).withValues(alpha: (1 - t) * .9)
+          ..color = color.withValues(alpha: color.a * .9 * (1 - e))
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2,
       );
+      c.restore();
     }
     for (var i = 0; i < 4; i++) {
       final t = ((progress * 900 - i * 60) / 720).clamp(0.0, 1.0);
       if (t <= 0 || t >= 1) continue;
+      // Transform keyframes span 0..100% on one eased segment; opacity has
+      // its own 0→35%→100% eased segments.
+      final e = _ease.transform(t);
       final right = i.isOdd, bottom = i >= 2;
       final position = Offset(
-        (right ? s.width - 5 : 5) + (right ? 16 : -16) * t,
-        (bottom ? s.height - 5 : 5) + (bottom ? 14 : -14) * t,
+        (right ? s.width - 5 : 5) + (right ? 16 : -16) * e,
+        (bottom ? s.height - 5 : 5) + (bottom ? 14 : -14) * e,
       );
-      final alpha = t < .35 ? t / .35 : (1 - t) / .65;
+      final alpha = t < .35
+          ? _ease.transform(t / .35)
+          : 1 - _ease.transform((t - .35) / .65);
       c.save();
       c.translate(position.dx, position.dy);
-      c.rotate(t * math.pi / 2);
-      c.scale(.4 + .6 * t);
+      c.rotate(e * math.pi / 2);
+      c.scale(.4 + .6 * e);
       final path = Path()
         ..moveTo(0, -5)
         ..lineTo(1.1, -1.1)
@@ -456,7 +518,7 @@ class _CelebrationPainter extends CustomPainter {
         ..close();
       c.drawPath(
         path,
-        Paint()..color = const Color(0xfff7cd67).withValues(alpha: alpha),
+        Paint()..color = CountUpColors.sparkle.withValues(alpha: alpha),
       );
       c.restore();
     }

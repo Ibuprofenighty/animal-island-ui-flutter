@@ -69,6 +69,76 @@ def source_structure(registry):
     return violations
 
 
+# Colour owners: the only sources that may hold raw colour values; everything
+# else references their names. Keep in sync with test/color_literal_policy_test.dart.
+COLOR_OWNERS={"lib/src/foundation/palette.dart","lib/src/foundation/colorway.dart",
+              "lib/src/foundation/background_type.dart","lib/src/foundation/sprinkle_data.dart",
+              "example/lib/shared/palette.dart"}
+COLOR_PATTERNS=[("Color constructor",r"(?<![\w$.])Color\s*\("),
+                ("Color.from constructor",r"(?<![\w$.])Color\s*\.\s*from\w*\s*\("),
+                ("ARGB hex literal",r"\b0[xX][0-9a-fA-F]{8}\b"),
+                ("Material Colors swatch",r"(?<![\w$.])Colors\s*\.\s*(?!transparent\b)\w+")]
+
+def dart_code_only(source):
+    """Blank comments and string contents (newlines kept); interpolations stay code."""
+    out=[];stack=[];i=0;n=len(source)
+    def blank(count):
+        nonlocal i
+        for _ in range(count):
+            if i>=n:break
+            out.append("\n" if source[i]=="\n" else " ");i+=1
+    while i<n:
+        top=stack[-1] if stack else None;c=source[i]
+        if isinstance(top,tuple):
+            close,raw,triple=top
+            if not raw and c=="\\":blank(2)
+            elif source.startswith(close,i):stack.pop();blank(len(close))
+            elif not raw and source.startswith("${",i):stack.append([1]);blank(2)
+            elif not triple and c=="\n":stack.pop();out.append(c);i+=1
+            else:blank(1)
+            continue
+        if source.startswith("//",i):
+            while i<n and source[i]!="\n":blank(1)
+            continue
+        if source.startswith("/*",i):
+            depth=0
+            while True:
+                if source.startswith("/*",i):depth+=1;blank(2)
+                elif source.startswith("*/",i):depth-=1;blank(2)
+                else:blank(1)
+                if depth<=0 or i>=n:break
+            continue
+        if c in "'\"":
+            raw=i>0 and source[i-1]=="r" and (i<2 or not re.match(r"[\w$]",source[i-2]))
+            triple=source.startswith(c*3,i);close=c*3 if triple else c
+            stack.append((close,raw,triple));blank(len(close))
+            continue
+        if isinstance(top,list):
+            if c=="{":top[0]+=1
+            if c=="}":
+                top[0]-=1
+                if top[0]==0:
+                    stack.pop();blank(1);continue
+        out.append(c);i+=1
+    return "".join(out)
+
+def color_literals():
+    """Raw colour values outside their owners; named tokens are required."""
+    violations=[]
+    for base in ("lib","example/lib"):
+        for file in sorted((ROOT/base).rglob("*.dart")):
+            relative=file.relative_to(ROOT).as_posix()
+            if relative in COLOR_OWNERS:continue
+            code=dart_code_only(file.read_text(encoding="utf-8"))
+            for name,pattern in COLOR_PATTERNS:
+                for match in re.finditer(pattern,code):
+                    line=code.count("\n",0,match.start())+1
+                    violations.append(f"{relative}:{line}: {name} {match[0]!r}; use a named colour token")
+    for owner in sorted(COLOR_OWNERS):
+        if not (ROOT/owner).is_file():violations.append("Missing colour owner "+owner)
+    return violations
+
+
 def gallery_version_source(*, generate=False):
     """Project one package-version owner into the Gallery; never hand-maintain it."""
     def declared(path):
@@ -101,6 +171,7 @@ def policy():
         if not (ROOT/name).is_file():violations.append("Missing "+name)
     registry=json.loads((ROOT/"library.json").read_text(encoding="utf-8"))
     violations.extend(source_structure(registry))
+    violations.extend(color_literals())
     for relative in registry["components"]:
         c=json.loads((ROOT/relative).read_text(encoding="utf-8"))
         if not c.get("scenarios"):violations.append("Missing component scenarios "+relative)
@@ -148,8 +219,10 @@ def main():
     if not flutter:raise SystemExit("Flutter command not found.")
     run_id=datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     out=ROOT/"evidence/raw"/run_id;out.mkdir(parents=True)
-    records=[]
-    def run(name,argv,cwd=ROOT):
+    records=[];deferred=[]
+    # Independent checks defer their failure so later steps still produce evidence;
+    # a deferred failure is still a failed run. Prerequisite steps stop immediately.
+    def run(name,argv,cwd=ROOT,*,defer=False):
         started=time.monotonic()
         log=out/(name+".txt")
         with log.open("w",encoding="utf-8") as stream:
@@ -165,15 +238,16 @@ def main():
                "sha256":hashlib.sha256(log.read_bytes()).hexdigest()}
         records.append(entry);dump(out/"commands.json",records)
         print(f"{name}: {'PASS' if code==0 else 'FAIL'} ({entry['seconds']}s)",flush=True)
-        if code:raise RuntimeError(f"{name} failed; inspect {log}")
+        if code and defer:deferred.append(f"{name} failed; inspect {log}")
+        elif code:raise RuntimeError(f"{name} failed; inspect {log}")
     try:
         dump(out/"source-policy.json",policy())
         run("reference-coverage",[sys.executable,str(ROOT/"tool/reference_coverage.py")])
         run("sdk",[flutter,"--version","--machine"])
         run("resolve",[flutter,"pub","get"])
-        run("root-tests",[flutter,"test","--reporter","json"])
-        run("analysis",[flutter,"analyze","--fatal-infos"])
-        run("gallery-tests",[flutter,"test","--reporter","json"],ROOT/"example")
+        run("root-tests",[flutter,"test","--reporter","json"],defer=True)
+        run("analysis",[flutter,"analyze","--fatal-infos"],defer=True)
+        run("gallery-tests",[flutter,"test","--reporter","json"],ROOT/"example",defer=True)
         run("dependencies",[flutter,"pub","deps","--json"])
         # Public archive is an explicit manifest, independent of working-copy imports.
         members=package_members()
@@ -217,6 +291,7 @@ def main():
         for target,folder in [("web",ROOT/"example/build/web"),("windows",ROOT/"example/build/windows/x64/runner/Release")]:
             if folder.exists():sizes[target]=sum(p.stat().st_size for p in folder.rglob("*") if p.is_file())
         dump(out/"build-sizes.json",sizes)
+        if deferred:raise RuntimeError("; ".join(deferred))
         dump(out/"result.json",{"result":"pass","builds_requested":args.builds,"commands":records,
              "limitations":["Manual visual parity, release rights and performance/size review remain separate. Screen-reader validation is excluded by the user decision on 2026-10-17."]})
         print("EVIDENCE "+str(out),flush=True)

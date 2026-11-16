@@ -8,6 +8,7 @@ import '../foundation/icon.dart';
 import '../internal/action_surface.dart';
 import '../internal/focus_outline.dart';
 import '../internal/viewport_overlay.dart';
+import '../foundation/recipes/back_top.dart';
 
 /// Borrows one scroll controller (or the nearest PrimaryScrollController).
 /// Container selection belongs to the host, never to a global DOM-style lookup.
@@ -175,8 +176,8 @@ class _IslandBackTopState extends State<IslandBackTop> {
                                       child: ColorFiltered(
                                         colorFilter: ColorFilter.mode(
                                           Color.lerp(
-                                            const Color(0x385b4e1e),
-                                            const Color(0x525b4e1e),
+                                            BackTopColors.shadowRest,
+                                            BackTopColors.shadowHover,
                                             value,
                                           )!,
                                           BlendMode.srcIn,

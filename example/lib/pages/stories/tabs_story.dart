@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class TabsStory extends StatefulWidget {
   const TabsStory({super.key});
@@ -40,9 +41,9 @@ class _TabsStoryState extends State<TabsStory> {
     margin: EdgeInsets.only(top: fill ? 0 : 12),
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: const Color(0xfffaf8f3),
+      color: GalleryPalette.demoPanel,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: const Color(0xffe8e2d6)),
+      border: Border.all(color: GalleryPalette.rule),
     ),
     child: child,
   );

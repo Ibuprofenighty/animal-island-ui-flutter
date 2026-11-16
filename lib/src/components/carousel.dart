@@ -11,6 +11,7 @@ import '../internal/active_stack.dart';
 import '../internal/light_surface_scope.dart';
 import '../internal/focus_outline.dart';
 import '../foundation/localizations.dart';
+import '../foundation/recipes/carousel.dart';
 
 @immutable
 class IslandSlide<T extends Object> {
@@ -148,6 +149,11 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
         ? Duration.zero
         : const Duration(milliseconds: 300);
     final controls = widget.items.length > 1;
+    // Reference --animal-motion-duration-base .2s for arrows, dots and the
+    // rotation control; slides use the slow .3s. Both ease (.4,0,.2,1).
+    final controlDuration = reduced
+        ? Duration.zero
+        : const Duration(milliseconds: 200);
     return Semantics(
       container: true,
       label: widget.semanticLabel ?? strings.carousel,
@@ -194,7 +200,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                 width: 2,
                 offset: 2,
                 backingColor: states.contains(WidgetState.focused)
-                    ? Colors.white
+                    ? CarouselColors.control
                     : null,
               );
               Widget arrow(bool next) => Align(
@@ -215,41 +221,44 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                           hover = states.contains(WidgetState.hovered);
                       return Opacity(
                         opacity: disabled ? .4 : 1,
-                        child: Transform.translate(
-                          offset: Offset(
-                            0,
-                            hover && !states.contains(WidgetState.pressed)
-                                ? -2
-                                : 0,
-                          ),
-                          child: Container(
-                            width: compact ? 36 : 42,
-                            height: compact ? 36 : 42,
-                            foregroundDecoration: controlFocus(
-                              states,
-                              const CircleBorder(),
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: const Color(0x29794f27),
-                                width: 1.5,
+                        child: _ControlMotion(
+                          lifted:
+                              hover && !states.contains(WidgetState.pressed),
+                          tinted: hover,
+                          duration: controlDuration,
+                          builder: (lift, tint) => Transform.translate(
+                            offset: Offset(0, -2 * lift),
+                            child: Container(
+                              width: compact ? 36 : 42,
+                              height: compact ? 36 : 42,
+                              foregroundDecoration: controlFocus(
+                                states,
+                                const CircleBorder(),
                               ),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color(0x0f3d3428),
-                                  offset: Offset(0, 2),
-                                  blurRadius: 4,
+                              decoration: BoxDecoration(
+                                color: CarouselColors.control,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: CarouselColors.controlBorder,
+                                  width: 1.5,
                                 ),
-                              ],
-                            ),
-                            child: CustomPaint(
-                              painter: _CarouselArrow(
-                                next,
-                                hover
-                                    ? IslandTokens.light.link
-                                    : const Color(0xff794f27),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: CarouselColors.controlShadow,
+                                    offset: Offset(0, 2),
+                                    blurRadius: 4,
+                                  ),
+                                ],
+                              ),
+                              child: CustomPaint(
+                                painter: _CarouselArrow(
+                                  next,
+                                  Color.lerp(
+                                    CarouselColors.controlInk,
+                                    IslandTokens.light.link,
+                                    tint,
+                                  )!,
+                                ),
                               ),
                             ),
                           ),
@@ -280,7 +289,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                           ? constraints.maxWidth
                           : null,
                       decoration: BoxDecoration(
-                        color: const Color(0xfff7f3df),
+                        color: CarouselColors.slideBackplane,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       clipBehavior: Clip.antiAlias,
@@ -303,7 +312,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                                     child: TweenAnimationBuilder<double>(
                                       tween: Tween(end: i == index ? 0 : 18),
                                       duration: duration,
-                                      curve: Curves.easeInOut,
+                                      curve: _ease,
                                       builder: (_, offset, child) =>
                                           Transform.translate(
                                             filterQuality: FilterQuality.low,
@@ -335,7 +344,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                               vertical: 7,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: CarouselColors.control,
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: Row(
@@ -359,7 +368,8 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                                       ),
                                       child: Center(
                                         child: AnimatedContainer(
-                                          duration: duration,
+                                          duration: controlDuration,
+                                          curve: _ease,
                                           width: i == index ? 24 : 10,
                                           height: 10,
                                           decoration: BoxDecoration(
@@ -396,29 +406,46 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                               rotationPaused = true;
                             }
                           }),
-                          builder: (_, states) => Container(
-                            height: 32,
-                            constraints: const BoxConstraints(minWidth: 58),
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            foregroundDecoration: controlFocus(
-                              states,
-                              const StadiumBorder(),
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(50),
-                              border: Border.all(
-                                color: const Color(0x29794f27),
-                              ),
-                            ),
-                            child: Center(
-                              child: ExcludeSemantics(
-                                child: Text(
-                                  paused ? strings.play : strings.pause,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xff794f27),
+                          // Reference `.rotation-control:hover`: primary-active
+                          // ink (contrast-safe link role) and a 1px lift.
+                          builder: (_, states) => _ControlMotion(
+                            lifted: states.contains(WidgetState.hovered),
+                            tinted: states.contains(WidgetState.hovered),
+                            duration: controlDuration,
+                            builder: (lift, tint) => Transform.translate(
+                              offset: Offset(0, -lift),
+                              child: Container(
+                                height: 32,
+                                constraints: const BoxConstraints(minWidth: 58),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                                foregroundDecoration: controlFocus(
+                                  states,
+                                  const StadiumBorder(),
+                                ),
+                                decoration: BoxDecoration(
+                                  color: CarouselColors.control,
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(
+                                    color: CarouselColors.controlBorder,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: ExcludeSemantics(
+                                    child: Text(
+                                      paused ? strings.play : strings.pause,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color.lerp(
+                                          CarouselColors.controlInk,
+                                          IslandTokens.light.link,
+                                          tint,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -435,6 +462,36 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
       ),
     );
   }
+}
+
+/// Reference `cubic-bezier(.4,0,.2,1)` (--animal-motion-ease).
+const _ease = Cubic(.4, 0, .2, 1);
+
+/// Control hover timeline: [lifted] and [tinted] each move 0..1 along
+/// [duration] with the reference ease. Both inks stay dark on the opaque white
+/// control, so intermediate colours keep their contrast.
+class _ControlMotion extends StatelessWidget {
+  const _ControlMotion({
+    required this.lifted,
+    required this.tinted,
+    required this.duration,
+    required this.builder,
+  });
+  final bool lifted, tinted;
+  final Duration duration;
+  final Widget Function(double lift, double tint) builder;
+  @override
+  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
+    tween: Tween(end: lifted ? 1 : 0),
+    duration: duration,
+    curve: _ease,
+    builder: (_, lift, _) => TweenAnimationBuilder<double>(
+      tween: Tween(end: tinted ? 1 : 0),
+      duration: duration,
+      curve: _ease,
+      builder: (_, tint, _) => builder(lift, tint),
+    ),
+  );
 }
 
 class _CarouselArrow extends CustomPainter {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
@@ -242,6 +243,88 @@ void main() {
       expect(t.widget<Semantics>(button('Page 1')).properties.selected, isTrue);
     },
   );
+  testWidgets(
+    'wrapped size changer keeps its whole label inside the trigger at narrow widths',
+    (t) async {
+      for (final width in [200.0, 260.0, 300.0, 320.0]) {
+        await t.pumpWidget(
+          MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
+            home: Scaffold(
+              body: Align(
+                alignment: Alignment.topLeft,
+                child: SizedBox(
+                  width: width,
+                  child: const IslandPagination.uncontrolled(
+                    total: 85,
+                    initialValue: IslandPaginationValue(page: 3),
+                    showTotal: true,
+                    showSizeChanger: true,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        final trigger = t.getRect(button('10 条/页'));
+        final label = t.getRect(
+          find.descendant(
+            of: button('10 条/页'),
+            matching: find.byType(RichText),
+          ),
+        );
+        // Single line on its own run (13px, height 1) and fully contained.
+        expect(label.height, lessThanOrEqualTo(14), reason: 'width $width');
+        expect(trigger.height, 34);
+        expect(trigger.contains(label.topLeft), isTrue);
+        expect(
+          trigger.contains(label.bottomRight - const Offset(.01, .01)),
+          isTrue,
+        );
+        final bounds = t.getRect(find.byType(IslandPagination));
+        expect(trigger.right, lessThanOrEqualTo(bounds.right + .01));
+        expect(t.takeException(), isNull);
+      }
+    },
+  );
+  testWidgets('page items blend hover fill over the reference 150ms', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(
+        const IslandPagination.uncontrolled(
+          total: 30,
+          initialValue: IslandPaginationValue(),
+        ),
+      ),
+    );
+    Color fill() =>
+        (t
+                    .widget<Container>(
+                      find
+                          .descendant(
+                            of: button('Page 2'),
+                            matching: find.byType(Container),
+                          )
+                          .first,
+                    )
+                    .decoration!
+                as BoxDecoration)
+            .color!;
+    expect(fill().a, 0);
+    final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(t.getCenter(button('Page 2')));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 60));
+    final mid = fill();
+    expect(mid.a, inExclusiveRange(0, 1));
+    await t.pump(const Duration(milliseconds: 100));
+    expect(fill(), const Color(0xffffd54f));
+  });
   testWidgets(
     'Pagination retains intrinsic sizing, resize and RTL focus across wrapped runs',
     (t) async {

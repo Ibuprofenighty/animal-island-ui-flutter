@@ -1,3 +1,4 @@
+import '../foundation/recipes/picker.dart';
 import '../foundation/theme.dart';
 import '../internal/focus_outline.dart';
 
@@ -350,7 +351,9 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
               ? Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Flexible(
+                    // Reference `.value { flex: 1 }`: both endpoints share
+                    // the free width equally.
+                    Expanded(
                       child: Text(
                         first == null ? widget.placeholder : format(first),
                         overflow: TextOverflow.ellipsis,
@@ -360,15 +363,17 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                       width: 1,
                       height: 16,
                       margin: const EdgeInsets.symmetric(horizontal: 10),
-                      color: const Color(0xffe8dcc8),
+                      color: PickerColors.rangeDivider,
                     ),
-                    Flexible(
+                    Expanded(
                       child: Text(
                         last == null ? widget.placeholder : format(last),
                         overflow: TextOverflow.ellipsis,
                         style: last == null
                             ? TextStyle(
-                                color: IslandTokens.light.muted,
+                                color: widget.disabled
+                                    ? PickerColors.disabledText
+                                    : IslandTokens.light.muted,
                                 fontWeight: FontWeight.w400,
                               )
                             : null,
@@ -429,7 +434,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                   PickerFooterAction(
                     '确定',
                     primary: true,
-                    primaryHoverColor: const Color(0xff796c5a),
+                    primaryHoverColor: PickerColors.confirmHover,
                     onPressed: confirm,
                   ),
                 ],
@@ -499,7 +504,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: states.contains(WidgetState.hovered)
-              ? const Color(0x1a725d42)
+              ? PickerColors.navHoverFill
               : null,
           borderRadius: BorderRadius.circular(8),
         ),
@@ -542,7 +547,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xff725d42),
+                      color: PickerColors.text,
                     ),
                   ),
                 )
@@ -566,7 +571,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                     ),
                     decoration: BoxDecoration(
                       color: states.contains(WidgetState.hovered)
-                          ? const Color(0xffe6f9f6)
+                          ? PickerColors.headingHoverFill
                           : null,
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -579,7 +584,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                         fontWeight: FontWeight.w700,
                         color: states.contains(WidgetState.hovered)
                             ? IslandTokens.light.link
-                            : const Color(0xff725d42),
+                            : PickerColors.text,
                       ),
                     ),
                   ),
@@ -755,16 +760,16 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
       final disabled = onPressed == null;
       final range = widget._range && round;
       final color = disabled
-          ? const Color(0xffd4c9b4)
+          ? PickerColors.dayDisabled
           : selected
           ? (range ? IslandTokens.light.onSun : IslandTokens.light.onLeaf)
           : hover && range
-          ? const Color(0xff725d42)
+          ? PickerColors.text
           : hover || isToday
           ? IslandTokens.light.link
           : outside
           ? IslandTokens.light.muted
-          : const Color(0xff725d42);
+          : PickerColors.text;
       return Container(
         width: round ? 32 : null,
         foregroundDecoration: FocusOutline(
@@ -785,13 +790,19 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
               ? null
               : selected
               ? (range
-                    ? Color(hover ? 0xffffb400 : 0xffffc107)
-                    : Color(hover ? 0xff3dd4c6 : 0xff19c8b9))
+                    ? (hover
+                          ? PickerColors.rangeSelectedHover
+                          : PickerColors.rangeSelected)
+                    : (hover
+                          ? PickerColors.daySelectedHover
+                          : PickerColors.daySelected))
               : hover
-              ? (range ? const Color(0xffffd54f) : const Color(0xffe6f9f6))
+              ? (range ? PickerColors.rangeHover : PickerColors.dayHover)
               : null,
+          // Reference `.dayCellRangeStart/End` 1px white contour: decorative;
+          // the contiguous amber run already locates its endpoints.
           border: edge && !disabled
-              ? Border.all(color: IslandTokens.light.onSun)
+              ? Border.all(color: PickerColors.rangeEndpointRing)
               : isToday
               ? Border.all(color: IslandTokens.light.link, width: 1.5)
               : null,
@@ -845,27 +856,28 @@ class _CalendarIcon extends CustomPainter {
   const _CalendarIcon();
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.scale(size.width / 16, size.height / 16);
+    // Reference 14-unit SVG: rect 1.5,2.5 11x10 rx2; header y5.5; ticks
+    // x4.7/x9.3 from y1 to y3.4 (round caps); stroke 1.4.
+    canvas.scale(size.width / 14, size.height / 14);
     final paint = Paint()
       ..color = IslandTokens.light.muted
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..strokeCap = StrokeCap.round;
+      ..strokeWidth = 1.4;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(2.5, 3.5, 11, 10),
-        const Radius.circular(1.5),
+        const Rect.fromLTWH(1.5, 2.5, 11, 10),
+        const Radius.circular(2),
       ),
       paint,
     );
+    canvas.drawLine(const Offset(1.5, 5.5), const Offset(12.5, 5.5), paint);
+    paint.strokeCap = StrokeCap.round;
     canvas.drawPath(
       Path()
-        ..moveTo(5, 2)
-        ..lineTo(5, 5)
-        ..moveTo(11, 2)
-        ..lineTo(11, 5)
-        ..moveTo(2.5, 7)
-        ..lineTo(13.5, 7),
+        ..moveTo(4.7, 1)
+        ..lineTo(4.7, 3.4)
+        ..moveTo(9.3, 1)
+        ..lineTo(9.3, 3.4),
       paint,
     );
   }

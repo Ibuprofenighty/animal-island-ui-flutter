@@ -70,9 +70,10 @@ void main() {
                   x < 58 &&
                   y >= 44 &&
                   y < 57 &&
-                  r == 23 &&
-                  g == 58 &&
-                  b == 39)
+                  // Reference white mark (registered exception in DESIGN).
+                  r == 0xff &&
+                  g == 0xff &&
+                  b == 0xff)
                 mark++;
               if ((x < 38 || y < 38 || y > 64) &&
                   g > 40 &&
@@ -143,4 +144,55 @@ void main() {
       expect(t.takeException(), isNull);
     },
   );
+  testWidgets('choice border eases over the reference 250ms on commit', (
+    t,
+  ) async {
+    var value = 'a';
+    late StateSetter update;
+    await t.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (_, set) {
+              update = set;
+              return IslandRadioGroup<String>(
+                options: const [
+                  IslandOption(value: 'a', label: 'A'),
+                  IslandOption(value: 'b', label: 'B'),
+                ],
+                value: value,
+                onChanged: (_) {},
+              );
+            },
+          ),
+        ),
+      ),
+    );
+    Color border() {
+      final box = t.widget<DecoratedBox>(
+        find
+            .descendant(
+              of: find
+                  .ancestor(of: find.text('B'), matching: find.byType(Row))
+                  .first,
+              matching: find.byWidgetPredicate(
+                (w) => w is DecoratedBox && w.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      return ((box.decoration as BoxDecoration).border! as Border).top.color;
+    }
+
+    // Reference #c4b89e / #50b9ab rings, deepened in hue to 3:1.
+    const unchecked = Color(0xff978b73), checked = Color(0xff259689);
+    expect(border(), unchecked);
+    update(() => value = 'b');
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 125));
+    expect(border(), isNot(unchecked));
+    expect(border(), isNot(checked));
+    await t.pumpAndSettle();
+    expect(border(), checked);
+  });
 }

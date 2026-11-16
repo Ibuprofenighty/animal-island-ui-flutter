@@ -23,7 +23,16 @@ class CardStory extends StatelessWidget {
   const CardStory({super.key});
   Widget paragraph(String text) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 16),
-    child: Text(text, style: const TextStyle(fontSize: 16, height: 1.5625)),
+    // Forced strut keeps fallback glyphs (e.g. "↑") from growing the line.
+    child: Text(
+      text,
+      strutStyle: const StrutStyle(
+        fontSize: 16,
+        height: 1.5625,
+        forceStrutHeight: true,
+      ),
+      style: const TextStyle(fontSize: 16, height: 1.5625),
+    ),
   );
   Widget sample(IslandColorway color, {required bool pattern}) {
     final labels = _labels[color.index];
@@ -116,12 +125,32 @@ class CardStory extends StatelessWidget {
             13,
           );
           final width = (constraints.maxWidth - (columns - 1) * 16) / columns;
-          return Wrap(
-            spacing: 16,
-            runSpacing: 16,
+          // Reference CSS grid: every item stretches to its row's height.
+          const colors = IslandColorway.values;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final color in IslandColorway.values)
-                SizedBox(width: width, child: sample(color, pattern: false)),
+              for (var start = 0; start < colors.length; start += columns) ...[
+                if (start > 0) const SizedBox(height: 16),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (
+                        var i = start;
+                        i < start + columns && i < colors.length;
+                        i++
+                      ) ...[
+                        if (i > start) const SizedBox(width: 16),
+                        SizedBox(
+                          width: width,
+                          child: sample(colors[i], pattern: false),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
             ],
           );
         },

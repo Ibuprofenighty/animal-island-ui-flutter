@@ -11,6 +11,7 @@ import '../internal/action_surface.dart';
 import '../internal/organic_bubble.dart';
 import 'actions.dart';
 import 'cursor.dart';
+import '../foundation/recipes/modal.dart';
 
 enum IslandModalVariant { game, normal }
 
@@ -44,7 +45,7 @@ class IslandModal extends StatelessWidget {
         padding: game
             ? const EdgeInsets.fromLTRB(48, 48, 48, 32)
             : const EdgeInsets.fromLTRB(35, 40, 35, 25),
-        color: const Color(0xfff7f3df),
+        color: ModalColors.surface,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,9 +56,10 @@ class IslandModal extends StatelessWidget {
                 child: ContentScope(
                   textStyle: const TextStyle(
                     fontSize: 28,
-                    height: 1.5,
+                    // Reference .title sets no line-height (font normal).
+                    height: kTextHeightNone,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xff725d42),
+                    color: ModalColors.title,
                   ),
                   child: Semantics(
                     container: true,
@@ -136,7 +138,7 @@ class IslandModal extends StatelessWidget {
                           borderRadius: BorderRadius.circular(22),
                           boxShadow: const [
                             BoxShadow(
-                              color: Color(0x40000000),
+                              color: ModalColors.normalShadow,
                               offset: Offset(0, 18),
                               blurRadius: 50,
                               spreadRadius: -12,
@@ -165,7 +167,7 @@ Future<T?> showIslandModal<T>({
   List<Widget> Function(BuildContext)? actions,
   IslandModalVariant variant = IslandModalVariant.game,
   bool dismissible = true,
-  Color barrierColor = const Color(0x59000000),
+  Color barrierColor = ModalColors.barrier,
   double width = 520,
 }) {
   final navigator = Navigator.of(context, rootNavigator: true);

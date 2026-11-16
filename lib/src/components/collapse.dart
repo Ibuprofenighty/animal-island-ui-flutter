@@ -5,6 +5,7 @@ import '../foundation/theme.dart';
 import '../internal/action_surface.dart';
 import '../internal/content_scope.dart';
 import '../internal/focus_outline.dart';
+import '../foundation/recipes/collapse.dart';
 
 /// Disclosure owns visibility; opaque question/answer slots retain their state
 /// and explicit styling. Controlled requests never commit without host input.
@@ -165,12 +166,12 @@ class _IslandCollapseState extends State<IslandCollapse>
                                       shape: BoxShape.circle,
                                       color: Color.lerp(
                                         tokens.leaf,
-                                        const Color(0xff50b9ab),
+                                        CollapseColors.toggleExpanded,
                                         detailMotion.value,
                                       ),
                                       boxShadow: const [
                                         BoxShadow(
-                                          color: Color(0x4d19c8b9),
+                                          color: CollapseColors.toggleShadow,
                                           offset: Offset(0, 2),
                                           blurRadius: 4,
                                         ),

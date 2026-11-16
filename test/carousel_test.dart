@@ -1,10 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import 'counter_audit_test.dart' show pixel;
 import 'foundation_test.dart' show contrast;
+import 'support/fake_clock_only.dart';
 
 Widget host(Widget child) => MaterialApp(
   home: Scaffold(body: SizedBox(width: 600, child: child)),
@@ -172,6 +175,82 @@ void main() {
       await t.pumpWidget(const SizedBox());
       input.dispose();
     },
+  );
+  testWidgets(
+    'Carousel motion follows the reference curves: .3s slide, .2s dots and control hover',
+    (t) async {
+      const ease = Cubic(.4, 0, .2, 1);
+      await t.pumpWidget(
+        host(
+          IslandCarousel.uncontrolled(
+            items: slides(['a', 'b']),
+            autoplay: true,
+            pauseOnHover: false,
+            interval: const Duration(minutes: 1),
+          ),
+        ),
+      );
+      double activeDot() => t
+          .getSize(
+            find
+                .descendant(
+                  of: button('Go to slide 2'),
+                  matching: find.byType(AnimatedContainer),
+                )
+                .first,
+          )
+          .width;
+      await t.tap(button('Next slide'));
+      await t.pump();
+      final settledX = t.getTopLeft(find.text('b:0')).dx - 18;
+      await t.pump(const Duration(milliseconds: 100));
+      expect(activeDot(), closeTo(10 + 14 * ease.transform(.5), .01));
+      await t.pump(const Duration(milliseconds: 50));
+      expect(
+        t.getTopLeft(find.text('b:0')).dx - settledX,
+        closeTo(18 * (1 - ease.transform(.5)), .01),
+      );
+      await t.pumpAndSettle();
+      expect(t.getTopLeft(find.text('b:0')).dx, closeTo(settledX, .01));
+      expect(activeDot(), 24);
+
+      final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      addTearDown(mouse.removePointer);
+      for (final (name, lift) in [
+        ('Previous slide', 2.0),
+        ('Resume autoplay', 1.0),
+      ]) {
+        final rest = t.getRect(button(name));
+        final surface = find.descendant(
+          of: button(name),
+          matching: find.byType(Container),
+        );
+        double top() => t.getRect(surface.first).top;
+        final restTop = top();
+        await mouse.moveTo(rest.center);
+        await t.pump();
+        await t.pump(const Duration(milliseconds: 100));
+        expect(restTop - top(), closeTo(lift * ease.transform(.5), .01));
+        await t.pump(const Duration(milliseconds: 150));
+        expect(restTop - top(), closeTo(lift, .01));
+        await mouse.moveTo(Offset.zero);
+        await t.pumpAndSettle();
+      }
+      final control = t.widget<Container>(
+        find
+            .descendant(
+              of: button('Resume autoplay'),
+              matching: find.byType(Container),
+            )
+            .first,
+      );
+      expect(
+        ((control.decoration! as BoxDecoration).border! as Border).top.width,
+        1.5,
+      );
+    },
+    skip: fakeClockOnly,
   );
   testWidgets(
     'Carousel region focus paints its external contour and hands off without relayout',

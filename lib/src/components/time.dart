@@ -1,4 +1,5 @@
 import '../internal/surface_motion.dart';
+import '../foundation/recipes/time.dart';
 import '../foundation/theme.dart';
 
 import 'dart:async';
@@ -6,7 +7,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 /// A wall-clock display. [now] supplies local time and may be replaced for a
-/// deterministic preview. This instance owns and cancels its refresh timer.
+/// deterministic preview. This instance owns and cancels its refresh timer,
+/// which also steps the reference 1s colon blink (visible, then hidden for
+/// half a second); with reduced motion the colon stays visible. Digits never
+/// dim.
 class IslandTime extends StatefulWidget {
   const IslandTime({super.key, this.now, this.semanticLabel});
   final DateTime Function()? now;
@@ -19,6 +23,9 @@ class _IslandTimeState extends State<IslandTime>
     with SingleTickerProviderStateMixin {
   late DateTime current;
   Timer? timer;
+  // Reference `animal-time-blink 1s step-end` (opacity 0 from 50%): each
+  // 500ms refresh tick flips the decorative colon.
+  bool colonShown = true;
   late final motion = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 350),
@@ -31,6 +38,7 @@ class _IslandTimeState extends State<IslandTime>
     timer = Timer.periodic(const Duration(milliseconds: 500), (_) {
       setState(() {
         current = read();
+        colonShown = !colonShown;
       });
     });
   }
@@ -87,18 +95,20 @@ class _IslandTimeState extends State<IslandTime>
         child: AnimatedBuilder(
           animation: motion,
           builder: (_, child) => SurfaceMotion(
-            progress: Curves.ease.transform(motion.value),
+            // Reference fade-in timing: .35s cubic-bezier(.4,0,.2,1); readable
+            // motion replaces the opacity ramp with an opaque 4px rise.
+            progress: const Cubic(.4, 0, .2, 1).transform(motion.value),
             offset: const Offset(0, 4),
             child: child!,
           ),
           child: Container(
             padding: const EdgeInsets.fromLTRB(32, 20, 32, 15),
             decoration: BoxDecoration(
-              color: const Color(0xfff8f8f0),
+              color: TimeColors.surface,
               borderRadius: BorderRadius.circular(20),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0x0f3d3428),
+                  color: TimeColors.shadow,
                   offset: Offset(0, 2),
                   blurRadius: 4,
                 ),
@@ -109,7 +119,7 @@ class _IslandTimeState extends State<IslandTime>
               children: [
                 DefaultTextStyle.merge(
                   style: const TextStyle(
-                    color: Color(0xff794f27),
+                    color: TimeColors.digits,
                     fontSize: 44,
                     fontWeight: FontWeight.w900,
                     height: 1,
@@ -124,7 +134,14 @@ class _IslandTimeState extends State<IslandTime>
                         padding: const EdgeInsets.symmetric(horizontal: 2),
                         child: Transform.translate(
                           offset: const Offset(0, -4.84),
-                          child: const Text(':'),
+                          child: Opacity(
+                            opacity:
+                                colonShown ||
+                                    MediaQuery.disableAnimationsOf(context)
+                                ? 1
+                                : 0,
+                            child: const Text(':'),
+                          ),
                         ),
                       ),
                       Text(pad(current.minute)),
@@ -138,7 +155,7 @@ class _IslandTimeState extends State<IslandTime>
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xffe6f9f6),
+                    color: TimeColors.datePill,
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: DefaultTextStyle.merge(

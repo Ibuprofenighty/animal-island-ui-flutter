@@ -36,6 +36,34 @@ void main() {
     );
   });
 
+  testWidgets('labels use the reference fixed colour, not card ink', (t) async {
+    Color? labelColor() {
+      final label = find.byWidgetPredicate(
+        (w) =>
+            w is Text &&
+            (w.textSpan?.toPlainText().startsWith('Name') ?? false),
+      );
+      return t.widget<Text>(label).style!.color;
+    }
+
+    const form = IslandForm(
+      layout: IslandFormLayout.vertical,
+      children: [IslandFormTextField(name: 'name', label: 'Name')],
+    );
+    await t.pumpWidget(
+      host(const IslandCard(pattern: IslandColorway.teal, child: form)),
+    );
+    expect(labelColor(), const Color(0xd9000000));
+    await t.pumpWidget(
+      MaterialApp(
+        theme: IslandTheme.create(brightness: Brightness.dark),
+        home: const Scaffold(body: SizedBox(width: 400, child: form)),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(labelColor(), IslandTokens.dark.ink);
+  });
+
   testWidgets(
     'labels focus the explicit text adapter and preserve borrowed nodes',
     (t) async {

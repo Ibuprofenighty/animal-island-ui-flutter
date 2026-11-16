@@ -1,4 +1,5 @@
 import '../internal/light_surface_scope.dart';
+import '../foundation/recipes/table.dart';
 import '../foundation/theme.dart';
 
 import 'dart:math' as math;
@@ -191,7 +192,7 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
                                 ? FontWeight.w700
                                 : FontWeight.w500,
                             letterSpacing: header ? .28 : 0,
-                            color: const Color(0xff725d42),
+                            color: TableColors.text,
                           ),
                           child: header
                               ? column.title
@@ -209,9 +210,9 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
           return Container(
             decoration: BoxDecoration(
               color: hover
-                  ? const Color(0xffd6f0ea)
+                  ? TableColors.rowHover
                   : widget.striped && index.isOdd
-                  ? const Color(0x99f8f8f0)
+                  ? TableColors.rowStripe
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(hover ? 30 : 0),
             ),
@@ -359,7 +360,7 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
         borderRadius: BorderRadius.circular(20),
         child: Container(
           padding: const EdgeInsets.all(6),
-          color: const Color(0xfff7f3df),
+          color: TableColors.surface,
           child: Stack(
             children: [
               ExcludeFocus(
@@ -379,7 +380,7 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
                     label: strings.loading,
                     child: const ClipRect(
                       child: ColoredBox(
-                        color: Color(0xfff7f3df),
+                        color: TableColors.loadingBackplane,
                         child: Center(child: _TableSpinner()),
                       ),
                     ),
@@ -398,7 +399,7 @@ class _RowRule extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xfff0e8d8)
+      ..color = TableColors.rowRule
       ..strokeWidth = 1;
     for (double x = 20; x < size.width - 20; x += 12) {
       canvas.drawLine(

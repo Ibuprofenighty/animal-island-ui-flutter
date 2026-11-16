@@ -65,10 +65,12 @@ void main() {
         );
         expect(paragraph.size.height, 25);
         expect(paragraph.didExceedMaxLines, false);
+        // Reference demoDashedBoxStyle is space-between flex: its single text
+        // item sits at the start, so the demo text is not centred.
         for (final text in ['鼠标移入此区域将显示自定义光标', '鼠标移入此区域将显示雨滴光标']) {
           expect(
             t.widget<StoryText>(find.widgetWithText(StoryText, text)).textAlign,
-            TextAlign.center,
+            isNot(TextAlign.center),
           );
         }
         final buttons = find.byType(OutlinedButton);

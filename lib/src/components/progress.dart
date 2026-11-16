@@ -1,3 +1,4 @@
+import '../foundation/recipes/progress.dart';
 import '../foundation/theme.dart';
 
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class IslandProgress extends StatelessWidget {
               child: Container(
                 height: height,
                 decoration: BoxDecoration(
-                  color: const Color(0xfff8f8f0),
+                  color: ProgressColors.track,
                   border: Border.all(
                     color: IslandTokens.light.outline,
                     width: 2,
@@ -81,13 +82,13 @@ class IslandProgress extends StatelessWidget {
                                           end: Alignment.bottomCenter,
                                           colors: value.round() == 100
                                               ? const [
-                                                  Color(0xff7fe0d5),
-                                                  Color(0xff3dd4c6),
+                                                  ProgressColors.completeTop,
+                                                  ProgressColors.completeBottom,
                                                 ]
                                               : const [
-                                                  Color(0xff3dd4c6),
-                                                  Color(0xff19c8b9),
-                                                  Color(0xff14b6a8),
+                                                  ProgressColors.fillTop,
+                                                  ProgressColors.fillMiddle,
+                                                  ProgressColors.fillBottom,
                                                 ],
                                           stops: value.round() == 100
                                               ? null
@@ -113,7 +114,9 @@ class IslandProgress extends StatelessWidget {
                                     left: 0,
                                     right: 0,
                                     height: 2,
-                                    child: ColoredBox(color: Color(0x73ffffff)),
+                                    child: ColoredBox(
+                                      color: ProgressColors.highlight,
+                                    ),
                                   ),
                                   Positioned.fill(
                                     child: DecoratedBox(
@@ -121,8 +124,9 @@ class IslandProgress extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(
                                           999,
                                         ),
+                                        // Same-hue 3:1 edge beside the fill.
                                         border: Border.all(
-                                          color: IslandTokens.light.onLeaf,
+                                          color: ProgressColors.fillEdge,
                                           width: 2,
                                         ),
                                       ),
@@ -167,7 +171,7 @@ class _TrackDots extends CustomPainter {
   const _TrackDots();
   @override
   void paint(Canvas canvas, Size size) {
-    final p = Paint()..color = const Color(0x1ac4b89e);
+    final p = Paint()..color = ProgressColors.trackDot;
     for (double x = 0; x < size.width; x += 14) {
       for (double y = 0; y < size.height; y += 14) {
         canvas.drawCircle(Offset(x, y), 1.5, p);

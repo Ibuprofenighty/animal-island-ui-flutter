@@ -1,3 +1,4 @@
+import '../foundation/recipes/form.dart';
 import '../foundation/theme.dart';
 
 import 'dart:async';
@@ -102,11 +103,7 @@ class _IslandFormState extends State<IslandForm> {
     child: Opacity(
       opacity: widget.disabled ? .6 : 1,
       child: DefaultTextStyle.merge(
-        style: TextStyle(
-          color: IslandTheme.of(context).ink,
-          fontSize: 14,
-          height: 1.6,
-        ),
+        style: TextStyle(color: _formInk(context), fontSize: 14, height: 1.6),
         child: widget.layout == IslandFormLayout.inline
             ? Wrap(spacing: 8, runSpacing: 8, children: widget.children)
             : Column(
@@ -261,7 +258,7 @@ class IslandFormItem extends StatelessWidget {
                 fontSize: font,
                 fontWeight: FontWeight.w400,
                 height: 1.6,
-                color: IslandTheme.of(context).ink,
+                color: _formInk(context),
               ),
             ),
           ),
@@ -608,3 +605,6 @@ class _FormTextEditorState extends State<_FormTextEditor> {
     onSubmitted: (_) => widget.binding.submit(),
   );
 }
+
+/// Form label/control ink; see [FormColors.ink].
+Color _formInk(BuildContext context) => FormColors.ink(context);

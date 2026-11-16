@@ -33,6 +33,12 @@ void main() {
             locale: const Locale('zh'),
             localizationsDelegates: IslandLocalizations.delegates,
             supportedLocales: IslandLocalizations.supportedLocales,
+            // Not a motion test: settle the Gallery's endlessly
+            // pulsing sidebar NEW badge with the reduced-motion contract.
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(disableAnimations: true),
+              child: child!,
+            ),
             home: GalleryPage(path: '/select', onNavigate: (_) {}),
           ),
         );
@@ -141,6 +147,12 @@ void main() {
     await t.pumpWidget(
       MaterialApp(
         theme: galleryTheme(),
+        // Not a motion test: settle the Gallery's endlessly
+        // pulsing sidebar NEW badge with the reduced-motion contract.
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child!,
+        ),
         home: GalleryPage(path: '/select', onNavigate: (_) {}),
       ),
     );

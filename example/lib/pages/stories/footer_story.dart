@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class FooterStory extends StatelessWidget {
   const FooterStory({super.key});
@@ -20,7 +21,7 @@ class FooterStory extends StatelessWidget {
       const StoryLabel('自定义年份 / 样式', strutStyle: storyCaptionStrut),
       DecoratedBox(
         decoration: BoxDecoration(
-          color: const Color(0xfff7f3ea),
+          color: GalleryPalette.footerDemoSurface,
           borderRadius: BorderRadius.circular(8),
         ),
         child: const IslandFooter(text: 'Acme Ltd.', year: 2020),

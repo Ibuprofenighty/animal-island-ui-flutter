@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class SkeletonStory extends StatefulWidget {
   const SkeletonStory({super.key});
@@ -15,9 +16,9 @@ class _SkeletonStoryState extends State<SkeletonStory> {
     width: 240,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
-      color: const Color(0xfffafaf5),
+      color: GalleryPalette.skeletonDemoSurface,
       border: Border.all(
-        color: const Color(0xffe8dcc8),
+        color: GalleryPalette.skeletonDemoBorder,
         width: IslandTheme.borderWidth(context, 1.5),
       ),
       borderRadius: BorderRadius.circular(20),
@@ -59,7 +60,13 @@ class _SkeletonStoryState extends State<SkeletonStory> {
             onChanged: (v) => setState(() => loading = v),
           ),
           const SizedBox(width: 12),
-          Text(loading ? '加载中' : '已加载', style: const TextStyle(fontSize: 13)),
+          Text(
+            loading ? '加载中' : '已加载',
+            style: const TextStyle(
+              fontSize: 13,
+              color: GalleryPalette.storyInk,
+            ),
+          ),
         ],
       ),
       const SizedBox(height: 16),
@@ -120,9 +127,11 @@ class _SkeletonStoryState extends State<SkeletonStory> {
         'Skeleton.Button / Skeleton.Input / Skeleton.Avatar',
         lineHeight: 20 / 14,
       ),
+      // Reference row: flex, gap 32, alignItems center.
       Wrap(
         spacing: 32,
         runSpacing: 32,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           card(
             context,
@@ -134,7 +143,15 @@ class _SkeletonStoryState extends State<SkeletonStory> {
           card(
             context,
             'Input',
-            loading ? const IslandSkeletonInput() : const Text('输入框已加载'),
+            loading
+                ? const IslandSkeletonInput()
+                : const Text(
+                    '输入框已加载',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: GalleryPalette.storyInk,
+                    ),
+                  ),
           ),
           card(
             context,
@@ -149,7 +166,13 @@ class _SkeletonStoryState extends State<SkeletonStory> {
                       IslandSkeletonAvatar(size: IslandSize.large),
                     ],
                   )
-                : const Text('头像已加载'),
+                : const Text(
+                    '头像已加载',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: GalleryPalette.storyInk,
+                    ),
+                  ),
           ),
         ],
       ),
@@ -160,7 +183,7 @@ class _SkeletonStoryState extends State<SkeletonStory> {
           width: double.infinity,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: const Color(0xffe6f9f6),
+            color: GalleryPalette.skeletonDemoCard,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -180,7 +203,7 @@ class _SkeletonStoryState extends State<SkeletonStory> {
         ),
       ),
       const StoryCode(
-        'IslandSkeleton(loading: loading, child: content)\nconst IslandSkeleton(variant: IslandSkeletonVariant.paragraph, rows: 4)\nconst IslandSkeletonButton()',
+        'const IslandSkeleton()\nconst IslandSkeleton(variant: IslandSkeletonVariant.circle, width: 56)\nconst IslandSkeleton(\n  variant: IslandSkeletonVariant.rect,\n  width: 200,\n  height: 120,\n)\nconst IslandSkeleton(variant: IslandSkeletonVariant.paragraph, rows: 4)\nconst IslandSkeletonButton()\nconst IslandSkeletonInput()\nconst IslandSkeletonAvatar(size: IslandSize.large)\nIslandSkeleton(loading: loading, child: content)',
       ),
       const StoryApi(
         rows: [

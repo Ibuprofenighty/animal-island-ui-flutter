@@ -57,6 +57,26 @@ void main() {
       semantics.dispose();
     },
   );
+  testWidgets('Title uses the reference normal line height', (t) async {
+    await t.pumpWidget(
+      const MaterialApp(
+        home: IslandModal(title: Text('Title'), child: Text('body')),
+      ),
+    );
+    final style = t
+        .widget<DefaultTextStyle>(
+          find
+              .ancestor(
+                of: find.text('Title'),
+                matching: find.byType(DefaultTextStyle),
+              )
+              .first,
+        )
+        .style;
+    expect(style.fontSize, 28);
+    // Font metrics, not a 1.5 multiplier (42px for a 28px line).
+    expect(t.getSize(find.text('Title')).height, closeTo(28, .5));
+  });
   testWidgets(
     'Normal no-footer surface scrolls long opaque content without losing header',
     (t) async {

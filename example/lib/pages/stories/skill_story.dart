@@ -6,24 +6,32 @@ import 'dart:math' as math;
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class SkillStory extends StatelessWidget {
   const SkillStory({super.key});
   static Color get ink => IslandTokens.light.ink;
-  Widget prose(String text) => Text(
+
+  /// Reference `.lead` (1.8); card descriptions pass `.cardDesc` 1.7.
+  Widget prose(String text, {double height = 1.8, Color? color}) => Text(
     text,
     style: TextStyle(
       fontSize: 12,
-      height: 1.8,
-      color: IslandTokens.light.muted,
+      height: height,
+      color: color ?? IslandTokens.light.muted,
     ),
   );
-  Widget section(String title, List<String> tags, List<Widget> children) =>
-      StoryPanel(
-        title: title,
-        tags: tags,
-        children: [const SizedBox(height: 10), ...children],
-      );
+  Widget section(
+    String title,
+    List<String> tags,
+    List<Widget> children, {
+    bool dashed = false,
+  }) => StoryPanel(
+    title: title,
+    tags: tags,
+    dashed: dashed,
+    children: [const SizedBox(height: 10), ...children],
+  );
   Widget code(String text) => IslandCodeBlock(
     code: text,
     language: IslandCodeLanguage.shell,
@@ -71,6 +79,7 @@ class SkillStory extends StatelessWidget {
     String title,
     IslandGlyph icon, {
     double iconSize = 26,
+    double titleSize = 15,
     Widget? trailing,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 4),
@@ -82,7 +91,7 @@ class SkillStory extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-              fontSize: 15,
+              fontSize: titleSize,
               fontWeight: FontWeight.w700,
               color: ink,
             ),
@@ -95,8 +104,8 @@ class SkillStory extends StatelessWidget {
   Widget chip(String text) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
     decoration: BoxDecoration(
-      color: const Color(0xfff8f8f0),
-      border: Border.all(color: const Color(0xffe8e2d6)),
+      color: IslandTokens.light.paper,
+      border: Border.all(color: GalleryPalette.rule),
       borderRadius: BorderRadius.circular(12),
     ),
     child: Text(text, style: TextStyle(fontSize: 12, color: ink)),
@@ -109,8 +118,8 @@ class SkillStory extends StatelessWidget {
         width: 26,
         height: 26,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          color: Color(0xff19c8b9),
+        decoration: BoxDecoration(
+          color: IslandTokens.light.leaf,
           shape: BoxShape.circle,
         ),
         child: Text(
@@ -135,7 +144,7 @@ class SkillStory extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            prose(text),
+            prose(text, height: 1.7),
             const SizedBox(height: 10),
             if (shell != null) code(shell),
           ],
@@ -248,7 +257,7 @@ class SkillStory extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       cardHead(item.$3, item.$1),
-                      prose(item.$4),
+                      prose(item.$4, height: 1.7),
                       const SizedBox(height: 10),
                     ],
                   ),
@@ -288,8 +297,10 @@ class SkillStory extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    cardHead(item.$1, item.$2, iconSize: 30),
-                    prose(item.$4),
+                    // Reference .scenarioTitle 14/700 and .scenarioDesc in
+                    // the body text colour.
+                    cardHead(item.$1, item.$2, iconSize: 30, titleSize: 14),
+                    prose(item.$4, height: 1.7, color: ink),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 6,
@@ -399,19 +410,22 @@ class SkillStory extends StatelessWidget {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xfff8f8f0),
-                    border: Border.all(color: const Color(0xffe8e2d6)),
+                    color: IslandTokens.light.paper,
+                    border: Border.all(color: GalleryPalette.rule),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: _CatalogRow(
                     direction: Directionality.of(context),
                     children: [
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(minWidth: 128),
-                        child: IslandTag(
-                          colorway: row.$2,
-                          variant: IslandTagVariant.soft,
-                          child: Text(row.$1),
+                      // Reference .catalogCategory: min-width 128 with the
+                      // label centred. The Tag's own chrome (12px padding
+                      // and a 1px side per edge) sits outside its child.
+                      IslandTag(
+                        colorway: row.$2,
+                        variant: IslandTagVariant.soft,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(minWidth: 102),
+                          child: Text(row.$1, textAlign: TextAlign.center),
                         ),
                       ),
                       Wrap(
@@ -432,7 +446,7 @@ class SkillStory extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xfff0e8d8),
+                          color: GalleryPalette.codeChip,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -442,8 +456,8 @@ class SkillStory extends StatelessWidget {
                             height: 16 / 12,
                             forceStrutHeight: true,
                           ),
+                          // Reference pathChipQuiet renders in the page sans.
                           style: TextStyle(
-                            fontFamily: IslandTheme.codeFontFamily,
                             fontSize: 12,
                             height: 16 / 12,
                             color: IslandTokens.light.muted,
@@ -471,6 +485,7 @@ class SkillStory extends StatelessWidget {
               'onLeaf': IslandTokens.light.onLeaf,
               'leafHover': IslandTokens.light.leafHover,
               'leafPressed': IslandTokens.light.leafPressed,
+              'leafSelected': IslandTokens.light.leafSelected,
               'link': IslandTokens.light.link,
               'linkHover': IslandTokens.light.linkHover,
               'linkPressed': IslandTokens.light.linkPressed,
@@ -506,13 +521,22 @@ class SkillStory extends StatelessWidget {
                     width: 116,
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                      color: const Color(0xfff8f8f0),
+                      color: IslandTokens.light.paper,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Container(height: 56, color: token.value),
+                        Container(
+                          height: 56,
+                          color: token.value,
+                          // Reference .swatchChip border-bottom.
+                          foregroundDecoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: GalleryPalette.rule),
+                            ),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(9, 7, 9, 9),
                           child: Column(
@@ -692,6 +716,7 @@ class SkillStory extends StatelessWidget {
             '新的 Dart 实现与配套技能采用 MIT License，可使用、修改与分发，包括商业用途。字体、图标及照片保留各自授权与来源记录。发布前仍须完成 Windows / Web 对照和商用验收；完整条款见 LICENSE 与 docs/RIGHTS.md。',
           ),
         ],
+        dashed: true,
       ),
     ],
   );

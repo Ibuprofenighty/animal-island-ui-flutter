@@ -1,0 +1,15 @@
+import '../palette.dart';
+
+/// Drawer colour recipe (fixed light panel).
+abstract final class DrawerColors {
+  /// IslandDrawerHost default backplane exposed when the page recedes.
+  static const hostBackplane = Primitive.neutral1000;
+  static const panel = Primitive.sand962;
+  static const panelShadow = Primitive.brown331A18;
+  static const title = Primitive.brown492;
+  static const closeHover = Primitive.brown492;
+  static const closeHoverFill = Primitive.brown492A10;
+
+  /// Mask base; its alpha follows the mask motion (reference .18).
+  static const mask = Primitive.neutral0;
+}

@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import '../internal/anchored_panel.dart';
 import '../internal/content_scope.dart';
 import '../internal/organic_bubble.dart';
+import '../internal/surface_motion.dart';
+import '../foundation/recipes/tooltip.dart';
 
 enum IslandTooltipPlacement {
   top,
@@ -183,7 +185,10 @@ class _IslandTooltipState extends State<IslandTooltip>
                           1,
                         ).transform(motion.value);
                         return Transform.translate(
-                          offset: offset * (-.4 * (1 - t)),
+                          offset: snapToDevicePixels(
+                            offset * (-.4 * (1 - t)),
+                            MediaQuery.devicePixelRatioOf(context),
+                          ),
                           child: child,
                         );
                       },
@@ -212,7 +217,7 @@ class _IslandTooltipState extends State<IslandTooltip>
                                 child: ContentScope(
                                   textStyle: TextStyle(
                                     fontSize: 12,
-                                    color: const Color(0xff725d42),
+                                    color: TooltipColors.text,
                                     fontWeight: island
                                         ? FontWeight.w600
                                         : FontWeight.w500,
@@ -251,7 +256,7 @@ class _BubblePainter extends CustomPainter {
   final bool bordered;
   @override
   void paint(Canvas canvas, Size size) {
-    const paper = Color(0xfff7f3df), border = Color(0xffc4b89e);
+    const paper = TooltipColors.paper, border = TooltipColors.border;
     final island = variant == IslandTooltipVariant.island;
     final path = island
         ? const OrganicBubbleClip().getClip(size)
@@ -266,12 +271,24 @@ class _BubblePainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = island ? const Color(0x24794f27) : const Color(0x1a3d3428)
+        ..color = island
+            ? TooltipColors.islandShadow
+            : TooltipColors.plainShadow
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, island ? 7 : 5),
     );
     canvas.restore();
     canvas.drawPath(path, Paint()..color = paper);
-    if (bordered) {
+    if (bordered && island) {
+      // Reference SVG: 2px non-scaling stroke centred on the silhouette.
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = border
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
+    } else if (bordered) {
+      // CSS border: 2px fully inside the box.
       canvas.save();
       canvas.clipPath(path);
       canvas.drawPath(
@@ -292,15 +309,18 @@ class _BubblePainter extends CustomPainter {
         : 8.0;
     final horizontal = side < 2;
     final length = horizontal ? size.width : size.height;
-    final inset = island
-        ? (horizontal ? 20.0 : 16.0)
-        : (horizontal ? 16.0 : 12.0);
+    // A bordered non-island bubble positions its arrow from the padding edge,
+    // 2px inside the CSS border (reference ::after, border-box sizing).
+    final edge = !island && bordered ? 2.0 : 0.0;
+    final inset =
+        edge +
+        (island ? (horizontal ? 20.0 : 16.0) : (horizontal ? 16.0 : 12.0));
     final along = switch (alignment) {
       1 => inset + extent / 2,
       2 => length - inset - extent / 2,
       _ => length / 2,
     };
-    final across = extent / 2 - 5;
+    final across = edge + extent / 2 - 5;
     final center = switch (side) {
       0 => Offset(along, size.height - across),
       1 => Offset(along, across),
@@ -324,7 +344,8 @@ class _BubblePainter extends CustomPainter {
       );
       if (bordered) {
         final tail = Path();
-        final half = extent / 2;
+        // Border-box arrow: the 2px border lies inside the arrow square.
+        final half = extent / 2 - 1;
         switch (side) {
           case 0:
             tail

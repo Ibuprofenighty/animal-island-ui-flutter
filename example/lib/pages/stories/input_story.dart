@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class InputStory extends StatelessWidget {
   const InputStory({super.key});
@@ -61,7 +62,9 @@ class InputStory extends StatelessWidget {
                 const IslandCardTheme(
                   radius: 18,
                   style: IslandCardStyle(
-                    borderColor: WidgetStatePropertyAll(Color(0xfff1d5a4)),
+                    borderColor: WidgetStatePropertyAll(
+                      GalleryPalette.inputDemoCardBorder,
+                    ),
                   ),
                 ),
               ],
@@ -186,11 +189,20 @@ class _SwitchStoryState extends State<SwitchStory> {
     tags: ["2 sizes"],
     children: [
       const StoryLabel('基础用法', strutStyle: storyCaptionStrut),
-      storyRow([control(0), Text(values[0] ? 'ON' : 'OFF')]),
+      storyRow([
+        control(0),
+        Text(values[0] ? 'ON' : 'OFF', style: const TextStyle(fontSize: 13)),
+      ], align: WrapCrossAlignment.center),
       const StoryLabel('checkedChildren / unCheckedChildren 自定义文案'),
-      storyRow([control(1, text: true), control(2, text: true)]),
+      storyRow([
+        control(1, text: true),
+        control(2, text: true),
+      ], align: WrapCrossAlignment.center),
       const StoryLabel('size 尺寸'),
-      storyRow([control(3), control(4, small: true)]),
+      storyRow([
+        control(3),
+        control(4, small: true),
+      ], align: WrapCrossAlignment.center),
       const StoryLabel('disabled / loading 状态'),
       storyRow([
         const IslandSwitch(
@@ -206,7 +218,7 @@ class _SwitchStoryState extends State<SwitchStory> {
           showLabel: false,
           busy: true,
         ),
-      ]),
+      ], align: WrapCrossAlignment.center),
       const StoryCode(
         "IslandSwitch(\n  label: '开关',\n  value: enabled,\n  onChanged: (value) => setState(() => enabled = value),\n)",
       ),

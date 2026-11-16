@@ -3,6 +3,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
 import '../../shared/photos.dart';
+import '../../shared/palette.dart';
 
 class AvatarStory extends StatefulWidget {
   const AvatarStory({super.key});
@@ -40,7 +41,7 @@ class _AvatarStoryState extends State<AvatarStory> {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Color(0xff725d42),
+              color: GalleryPalette.storyInk,
               height: 4 / 3,
             ),
           ),

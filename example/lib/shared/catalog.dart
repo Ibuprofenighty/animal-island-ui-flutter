@@ -184,7 +184,7 @@ const galleryGroups = <String, List<GalleryEntry>>{
       "loading",
       "Loading 加载",
       "Loading 加载",
-      "全屏落雪加载指示器 — 50 片随机雪花旋转飘落 + 暗角夜空，中央提示文字、delay 防闪烁；退出时雪花渐隐，提示与底板保持清晰至移除",
+      "全屏落雪加载指示器 — 50 片随机雪花旋转飘落 + 暗角夜空，中央提示文字、delay 防闪烁，结束时渐变消失",
       isNew: false,
     ),
     GalleryEntry(

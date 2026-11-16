@@ -137,4 +137,112 @@ void main() {
       throwsArgumentError,
     );
   });
+  testWidgets('Radio group is one Tab stop that follows checked/arrow focus', (
+    t,
+  ) async {
+    String value = 'b';
+    late StateSetter update;
+    await t.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (_, set) {
+              update = set;
+              return Column(
+                children: [
+                  TextButton(onPressed: () {}, child: const Text('Before')),
+                  IslandRadioGroup<String>(
+                    options: const [
+                      IslandOption(value: 'a', label: 'Apple'),
+                      IslandOption(value: 'b', label: 'Berry'),
+                      IslandOption(value: 'c', label: 'Cherry', disabled: true),
+                      IslandOption(value: 'd', label: 'Date'),
+                    ],
+                    value: value,
+                    onChanged: (v) => set(() => value = v),
+                  ),
+                  TextButton(onPressed: () {}, child: const Text('After')),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+    bool focused(String label) {
+      final owner = FocusManager.instance.primaryFocus?.context;
+      return owner != null &&
+          find
+              .descendant(
+                of: find.byElementPredicate((e) => e == owner),
+                matching: find.text(label),
+              )
+              .evaluate()
+              .isNotEmpty;
+    }
+
+    Future<void> tab({bool back = false}) async {
+      if (back) await t.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await t.sendKeyEvent(LogicalKeyboardKey.tab);
+      if (back) await t.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await t.pump();
+    }
+
+    await tab();
+    expect(focused('Before'), isTrue);
+    await tab();
+    expect(focused('Berry'), isTrue);
+    await tab();
+    expect(focused('After'), isTrue);
+    await tab(back: true);
+    expect(focused('Berry'), isTrue);
+    await t.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await t.pump();
+    expect(value, 'd');
+    expect(focused('Date'), isTrue);
+    await tab();
+    expect(focused('After'), isTrue);
+    await tab(back: true);
+    expect(focused('Date'), isTrue);
+    // A host commit moves the stop to the newly checked option.
+    update(() => value = 'a');
+    await t.pump();
+    await tab();
+    await tab(back: true);
+    expect(focused('Apple'), isTrue);
+  });
+  testWidgets('Checkbox options stay separate Tab stops', (t) async {
+    await t.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: IslandCheckboxGroup<String>(
+            options: const [
+              IslandOption(value: 'a', label: 'A'),
+              IslandOption(value: 'b', label: 'B'),
+            ],
+            values: const {},
+            onChanged: (_) {},
+          ),
+        ),
+      ),
+    );
+    bool focused(String label) {
+      final owner = FocusManager.instance.primaryFocus?.context;
+      return owner != null &&
+          find
+              .descendant(
+                of: find.byElementPredicate((e) => e == owner),
+                matching: find.text(label),
+              )
+              .evaluate()
+              .isNotEmpty;
+    }
+
+    await t.sendKeyEvent(LogicalKeyboardKey.tab);
+    await t.pump();
+    expect(focused('A'), isTrue);
+    await t.sendKeyEvent(LogicalKeyboardKey.tab);
+    await t.pump();
+    expect(focused('B'), isTrue);
+  });
 }

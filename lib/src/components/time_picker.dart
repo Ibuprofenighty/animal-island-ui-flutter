@@ -1,3 +1,4 @@
+import '../foundation/recipes/picker.dart';
 import '../foundation/theme.dart';
 import '../internal/focus_outline.dart';
 
@@ -272,7 +273,14 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                       },
                     ),
                     const SizedBox(width: 6),
-                    PickerFooterAction('确定', primary: true, onPressed: confirm),
+                    // Reference hover #8a7b66 gives white text 4.1:1; the
+                    // sibling DatePicker reference hover #796c5a passes 4.5:1.
+                    PickerFooterAction(
+                      '确定',
+                      primary: true,
+                      primaryHoverColor: PickerColors.confirmHover,
+                      onPressed: confirm,
+                    ),
                   ],
                 ),
               ),
@@ -332,10 +340,10 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           color: selected == value
-                              ? const Color(0xffffb400)
+                              ? PickerColors.timeSelected
                               : states.contains(WidgetState.hovered) ||
                                     states.contains(WidgetState.focused)
-                              ? const Color(0xffffd54f)
+                              ? PickerColors.timeHover
                               : null,
                         ),
                         child: ExcludeSemantics(
@@ -349,7 +357,7 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                                   : FontWeight.w500,
                               color: selected == value
                                   ? IslandTokens.light.onSun
-                                  : const Color(0xff725d42),
+                                  : PickerColors.text,
                             ),
                           ),
                         ),

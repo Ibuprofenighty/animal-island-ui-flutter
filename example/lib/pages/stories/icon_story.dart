@@ -3,6 +3,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
 import '../../shared/icon_labels.dart';
+import '../../shared/palette.dart';
 
 class IconStory extends StatelessWidget {
   const IconStory({super.key});
@@ -14,12 +15,19 @@ class IconStory extends StatelessWidget {
       const StoryLabel(
         '图标来自 naive-icons —— 手绘 naive folk art 风格的 SVG 图标库，150+ 个原创图标；Flutter 包已内置固定版本资源。',
         spaceAfter: 0,
+        links: {'naive-icons': 'https://github.com/guokaigdg/naive-icons'},
       ),
       const StoryCode(
         'dependencies:\n  animal_island_ui:\n    path: ../animal_island_ui',
         label: '安装',
       ),
-      const StoryLabel('文档与完整示例参考 https://github.com/guokaigdg/naive-icons'),
+      const StoryLabel(
+        '文档与完整示例参考 https://github.com/guokaigdg/naive-icons',
+        links: {
+          'https://github.com/guokaigdg/naive-icons':
+              'https://github.com/guokaigdg/naive-icons',
+        },
+      ),
       const StoryLabel('基础用法', spaceBefore: 0),
       Wrap(
         spacing: 20,
@@ -55,13 +63,13 @@ class IconStory extends StatelessWidget {
           const IslandIcon(
             IslandGlyph.coffee,
             size: 32,
-            color: const Color(0xffe05260),
+            color: GalleryPalette.iconDemoCoffee,
             strokeWidth: 3,
           ),
           const IslandIcon(
             IslandGlyph.cherry,
             size: 32,
-            color: const Color(0xff2a9d8f),
+            color: GalleryPalette.iconDemoCherry,
             strokeWidth: 3,
           ),
           IslandIcon(
@@ -76,7 +84,7 @@ class IconStory extends StatelessWidget {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xffe8e2d6)),
+          border: Border.all(color: GalleryPalette.rule),
           borderRadius: BorderRadius.circular(12),
         ),
         child: LayoutBuilder(
@@ -99,9 +107,11 @@ class IconStory extends StatelessWidget {
           },
         ),
       ),
-      const StoryLabel('使用示例', strutStyle: storyCaptionStrut),
-      const IslandCodeBlock(
-        code: "const IslandIcon(IslandGlyph.flower, size: 32, color: Color(0xffe05260), strokeWidth: 3)",
+      // Reference: the 使用示例 label, then the demo CodeBlock with its own tab
+      // label; the label's 20px margin collapses into the block's 36px.
+      const StoryLabel('使用示例', strutStyle: storyCaptionStrut, spaceAfter: 0),
+      const StoryCode(
+        "const IslandIcon(IslandGlyph.flower, size: 32, color: Color(0xffe05260), strokeWidth: 3)",
       ),
       const StoryApi(
         rows: [
@@ -153,10 +163,14 @@ class _IconTileState extends State<_IconTile> {
           curve: Curves.ease,
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
           decoration: BoxDecoration(
-            color: hover ? const Color(0xfffaf7f0) : Colors.white,
+            color: hover
+                ? GalleryPalette.iconTileHover
+                : GalleryPalette.iconTile,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: hover ? const Color(0xffe8dec7) : Colors.transparent,
+              color: hover
+                  ? GalleryPalette.iconTileHoverBorder
+                  : Colors.transparent,
             ),
           ),
           child: Column(
@@ -195,7 +209,7 @@ class _IconTileState extends State<_IconTile> {
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xff725d42),
+                  color: GalleryPalette.storyInk,
                 ),
               ),
             ],

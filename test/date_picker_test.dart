@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
@@ -86,6 +88,51 @@ void main() {
       focus.requestFocus(); // Borrower did not dispose it.
       await t.pump();
       expect(focus.hasFocus, isTrue);
+    },
+  );
+  testWidgets(
+    'range endpoints keep the reference white 1px ring; disabled text is #c4b89e',
+    (t) async {
+      t.view.physicalSize = const Size(1200, 900);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.resetPhysicalSize);
+      addTearDown(t.view.resetDevicePixelRatio);
+      await t.pumpWidget(
+        host(
+          IslandDatePicker.rangeUncontrolled(
+            initialValue: DateTimeRange(
+              start: DateTime(2026, 8, 10),
+              end: DateTime(2026, 8, 20),
+            ),
+          ),
+        ),
+      );
+      await choose(t, '选择日期');
+      Color? ring(String day) => t
+          .widgetList<Container>(
+            find.ancestor(
+              of: find.text(day).first,
+              matching: find.byType(Container),
+            ),
+          )
+          .map((c) => c.decoration)
+          .whereType<BoxDecoration>()
+          .map((d) => (d.border as Border?)?.top.color)
+          .first; // the nearest decorated Container is the day cell
+      expect(ring('10'), Colors.white);
+      expect(ring('20'), Colors.white);
+      expect(ring('15'), isNull);
+      await t.pumpWidget(
+        host(
+          IslandDatePicker(
+            value: DateTime(2026, 8, 10),
+            onChanged: (_) {},
+            disabled: true,
+          ),
+        ),
+      );
+      final text = t.renderObject<RenderParagraph>(find.text('2026-08-10'));
+      expect(text.text.style?.color, const Color(0xffc4b89e));
     },
   );
   testWidgets(
@@ -205,6 +252,104 @@ void main() {
       await t.tap(find.text('确定'));
       await t.pumpAndSettle();
       expect(values.single, DateTime(2026, 9));
+    },
+  );
+  testWidgets(
+    'range trigger values share a fixed width; icon sits at the right edge',
+    (t) async {
+      await t.pumpWidget(
+        host(
+          SizedBox(
+            width: 300,
+            child: IslandDatePicker.rangeUncontrolled(
+              initialValue: DateTimeRange(
+                start: DateTime(2026, 8, 10),
+                end: DateTime(2026, 8, 20),
+              ),
+            ),
+          ),
+        ),
+      );
+      final box = t.getRect(find.byType(IslandDatePicker));
+      final start = t.getRect(find.text('2026-08-10'));
+      final end = t.getRect(find.text('2026-08-20'));
+      final icon = t
+          .widgetList<CustomPaint>(
+            find.descendant(
+              of: find.byType(IslandDatePicker),
+              matching: find.byType(CustomPaint),
+            ),
+          )
+          .map((w) => t.getRect(find.byWidget(w)))
+          .firstWhere((r) => r.width == 14 && r.height == 14);
+      expect(box.width, 300);
+      expect(start.left, box.left + 18);
+      expect(end.width, closeTo(start.width, .01));
+      // value | 10 | divider 1 | 10 | value | 8 | icon 14 | padding 18
+      expect(end.left, closeTo(start.right + 21, .01));
+      expect(icon.right, closeTo(box.right - 18, .01));
+      expect(end.right, closeTo(icon.left - 8, .01));
+    },
+  );
+  testWidgets('single trigger still hugs its content under loose width', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(IslandDatePicker.uncontrolled(initialValue: DateTime(2026, 8, 10))),
+    );
+    expect(t.getSize(find.byType(IslandDatePicker)).width, lessThan(200));
+  });
+
+  testWidgets(
+    'trigger underlines and clear hover follow the reference colors',
+    (t) async {
+      List<Color> shadows() => t
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(IslandDatePicker),
+              matching: find.byType(Container),
+            ),
+          )
+          .map((c) => c.decoration)
+          .whereType<BoxDecoration>()
+          .expand((d) => d.boxShadow ?? const <BoxShadow>[])
+          .where((s) => s.offset == const Offset(0, 3))
+          .map((s) => s.color)
+          .toList();
+      for (final (status, color) in [
+        (IslandFieldStatus.error, const Color(0xffc94444)),
+        (IslandFieldStatus.warning, const Color(0xffaf8600)),
+      ]) {
+        await t.pumpWidget(
+          host(
+            IslandDatePicker.uncontrolled(
+              initialValue: DateTime(2026, 8, 10),
+              status: status,
+            ),
+          ),
+        );
+        expect(shadows(), [color], reason: '$status');
+      }
+      await t.pumpWidget(
+        host(
+          IslandDatePicker.uncontrolled(
+            initialValue: DateTime(2026, 8, 10),
+            allowClear: true,
+          ),
+        ),
+      );
+      expect(shadows(), isEmpty);
+      final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      addTearDown(mouse.removePointer);
+      await mouse.moveTo(t.getCenter(find.text('×')));
+      await t.pump();
+      // Decorative hover underline #c4b89e; the clear glyph turns #725d42.
+      expect(shadows(), [const Color(0xffc4b89e)]);
+      expect(
+        t.widget<Text>(find.text('×')).style!.color,
+        const Color(0xff725d42),
+      );
     },
   );
 }

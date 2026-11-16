@@ -5,6 +5,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
 import 'residents.dart';
+import '../../shared/palette.dart';
 
 class BackTopStory extends StatefulWidget {
   const BackTopStory({super.key});
@@ -58,12 +59,21 @@ class _BackTopStoryState extends State<BackTopStory> {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
             decoration: BoxDecoration(
-              color: const Color(0xfff0e8d8),
+              color: GalleryPalette.codeChip,
               borderRadius: BorderRadius.circular(6),
             ),
-            child: const Text(
+            // Reference <code>: monospace in the inherited #9f927d, which
+            // is 2.6:1 on the #f0e8d8 chip; deepened in hue to 4.5:1.
+            child: Text(
               'visibilityHeight=400',
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: IslandTheme.codeFontFamily,
+                fontFamilyFallback: DefaultTextStyle.of(context)
+                    .style
+                    .fontFamilyFallback,
+                color: GalleryPalette.backTopCodeInk,
+              ),
             ),
           ),
           Text(
@@ -90,14 +100,14 @@ class _BackTopStoryState extends State<BackTopStory> {
                 alignment: Alignment.center,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0x73ffffff),
+                  color: GalleryPalette.backTopBubble,
                 ),
                 child: Text(
                   residents[i].$2[0].toUpperCase(),
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xff725d42),
+                    color: GalleryPalette.storyInk,
                   ),
                 ),
               ),
@@ -128,7 +138,7 @@ class _BackTopStoryState extends State<BackTopStory> {
                             horizontal: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0x59ffffff),
+                            color: GalleryPalette.backTopChip,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(

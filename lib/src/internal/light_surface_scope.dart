@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../foundation/reference_palette.dart';
 import '../foundation/theme.dart';
 import 'content_scope.dart';
 
@@ -13,11 +14,18 @@ class LightSurfaceScope extends StatelessWidget {
     this.onSurface,
     this.surfaceTheme,
     this.enabled = true,
+    this.referencePaper = false,
   });
   final Widget child;
   final Color? onSurface;
   final IslandSurfaceTheme? surfaceTheme;
   final bool enabled;
+
+  /// Declared by the surface owner (Card pattern/neutral papers): the surface
+  /// is one of the product's light papers, so nested controls keep the
+  /// reference recipe (see [usesReferencePalette]) although [onSurface]
+  /// rewrites passive ink. Never inferred from a color.
+  final bool referencePaper;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -36,6 +44,17 @@ class LightSurfaceScope extends StatelessWidget {
                 outline: foreground,
                 dangerText: IslandTokens.light.onDanger,
               ));
+    // Keep this topology when a surface becomes transparent so state/focus
+    // remain with the same opaque child. Empty defaults inherit the host.
+    Widget body = ContentScope(
+      textStyle: TextStyle(color: enabled ? foreground ?? tokens.ink : null),
+      iconColor: enabled ? foreground ?? tokens.ink : null,
+      child: child,
+    );
+    body = ReferencePaperScope(
+      tokens: enabled && referencePaper && surfaceTheme == null ? tokens : null,
+      child: body,
+    );
     return Theme(
       data: !enabled
           ? theme
@@ -59,13 +78,7 @@ class LightSurfaceScope extends StatelessWidget {
                 tokens,
               ],
             ),
-      // Keep this topology when a surface becomes transparent so state/focus
-      // remain with the same opaque child. Empty defaults inherit the host.
-      child: ContentScope(
-        textStyle: TextStyle(color: enabled ? foreground ?? tokens.ink : null),
-        iconColor: enabled ? foreground ?? tokens.ink : null,
-        child: child,
-      ),
+      child: body,
     );
   }
 }

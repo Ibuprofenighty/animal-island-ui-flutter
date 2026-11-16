@@ -93,7 +93,7 @@ class _IslandTitleState extends State<IslandTitle> {
                         font * (variant == IslandTitleVariant.layer ? 2.1 : 2),
                   ),
                   child: LightSurfaceScope(
-                    onSurface: Color(c.$4),
+                    onSurface: c.$4,
                     child: ContentScope(
                       softWrap: false,
                       overflow: TextOverflow.visible,
@@ -102,7 +102,7 @@ class _IslandTitleState extends State<IslandTitle> {
                         fontWeight: FontWeight.w900,
                         letterSpacing: font * .04,
                         height: 1,
-                        color: Color(c.$4),
+                        color: c.$4,
                       ),
                       child: Padding(
                         padding: EdgeInsets.only(top: ribbon ? font * .11 : 0),
@@ -127,14 +127,14 @@ class _IslandTitleState extends State<IslandTitle> {
 class _TitlePaint extends CustomPainter {
   const _TitlePaint(this.variant, this.colors, this.font);
   final IslandTitleVariant variant;
-  final (int, int, int, int) colors;
+  final (Color, Color, Color, Color) colors;
   final double font;
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width, h = size.height, f = font;
-    final front = Paint()..color = Color(colors.$1),
-        back = Paint()..color = Color(colors.$2),
-        fold = Paint()..color = Color(colors.$3);
+    final front = Paint()..color = colors.$1,
+        back = Paint()..color = colors.$2,
+        fold = Paint()..color = colors.$3;
     if (variant == IslandTitleVariant.ribbon) {
       final left = Path()
         ..moveTo(-.6 * f, h - 1.3 * f)

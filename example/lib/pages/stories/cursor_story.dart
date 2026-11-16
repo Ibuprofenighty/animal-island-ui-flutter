@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class CursorStory extends StatelessWidget {
   const CursorStory({super.key});
@@ -23,17 +24,21 @@ class CursorStory extends StatelessWidget {
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: const RoundedRectangleBorder(),
-            side: const BorderSide(color: Color(0xff767676), width: 2),
-            backgroundColor: const Color(0xfff0f0f0),
-            disabledBackgroundColor: const Color(0xfff0f0f0),
+            side: const BorderSide(
+              color: GalleryPalette.nativeControlBorder,
+              width: 2,
+            ),
+            backgroundColor: GalleryPalette.nativeControlFill,
+            disabledBackgroundColor: GalleryPalette.nativeControlFill,
             foregroundColor: IslandTokens.light.ink,
             disabledForegroundColor: IslandTokens.light.muted,
+            // Bundled metric-compatible Arimo stands in for the UA Arial.
+            // It must be the primary family: an unbundled 'Arial' resolves to
+            // the host default face before any fallback (test-font boxes in
+            // the harness, no Arial on Web), so Latin never reached Arimo.
             textStyle: const TextStyle(
-              fontFamily: 'Arial',
-              fontFamilyFallback: [
-                'IslandGalleryControls',
-                'IslandGallerySans',
-              ],
+              fontFamily: 'IslandGalleryControls',
+              fontFamilyFallback: ['IslandGallerySans'],
               fontSize: 13.333333,
               fontWeight: FontWeight.w400,
               height: 1,
@@ -48,26 +53,61 @@ class CursorStory extends StatelessWidget {
           ),
         ),
       );
+  Widget intro(BuildContext context) {
+    // UA monospace `<code>`: 13/16 of the inherited 14px label size.
+    final code = TextStyle(
+      fontSize: 14 * 13 / 16,
+      fontFamily: IslandTheme.codeFontFamily,
+      fontFamilyFallback: DefaultTextStyle.of(context).style.fontFamilyFallback,
+    );
+    TextSpan c(String text) => TextSpan(text: text, style: code);
+    // Reference <p style={labelStyle}> with inline <code> spans.
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Text.rich(
+        TextSpan(
+          children: [
+            const TextSpan(text: 'Cursor 将鼠标光标替换为自定义图标，提供 '),
+            c('arrow'),
+            const TextSpan(text: '（手指箭头）与 '),
+            c('raindrop'),
+            const TextSpan(text: '（蓝色雨滴）两种风格。默认 '),
+            c('forceAll=true'),
+            const TextSpan(text: ' 全覆盖所有后代；'),
+            c('forceAll=false'),
+            const TextSpan(text: ' 保留子控件的 pointer / text / not-allowed 语义。'),
+          ],
+        ),
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          height: kTextHeightNone,
+          color: IslandTokens.light.muted,
+        ),
+      ),
+    );
+  }
+
+  // Reference section root is a `demo-raindrop-zone`: the panel shows the
+  // raindrop cursor; each preview IslandCursor keeps its own cursor.
   @override
-  Widget build(BuildContext context) => StoryPanel(
+  Widget build(BuildContext context) => IslandCursor(
+    variant: IslandCursorVariant.raindrop,
+    child: panel(context),
+  );
+
+  Widget panel(BuildContext context) => StoryPanel(
     title: 'Cursor',
     tags: ["光标"],
     children: [
-      const StoryLabel(
-        'Cursor 将鼠标光标替换为自定义图标，提供 arrow（手指箭头）与 raindrop（蓝色雨滴）两种风格。默认 forceAll=true 全覆盖所有后代；forceAll=false 保留子控件的 pointer / text / not-allowed 语义。',
-      ),
+      intro(context),
       const StoryLabel('type="default"（默认）：手指箭头'),
-      IslandCursor(
-        child: box(
-          const StoryText('鼠标移入此区域将显示自定义光标', textAlign: TextAlign.center),
-        ),
-      ),
+      // Reference flex box: the anonymous text item sits at the start.
+      IslandCursor(child: box(const StoryText('鼠标移入此区域将显示自定义光标'))),
       const StoryLabel('type="raindrop"：蓝色雨滴'),
       IslandCursor(
         variant: IslandCursorVariant.raindrop,
-        child: box(
-          const StoryText('鼠标移入此区域将显示雨滴光标', textAlign: TextAlign.center),
-        ),
+        child: box(const StoryText('鼠标移入此区域将显示雨滴光标')),
       ),
       const StoryLabel('forceAll=false：保留原生光标语义'),
       IslandCursor(
@@ -91,7 +131,7 @@ class CursorStory extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        foregroundColor: const Color(0xff0000ee),
+                        foregroundColor: GalleryPalette.nativeLink,
                       ),
                       onPressed: () {},
                       child: const Text(
@@ -127,15 +167,12 @@ class CursorStory extends StatelessWidget {
                     width: 189,
                     height: 27,
                     child: TextField(
-                      style: const TextStyle(
-                        fontFamily: 'Arial',
-                        fontFamilyFallback: [
-                          'IslandGalleryControls',
-                          'IslandGallerySans',
-                        ],
+                      style: TextStyle(
+                        fontFamily: 'IslandGalleryControls',
+                        fontFamilyFallback: const ['IslandGallerySans'],
                         fontSize: 13.333333,
                         height: 15 / 13.333333,
-                        color: Color(0xff714821),
+                        color: IslandTokens.light.ink,
                       ),
                       strutStyle: const StrutStyle(
                         fontSize: 13.333333,
@@ -149,11 +186,8 @@ class CursorStory extends StatelessWidget {
                         isCollapsed: false,
                         visualDensity: VisualDensity.standard,
                         hintStyle: TextStyle(
-                          fontFamily: 'Arial',
-                          fontFamilyFallback: const [
-                            'IslandGalleryControls',
-                            'IslandGallerySans',
-                          ],
+                          fontFamily: 'IslandGalleryControls',
+                          fontFamilyFallback: const ['IslandGallerySans'],
                           fontSize: 13.333333,
                           color: IslandTokens.light.muted,
                         ),
@@ -162,18 +196,18 @@ class CursorStory extends StatelessWidget {
                           vertical: 6,
                         ),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: GalleryPalette.nativeInputFill,
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
                           borderSide: BorderSide(
-                            color: Color(0xff767676),
+                            color: GalleryPalette.nativeControlBorder,
                             width: 2,
                           ),
                         ),
                         enabledBorder: const OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
                           borderSide: BorderSide(
-                            color: Color(0xff767676),
+                            color: GalleryPalette.nativeControlBorder,
                             width: 2,
                           ),
                         ),

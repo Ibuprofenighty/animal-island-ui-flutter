@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import '../../shared/palette.dart';
 import '../../shared/story.dart';
 
 class ModalStory extends StatelessWidget {
@@ -11,7 +12,7 @@ class ModalStory extends StatelessWidget {
       String? title,
       String? text,
       bool play = true,
-      Color barrier = const Color(0x59000000),
+      Color barrier = GalleryPalette.modalBarrier,
       bool custom = false,
     }) {
       showIslandModal<void>(
@@ -93,7 +94,7 @@ class ModalStory extends StatelessWidget {
             action: () => open(
               title: '浅色遮罩',
               text: '这是一个浅色遮罩的弹窗，遮罩几乎透明。',
-              barrier: const Color(0x14000000),
+              barrier: GalleryPalette.modalBarrierLight,
             ),
           ),
           primary(
@@ -101,7 +102,7 @@ class ModalStory extends StatelessWidget {
             action: () => open(
               title: '深色遮罩',
               text: '这是一个深色遮罩的弹窗，背景更暗、聚焦感更强。',
-              barrier: const Color(0xbf000000),
+              barrier: GalleryPalette.modalBarrierDark,
             ),
           ),
         ]),
@@ -204,7 +205,7 @@ class _FishingCopy extends StatelessWidget {
                   TextSpan(text: first.characters.take(2).toString()),
                   TextSpan(
                     text: first.characters.skip(2).take(2).toString(),
-                    style: TextStyle(color: IslandTokens.light.warning),
+                    style: const TextStyle(color: GalleryPalette.modalEmphasis),
                   ),
                   TextSpan(text: first.characters.skip(4).toString()),
                 ],

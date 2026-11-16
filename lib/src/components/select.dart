@@ -5,6 +5,7 @@ import '../internal/light_surface_scope.dart';
 
 import 'dart:math' as math;
 
+import '../foundation/recipes/select.dart';
 import '../foundation/theme.dart';
 import '../foundation/icon.dart';
 import '../internal/option_cursor.dart';
@@ -71,6 +72,11 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
   String? query;
   String? composingPrefix;
   T? active;
+
+  /// The reference draws nothing for its active key; the active ring is a
+  /// keyboard-only indicator shown after keyboard opening, navigation or
+  /// search typing, and hidden again once the pointer drives the list.
+  bool keyboardCursor = false;
   int presentationGeneration = 0;
   int editingGeneration = 0;
   bool completingPresentation = false;
@@ -189,10 +195,11 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
     });
   }
 
-  void show() {
+  void show({bool keyboard = false}) {
     if (!enabled || open) return;
     setState(() {
       open = true;
+      keyboardCursor = keyboard;
       active =
           visible
               .where((o) => o.value == widget.value && !o.disabled)
@@ -213,6 +220,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       query = null;
       composingPrefix = null;
       active = null;
+      keyboardCursor = false;
       text.text = label;
     });
     if (hadQuery) widget.onSearch?.call('');
@@ -266,7 +274,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
     if (k == LogicalKeyboardKey.enter ||
         !widget.showSearch && k == LogicalKeyboardKey.space) {
       if (!open) {
-        show();
+        show(keyboard: true);
       } else if (active != null) {
         choose(active as T);
       }
@@ -280,7 +288,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
     ].contains(k))
       return KeyEventResult.ignored;
     if (!open) {
-      show();
+      show(keyboard: true);
       return KeyEventResult.handled;
     }
     final candidates = visible.where((o) => !o.disabled).toList();
@@ -292,7 +300,10 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
         ? candidates.length - 1
         : (index + (k == LogicalKeyboardKey.arrowUp ? -1 : 1)) %
               candidates.length;
-    setState(() => active = candidates[next].value);
+    setState(() {
+      active = candidates[next].value;
+      keyboardCursor = true;
+    });
     revealActive();
     return KeyEventResult.handled;
   }
@@ -378,7 +389,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       height: 1.5,
       letterSpacing: 0,
       fontWeight: FontWeight.w600,
-      color: const Color(0xff725d42),
+      color: SelectColors.option,
     );
     var panelWidth = 80.0;
     for (final option in visible) {
@@ -393,7 +404,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
     final panel = Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xffffeea0),
+        color: SelectColors.panel,
         borderRadius: BorderRadius.circular(28),
       ),
       child: SingleChildScrollView(
@@ -443,6 +454,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
               setState(() {
                 query = nextQuery;
                 open = true;
+                keyboardCursor = true;
                 reconcileActive();
               });
               if (changed) widget.onSearch?.call(nextQuery);
@@ -483,15 +495,19 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
       decoration: BoxDecoration(
         color: !enabled
-            ? const Color(0xfff5f5f0)
+            ? SelectColors.triggerDisabled
             : hovered && !open
-            ? const Color(0xfffffdf7)
-            : Colors.white,
+            ? SelectColors.triggerHover
+            : SelectColors.trigger,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           width: 2,
+          // Reference hover darkens the border (#e8dcc8 -> #d4c4a8); here
+          // outline -> muted, both at least 3:1.
           color: focus.hasFocus
               ? IslandTokens.light.focus
+              : hovered && !open && enabled
+              ? IslandTokens.light.muted
               : IslandTokens.light.outline,
         ),
       ),
@@ -529,21 +545,48 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
             ActionSurface(
               label: widget.clearLabel,
               onActivate: clear,
-              builder: (_, states) => Container(
-                width: 26,
-                height: 20,
-                foregroundDecoration: FocusOutline(
-                  const CircleBorder(),
-                  states.contains(WidgetState.focused)
-                      ? IslandTokens.light.focus
-                      : Colors.transparent,
-                  width: 2,
-                  offset: 0,
-                ),
-                child: const Center(
-                  child: IslandIcon(IslandGlyph.close, size: 12),
-                ),
-              ),
+              // Reference `.clear`: 20px circle with 6px trailing margin;
+              // hover adds rgba(114,93,66,.1) and darkens the glyph over the
+              // fast 150ms ease. The focus ring switches atomically.
+              builder: (_, states) {
+                final hover = states.contains(WidgetState.hovered);
+                return Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 6),
+                  child: Container(
+                    foregroundDecoration: FocusOutline(
+                      const CircleBorder(),
+                      states.contains(WidgetState.focused)
+                          ? IslandTokens.light.focus
+                          : Colors.transparent,
+                      width: 2,
+                      offset: 1,
+                    ),
+                    child: AnimatedContainer(
+                      duration: MediaQuery.disableAnimationsOf(context)
+                          ? Duration.zero
+                          : const Duration(milliseconds: 150),
+                      curve: const Cubic(.4, 0, .2, 1),
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: SelectColors.clearHover.withValues(
+                          alpha: hover ? .1 : 0,
+                        ),
+                      ),
+                      child: Center(
+                        child: IslandIcon(
+                          IslandGlyph.close,
+                          size: 12,
+                          color: hover
+                              ? SelectColors.clearHover
+                              : IslandTokens.light.muted,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           AnimatedRotation(
             turns: open ? .5 : 0,
@@ -617,26 +660,26 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       key: optionKeys.putIfAbsent(option.value, GlobalKey.new),
       onEnter: option.disabled
           ? null
-          : (_) => setState(() => active = option.value),
+          : (_) => setState(() {
+              active = option.value;
+              keyboardCursor = false;
+            }),
       child: ActionSurface(
         onActivate: option.disabled ? null : () => choose(option.value),
         selected: selected,
+        // Selection is the reference pill plus bold text only; the 2px ring
+        // marks keyboard focus/active position.
         builder: (_, states) => Stack(
           clipBehavior: Clip.none,
           children: [
-            if (selected ||
-                states.contains(WidgetState.focused) ||
-                active == option.value)
+            if (states.contains(WidgetState.focused) ||
+                keyboardCursor && active == option.value)
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: FocusOutline(
                     const StadiumBorder(),
                     IslandTokens.light.focus,
-                    width:
-                        states.contains(WidgetState.focused) ||
-                            active == option.value
-                        ? 2
-                        : 1,
+                    width: 2,
                     offset: 0,
                   ),
                 ),
@@ -689,7 +732,7 @@ class _SelectPill extends CustomPainter {
         ),
         const Radius.circular(7),
       ),
-      Paint()..color = const Color(0x4dffcc00),
+      Paint()..color = SelectColors.selectedPill,
     );
   }
 

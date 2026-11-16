@@ -43,9 +43,10 @@ class _CountUpStoryState extends State<CountUpStory> {
     padding: const EdgeInsets.only(top: 16),
     child: button('重播', action),
   );
+  // CSS `gap` sets both the column and the row gap of the wrapped demo rows.
   Widget row(List<Widget> children, {double gap = 16}) => Wrap(
     spacing: gap,
-    runSpacing: 16,
+    runSpacing: gap,
     crossAxisAlignment: WrapCrossAlignment.center,
     children: children,
   );
@@ -143,18 +144,27 @@ class _CountUpStoryState extends State<CountUpStory> {
       replay(() => setState(() => formatRound++)),
       const StoryLabel('缓动曲线（同为 2 秒 7890 分）'),
       row([
-        for (final curve in [
-          Curves.linear,
-          Curves.easeOutCubic,
-          Curves.easeOutExpo,
+        // linear, the default exact easeOutCubic, and the reference
+        // easeOutExpo supplied as a caller curve.
+        for (final (name, curve) in [
+          ('linear', Curves.linear),
+          ('cubic', null),
+          ('expo', const _EaseOutExpo()),
         ])
-          IslandCountUp(
-            key: ValueKey((curve, easingRound)),
-            isCounting: true,
-            end: 7890,
-            curve: curve,
-            thousandsSeparator: ',',
-          ),
+          curve == null
+              ? IslandCountUp(
+                  key: ValueKey((name, easingRound)),
+                  isCounting: true,
+                  end: 7890,
+                  thousandsSeparator: ',',
+                )
+              : IslandCountUp(
+                  key: ValueKey((name, easingRound)),
+                  isCounting: true,
+                  end: 7890,
+                  curve: curve,
+                  thousandsSeparator: ',',
+                ),
       ], gap: 20),
       replay(() => setState(() => easingRound++)),
       const StoryLabel('尺寸 / 风格 / 边框', strutStyle: storyCaptionStrut),
@@ -222,7 +232,7 @@ IslandCountUp(
             'String',
             '. / 空',
           ),
-          ('curve', '内置或自定义缓动', 'Curve', 'Curves.easeOutCubic'),
+          ('curve', '内置或自定义缓动', 'Curve', 'easeOutCubic 1-(1-t)³'),
           ('updateInterval', '量化展示时间轴', 'Duration', '0'),
           ('prefix / suffix', '不透明的展示前后缀', 'Widget?', '—'),
           (
@@ -248,7 +258,7 @@ IslandCountUp(
           ('semanticLabel', '显式语义名称；不从展示子树推断', 'String?', 'null'),
           (
             'builder',
-            '仅展示数字的自定义内容',
+            '数值 → 展示内容（对应 formatter / children）',
             'Widget Function(BuildContext,double)?',
             '—',
           ),
@@ -256,4 +266,12 @@ IslandCountUp(
       ),
     ],
   );
+}
+
+/// Reference demo `easeOutExpo`: 1 - 2^(-10t), exactly 1 at the end.
+class _EaseOutExpo extends Curve {
+  const _EaseOutExpo();
+  @override
+  double transformInternal(double t) =>
+      t >= 1 ? 1 : 1 - math.pow(2, -10 * t).toDouble();
 }

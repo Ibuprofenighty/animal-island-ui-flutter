@@ -4,6 +4,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
 import '../../shared/background_preview.dart';
+import '../../shared/palette.dart';
 
 class BackgroundStory extends StatelessWidget {
   const BackgroundStory({super.key});
@@ -28,6 +29,9 @@ class BackgroundStory extends StatelessWidget {
     '暖桃粉',
     '浅灰波点',
   ];
+
+  /// Reference CARD_COLORS tile text, in IslandBackgroundType order.
+  static const inks = GalleryPalette.backgroundTileInks;
   Widget _isolatePreview(IslandBackgroundType type, Widget child) {
     // Keep scene vectors in the parent canvas: a new local layer changes a few
     // SVG edge samples at fractional scroll transforms on Windows Impeller.
@@ -64,9 +68,14 @@ class BackgroundStory extends StatelessWidget {
                     child: Center(
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
-                          color: IslandTokens.light.ink,
+                          color: inks[type.index],
+                          // Sprinkle/scene artwork drops #725d42 to 3.0-4.2:1,
+                          // so only the glyph runs keep a backing, in the
+                          // tile's own base color (5.7:1) rather than a white
+                          // strip. Subtitles stay opaque: the reference 0.85
+                          // opacity measures 3.6-4.3:1 on every tile.
                           backgroundColor: type.index >= 3 && type.index <= 5
-                              ? IslandTokens.light.paper
+                              ? type.color
                               : null,
                           fontWeight: FontWeight.w600,
                           height: 1.5,
@@ -95,7 +104,7 @@ class BackgroundStory extends StatelessWidget {
             ),
         ],
       ),
-      const StoryLabel('承载内容（children 渲染在图案之上）'),
+      const StoryLabel('承载内容（children 渲染在图案之上）', spaceBefore: 24),
       SizedBox(
         height: 180,
         width: double.infinity,
@@ -110,7 +119,7 @@ class BackgroundStory extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xff725d42),
+                  color: GalleryPalette.storyInk,
                 ),
               ),
             ),

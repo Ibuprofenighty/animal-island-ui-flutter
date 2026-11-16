@@ -241,4 +241,33 @@ void main() {
       expect(controller.text, 'still alive');
     },
   );
+
+  testWidgets('CodeBlock default margin is the reference 1em (16px)', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              width: 400,
+              child: IslandCodeBlock(code: 'x', copyable: false),
+            ),
+          ),
+        ),
+      ),
+    );
+    final block = t.getRect(find.byType(IslandCodeBlock));
+    final surface = t.getRect(
+      find
+          .descendant(
+            of: find.byType(IslandCodeBlock),
+            matching: find.byType(DecoratedBox),
+          )
+          .first,
+    );
+    expect(surface.top - block.top, 16);
+    expect(block.bottom - surface.bottom, 16);
+  });
 }

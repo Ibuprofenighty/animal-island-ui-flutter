@@ -3,8 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 
 import '../foundation/background_type.dart';
-import 'sprinkle_data.dart';
+import '../foundation/sprinkle_data.dart';
 import 'dot_pattern.dart';
+import '../foundation/recipes/background.dart';
 
 class BackgroundPainter extends CustomPainter {
   const BackgroundPainter(this.type);
@@ -14,7 +15,7 @@ class BackgroundPainter extends CustomPainter {
     canvas.drawRect(Offset.zero & size, Paint()..color = type.color);
     if (type == IslandBackgroundType.grid) {
       final p = Paint()
-        ..color = const Color(0xffc4b89e)
+        ..color = BackgroundColors.gridLine
         ..strokeWidth = 1;
       for (double x = .5; x < size.width; x += 24) {
         canvas.drawLine(Offset(x, 0), Offset(x, size.height), p);
@@ -45,9 +46,9 @@ class BackgroundPainter extends CustomPainter {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color(0x8cffffff),
-                      Color(0x00ffffff),
-                      Color(0x40000000),
+                      BackgroundColors.sprinkleGlossTop,
+                      BackgroundColors.sprinkleGlossMiddle,
+                      BackgroundColors.sprinkleGlossBottom,
                     ],
                     stops: [0, .45, 1],
                   ).createShader(rect),

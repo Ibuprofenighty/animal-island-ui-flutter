@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
+import '../../shared/palette.dart';
 
 class CarouselStory extends StatelessWidget {
   const CarouselStory({super.key});
@@ -41,7 +42,7 @@ class CarouselStory extends StatelessWidget {
                         end: Alignment.topCenter,
                         stops: [0, .62],
                         colors: [
-                          Color.fromRGBO(43, 33, 24, .72),
+                          GalleryPalette.carouselCaptionShade,
                           Colors.transparent,
                         ],
                       ),
@@ -59,7 +60,7 @@ class CarouselStory extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 26,
                                 fontWeight: FontWeight.w900,
-                                color: Color(0xfffff9e3),
+                                color: GalleryPalette.carouselCaption,
                                 height: 1.5,
                               ),
                             ),
@@ -69,7 +70,7 @@ class CarouselStory extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xfffff9e3),
+                                color: GalleryPalette.carouselCaption,
                                 height: 1.5,
                               ),
                             ),

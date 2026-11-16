@@ -13,11 +13,13 @@
 
 ## 配色和动效
 
+所有颜色都是具名 Token：基础色板 → `IslandTokens`／`IslandColorway` → 组件配方；Gallery 颜色归 `GalleryPalette`。新值作为 Token 加在所有者处；组件和 Gallery 页面不写颜色字面量，也不写 `参考 ? 字面量 : Token` 分支，由 `test/color_literal_policy_test.dart` 与 `tool/verify.py` 策略检查。因对比度而与参考不同的颜色登记在[实测配色差异](../../docs/DESIGN.md#measured-color-differences)。
+
 使用既有主题／实例样式角色和规定优先级；透明是显式值。字形与语义前景分开，调用方 TextStyle.foreground Paint 保留 Flutter 优先级。任意自定义配对须验证实际合成背景及状态，不在运行时猜色。
 
 遵循[共享配方](../../docs/DESIGN.md#original-color-restoration)、[共享强调前景](../../docs/DESIGN.md#shared-accent-foreground)及[标题前景](../../docs/DESIGN.md#title-foreground)。被动插槽颜色与嵌套控件表面数据各自负责，保留无关 ThemeExtension 和显式内容样式。
 
-进入、退出、反向、重开、取消、卸载、主题切换和减少动态沿用唯一内容子树及生命周期。[表面采样](../../docs/DESIGN.md#surface-sampling)不授权对子文字补偿或全局加滤镜；[首页／照片例外](../../docs/DESIGN.md#home-host-and-photo-gradient)仅适用具名 Gallery 区域。
+进入、退出、反向、重开、取消、卸载、主题切换和减少动态沿用唯一内容子树及生命周期。[表面采样](../../docs/DESIGN.md#surface-sampling)不授权对子文字补偿或全局加滤镜，Notification 与 Tooltip 改为整个表面按整设备像素位移；[首页／照片例外](../../docs/DESIGN.md#home-host-and-photo-gradient)仅适用具名 Gallery 区域。
 
 ## 原子扩展
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
@@ -571,4 +572,75 @@ void registerStaleSelectionErrors() {
       await t.pumpWidget(const SizedBox());
     });
   }
+
+  testWidgets('drag zone tints default and custom content on hover', (t) async {
+    Future<List<IslandUploadSource>> none({
+      required bool multiple,
+      required String accept,
+    }) async => const [];
+    await t.pumpWidget(
+      host(
+        Column(
+          children: [
+            IslandUpload.uncontrolled(
+              pickFiles: none,
+              request: (_) async => null,
+              drag: true,
+            ),
+            IslandUpload.uncontrolled(
+              pickFiles: none,
+              request: (_) async => null,
+              drag: true,
+              child: const Text('Custom zone'),
+            ),
+          ],
+        ),
+      ),
+    );
+    Color? colorOf(String text) =>
+        DefaultTextStyle.of(t.element(find.text(text))).style
+            .merge(t.widget<Text>(find.text(text)).style)
+            .color;
+    expect(colorOf('点击或拖拽文件到这里'), IslandTokens.light.muted);
+    expect(colorOf('Custom zone'), IslandTokens.light.muted);
+    final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(t.getCenter(find.text('Custom zone')));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 100));
+    final mid = colorOf('Custom zone');
+    expect(mid, isNot(IslandTokens.light.muted));
+    expect(mid, isNot(IslandTokens.light.link));
+    await t.pumpAndSettle();
+    expect(colorOf('Custom zone'), IslandTokens.light.link);
+    expect(colorOf('点击或拖拽文件到这里'), IslandTokens.light.muted);
+  });
+
+  testWidgets('picture-card add tile is transparent until hovered', (t) async {
+    await t.pumpWidget(
+      host(
+        IslandUpload.uncontrolled(
+          pickFiles: ({required multiple, required accept}) async => const [],
+          request: (_) async => null,
+          listType: IslandUploadListType.pictureCard,
+        ),
+      ),
+    );
+    final tile = find.descendant(
+      of: find.byType(IslandUpload),
+      matching: find.byWidgetPredicate(
+        (w) => w is AnimatedContainer && w.constraints?.maxWidth == 84,
+      ),
+    );
+    Color fill() =>
+        (t.widget<AnimatedContainer>(tile).decoration! as BoxDecoration).color!;
+    expect(fill().a, 0);
+    final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(t.getCenter(tile));
+    await t.pumpAndSettle();
+    expect(fill(), const Color(0xffe6f9f6));
+  });
 }

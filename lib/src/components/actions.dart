@@ -2,6 +2,7 @@ import 'tooltip.dart';
 
 import 'package:flutter/material.dart';
 
+import '../foundation/recipes/button.dart';
 import '../foundation/theme.dart';
 import '../foundation/icon.dart';
 import '../foundation/size.dart';
@@ -105,19 +106,9 @@ class IslandButton extends StatelessWidget {
             : tokens.outline;
         if (variant == IslandButtonVariant.text) {
           background = pressed
-              ? (Theme.of(context).brightness == Brightness.light
-                    ? const Color(0xffe9ddc6)
-                    : Color.alphaBlend(
-                        tokens.ink.withValues(alpha: .08),
-                        tokens.paper,
-                      ))
+              ? ButtonColors.textPressed(Theme.of(context).brightness, tokens)
               : hover
-              ? (Theme.of(context).brightness == Brightness.light
-                    ? const Color(0xfff0e8d8)
-                    : Color.alphaBlend(
-                        tokens.ink.withValues(alpha: .04),
-                        tokens.paper,
-                      ))
+              ? ButtonColors.textHover(Theme.of(context).brightness, tokens)
               : tokens.paper.withValues(alpha: 0);
         }
         if (danger) {
@@ -127,7 +118,19 @@ class IslandButton extends StatelessWidget {
               ? tokens.dangerHover
               : tokens.danger;
           ink = primary ? tokens.onDanger : tokens.dangerText;
-          if (!plain) outline = tokens.dangerText;
+          // Default/dashed danger boundaries follow the recipe (reference
+          // values reach 3:1 on the owned fill); the primary and ghost
+          // recipes keep the dangerText boundary.
+          if (!plain) {
+            outline = !primary && !ghost
+                ? ButtonColors.dangerBoundary(
+                    context,
+                    tokens,
+                    pressed: pressed,
+                    hover: hover,
+                  )
+                : tokens.dangerText;
+          }
           if (primary) background = dangerState;
         }
         if (ghost) {
@@ -149,7 +152,7 @@ class IslandButton extends StatelessWidget {
         if (busy) {
           ink = tokens.onLeaf;
           // Busy is a Button-owned fixed recipe, separate from the brand fill.
-          background = const Color(0xff0ec4b6);
+          background = ButtonColors.busyFill;
           outline = tokens.link;
         }
         final foreground = ActionSurface.resolveStyleValue(
@@ -245,8 +248,8 @@ class IslandButton extends StatelessWidget {
                   ? [
                       BoxShadow(
                         color: danger
-                            ? const Color(0xffc94444)
-                            : const Color(0xffbdaea0),
+                            ? ButtonColors.dangerDepthShadow
+                            : ButtonColors.depthShadow,
                         offset: Offset(0, depth),
                       ),
                     ]
@@ -254,8 +257,8 @@ class IslandButton extends StatelessWidget {
                   ? [
                       BoxShadow(
                         color: raisedShadow
-                            ? const Color(0x1a3d3428)
-                            : const Color(0x0f3d3428),
+                            ? ButtonColors.raisedShadow
+                            : ButtonColors.restShadow,
                         offset: Offset(0, raisedShadow ? 3 : 2),
                         blurRadius: raisedShadow ? 10 : 4,
                       ),
