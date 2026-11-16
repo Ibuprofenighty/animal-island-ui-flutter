@@ -33,6 +33,12 @@ All seven `example/integration_test` entries ran on the Windows engine (Debug, o
 
 七个 `example/integration_test` 入口已在 Windows 引擎（Debug，单台工作站显示器）上运行并全部通过：Gallery 流程、目录几何、动效覆盖、图标上下文（仅采集，待人工审阅）、Select 后续与共享组件场景。三项按精确经过时间采样动画数值的断言只在 `flutter test` 假时钟下运行，引擎上跳过（`test/support/fake_clock_only.dart`）：Carousel 曲线、侧栏 NEW 徽标脉冲、Background 壁纸淡入。这些运行不证明系统外窗、物理屏幕或帧率表现。
 
+## Browser run / 浏览器实跑（2026-11-16）
+
+The release Web build (CanvasKit, local static server) was opened in one Chromium-based browser. All 42 routes loaded without script errors; the only failed requests are the two deliberately missing images of the Image and Avatar error examples. Observed and compared with the live reference: Button and Select pages at a 1440×1000 emulated viewport (downscaled capture), the Select side popup with its highlighted selection, the description typewriter, and at a real 322px-wide viewport the narrow shell, the game-shaped Modal with focus ring and custom cursor, and Escape closing it. This is a scoped spot check: other pages' interactions, hover intermediate frames, Edge, Firefox, Safari and the 375px capture were not observed.
+
+发布版 Web 构建（CanvasKit，本地静态服务器）在一个 Chromium 内核浏览器中打开：42 个路由全部加载且无脚本错误，仅有 Image 与 Avatar 失败示例故意缺失的两张图片请求失败。已观察并与线上参考对照：1440×1000 模拟视口（缩小采集）下的 Button、Select 页面，Select 侧边弹层及选中高亮，说明文字打字机；实际 322px 宽视口下的窄屏外壳、异形 Modal（焦点环、自定义光标）及 Esc 关闭。此为有限抽查：其余页面的交互、悬停中间帧、Edge、Firefox、Safari 与 375px 采集均未观察。
+
 ## Not yet verified / 尚未验证
 
 | Area | Boundary / 边界 |
