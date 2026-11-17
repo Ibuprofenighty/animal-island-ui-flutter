@@ -168,11 +168,13 @@ void main() {
     await t.pumpWidget(const SizedBox());
   });
 
-  testWidgets('both clocks use the reference 4.0.0 #8b7355 ink', (t) async {
+  testWidgets('both clocks use the reference 4.0.0 ink deepened to 4.5:1', (
+    t,
+  ) async {
     for (final variant in IslandTimeVariant.values) {
       await t.pumpWidget(host(IslandTime(now: monday, variant: variant)));
-      expect(ink(t, '09'), const Color(0xff8b7355), reason: '$variant');
-      expect(ink(t, '30'), const Color(0xff8b7355), reason: '$variant');
+      expect(ink(t, '09'), const Color(0xff836b4e), reason: '$variant');
+      expect(ink(t, '30'), const Color(0xff836b4e), reason: '$variant');
     }
     await t.pumpWidget(const SizedBox());
   });
@@ -241,8 +243,8 @@ void main() {
     expect(monthDay.center.dy, closeTo(pillRect.center.dy, .01));
     expect(t.widget<Text>(find.text('Jun 8')).style!.fontSize, 22);
     expect(t.widget<Text>(weekday).style!.fontSize, 15);
-    expect(ink(t, 'Jun 8'), const Color(0xff8b7355));
-    expect(ink(t, 'Monday'), const Color(0xff8b7355));
+    expect(ink(t, 'Jun 8'), const Color(0xff836b4e));
+    expect(ink(t, 'Monday'), const Color(0xff836b4e));
     // The decorative rule overhangs the content by 2.5px on each side.
     expect(
       rule,

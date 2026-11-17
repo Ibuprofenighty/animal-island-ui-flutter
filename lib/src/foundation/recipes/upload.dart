@@ -13,8 +13,12 @@ abstract final class UploadColors {
   static const errorRowFill = Primitive.red961;
   static const fileName = Primitive.brown466;
 
-  /// Opaque status backing over a card thumbnail.
-  static const cardOverlay = Primitive.neutral157A55;
+  /// Status backing over a card thumbnail: the reference rgba(15,12,8,.55)
+  /// at the least alpha (.565) that keeps white text 4.5:1 over any pixel.
+  static const cardOverlay = Primitive.neutral157A56;
+
+  /// Reference white bar-mode card percentage on [cardOverlay].
+  static const cardPercent = Primitive.neutral1000;
 
   // Raised upload button.
   static const button = Primitive.neutral977;
@@ -31,4 +35,14 @@ abstract final class UploadColors {
   static const backgroundWave = Primitive.neutral1000;
   static const backgroundPercent = Primitive.brown466;
   static const backgroundCardMask = Primitive.neutral994A88;
+
+  /// Row file size over the background fill: the muted size ink (4.1–4.3:1
+  /// on the .28 fill) deepened in hue to 4.5:1.
+  static const backgroundSizeText = Primitive.sand501;
+
+  /// Same-hue 2px end edge of the default background fill when it is the
+  /// only progress cue (no percentage): the fill is 1.2:1 against the
+  /// unfilled surface; the edge is 3:1 on the row, its hover tint and the
+  /// card mask over any thumbnail pixel.
+  static const backgroundFillEdge = Primitive.teal581;
 }

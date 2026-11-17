@@ -583,6 +583,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
   }
 
   Widget _header(DateTime month, DateTime today, Duration duration) {
+    final brightness = Theme.of(context).brightness;
     Widget arrow(String label, bool forward, bool year) => ActionSurface(
       label: label,
       onActivate: () => _shift((forward ? 1 : -1) * (year ? 12 : 1)),
@@ -599,7 +600,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             states.contains(WidgetState.focused)
-                ? CalendarColors.accent
+                ? CalendarColors.headerFocus(brightness)
                 : Colors.transparent,
             width: 2,
             offset: 1,
@@ -612,7 +613,9 @@ class _IslandCalendarState extends State<IslandCalendar> {
             forward ? IslandGlyph.chevronRight : IslandGlyph.chevronLeft,
             size: year ? 14 : 16,
             strokeWidth: 2.6,
-            color: hover ? CalendarColors.accent : CalendarColors.arrow,
+            color: hover
+                ? CalendarColors.arrowHover(brightness)
+                : CalendarColors.arrow(brightness),
           ),
         );
       },
@@ -630,7 +633,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             states.contains(WidgetState.focused)
-                ? CalendarColors.accent
+                ? CalendarColors.headerFocus(brightness)
                 : Colors.transparent,
             width: 2,
             offset: 1,
@@ -646,8 +649,8 @@ class _IslandCalendarState extends State<IslandCalendar> {
               fontSize: 13,
               fontWeight: FontWeight.w700,
               color: hover
-                  ? CalendarColors.todayActionHover
-                  : CalendarColors.todayAction,
+                  ? CalendarColors.todayActionHover(brightness)
+                  : CalendarColors.todayAction(brightness),
             ),
             child: const Text('今天'),
           ),
@@ -731,11 +734,11 @@ class _IslandCalendarState extends State<IslandCalendar> {
                 child: Center(
                   child: Text(
                     name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.48,
-                      color: CalendarColors.weekday,
+                      color: IslandTokens.light.muted,
                     ),
                   ),
                 ),
@@ -794,11 +797,11 @@ class _IslandCalendarState extends State<IslandCalendar> {
       builder: (_, states) {
         final hover = states.contains(WidgetState.hovered);
         final ink = selected
-            ? CalendarColors.daySelected
+            ? IslandTokens.light.onLeaf
             : isToday
-            ? CalendarColors.accent
+            ? IslandTokens.light.link
             : outside
-            ? CalendarColors.dayOutside
+            ? IslandTokens.light.muted
             : hover
             ? CalendarColors.dayHover
             : CalendarColors.day;
@@ -819,7 +822,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
               borderRadius: BorderRadius.all(Radius.circular(12)),
             ),
             states.contains(WidgetState.focused)
-                ? CalendarColors.accent
+                ? IslandTokens.light.focus
                 : Colors.transparent,
             width: 2,
             offset: -2,
@@ -849,7 +852,10 @@ class _IslandCalendarState extends State<IslandCalendar> {
                       shape: BoxShape.circle,
                       color: selected ? CalendarColors.accent : null,
                       border: isToday && !selected
-                          ? Border.all(color: CalendarColors.accent, width: 1.5)
+                          ? Border.all(
+                              color: IslandTokens.light.link,
+                              width: 1.5,
+                            )
                           : null,
                     ),
                     child: AnimatedDefaultTextStyle(
@@ -880,11 +886,11 @@ class _IslandCalendarState extends State<IslandCalendar> {
                       '+$extra',
                       textAlign: TextAlign.center,
                       softWrap: false,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 10,
                         height: 1.5,
                         fontWeight: FontWeight.w700,
-                        color: CalendarColors.accent,
+                        color: IslandTokens.light.link,
                       ),
                     ),
                   ),

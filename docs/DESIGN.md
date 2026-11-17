@@ -131,8 +131,19 @@ User rule: measure each reference value on its actual composited backgrounds in 
 | Image stamp year (`ImageColors.stampYearBacking`) / 邮票年份 | white .88 + shadow over an unknown photo → same text on `rgba(0,0,0,.58)` glyph backing, the least alpha with 4.5:1 over any pixel / 照片未知，按最小透明度加黑色字底 |
 | Gallery Modal `石头` (`GalleryPalette.modalEmphasis`) / 示例强调色 | demo `#FD9303` (2.0:1) → `#a45d01` / 示例内联色加深 |
 | Gallery Background tiles (`GalleryPalette.backgroundTileInks`) / 背景示例块 | sprinkles/scenes drop text to 3.0–4.2:1 → glyph backing in the tile base `#fdf3e3`; 0.85 subtitles measure 3.6–4.3:1 → opaque / 图案处字底改为块底色；副标题保持不透明 |
+| Time clock ink (`TimeColors.digits`, `TimeColors.gameText`) / Time 时钟墨色 | `#8b7355` 4.0–4.5:1 on light papers, the `#f8f8f0` card and the `#fffbe7` weekday capsule → `#836b4e` (4.5:1 on `#f7f3df`); the game clock and month-day on dark papers (2.7–3.3:1) → `#b59c7c` / 浅色纸面、卡片与星期胶囊加深；游戏 HUD 在深色纸面提亮 |
+| Countdown default reminders (`NumberColors.reminderWarm`/`reminderUrgent`) / 倒计时默认提醒色 | `#c77c34` 3.0–3.3:1 → `#a55d05`; `#e05a5a` 3.3–3.6:1 → `#c44043`, 4.5:1 on the plate tops, `#f8f8f0` and the island `#f7f3df` surface; bordered plates follow / 同色相加深，描边随之 |
+| Gallery Countdown demo reminders (`GalleryPalette.countdownReminderBerry`/`Brown`) / 示例提醒色 | demo `#b25770` / `#9a6a38` 4.2:1 → `#ac526b` / `#946533` / 示例内联色加深 |
+| Upload background size text (`UploadColors.backgroundSizeText`) / 背景进度文件大小 | muted size ink 4.1–4.3:1 on the .28 fill (rest/hover) → `#6c6251` / 同色相加深 |
+| Upload background fill edge (`UploadColors.backgroundFillEdge`) / 背景进度填充边 | without the percentage the .28 fill is the only cue at 1.2:1 → 2px `#008e81` end edge, 3:1 on the row, its hover tint and the card mask over any pixel; not drawn beside the percentage or for a caller `color` / 无百分比时加同色相 2px 末端边 |
+| Upload card overlay (`UploadColors.cardOverlay`, `cardPercent`) / 卡片遮罩 | reference white bar-mode percentage restored; rgba(15,12,8,.55) gives 4.3:1 over a white pixel → .565, the least alpha with 4.5:1 over any pixel (Image stamp precedent) / 恢复参考白色百分比，遮罩取 4.5:1 最小透明度 |
+| Calendar panel (`IslandTokens.light` `muted`/`link`/`onLeaf`/`focus`) / 日历面板 | weekday `#a09080` (2.8–3.0:1) and neighbouring-month digits `#c4b89e` (1.7–1.9:1) → `muted`; today digit and ring `#19c8b9` (1.8–2.1:1), +N → `link`; white selected digit (2.1:1) → `onLeaf`; focus ring → `focus`, as DatePicker / 与 DatePicker 同角色 |
+| Calendar header (`CalendarColors.arrow`/`arrowHover`/`headerFocus`/`todayAction`/`todayActionHover`) / 日历头部 | on the host paper: arrows `#a0936e`, hover and focus `#19c8b9` kept on dark papers; on light papers (1.7–3.0:1) → `muted`/`link`/`focus`; 今天 `#8a7b66` (3.7–4.1:1 light) → `muted`, (2.9:1 dark) → `#ad9e88`; hover `#725d42` kept on light, 1.8:1 dark → `#b8a184` / 深色纸面保留达标参考值，浅色取 DatePicker 角色 |
+| Calendar event text (`CalendarColors.eventTime`, `CalendarColors.teal.ink`) / 日程文字 | time `#9f927d` 2.5–2.8:1 on the five fills → `#746753` (the BackTop value); warm-orange title `#b04a1f` 4.48:1 on `#ffe4cc` → `#af4a1e` / 同色相加深 |
 
 Transparent per-hue Tag text is validated on the product papers; caller-filled or accent surfaces need a filled variant or an explicit style. 透明 Tag 色相文字仅在产品纸面验证，强调色或调用方表面请用填色变体或显式样式。
+
+Kept from the 4.0.0 upgrade: the Upload background percentage `#794f27` (4.6:1 or more), the Calendar selected disc `#19c8b9` with its `#e6f9f6` cell tint (selection fill, as DatePicker and Tabs), the decorative month icon, event borders and Time rule, and the passing Calendar day inks. A caller `color` on Progress or Upload progress stays authoritative (explicit caller styles win): the library draws no same-hue edge for it, and the Gallery passes public colorway accents beside the shown percentage. 4.0.0 升级保留：Upload 背景百分比、Calendar 选中圆与格底（选中填色，同 DatePicker、Tabs）、装饰月份图标、日程边框、Time 分割线及达标日期墨色。Progress 与 Upload 的调用方 `color` 由调用方负责，库不为其加边；Gallery 使用公开色相并显示百分比。
 
 <a id="time-colon-blink"></a>
 The Time colon is a decorative separator: it blinks on the reference 1s step-end cycle, the clock value stays complete in semantics, digits never dim and reduced motion keeps it visible. Time 冒号是装饰分隔符，按参考 1s step-end 闪烁；语义值完整、数字不变暗，减少动态时常亮。
@@ -149,22 +160,17 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 <a id="pending-owner-decisions-400"></a>
 ## Pending owner decisions (4.0.0) / 待所有者裁决（4.0.0）
 
-The existing-component ports to reference 4.0.0 keep the reference values below, or the stated current behavior, until the owner decides. Contrast figures are measured on the composited surfaces named; none is a pass/fail ruling and none is acceptance evidence. 4.0.0 版本既有组件移植暂保留下列参考值或所述现状，待所有者裁决；对比度为在所列合成表面上的实测值，不是通过/失败裁定，也不构成验收证据。
+The existing-component ports to reference 4.0.0 keep the reference values below, or the stated current behavior, until the owner decides. Colour items that the [measured colour rule](#measured-color-differences) settles are registered in its table; only items it does not settle remain here. Contrast figures are measured on the composited surfaces named and are not acceptance evidence. 4.0.0 版本既有组件移植暂保留下列参考值或所述现状，待所有者裁决；实测配色规则可裁定的颜色项已登记于其表格，此处仅保留该规则无法裁定的项目。对比度为在所列合成表面上的实测值，不构成验收证据。
 
 | Item | Measured facts | Current state |
 |---|---|---|
-| Time clock ink `#8b7355` / Time 时钟墨色 | 4.20:1 on the `#f8f8f0` card; game clock and month-day 4.49:1 on a white panel; game weekday 4.32:1 on the `#fffbe7` capsule | Reference value kept, undecided / 保留参考值，待裁决 |
-| Time custom-style demo / Time 自定义样式示例 | The reference demo customises the clock through its class name; `IslandTime` has no style API | Not reproduced, undecided |
-| Countdown reminder colours / Countdown 提醒色 | `#c77c34` is 2.96–3.30:1 and `#e05a5a` is 3.26–3.63:1 on the number surfaces | Reference values kept (the `IslandCountdownReminder.defaults` pair), undecided |
-| Loading circle reveal and tip / Loading 圆形揭示与提示 | The reveal removes the centred tip first, as the reference does | Reference behavior kept, undecided |
-| Loading input during the reveal / Loading 揭示期间输入 | The reference lets pointer events through while the circle opens | Deliberate difference: input stays blocked until the surface is removed |
-| Loading first paint / Loading 首次绘制 | The mask first paints on the second frame, because the shared `ViewportOverlay` inserts post-frame | Current behavior kept, undecided |
-| Loading sailboat artwork / Loading 帆船图形 | The sailboat uses the existing naive-icons 1.6.0 glyph, not the 1.14.0 artwork | Existing glyph used; to be re-pinned with the icon import |
-| Upload card bar-mode percentage / Upload 卡片条形进度百分比 | Reference white on the dark overlay is 4.32:1 over a white thumbnail | Shown in the existing pale pill with link ink `#006b62` (6.3:1); differs from the reference |
-| Upload background-mode text and cue / Upload 背景进度文字与提示 | Size text is 4.31:1 (4.11:1 hovered); the background fill as the only progress cue is 1.24:1 when `showInfo` is false | Reference values kept, undecided |
-| Progress caller colour / Progress 调用方颜色 | The reference demo colours are 1.61–2.74:1 against the track; the registered 2px fill edge is not drawn for a caller `color` | Reference behavior kept, undecided |
-| Cursor selection highlight `#e9c46a` / Cursor 选区高亮 | Flutter keeps each text's own colour over the highlight: body text `#736857` is 3.27:1, dark-theme inks are 1.07–1.47:1 | Reference value kept, undecided |
-| Modal opened inside an open Drawer / 抽屉内打开的 Modal | The Modal is drawn under the drawer | Pre-existing layering, unchanged by this round, undecided |
+| Time custom-style demo / Time 自定义样式示例 | The reference demo customises the clock through its class name; `IslandTime` has no style API | Not reproduced, undecided / 未复现，待裁决 |
+| Loading circle reveal and tip / Loading 圆形揭示与提示 | The reveal removes the centred tip first, as the reference does | Reference behavior kept, undecided / 保留参考行为，待裁决 |
+| Loading input during the reveal / Loading 揭示期间输入 | The reference lets pointer events through while the circle opens | Deliberate difference: input stays blocked until the surface is removed / 有意差异：移除前持续拦截输入 |
+| Loading first paint / Loading 首次绘制 | The mask first paints on the second frame, because the shared `ViewportOverlay` inserts post-frame | Current behavior kept, undecided / 保留现状，待裁决 |
+| Loading sailboat artwork / Loading 帆船图形 | The sailboat uses the existing naive-icons 1.6.0 glyph, not the 1.14.0 artwork | Existing glyph used; to be re-pinned with the icon import / 沿用现有图形，随图标导入重新固定 |
+| Cursor selection highlight `#e9c46a` / Cursor 选区高亮 | The reference pair, `#2b2620` selected text on `#e9c46a`, passes at 9.0:1, but Flutter keeps each text's own colour over the highlight: light inks are 3.3–4.7:1 (muted `#736857` 3.27:1), dark-theme inks 1.0–1.5:1. The rule is ambiguous here: the failing value is the platform pairing, not a reference value, and moving the highlight in its own hue until every ink passes (`#ffea8f` light, `#624100` dark) leaves the selection only 1.1–1.3:1 from the paper | Reference value kept, undecided / 规则在此不明确：不达标源于平台配对；按色相移动高亮可使文字达标，但选区与纸面仅差 1.1–1.3:1，待裁决 |
+| Modal opened inside an open Drawer / 抽屉内打开的 Modal | The Modal is drawn under the drawer | Pre-existing layering, unchanged by this round, undecided / 既有层级，本轮未变，待裁决 |
 
 <a id="notification-type"></a>
 ## Notification type / 通知类型

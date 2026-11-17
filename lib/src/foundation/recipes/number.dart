@@ -16,7 +16,8 @@ abstract final class NumberColors {
   static const islandPlateBorder = Primitive.sand826;
 
   /// Countdown default reminders: reference 60-second orange `#c77c34` and
-  /// 10-second error red `#e05a5a`.
-  static const reminderWarm = Primitive.orange653;
-  static const reminderUrgent = Primitive.red641;
+  /// 10-second red `#e05a5a` (3.0–3.6:1 on the plates and surfaces) deepened
+  /// in hue to 4.5:1.
+  static const reminderWarm = Primitive.orange550;
+  static const reminderUrgent = Primitive.red561;
 }

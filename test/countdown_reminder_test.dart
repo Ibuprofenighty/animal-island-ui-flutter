@@ -85,19 +85,19 @@ void main() {
       );
       await t.pump();
       final normal = p.colon();
-      expect(normal, isNot(const Color(0xffc77c34)));
+      expect(normal, isNot(const Color(0xffa55d05)));
       final normalBorders = p.borders().toSet();
       // 60.001s still displays 61 → 01:01, no reminder yet.
       await p.showing(const Duration(seconds: 60, milliseconds: 1));
       expect(p.colon(), normal);
       await p.showing(const Duration(seconds: 60));
-      expect(p.colon(), const Color(0xffc77c34));
-      expect(p.borders().toSet(), {const Color(0xffc77c34)});
+      expect(p.colon(), const Color(0xffa55d05));
+      expect(p.borders().toSet(), {const Color(0xffa55d05)});
       await p.showing(const Duration(seconds: 10, milliseconds: 1));
-      expect(p.colon(), const Color(0xffc77c34));
+      expect(p.colon(), const Color(0xffa55d05));
       await p.showing(const Duration(seconds: 10));
-      expect(p.colon(), const Color(0xffe05a5a));
-      expect(p.borders().toSet(), {const Color(0xffe05a5a)});
+      expect(p.colon(), const Color(0xffc44043));
+      expect(p.borders().toSet(), {const Color(0xffc44043)});
       // A later deadline leaves the reminder range again.
       p.rebuild(() {});
       await p.showing(const Duration(seconds: 61));
@@ -220,7 +220,7 @@ void main() {
         await t.pump(const Duration(milliseconds: 37));
         expect(p.group().$1, 0);
       }
-      expect(p.colon(), const Color(0xffe05a5a));
+      expect(p.colon(), const Color(0xffc44043));
       // Settles because no shake ticker runs.
       await t.pumpAndSettle();
       p.rebuild(() => p.reduced = false);

@@ -113,6 +113,7 @@ class _IslandTimeState extends State<IslandTime>
     );
     final clock = '${pad(current.hour)}:${pad(current.minute)}';
     final game = widget.variant == IslandTimeVariant.game;
+    final hudText = TimeColors.gameText(Theme.of(context).brightness);
     Widget clockRow({
       required double fontSize,
       required double letterSpacing,
@@ -120,7 +121,7 @@ class _IslandTimeState extends State<IslandTime>
       required double colonRise,
     }) => DefaultTextStyle.merge(
       style: TextStyle(
-        color: TimeColors.digits,
+        color: game ? hudText : TimeColors.digits,
         fontSize: fontSize,
         fontWeight: FontWeight.w900,
         height: 1,
@@ -188,8 +189,8 @@ class _IslandTimeState extends State<IslandTime>
                             Flexible(
                               child: Text(
                                 date,
-                                style: const TextStyle(
-                                  color: TimeColors.gameText,
+                                style: TextStyle(
+                                  color: hudText,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: 2,
@@ -208,7 +209,7 @@ class _IslandTimeState extends State<IslandTime>
                               child: Text(
                                 weekday,
                                 style: const TextStyle(
-                                  color: TimeColors.gameText,
+                                  color: TimeColors.digits,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w900,
                                   height: 1,

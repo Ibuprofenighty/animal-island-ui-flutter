@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:island_gallery/pages/gallery.dart';
 import 'package:island_gallery/pages/home.dart';
+import 'package:island_gallery/shared/palette.dart';
 import 'package:island_gallery/shared/theme.dart';
 import 'package:island_gallery/pages/stories/background_story.dart';
 
@@ -59,6 +60,23 @@ void main() {
         loader.addFont(rootBundle.load('assets/fonts/$asset'));
       }
       await loader.load();
+    }
+  });
+
+  test('Countdown demo reminder colours are 4.5:1 on every number surface', () {
+    for (final ink in [
+      GalleryPalette.countdownReminderBerry,
+      GalleryPalette.countdownReminderBrown,
+    ]) {
+      // Plate gradient tops (default, island), shared bottom, island surface.
+      for (final surface in const [
+        Color(0xffffffff),
+        Color(0xfffffdf4),
+        Color(0xfff8f8f0),
+        Color(0xfff7f3df),
+      ]) {
+        expect(contrast(ink, surface), greaterThanOrEqualTo(4.5));
+      }
     }
   });
 

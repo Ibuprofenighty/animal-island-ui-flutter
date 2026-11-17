@@ -255,7 +255,8 @@ void main() {
     expect(t.widget<IslandProgress>(bar).showInfo, isFalse);
     expect(card.contains(t.getRect(bar).topLeft), isTrue);
     expect(card.contains(t.getRect(bar).bottomRight), isTrue);
-    expect(t.getRect(bar).top - t.getRect(text('46%')).bottom, closeTo(8, 1));
+    expect(t.getRect(bar).top - t.getRect(text('46%')).bottom, closeTo(6, 1));
+    expect(t.widget<Text>(text('46%')).style!.color, Colors.white);
 
     await t.pumpWidget(
       host(

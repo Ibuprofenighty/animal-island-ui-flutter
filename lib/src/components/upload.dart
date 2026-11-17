@@ -795,7 +795,10 @@ class _IslandUploadState extends State<IslandUpload> {
                     size(file.size),
                     style: TextStyle(
                       fontSize: 11,
-                      color: IslandTokens.light.muted,
+                      color:
+                          progress?.type == IslandUploadProgressType.background
+                          ? UploadColors.backgroundSizeText
+                          : IslandTokens.light.muted,
                     ),
                   ),
                   if (state != null) ...[const SizedBox(width: 8), state],
@@ -885,19 +888,35 @@ class _IslandUploadState extends State<IslandUpload> {
                 alignment: AlignmentDirectional.centerStart,
                 widthFactor: fraction,
                 heightFactor: 1,
-                child: Opacity(
-                  opacity: .28,
-                  child: ColoredBox(
-                    color: progress.color ?? UploadColors.backgroundFill,
-                    child: progress.wave
-                        ? OceanWave(
-                            color: UploadColors.backgroundWave,
-                            animated:
-                                progress.animated &&
-                                percent > 0 &&
-                                percent < 100,
+                child: DecoratedBox(
+                  position: DecorationPosition.foreground,
+                  decoration: BoxDecoration(
+                    border:
+                        !progress.showInfo &&
+                            progress.color == null &&
+                            fraction > 0
+                        ? const BorderDirectional(
+                            end: BorderSide(
+                              color: UploadColors.backgroundFillEdge,
+                              width: 2,
+                            ),
                           )
-                        : const SizedBox.expand(),
+                        : null,
+                  ),
+                  child: Opacity(
+                    opacity: .28,
+                    child: ColoredBox(
+                      color: progress.color ?? UploadColors.backgroundFill,
+                      child: progress.wave
+                          ? OceanWave(
+                              color: UploadColors.backgroundWave,
+                              animated:
+                                  progress.animated &&
+                                  percent > 0 &&
+                                  percent < 100,
+                            )
+                          : const SizedBox.expand(),
+                    ),
                   ),
                 ),
               ),
@@ -1025,15 +1044,13 @@ class _IslandUploadState extends State<IslandUpload> {
                     children: [
                       if (progress.showInfo) ...[
                         ExcludeSemantics(
-                          child: pill(
-                            Text(
-                              '${percentOf(file)}%',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: IslandTokens.light.link,
-                                fontFeatures: _figures,
-                              ),
+                          child: Text(
+                            '${percentOf(file)}%',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: UploadColors.cardPercent,
+                              fontFeatures: _figures,
                             ),
                           ),
                         ),

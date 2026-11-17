@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import '../palette.dart';
+import '../theme.dart';
 
 /// Border, fill and ink of one event bar palette.
 final class CalendarEventColors {
@@ -13,23 +14,49 @@ final class CalendarEventColors {
 }
 
 /// Calendar recipe: the reference 4.0.0 `calendar.module.less` values on a
-/// fixed light panel in every theme. Values below the contrast budget are
-/// kept as the reference pending an owner decision (DESIGN.md measured colour
-/// differences): weekday #a09080 (3.0:1), neighbouring-month digits #c4b89e
-/// (1.9:1), accent digit/ring/focus #19c8b9 (2.1:1), white selected digit
-/// (2.1:1), +N (1.9:1), event time #9f927d (2.5–2.8:1), teal-set title
-/// #b04a1f (4.48:1), arrows #a0936e (2.9:1 on #faf8f3) and 今天 #8a7b66
-/// (3.9:1 on #faf8f3).
+/// fixed light panel in every theme, measured per docs/DESIGN.md (measured
+/// colour differences). In the panel the weekday header (#a09080), the
+/// neighbouring-month digits (#c4b89e), today (#19c8b9), the selected digit
+/// (white), +N and the focus ring take the DatePicker roles
+/// [IslandTokens.light] `muted`, `link`, `onLeaf` and `focus`; the selected
+/// disc, its cell tint and the month icon keep the reference accent set.
+/// The header sits on the host paper and resolves per brightness.
 abstract final class CalendarColors {
   static const accent = Primitive.teal750;
   static const accentSoft = Primitive.teal750A14;
   static const accentTint = Primitive.teal967;
 
-  // Header.
-  static const arrow = Primitive.sand665;
+  // Header on the host paper.
+
+  /// Reference #a0936e: kept on dark papers (3.9:1); 2.7–3.0:1 on light
+  /// papers, so light hosts take the DatePicker chevron role `muted`.
+  static Color arrow(Brightness brightness) => brightness == Brightness.dark
+      ? Primitive.sand665
+      : IslandTokens.light.muted;
+
+  /// Reference hover accent #19c8b9: kept on dark papers (5.4:1 on the hover
+  /// fill); 1.7–1.8:1 on light hover fills, so light hosts take `link`.
+  static Color arrowHover(Brightness brightness) =>
+      brightness == Brightness.dark ? accent : IslandTokens.light.link;
+
+  /// Reference focus ring #19c8b9: kept on dark papers (5.7:1); light hosts
+  /// take the `focus` role (2.1:1 otherwise).
+  static Color headerFocus(Brightness brightness) =>
+      brightness == Brightness.dark ? accent : IslandTokens.light.focus;
+
+  /// Reference 今天 #8a7b66: 3.7–4.1:1 on light papers, so light hosts take
+  /// `muted`; 2.9:1 on dark papers, lightened in hue to 4.5:1.
+  static Color todayAction(Brightness brightness) =>
+      brightness == Brightness.dark
+      ? Primitive.sand706
+      : IslandTokens.light.muted;
+
+  /// Reference hover #725d42: kept on light hover fills (4.9:1); 1.8:1 on
+  /// dark hover fills, lightened in hue to 4.5:1.
+  static Color todayActionHover(Brightness brightness) =>
+      brightness == Brightness.dark ? Primitive.brown722 : Primitive.brown492;
+
   static const controlHoverFill = Primitive.brown492A10;
-  static const todayAction = Primitive.sand591;
-  static const todayActionHover = Primitive.brown492;
   static const monthChipFill = Primitive.sand986;
   static const monthChipInk = Primitive.brown492;
 
@@ -41,19 +68,20 @@ abstract final class CalendarColors {
   static const panelSmallDot = Primitive.sand786A10;
 
   // Grid.
-  static const weekday = Primitive.brown663;
   static const cellHoverFill = Primitive.sand955;
   static const day = Primitive.brown492;
   static const dayHover = Primitive.brown407;
-  static const dayOutside = Primitive.sand786;
-  static const daySelected = Primitive.neutral1000;
 
-  // Event bars; `teal` is the reference warm orange set.
-  static const eventTime = Primitive.sand666;
+  /// Event start time: reference #9f927d (2.5–2.8:1 on the five fills)
+  /// deepened in hue to 4.5:1 on every fill.
+  static const eventTime = Primitive.sand520;
+
+  /// Event bars; `teal` is the reference warm orange set, whose title ink
+  /// #b04a1f (4.48:1 on #ffe4cc) is deepened in hue to 4.5:1.
   static const teal = CalendarEventColors(
     border: Primitive.orange754A50,
     fill: Primitive.brown935,
-    ink: Primitive.red537,
+    ink: Primitive.red535,
   );
   static const amber = CalendarEventColors(
     border: Primitive.yellow844A50,
