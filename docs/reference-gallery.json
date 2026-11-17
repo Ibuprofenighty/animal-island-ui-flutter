@@ -19,7 +19,7 @@
       "ios"
     ]
   },
-  "component_count": 40,
+  "component_count": 43,
   "groups": {
     "基础": [
       "Title",
@@ -38,6 +38,7 @@
       "Select",
       "DatePicker",
       "TimePicker",
+      "Calendar",
       "Checkbox",
       "Radio",
       "Rate",
@@ -52,6 +53,7 @@
       "Tooltip",
       "Progress",
       "Skeleton",
+      "NoData",
       "BackTop"
     ],
     "数据展示": [
@@ -68,7 +70,8 @@
       "Time",
       "Countdown",
       "CountUp"
-    ]
+    ],
+    "图表统计": ["Chart"]
   },
   "guide_pages": [
     "Skill"
@@ -247,7 +250,7 @@
       "typewriter": true
     }
   },
-  "acceptance": "All 40 component pages and reference home/guide must be inventoried. Current code is not visually accepted. Previously passing engineering tests do not establish reference parity.",
+  "acceptance": "All 43 component pages and reference home/guide must be inventoried. Current code is not visually accepted. Previously passing engineering tests do not establish reference parity.",
   "implementation_constraint": "Write new Dart implementation; do not copy the old local Flutter library implementation. Match observed design and behavior; do not substitute generic Material styling.",
   "asset_status": "Reference guide describes MIT and naive-icons. Verify actual asset/font licenses and retain provenance before packaging. Current custom 12-glyph set is not accepted as a visual substitute.",
   "recent_observations": [
