@@ -583,34 +583,6 @@ const semanticProbes = <SemanticProbe>[
   SemanticProbe('tree', 'right eye', Offset(28, 16), Offset(24, 12), [
     Color(0xff2a2a2a),
   ], Color(0xff588157)),
-  SemanticProbe(
-    'users',
-    'foreground left eye',
-    Offset(26, 18),
-    Offset(29, 13),
-    [Color(0xff2a2a2a)],
-    Color(0xffe76f51),
-  ),
-  SemanticProbe(
-    'users',
-    'foreground right eye',
-    Offset(32, 18),
-    Offset(29, 13),
-    [Color(0xff2a2a2a)],
-    Color(0xffe76f51),
-  ),
-  SemanticProbe('user', 'left eye', Offset(21, 16), Offset(24, 12), [
-    Color(0xff2a2a2a),
-  ], Color(0xffe76f51)),
-  SemanticProbe('user', 'right eye', Offset(27, 16), Offset(24, 12), [
-    Color(0xff2a2a2a),
-  ], Color(0xffe76f51)),
-  SemanticProbe('user-plus', 'left eye', Offset(16, 16), Offset(19, 12), [
-    Color(0xff2a2a2a),
-  ], Color(0xffe76f51)),
-  SemanticProbe('user-plus', 'right eye', Offset(22, 16), Offset(19, 12), [
-    Color(0xff2a2a2a),
-  ], Color(0xffe76f51)),
   SemanticProbe('plus', 'vertical sign', Offset(24, 19), Offset(20, 18), [
     Color(0xff2a2a2a),
   ], Color(0xffe9c46a)),

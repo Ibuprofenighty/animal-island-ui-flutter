@@ -13,7 +13,7 @@ class IconStory extends StatelessWidget {
     tags: ["naive-icons"],
     children: [
       const StoryLabel(
-        '图标来自 naive-icons —— 手绘 naive folk art 风格的 SVG 图标库，150+ 个原创图标；Flutter 包已内置固定版本资源。',
+        '图标来自 naive-icons —— 手绘 naive folk art 风格的 SVG 图标库，原创图标；Flutter 包已内置固定版本资源。',
         spaceAfter: 0,
         links: {'naive-icons': 'https://github.com/guokaigdg/naive-icons'},
       ),

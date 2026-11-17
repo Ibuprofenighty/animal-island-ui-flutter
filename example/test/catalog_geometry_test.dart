@@ -252,10 +252,10 @@ void main() {
           .map((e) => (e.widget as Text).data!)
           .toList();
       final sorted = [...actual]..sort();
-      expect(actual.length, 163);
+      expect(actual.length, 709);
       expect(actual, sorted);
       expect(t.getSize(names.first).height, 13);
-      expect(t.getSize(find.text('AlertCircle')).height, 18);
+      expect(t.getSize(find.text('Chrome')).height, 18);
       expect(t.getSize(find.text('飞机')).height, 20);
       expect(t.takeException(), isNull);
     },
