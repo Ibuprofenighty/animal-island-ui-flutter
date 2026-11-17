@@ -2,15 +2,27 @@ part of 'chart.dart';
 
 String _twoDigits(int n) => n.toString().padLeft(2, '0');
 
+/// The local time [ms] milliseconds after the epoch; null outside the
+/// ±8.64e15 ms that both `DateTime` and the reference's JS `Date` represent.
+DateTime? _instant(double ms) => ms.isFinite && ms.abs() <= 8.64e15
+    ? DateTime.fromMillisecondsSinceEpoch(ms.round())
+    : null;
+
+/// The reference dayjs text for a timestamp it cannot represent; only axis
+/// ticks widened past the range reach it, since such data is invalid.
+const _invalidDate = 'Invalid Date';
+
 /// Local `HH:mm`, the reference default time axis label.
 String _clock(double ms) {
-  final t = DateTime.fromMillisecondsSinceEpoch(ms.round());
+  final t = _instant(ms);
+  if (t == null) return _invalidDate;
   return '${_twoDigits(t.hour)}:${_twoDigits(t.minute)}';
 }
 
 /// Local `YYYY-MM-DD HH:mm:ss`, the reference default time reading.
 String _timestamp(double ms) {
-  final t = DateTime.fromMillisecondsSinceEpoch(ms.round());
+  final t = _instant(ms);
+  if (t == null) return _invalidDate;
   return '${t.year.toString().padLeft(4, '0')}-${_twoDigits(t.month)}-'
       '${_twoDigits(t.day)} ${_twoDigits(t.hour)}:${_twoDigits(t.minute)}:'
       '${_twoDigits(t.second)}';

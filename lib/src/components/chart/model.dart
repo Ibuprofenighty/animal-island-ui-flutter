@@ -111,8 +111,16 @@ class IslandChartPoint {
     this.color,
   });
 
-  /// Horizontal coordinate; milliseconds since the epoch for
-  /// [IslandChartData.time].
+  /// A sample of [IslandChartData.time] at [time]; [x] becomes its
+  /// milliseconds since the epoch, so a UTC and a local value of the same
+  /// instant land on the same position.
+  IslandChartPoint.time(DateTime time, {required this.y, this.name, this.color})
+    : x = time.millisecondsSinceEpoch.toDouble(),
+      size = null;
+
+  /// Horizontal coordinate. For [IslandChartData.time] it is milliseconds
+  /// since the epoch (see [IslandChartPoint.time]), labelled in local time;
+  /// values beyond ±8.64e15, which no date can hold, are invalid data.
   final double x;
 
   /// Vertical coordinate, the point's value.

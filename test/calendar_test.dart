@@ -13,12 +13,16 @@ Future<void> pump(
   Widget calendar, {
   double width = 750,
   bool reduceMotion = false,
+  Locale locale = const Locale('zh'),
 }) async {
   t.view.physicalSize = Size(width + 100, 2400);
   t.view.devicePixelRatio = 1;
   addTearDown(t.view.reset);
   await t.pumpWidget(
     MaterialApp(
+      locale: locale,
+      supportedLocales: IslandLocalizations.supportedLocales,
+      localizationsDelegates: IslandLocalizations.delegates,
       home: MediaQuery(
         data: MediaQueryData(
           size: Size(width + 100, 2400),

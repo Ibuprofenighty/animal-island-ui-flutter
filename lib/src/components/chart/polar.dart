@@ -65,7 +65,7 @@ _Scene _pieScene(_SceneContext c) {
               central: true,
             ),
             _TextShape(
-              '合计',
+              c.strings.chartTotal,
               Offset(cx, cy + 16),
               role: _TextRole.center,
               central: true,

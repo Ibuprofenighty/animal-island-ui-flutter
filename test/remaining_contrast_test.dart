@@ -809,13 +809,20 @@ void registerUpgradeColorOracles() {
       for (final brightness in Brightness.values) {
         await t.pumpWidget(
           host(
-            SizedBox(
-              width: 750,
-              child: IslandCalendar(
-                value: DateTime(2026, 11, 20),
-                onChanged: (_) {},
-                now: () => DateTime(2026, 11, 17, 9),
-                events: events,
+            Builder(
+              builder: (context) => Localizations.override(
+                context: context,
+                locale: const Locale('zh'),
+                delegates: IslandLocalizations.delegates,
+                child: SizedBox(
+                  width: 750,
+                  child: IslandCalendar(
+                    value: DateTime(2026, 11, 20),
+                    onChanged: (_) {},
+                    now: () => DateTime(2026, 11, 17, 9),
+                    events: events,
+                  ),
+                ),
               ),
             ),
             brightness: brightness,

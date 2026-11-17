@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../foundation/localizations.dart';
 import '../../foundation/recipes/chart.dart';
 import '../../foundation/size.dart';
 import '../../foundation/theme.dart';
@@ -32,17 +33,20 @@ String _trimmed(double value) {
   return trimmed == '-0' ? '0' : trimmed;
 }
 
-/// Reference default: zh-CN, up to two decimals, compact from 10 000.
+/// Reference default: zh-CN, up to two decimals, compact from 10 000. Like
+/// `Intl.NumberFormat` the unit follows the rounded value, so 99 999 999
+/// reads 1亿, not 10000万.
 String _defaultFormat(double value) {
   final magnitude = value.abs();
   if (magnitude >= 10000) {
-    for (final (divisor, unit) in const [
-      (1e12, '万亿'),
-      (1e8, '亿'),
-      (1e4, '万'),
-    ]) {
-      if (magnitude >= divisor) return '${_trimmed(value / divisor)}$unit';
+    const units = [(1e4, '万'), (1e8, '亿'), (1e12, '万亿')];
+    var unit = units.lastIndexWhere((u) => magnitude >= u.$1);
+    var scaled = _trimmed(value / units[unit].$1);
+    if (unit < units.length - 1 && double.parse(scaled).abs() >= 10000) {
+      unit++;
+      scaled = _trimmed(value / units[unit].$1);
     }
+    return '$scaled${units[unit].$2}';
   }
   final text = _trimmed(value);
   final negative = text.startsWith('-');
@@ -147,7 +151,8 @@ class IslandChart extends StatefulWidget {
   /// A reading was clicked or activated with Enter/Space.
   final ValueChanged<IslandChartDataEvent>? onDataActivate;
 
-  /// Accessible chart name; defaults to [title], then 统计图表.
+  /// Accessible chart name; defaults to [title], then
+  /// [IslandLocalizations.chart] (统计图表 in Chinese).
   final String? semanticLabel;
 
   /// Container fill replacing the theme surface, like the reference root
@@ -186,7 +191,8 @@ class _IslandChartState extends State<IslandChart>
     value: 1,
   );
   final _from = <String, double>{}, _to = <String, double>{};
-  _Scene _scene = _Scene();
+  _Derived? _derived;
+  List<_Mark> get _marks => _derived?.scene.marks ?? const [];
 
   @override
   void initState() {
@@ -299,7 +305,7 @@ class _IslandChartState extends State<IslandChart>
   }
 
   _Mark? _markAt(Offset at) {
-    for (final mark in _scene.marks.reversed) {
+    for (final mark in _marks.reversed) {
       if (mark.hit(at)) return mark;
     }
     return null;
@@ -307,7 +313,7 @@ class _IslandChartState extends State<IslandChart>
 
   KeyEventResult _markKey(KeyEvent event, int index) {
     if (event is KeyUpEvent) return KeyEventResult.ignored;
-    final marks = _scene.marks;
+    final marks = _marks;
     final key = event.logicalKey;
     if (event is KeyDownEvent &&
         (key == LogicalKeyboardKey.enter ||
@@ -336,20 +342,73 @@ class _IslandChartState extends State<IslandChart>
     return KeyEventResult.handled;
   }
 
-  String _describe(_Point p, String Function(double) format) {
+  String _describe(
+    _Point p,
+    String Function(double) format,
+    IslandLocalizations strings,
+  ) {
     final type = p.type;
     if (p.candle case final c?) {
-      return '开 ${format(c.open)} / 收 ${format(c.close)} / '
-          '低 ${format(c.low)} / 高 ${format(c.high)}';
+      return strings.chartCandle(
+        format(c.open),
+        format(c.close),
+        format(c.low),
+        format(c.high),
+      );
     }
     if (_coordinateTypes.contains(type)) {
       final x =
           widget.data._xFormatter?.call(p.x) ??
           (type == IslandChartType.time ? _timestamp(p.x) : format(p.x));
       return '$x · ${format(p.value)}'
-          '${type == IslandChartType.bubble ? ' · 权重 ${format(p.size)}' : ''}';
+          '${type == IslandChartType.bubble ? ' · ${strings.chartWeight(format(p.size))}' : ''}';
     }
     return format(p.value);
+  }
+
+  /// The scene and every string derived from it, rebuilt only when an input
+  /// that shapes them changes; hover, focus, legend hover and scrolling
+  /// reuse it (reference `useMemo` on the scene).
+  _Derived _derive(_SceneInputs inputs, List<_Series> series) {
+    final cached = _derived;
+    if (cached != null && cached.inputs == inputs) return cached;
+    final all = _normalize(inputs.data, series, inputs.palette);
+    final visible = [
+      for (final p in all)
+        if (!inputs.hidden.contains(
+          _legendKey(inputs.data, series, p.seriesIndex, p.name, p.dataIndex),
+        ))
+          p,
+    ];
+    final scene = _buildScene(
+      _SceneContext(
+        data: inputs.data,
+        series: series,
+        points: visible,
+        width: inputs.width,
+        height: inputs.height,
+        format: inputs.format,
+        showAxes: inputs.showAxes,
+        showLabels: inputs.showLabels,
+        strings: inputs.strings,
+      ),
+    );
+    String describe(_Point p) => _describe(p, inputs.format, inputs.strings);
+    return _derived = _Derived(
+      inputs: inputs,
+      all: all,
+      visible: visible,
+      scene: scene,
+      labels: [
+        for (final m in scene.marks)
+          inputs.strings.chartReading(
+            m.point.seriesName,
+            m.point.name,
+            describe(m.point),
+          ),
+      ],
+      rows: [for (final p in all) (p.seriesName, p.name, describe(p))],
+    );
   }
 
   @override
@@ -361,7 +420,10 @@ class _IslandChartState extends State<IslandChart>
     final border = IslandTheme.borderWidth(context, 1.5);
     final base = DefaultTextStyle.of(context).style
         .copyWith(decoration: TextDecoration.none);
-    final label = widget.semanticLabel ?? widget.title ?? '统计图表';
+    final label =
+        widget.semanticLabel ??
+        widget.title ??
+        IslandLocalizations.of(context).chart;
     return Semantics(
       container: true,
       explicitChildNodes: true,
@@ -413,6 +475,7 @@ class _IslandChartState extends State<IslandChart>
   ) {
     final data = widget.data;
     final type = data.type;
+    final strings = IslandLocalizations.of(context);
     final format = widget.valueFormatter ?? _defaultFormat;
     final palette = widget.colors?.isNotEmpty == true
         ? widget.colors!
@@ -428,9 +491,22 @@ class _IslandChartState extends State<IslandChart>
         options?.trigger != IslandChartTooltipTrigger.item &&
         _sharedTypes.contains(type);
     String legendKey(int seriesIndex, String name, [int? index]) =>
-        '${type.name}:${seriesIndex < series.length ? series[seriesIndex].name : ''}:'
-        '${itemLegend ? '$index:$name' : 'series'}';
-    final allPoints = _normalize(data, series, palette);
+        _legendKey(data, series, seriesIndex, name, index);
+    final derived = _derive(
+      _SceneInputs(
+        data: data,
+        palette: palette,
+        hidden: Set.of(_hidden),
+        width: width,
+        height: chartHeight,
+        format: format,
+        showAxes: widget.showAxes,
+        showLabels: widget.showLabels,
+        strings: strings,
+      ),
+      series,
+    );
+    final allPoints = derived.all;
     final entries = itemLegend
         ? [
             for (final p in allPoints)
@@ -448,22 +524,8 @@ class _IslandChartState extends State<IslandChart>
                 color: series[i].color ?? palette[i % palette.length],
               ),
           ];
-    final visible = [
-      for (final p in allPoints)
-        if (!_hidden.contains(legendKey(p.seriesIndex, p.name, p.dataIndex))) p,
-    ];
-    final scene = _scene = _buildScene(
-      _SceneContext(
-        data: data,
-        series: series,
-        points: visible,
-        width: width,
-        height: chartHeight,
-        format: format,
-        showAxes: widget.showAxes,
-        showLabels: widget.showLabels,
-      ),
-    );
+    final visible = derived.visible;
+    final scene = derived.scene;
     final marks = scene.marks;
     bool present(String? key) => marks.any((m) => m.identity == key);
     if (widget.loading) {
@@ -528,7 +590,7 @@ class _IslandChartState extends State<IslandChart>
       (sum, m) => sum + math.max(0, m.point.value),
     );
     IslandChartTooltipContext? tooltipContext;
-    if (active != null) {
+    if (active != null && options != null) {
       final first = marks.firstOrNull?.point.value ?? 0;
       tooltipContext = IslandChartTooltipContext(
         type: type,
@@ -553,7 +615,7 @@ class _IslandChartState extends State<IslandChart>
                     value: mark.point.value,
                     datum: mark.point.datum,
                     color: mark.point.color,
-                    formattedValue: _describe(mark.point, format),
+                    formattedValue: _describe(mark.point, format, strings),
                     percentage:
                         const {
                               IslandChartType.pie,
@@ -708,9 +770,7 @@ class _IslandChartState extends State<IslandChart>
                 i,
                 tabStop: marks[i].identity == tabStop,
                 pressed: widget.selectable ? selected == marks[i] : null,
-                label:
-                    '${marks[i].point.seriesName}，${marks[i].point.name}，'
-                    '${_describe(marks[i].point, format)}',
+                label: derived.labels[i],
               ),
             ),
         ],
@@ -727,7 +787,7 @@ class _IslandChartState extends State<IslandChart>
                 padding: const EdgeInsets.all(16),
                 child: Center(
                   child: Text(
-                    '正在整理数据…',
+                    strings.chartLoading,
                     textAlign: TextAlign.center,
                     style: base.copyWith(
                       fontSize: 14,
@@ -788,20 +848,20 @@ class _IslandChartState extends State<IslandChart>
                                   size: IslandSize.small,
                                   title: Text(
                                     allHidden
-                                        ? '所有图例已隐藏'
+                                        ? strings.chartAllHidden
                                         : missingMap
-                                        ? '请提供地图区域轮廓'
-                                        : '暂无数据',
+                                        ? strings.chartMissingMap
+                                        : strings.noData,
                                   ),
                                   description: allHidden
-                                      ? const Text('恢复图例后，即可继续查看统计。')
+                                      ? Text(strings.chartAllHiddenHint)
                                       : null,
                                   actions: [
                                     if (hiddenCount > 0)
                                       IslandButton(
                                         size: IslandSize.small,
                                         onPressed: restoreAll,
-                                        child: const Text('恢复全部图例'),
+                                        child: Text(strings.chartRestoreLegend),
                                       ),
                                   ],
                                 ),
@@ -855,7 +915,7 @@ class _IslandChartState extends State<IslandChart>
               child: Semantics(
                 container: true,
                 explicitChildNodes: true,
-                label: '图例',
+                label: strings.chartLegend,
                 child: Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 12,
@@ -896,7 +956,7 @@ class _IslandChartState extends State<IslandChart>
                       ),
                     if (hiddenCount > 0 && !empty)
                       _Pill(
-                        label: '恢复全部图例',
+                        label: strings.chartRestoreLegend,
                         colors: colors,
                         reduced: reduced,
                         onPressed: restoreAll,
@@ -915,11 +975,11 @@ class _IslandChartState extends State<IslandChart>
                 runSpacing: 8,
                 children: [
                   Text(
-                    '已锁定：${selected.point.name}',
+                    strings.chartLockedReading(selected.point.name),
                     style: text.copyWith(fontSize: 12),
                   ),
                   _Pill(
-                    label: '解除锁定',
+                    label: strings.chartUnlock,
                     colors: colors,
                     reduced: reduced,
                     lift: false,
@@ -938,20 +998,17 @@ class _IslandChartState extends State<IslandChart>
               child: _DataDetails(
                 open: _detailsOpen,
                 onToggle: () => setState(() => _detailsOpen = !_detailsOpen),
-                caption: '$label数据明细',
+                caption: strings.chartDataCaption(label),
                 colors: colors,
                 style: base,
-                rows: [
-                  for (final p in allPoints)
-                    (p.seriesName, p.name, _describe(p, format)),
-                ],
+                rows: derived.rows,
               ),
             ),
           if (type == IslandChartType.word &&
               marks.length < visible.where((p) => p.value > 0).length)
             Padding(
               padding: const EdgeInsets.only(top: 6),
-              child: Text('部分词条未能放入当前绘图区，完整数值可展开查看数据。', style: secondary),
+              child: Text(strings.chartWordsOmitted, style: secondary),
             ),
         ],
       ),
@@ -1108,6 +1165,7 @@ class _TooltipContent extends StatelessWidget {
   @override
   Widget build(BuildContext buildContext) {
     final tip = context;
+    final strings = IslandLocalizations.of(buildContext);
     final rule = BorderSide(color: colors.border);
     final funnel = tip.type == IslandChartType.funnel;
     return Column(
@@ -1130,7 +1188,8 @@ class _TooltipContent extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              if (tip.locked) const Text('已锁定', style: TextStyle(fontSize: 11)),
+              if (tip.locked)
+                Text(strings.chartLocked, style: const TextStyle(fontSize: 11)),
             ],
           ),
         ),
@@ -1169,8 +1228,11 @@ class _TooltipContent extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
                           child: Text(
-                            '${funnel ? '较首阶段' : '占比'} '
-                            '${_defaultFormat(item.percentage!)}%',
+                            (funnel
+                                ? strings.chartOfFirstStage
+                                : strings.chartShare)(
+                              _defaultFormat(item.percentage!),
+                            ),
                             style: const TextStyle(fontSize: 11),
                           ),
                         ),
@@ -1178,7 +1240,9 @@ class _TooltipContent extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
                           child: Text(
-                            '较上阶段 ${_defaultFormat(item.conversion!)}%',
+                            strings.chartOfPreviousStage(
+                              _defaultFormat(item.conversion!),
+                            ),
                             style: const TextStyle(fontSize: 11),
                           ),
                         ),
@@ -1194,7 +1258,7 @@ class _TooltipContent extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8),
             decoration: BoxDecoration(border: Border(top: rule)),
             child: Text(
-              tip.locked ? '再次点击或按 Esc 解除锁定' : '点击锁定读数',
+              tip.locked ? strings.chartUnlockHint : strings.chartLockHint,
               style: const TextStyle(fontSize: 11),
             ),
           ),
@@ -1358,7 +1422,7 @@ class _DataDetails extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  '查看数据（${rows.length}）',
+                  IslandLocalizations.of(context).chartViewData(rows.length),
                   style: style.copyWith(
                     fontSize: 12,
                     color: colors.secondaryInk,
@@ -1387,9 +1451,10 @@ class _DataDetails extends StatelessWidget {
                           TableRow(
                             decoration: rule,
                             children: [
-                              pad('系列', header: true),
-                              pad('项目', header: true),
-                              pad('数值', header: true),
+                              for (final header in IslandLocalizations.of(
+                                context,
+                              ).chartTableHeaders)
+                                pad(header, header: true),
                             ],
                           ),
                           for (final (series, name, value) in rows)

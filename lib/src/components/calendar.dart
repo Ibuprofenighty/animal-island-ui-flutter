@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../foundation/dashed_border.dart';
 import '../foundation/icon.dart';
+import '../foundation/localizations.dart';
 import '../foundation/recipes/calendar.dart';
 import '../foundation/theme.dart';
 import '../foundation/time_value.dart';
@@ -54,9 +55,15 @@ class IslandCalendarEvent {
 
   /// Start: its date is the first day, and its time the optional `HH:mm`
   /// prefix (see [showTime]).
+  ///
+  /// Days are read from the value's own calendar fields, like every date of
+  /// the library: a UTC value lands on its UTC date and shows its UTC time.
+  /// Pass `toLocal()` to place an instant on the local calendar.
   final DateTime start;
 
-  /// Last day, inclusive. Null, or a day before [start], makes a one-day entry.
+  /// Last day, inclusive, read from its own calendar fields like [start];
+  /// its time of day is ignored. Null, or a day before [start], makes a
+  /// one-day entry.
   final DateTime? end;
 
   /// Bar palette.
@@ -82,7 +89,8 @@ class IslandCalendarEvent {
 }
 
 /// An always-visible month panel: a 6 × 7 day grid with month and year
-/// navigation, a 今天 shortcut, event bars and optional drag-to-create.
+/// navigation, a today (今天) shortcut, event bars and optional
+/// drag-to-create. Chrome text comes from [IslandLocalizations].
 ///
 /// The selected day and the panel month are controlled independently. Days
 /// are reported as local midnight and months as their first day. The panel
@@ -130,7 +138,7 @@ class IslandCalendar extends StatefulWidget {
   /// First selected day of [IslandCalendar.uncontrolled]; null selects today.
   final DateTime? initialValue;
 
-  /// Selection request from a day cell, Enter/Space or 今天.
+  /// Selection request from a day cell, Enter/Space or the today action.
   final ValueChanged<DateTime>? onChanged;
 
   /// Controlled panel month when non-null; the panel then changes only when
@@ -154,7 +162,9 @@ class IslandCalendar extends StatefulWidget {
 
   /// Enables drag-to-create: a primary-button mouse drag across days shows
   /// a dashed preview and, released inside the panel, reports the ordered
-  /// day range. A press and release on one day only selects it.
+  /// day range: `start` is the first and `end` the last day, inclusive, both
+  /// at local midnight. A press and release on one day only selects it; a
+  /// release outside the panel or a cancelled pointer reports nothing.
   final ValueChanged<DateTimeRange>? onCreateEvent;
 
   /// Accessible name of the day grid when no visible title names it.
@@ -167,7 +177,6 @@ class IslandCalendar extends StatefulWidget {
   State<IslandCalendar> createState() => _IslandCalendarState();
 }
 
-const _weekdays = ['日', '一', '二', '三', '四', '五', '六'];
 const _cells = 42, _cols = 7;
 
 /// Reference `LAYOUT_BASE`: metrics at the 750px baseline width. Two event
@@ -407,16 +416,16 @@ class _IslandCalendarState extends State<IslandCalendar> {
   }
 
   String _cellLabel(DateTime day, List<IslandCalendarEvent> covering) {
-    final key = formatDateTokens(day, 'YYYY-MM-DD');
-    if (covering.isEmpty) return key;
     final titles = {
       for (final event in covering)
         if (event.title.isNotEmpty) event.title,
     };
-    final count = '$key ${covering.length} 项事项';
-    if (titles.isEmpty) return count;
-    final more = titles.length < covering.length ? ' 等' : '';
-    return '$count：${titles.join('，')}$more';
+    return IslandLocalizations.of(context).calendarDay(
+      formatDateTokens(day, 'YYYY-MM-DD'),
+      covering.length,
+      titles.toList(),
+      more: titles.isNotEmpty && titles.length < covering.length,
+    );
   }
 
   @override
@@ -583,6 +592,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
   }
 
   Widget _header(DateTime month, DateTime today, Duration duration) {
+    final strings = IslandLocalizations.of(context);
     final brightness = Theme.of(context).brightness;
     Widget arrow(String label, bool forward, bool year) => ActionSurface(
       label: label,
@@ -652,7 +662,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
                   ? CalendarColors.todayActionHover(brightness)
                   : CalendarColors.todayAction(brightness),
             ),
-            child: const Text('今天'),
+            child: Text(strings.today),
           ),
         );
       },
@@ -666,9 +676,9 @@ class _IslandCalendarState extends State<IslandCalendar> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            arrow('上一年', false, true),
+            arrow(strings.previousYear, false, true),
             const SizedBox(width: 2),
-            arrow('上个月', false, false),
+            arrow(strings.previousMonth, false, false),
           ],
         ),
         Container(
@@ -688,7 +698,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
               ),
               const SizedBox(width: 6),
               Text(
-                '${month.year}年${month.month}月',
+                strings.monthTitle(month.year, month.month),
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -704,9 +714,9 @@ class _IslandCalendarState extends State<IslandCalendar> {
           children: [
             todayAction,
             const SizedBox(width: 4),
-            arrow('下个月', true, false),
+            arrow(strings.nextMonth, true, false),
             const SizedBox(width: 2),
-            arrow('下一年', true, true),
+            arrow(strings.nextYear, true, true),
           ],
         ),
       ],
@@ -729,7 +739,9 @@ class _IslandCalendarState extends State<IslandCalendar> {
         height: _baseHeader * scale,
         child: Row(
           children: [
-            for (final name in _weekdays)
+            for (final name in IslandLocalizations.of(
+              context,
+            ).weekdaysFromSunday)
               Expanded(
                 child: Center(
                   child: Text(
@@ -933,52 +945,54 @@ class _IslandCalendarState extends State<IslandCalendar> {
       top: centre - height / 2,
       width: math.max(0, columnWidth * span - 10),
       height: height,
-      child: ExcludeSemantics(
-        child: CustomPaint(
-          foregroundPainter: event == null
-              ? IslandDashedBorderPainter(
-                  shape: RoundedRectangleBorder(borderRadius: radius),
-                  color: colors.border,
-                  dash: 3,
-                  gap: 3,
-                )
-              : null,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              color: colors.fill,
-              border: Border.all(
-                color: event == null ? Colors.transparent : colors.border,
-              ),
-              borderRadius: radius,
-            ),
-            child: OverflowBox(
-              alignment: AlignmentDirectional.centerStart,
-              maxWidth: double.infinity,
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  fontSize: _baseEventFont * scale,
-                  height: 1,
-                  fontWeight: FontWeight.w600,
-                  color: colors.ink,
+      child: IgnorePointer(
+        child: ExcludeSemantics(
+          child: CustomPaint(
+            foregroundPainter: event == null
+                ? IslandDashedBorderPainter(
+                    shape: RoundedRectangleBorder(borderRadius: radius),
+                    color: colors.border,
+                    dash: 3,
+                    gap: 3,
+                  )
+                : null,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                color: colors.fill,
+                border: Border.all(
+                  color: event == null ? Colors.transparent : colors.border,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (time) ...[
-                      Text(
-                        formatDateTokens(event.start, 'HH:mm'),
-                        softWrap: false,
-                        style: const TextStyle(
-                          color: CalendarColors.eventTime,
-                          fontFeatures: [FontFeature.tabularFigures()],
+                borderRadius: radius,
+              ),
+              child: OverflowBox(
+                alignment: AlignmentDirectional.centerStart,
+                maxWidth: double.infinity,
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    fontSize: _baseEventFont * scale,
+                    height: 1,
+                    fontWeight: FontWeight.w600,
+                    color: colors.ink,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (time) ...[
+                        Text(
+                          formatDateTokens(event.start, 'HH:mm'),
+                          softWrap: false,
+                          style: const TextStyle(
+                            color: CalendarColors.eventTime,
+                            fontFeatures: [FontFeature.tabularFigures()],
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
+                        const SizedBox(width: 4),
+                      ],
+                      if (event != null) Text(event.title, softWrap: false),
                     ],
-                    if (event != null) Text(event.title, softWrap: false),
-                  ],
+                  ),
                 ),
               ),
             ),

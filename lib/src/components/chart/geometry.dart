@@ -106,6 +106,7 @@ List<_Point> _normalize(
       final x = point?.x ?? i.toDouble();
       if (!_finite(value) || !_finite(x)) continue;
       if (coordinate && point == null) continue;
+      if (type == IslandChartType.time && _instant(x) == null) continue;
       if (type == IslandChartType.bubble &&
           point?.size != null &&
           (!_finite(point!.size) || point.size! <= 0)) {
@@ -408,17 +409,56 @@ class _Mark {
     return rect;
   }
 
+  /// SVG hit testing of the reference mark: a fill hits inside its path, a
+  /// stroke within half its width of the path (fill="none" paths hit on the
+  /// stroke only), text on its box; value labels never hit
+  /// (`.chart-value-label { pointer-events: none }`).
   bool hit(Offset at) {
     if (hitHalo && (at - Offset(x, y)).distance <= 12) return true;
     for (final s in shapes) {
       final inside = switch (s) {
-        _PathShape(fill: _?) => s.path.contains(at),
-        _PathShape() || _TextShape() => s.bounds.contains(at),
+        _TextShape(role: _TextRole.value) => false,
+        _TextShape() => s.bounds.contains(at),
+        _PathShape() =>
+          s.bounds.contains(at) &&
+              ((s.fill != null && s.path.contains(at)) ||
+                  (s.stroke != null &&
+                      _nearStroke(s.path, at, s.strokeWidth / 2, s.round))),
       };
       if (inside) return true;
     }
     return false;
   }
+}
+
+/// Whether [at] lies within [halfWidth] of [path]'s outline. Butt caps end
+/// flush with an open subpath; round caps and joins extend by [halfWidth].
+bool _nearStroke(Path path, Offset at, double halfWidth, bool round) {
+  for (final metric in path.computeMetrics()) {
+    final steps = math.max(1, (metric.length / 2).ceil());
+    Offset point(int i) =>
+        metric.getTangentForOffset(metric.length * i / steps)!.position;
+    var previous = point(0);
+    for (var i = 1; i <= steps; i++) {
+      final next = point(i);
+      final segment = next - previous;
+      final lengthSquared = segment.distanceSquared;
+      final t = lengthSquared == 0
+          ? 0.0
+          : ((at - previous).dx * segment.dx +
+                    (at - previous).dy * segment.dy) /
+                lengthSquared;
+      final butt = !round && !metric.isClosed;
+      final outside = (i == 1 && t < 0) || (i == steps && t > 1);
+      if (!(butt && outside) &&
+          (at - (previous + segment * t.clamp(0.0, 1.0))).distance <=
+              halfWidth) {
+        return true;
+      }
+      previous = next;
+    }
+  }
+  return false;
 }
 
 class _Plot {
@@ -464,6 +504,7 @@ class _SceneContext {
     required this.format,
     required this.showAxes,
     required this.showLabels,
+    required this.strings,
   });
   final IslandChartData data;
   final List<_Series> series;
@@ -471,6 +512,93 @@ class _SceneContext {
   final double width, height;
   final String Function(double) format;
   final bool showAxes, showLabels;
+  final IslandLocalizations strings;
+}
+
+/// Legend identity: type and series name, plus index and name for item
+/// legends, so hidden entries survive data updates but not a kind change.
+String _legendKey(
+  IslandChartData data,
+  List<_Series> series,
+  int seriesIndex,
+  String name, [
+  int? index,
+]) =>
+    '${data.type.name}:'
+    '${seriesIndex < series.length ? series[seriesIndex].name : ''}:'
+    '${_itemTypes.contains(data.type) ? '$index:$name' : 'series'}';
+
+/// Everything that shapes the scene. [data] compares by identity (it is
+/// immutable by contract); [palette] and [hidden] by content; [format] like
+/// any function value; [strings] by locale.
+@immutable
+class _SceneInputs {
+  const _SceneInputs({
+    required this.data,
+    required this.palette,
+    required this.hidden,
+    required this.width,
+    required this.height,
+    required this.format,
+    required this.showAxes,
+    required this.showLabels,
+    required this.strings,
+  });
+  final IslandChartData data;
+  final List<Color> palette;
+  final Set<String> hidden;
+  final double width, height;
+  final String Function(double) format;
+  final bool showAxes, showLabels;
+  final IslandLocalizations strings;
+
+  @override
+  bool operator ==(Object other) =>
+      other is _SceneInputs &&
+      identical(other.data, data) &&
+      listEquals(other.palette, palette) &&
+      setEquals(other.hidden, hidden) &&
+      other.width == width &&
+      other.height == height &&
+      other.format == format &&
+      other.showAxes == showAxes &&
+      other.showLabels == showLabels &&
+      other.strings.locale == strings.locale;
+
+  @override
+  int get hashCode => Object.hash(
+    identityHashCode(data),
+    Object.hashAll(palette),
+    Object.hashAllUnordered(hidden),
+    width,
+    height,
+    format,
+    showAxes,
+    showLabels,
+    strings.locale,
+  );
+}
+
+/// The normalised data, scene, reading names and data table rows of one
+/// [_SceneInputs].
+class _Derived {
+  const _Derived({
+    required this.inputs,
+    required this.all,
+    required this.visible,
+    required this.scene,
+    required this.labels,
+    required this.rows,
+  });
+  final _SceneInputs inputs;
+  final List<_Point> all, visible;
+  final _Scene scene;
+
+  /// Accessible name per scene mark, in mark order.
+  final List<String> labels;
+
+  /// Data table rows per valid datum, hidden ones included.
+  final List<(String, String, String)> rows;
 }
 
 _Scene _buildScene(_SceneContext c) => switch (c.data.type) {

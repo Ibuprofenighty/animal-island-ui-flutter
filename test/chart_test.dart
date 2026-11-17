@@ -15,7 +15,11 @@ Widget chartHost(
   Brightness brightness = Brightness.light,
   bool reduced = false,
   double width = 683,
+  Locale locale = const Locale('zh'),
 }) => MaterialApp(
+  locale: locale,
+  supportedLocales: IslandLocalizations.supportedLocales,
+  localizationsDelegates: IslandLocalizations.delegates,
   theme: IslandTheme.create(brightness: brightness),
   builder: (context, child) => MediaQuery(
     data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
