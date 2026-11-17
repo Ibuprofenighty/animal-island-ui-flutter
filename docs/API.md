@@ -8,24 +8,24 @@ The registry in `example/lib/pages/stories/registry.dart` owns executable page p
 - Title: layer/ribbon/tab silhouettes and reference palettes; inherited nowrap defaults and a horizontally intrinsic surface that may overflow the host layout slot.
 - Icon: 163 pinned Naive Icons names; currentColor strokes inherit IconTheme unless color is explicit; internal multicolor paint remains asset-owned.
 - Tag: four variants, palette, sizes, closable/clickable states; close does not activate the wrapper.
-- Divider: reference line variants or repeated icon slot.
+- Divider: reference line variants (including the animated `oceanWave`) or repeated icon slot.
 - Input / Switch / Checkbox / Radio: editing and controlled selection; stable option values.
-- Select: typed options, controlled value, search/filter/clear; yellow side panel, keyboard and outside dismissal.
+- Select: typed options, controlled value, search/filter/clear; yellow panel opening below the trigger by default (`variant: normal`) or beside it (`game`), keyboard and outside dismissal.
 - TimePicker: controlled nullable value or explicit uncontrolled constructor; pending preview, confirmation, step values, controlled open state.
 - Rate: controlled/uncontrolled value, preview, keyboard, clear/read-only.
 - Modal: reference game/normal surfaces and route-based dismissal.
 - Skeleton: paragraph rows share one full-block sweep. A short rowWidths list repeats its last fraction; an empty list uses full width. Loading=false preserves the caller child; absent child retains the placeholder.
 - Typewriter / CodeBlock: placeholders and reduced motion; grapheme-safe explicit rich text; syntax display and clipboard lifecycle.
-- Time / Countdown: instance-owned timers, injectable clock, deadline-based remaining time, one completion per deadline.
+- Time / Countdown: instance-owned timers, injectable clock, deadline-based remaining time, one completion per deadline. Time has a clock-card and a game HUD variant with token-formatted weekday/date; Countdown has optional colour reminders and a final-seconds shake.
 - Background: 19 reference wallpapers; only paints behind content. Scene assets shared with Progress.
 - Footer: current or supplied year and copyright content.
-- Progress: clamped percent, three sizes, optional scene, custom visual/semantic values; parent owns business progress.
+- Progress: clamped percent, three sizes, optional scene or solid `color`, optional ocean `wave`, custom visual/semantic values; parent owns business progress.
 - Avatar / AvatarGroup: explicit image/icon/content slots, load failure policy, inherited group defaults and opaque child overlap layout.
 - Badge: mutually exclusive numeric/text/custom indicator slots, overflow/zero/dot states and optional wrapped child.
 
 - Collapse: controlled/uncontrolled disclosure, opaque persistent slots, hidden focus exclusion and header focus restoration.
 - Card: normal/dashed surface, 13 colorways and optional matching dot patterns; hover is independent of activation.
-- Loading: full viewport snow, delay, decorative exit/reentry and local ticker; host owns business activity.
+- Loading: full viewport snow or circle reveal (`type`), delay, decorative exit/reentry and local ticker; host owns business activity.
 - Tabs: stable value-keyed items and focus, controlled/uncontrolled selection, active-panel lifecycle and keyboard traversal. The draft labels/index API is removed; the reference leafAnimation no-op is not reintroduced.
 - BackTop: borrowed explicit/primary scroll controller, strict visibility threshold, keyboard return and independent viewport semantics.
 
@@ -37,7 +37,7 @@ A controlled callback proposes state; it does not commit it. Use stable value id
 
 Title owns the intrinsic horizontal size of its painted surface and supplies non-wrapping, visible-overflow text defaults for every variant. The host retains control of placement and occupied layout constraints; the surface can extend beyond that slot. Supply a finite width inside a constraint-dependent child when needed. Explicit child text/layout choices remain authoritative; Title never derives them by inspecting the child tree.
 
-IslandTimePicker uses IslandTimeValue(hour, minute, second), independent of date/timezone. Its normal constructor requires value and onChanged; null is a real controlled empty value. The uncontrolled constructor uses initialValue. open is independently controlled when non-null.
+IslandTimePicker uses IslandTimeValue(hour, minute, second), independent of date/timezone. Its normal constructor requires value and onChanged; null is a real controlled empty value. The uncontrolled constructor uses initialValue. open is independently controlled when non-null. `format` uses the same core tokens as `IslandTimeValue.format`; an unescaped `ss` shows the seconds column.
 
 IslandProgress uses percent in 0–100, not the superseded 0–1 draft API. IslandBadge uses count/text/indicator, not the former tone label. IslandAvatar uses child/icon/image and size/dimension, not initials. All local consumers are updated together.
 
@@ -76,10 +76,10 @@ Acceptance: controlled rejection, page-size clamping, total shrink, zero records
 ### Drawer and Cursor
 `IslandDrawerHost` explicitly owns a page background below the Navigator Overlay. Descendant controlled drawers register only their own open/depth state. Closing requests never commit open locally. Panel content remains mounted but hidden from pointers, focus and semantics when closed. Focus loops inside and returns after accepted close; the transparent Material viewport surface supports opaque native Flutter controls.
 
-`IslandCursor` observes mouse motion and delegates cursor selection to Flutter MouseTracker. The selected local session hides the native cursor and paints the reference shape. `forceAll` changes cursor priority only; an explicit nested scope takes precedence, and scoped mode retains child MouseCursor contracts. No child widget inspection or gesture interception. Native/Web performance and latency profiling remain pending; this is a software cursor implementation.
+`IslandCursor` observes mouse motion and delegates cursor selection to Flutter MouseTracker. The selected local session hides the native cursor and paints the reference shape (the arrow on a 32px canvas with hotspot (8,5)). The arrow scope also sets the subtree text-selection highlight; see [Reference 4.0.0 additions](#reference-400-additions). `forceAll` changes cursor priority only; an explicit nested scope takes precedence, and scoped mode retains child MouseCursor contracts. No child widget inspection or gesture interception. Native/Web performance and latency profiling remain pending; this is a software cursor implementation.
 
 ### DatePicker
-Use DateTime for single/month selection and DateTimeRange through explicit range constructors. All dates are local calendar dates; month values normalize to day 1. Preview stays local until confirmation; Escape/outside dismissal discards it. Controlled null is distinct from uncontrolled state. Disabled dates cannot be committed, including via Today. The trigger and panel anatomy are shared with TimePicker; AnchoredPanel owns placement and cancellable 200 ms presentation, while each picker owns its pending value and keyboard behavior.
+Use DateTime for single/month selection and DateTimeRange through explicit range constructors. `format` uses the core date tokens listed under [Reference 4.0.0 additions](#reference-400-additions). All dates are local calendar dates; month values normalize to day 1. Preview stays local until confirmation; Escape/outside dismissal discards it. Controlled null is distinct from uncontrolled state. Disabled dates cannot be committed, including via Today. The trigger and panel anatomy are shared with TimePicker; AnchoredPanel owns placement and cancellable 200 ms presentation, while each picker owns its pending value and keyboard behavior.
 
 ### Form
 IslandForm owns an internal controller or borrows an explicit controller whose creator supplies initial values and disposes it. IslandFormField<T> binds a stable name to an explicit builder; values must match T. IslandFormTextField owns its editor and synchronizes programmatic fill/reset without remounting it. Use widget keys when reordering field subtrees. Validators return FutureOr<String?>; async work is invalidated by edits, reset, removal or disposal. Submit emits only a current complete snapshot. Child size/enabled overrides remain explicit; defaults come from Form. Returned maps are read-only; application values should be immutable. No child-type guessing, reflective prop injection or global form store.
@@ -87,7 +87,7 @@ IslandForm owns an internal controller or borrows an explicit controller whose c
 Form labels activate only an explicit onLabelPressed callback. The text adapter connects it to its own FocusNode or a borrowed caller node; disabled fields do not activate labels. Borrowed nodes survive replacement and unmount.
 
 ### Upload
-IslandUpload requires explicit file-selection and request callbacks. The controlled host owns immutable file snapshots and stable IDs; rejected insertion never starts a transfer. Serialized progress commits wait for parent acknowledgement so concurrent files do not overwrite each other. Accepted deletion and disposal cancel only this owner's requests. Preflight hooks are serialized and invalidated by disable/disposal. Late selection/preflight errors follow the same generation check. Pending removal results and errors also require the same current file source; clearing/replacing that file invalidates both. Current errors still report once. Disabling does not cancel an already accepted transport.
+IslandUpload requires explicit file-selection and request callbacks. The controlled host owns immutable file snapshots and stable IDs; rejected insertion never starts a transfer. Serialized progress commits wait for parent acknowledgement so concurrent files do not overwrite each other. Accepted deletion and disposal cancel only this owner's requests. Preflight hooks are serialized and invalidated by disable/disposal. Late selection/preflight errors follow the same generation check. Pending removal results and errors also require the same current file source; clearing/replacing that file invalidates both. Current errors still report once. Disabling does not cancel an already accepted transport. Optional `progress` (`IslandUploadProgress`) replaces the uploading spinner with a bar or a background fill; see [Reference 4.0.0 additions](#reference-400-additions).
 
 预检按顺序执行，禁用或卸载会使其操作世代失效，迟到的选择／预检错误不会再通知当前宿主。待决删除的结果与错误还必须匹配当前文件来源；清空或替换该文件会使两者失效。当前有效错误仍只报告一次；仅禁用控件不会取消已接受的传输。 The visual child slot is noninteractive content; the Upload surface owns activation.
 
@@ -97,7 +97,7 @@ The separate animal_island_upload_platform.dart entry provides Windows/Web file 
 Table row hover switches immediately as in the reference; focus outlines do not change row geometry or cell identity. Notification closeIcon is a visual slot centered at intrinsic width within a 22px action area. Its explicit child styles remain authoritative; use onDismiss for dismissal side effects rather than nesting a close action.
 
 ### Button state ownership
-Button owns each variant color, border, depth and 250ms cubic transition. ActionSurface supplies activation, focus states and the shared per-state null-fallback rule; component recipes still own appearance. Busy owns a disposable 2.5s counterclockwise 28px donut ticker and honors reduced motion; the host still owns the asynchronous operation. ButtonStyle instance values override the scoped theme, and explicit slot styles remain authoritative. Dashed borders reserve the same geometry as solid borders.
+Button owns each variant color, border, depth and 250ms cubic transition. ActionSurface supplies activation, focus states and the shared per-state null-fallback rule; component recipes still own appearance. Busy owns a disposable 2.5s clockwise 28px donut ticker, drawn in the glyph's own ink rather than the button foreground, and honors reduced motion; the host still owns the asynchronous operation. ButtonStyle instance values override the scoped theme, and explicit slot styles remain authoritative. Dashed borders reserve the same geometry as solid borders.
 
 Card.onTap, Tag.onPressed and Table.onRowPressed may change between null and a callback without remounting opaque children. Child actions remain independent. Composite parents borrow the surrounding focus context for child traversal; disabling/removing a parent action does not revoke a child control focus. Passive parents add no keyboard target.
 
@@ -109,7 +109,7 @@ Collapse owns inherited question/answer styles through ContentScope; opaque slot
 
 ### Modal / Typewriter explicit composition
 
-IslandModal owns surface, title/body style defaults, scrolling and action placement. onClose is an Escape intent; there is no synthesized close icon. An empty actions list omits the footer. showIslandModal owns a root-Navigator route: default cancel/confirm close that route, custom actions retain host policy, barrier dismissal and Escape are independent, focus loops and returns to the trigger. Entry is300ms ease(.92→1), barrier250ms; exit immediate.
+IslandModal owns surface, title/body style defaults, scrolling and action placement; the title and action row are excluded from text selection. onClose is an Escape intent; there is no synthesized close icon. An empty actions list omits the footer. showIslandModal owns a root-Navigator route: default cancel/confirm close that route, custom actions retain host policy, barrier dismissal and Escape are independent, focus loops and returns to the trigger. Entry is300ms ease(.92→1), barrier250ms; exit immediate.
 
 IslandTypewriter.builder(text, builder:) supplies the visible grapheme prefix to a caller-owned layout. It shares the plain/rich constructors' timer, replay, reduced-motion, semantics and disposal behavior. It never walks the Widget tree. An explicitly owned Gallery leaf renderer can use its shared storyTextStrut factory to derive forced strut metrics from inherited defaults; this does not change Modal tokens or explicit span styles, and does not establish identical engine glyph advances.
 
@@ -120,7 +120,7 @@ Modal semanticLabel explicitly names an opaque title slot without inspecting its
 Cursor composition around modal surfaces and barriers must preserve the route barrier hit target. Never put an opaque full-page cursor wrapper above that barrier. / 弹窗表面与路由遮罩分别组合 Cursor，不能让整页不透明命中区域遮住路由的点击目标。
 
 
-Select now shows its readable panel immediately and retains immediate exit; the reference opacity-only entry is superseded by the approved readable-motion rule. AnchoredPanel remains the shared overlay lifetime/placement owner; component motion parameters do not leak into Gallery. Clearing emits a null proposal and onClear once, preserves an open panel, and leaves commit authority with the host.
+Select shows its readable panel immediately in both `variant` placements and retains immediate exit; the reference opacity-only entry is superseded by the approved readable-motion rule. AnchoredPanel remains the shared overlay lifetime/placement owner; component motion parameters do not leak into Gallery. Clearing emits a null proposal and onClear once, preserves an open panel, and leaves commit authority with the host.
 
 Select keyboard handling runs only for the trigger/search focus owner; clear owns its Enter/Space activation. Editing after a committed label starts a logical suffix query. During IME composition the native buffer and its original UTF-16 range stay intact; the field may temporarily retain the label prefix, and only commit/end normalizes it. onSearch receives the suffix once per changed logical query; normalization alone emits no duplicate. Active candidate keys belong to the text editor. Parent value changes keep the editing prefix bound to its original session, and focus-ending normalization cannot steal clear focus. Escape first clears a nonempty query, then closes. Trigger value/expanded/controlsNodes, list and clear have separate semantic owners. The non-search trigger also publishes focusability, primary focus and a focus action on its existing node; clear focus is independent and search uses its TextField. Disabled triggers omit the focus action. Flutter 3.47.3 exposes comboBox in the enum but rejects it in debug validation and leaves it unimplemented in Web; the current button/text-field fallback does not satisfy combobox AT acceptance.
 
@@ -379,3 +379,26 @@ Each contour starts a full dash at distance zero, independently of previous cont
 公共根入口导出 [`IslandDashedBorderPainter`](../lib/src/foundation/dashed_border.dart)，作为给定 `OutlinedBorder` 形状及描边配方的共享 `CustomPainter`；构造签名与默认值以声明为准。它在尺寸内按描边半宽内缩后取得形状外路径，只绘制该轮廓，不增加布局、裁切、填充、输入、语义或子内容生命周期。形状、颜色、宽度、dash/gap 和状态仍由消费者配方负责，组件变体及 Gallery 示例框不再各自维护切段循环。
 
 每个轮廓独立从距离零开始完整 dash，末尾裁至轮廓长度；空轮廓不绘制，不强制闭合开放轮廓。宽度零沿用 Canvas hairline。dash 须为有限正数，gap 与宽度须为有限非负数，这些调用前置条件由 const 构造断言。输入和形状应不可变，以供 CustomPainter 判断重绘；任一绘制输入变化均在同一内容子树重绘，不检查不透明插槽，也不自动认证自定义配方对比度。
+
+<a id="reference-400-additions"></a>
+## Reference 4.0.0 additions / 4.0.0 新增参数
+
+Signatures and defaults are in the exported declarations (`lib/animal_island_ui.dart`); this section records the ownership and behavior that the declarations do not state. Reference colours that fail the contrast budgets are listed, undecided, in [DESIGN](DESIGN.md#pending-owner-decisions-400). Nothing here is acceptance.
+
+- **Select `variant`:** `IslandSelectVariant.normal` (default) opens the panel centred 6px below the trigger, 6px above when below is short and above is larger, and aligned to the trigger edge on a side where the centred panel would cross the viewport. `game` is the former side popover. Both share the one AnchoredPanel owner, panel styling, width, focus and selection; only the placement differs. Passing `game` preserves the pre-4.0.0 behavior.
+- **Format tokens:** `IslandDatePicker.format`, `IslandTimePicker.format`, `IslandTimeValue.format` and `IslandTime.weekdayFormat`/`dateFormat` share one formatter with the reference core tokens `YYYY YY M MM MMM MMMM D DD d dd ddd dddd H HH h hh a A m mm s ss SSS Z ZZ`; `[text]` renders literally and plugin tokens (`Q`, `Do`, `L`) are not expanded. `IslandTimeLocale` (`en`, `zhCn`) chooses month, weekday and meridiem names where `IslandTime` is given a `locale`; the pickers and `IslandTimeValue.format` use English. `IslandTimeValue` carries no date, so date tokens render the anchor 2000-01-01. Any unescaped token letter in a pattern is a token: write literal words as `[word]`.
+- **Ocean wave:** `IslandDivider(variant: oceanWave, animated:)`, `IslandProgress(wave:, animated:)` and `IslandUploadProgress(wave:, animated:)` share one decorative, semantics-free wave painter. It drifts only while visible (also inside ancestor scroll viewports), unmuted and with motion enabled; otherwise it keeps a static wave, and reduced motion settles phase zero. Progress also keeps it still at 0% and 100%.
+- **Progress `color`:** a solid fill under the reference sheen, the same at 100%; `scene` takes precedence. The registered 2px same-hue edge belongs to the default gradient and scenes and is not drawn for a caller colour. Contrast of a caller colour against the track is the caller's responsibility.
+- **Upload `progress`:** only uploading files show it; the percentage always comes from the file (NaN reads 0%). `bar` composes a named `IslandProgress` (below the name in a row, under the percentage in a picture card). `background` fills the item backing from the left behind its content as its own named semantics node, so preview and delete stay separately reachable; a picture card swaps its dark overlay for a pale mask. Finished and failed files keep their status icons. Rows are ordered name, size, status.
+- **Time:** `variant` selects the clock card or the game HUD (clock, rule, month-day beside a weekday capsule, no card surface). The clock ink is the reference `#8b7355` in both. Semantics keep one complete reading. There is no custom-style API.
+- **Countdown:** `reminders` recolours digits, separators and bordered plate edges once the displayed (rounded-up) remaining time is at or below a threshold; the smallest matching threshold wins, empty is the default, `IslandCountdownReminder.defaults` is the reference 60s/10s pair. `shake` (`IslandCountdownShake`) runs a ticker owned by the Countdown only while active and moves only the digit group; null disables it and reduced motion removes it.
+- **Loading `type`:** `snow` is the default. `circle` paints the night mask with an optional sailboat (`showBoat`); closing grows a transparent circle over `fadeDuration` that reveals the content, with no entry fade. The centred tip is removed first, and background input stays blocked until the surface is removed.
+- **Cursor selection:** inside an arrow cursor the default text-selection highlight is `#e9c46a`; a raindrop cursor restores the highlight in effect outside the outermost cursor, so the innermost cursor decides. Flutter keeps each text's own colour over the highlight.
+
+- **Select `variant`：**`IslandSelectVariant.normal`（默认）在触发器正下方居中 6px 展开；下方不足且上方更大时翻到上方；居中会越过视口一侧时改为与触发器该侧边缘对齐。`game` 为原侧边弹层。两者共用同一 AnchoredPanel 所有者、样式、宽度、焦点与选择行为，仅位置不同；传入 `game` 即保持 4.0.0 之前的行为。
+- **格式令牌：**DatePicker/TimePicker 的 `format`、`IslandTimeValue.format`、Time 的 `weekdayFormat`/`dateFormat` 共用一个格式化器，支持参考核心令牌；`[文字]` 原样输出，插件令牌不展开。月份、星期、上下午名称由 `IslandTimeLocale`（`en`、`zhCn`）决定，仅 `IslandTime` 可传 `locale`。未转义的令牌字母一律按令牌处理，字面单词请写成 `[word]`。
+- **海浪：**Divider `oceanWave`、Progress `wave` 与 Upload 进度 `wave` 共用同一装饰性、无语义的海浪绘制，仅在可见、未静音且允许动画时漂移，否则保持静态；减少动态时停在相位零；Progress 在 0% 与 100% 也静止。
+- **Progress `color`：**纯色填充叠加参考光泽，100% 时不变；`scene` 优先。登记的 2px 同色相边只用于默认渐变和场景，调用方颜色不绘制；调用方颜色与轨道的对比度由调用方负责。
+- **Upload `progress`：**仅上传中的文件显示，百分比始终来自文件（NaN 读作 0%）。`bar` 为带名称的独立 Progress；`background` 从左填充条目底板，拥有独立语义节点，预览与删除仍可单独到达；图片卡片以浅色遮罩取代深色遮罩。完成与失败文件保留状态图标；行内顺序为名称、大小、状态。
+- **Time / Countdown / Loading：**Time 提供时钟卡片与游戏 HUD 两种布局，时钟色为参考 `#8b7355`，无自定义样式 API；Countdown 的 `reminders` 按向上取整后的剩余时间改色，`shake` 仅晃动数字组，空值关闭、减少动态移除；Loading `circle` 以夜色遮罩加帆船呈现，关闭时透明圆扩张揭示内容，居中提示先于圆消失，揭示期间仍拦截背景输入。
+- **Cursor 选区色：**箭头光标内默认文本选区为 `#e9c46a`；雨滴光标恢复最外层光标之外的选区色，最内层光标决定结果；Flutter 保留各文本自身颜色。

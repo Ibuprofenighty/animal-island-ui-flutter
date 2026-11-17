@@ -96,9 +96,9 @@
     },
     {
       "id": "select.variant-placement",
-      "given": "A fitting Select in each variant, and a dropdown near the viewport bottom or left/right edge",
+      "given": "A fitting Select in each variant, and a normal-variant panel near the viewport bottom or left/right edge",
       "when": "Open the panel",
-      "then": "dropdown: centred 6px below, or 6px above when below is short and above is larger, or aligned to the trigger edge on an overflowing side; game: 6px beside the trigger and vertically centred. Panel styling, width, focus and selection behavior are identical across variants."
+      "then": "normal: centred 6px below, or 6px above when below is short and above is larger, or aligned to the trigger edge on an overflowing side; game: 6px beside the trigger and vertically centred. Panel styling, width, focus and selection behavior are identical across variants."
     }
   ]
 }

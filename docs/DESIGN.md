@@ -146,6 +146,26 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Modal and Image preview entrance / 弹层入场 | One shared dialog route and entrance; differs slightly from the two reference entrances | One mechanism, no per-consumer parameter |
 | Tabs active dot / Tabs 选中圆点 | Follows the pinned 2.2.1 source: the dot inherits the active label colour | The live site (3.0.4) is outside this round's scope |
 
+<a id="pending-owner-decisions-400"></a>
+## Pending owner decisions (4.0.0) / 待所有者裁决（4.0.0）
+
+The existing-component ports to reference 4.0.0 keep the reference values below, or the stated current behavior, until the owner decides. Contrast figures are measured on the composited surfaces named; none is a pass/fail ruling and none is acceptance evidence. 4.0.0 版本既有组件移植暂保留下列参考值或所述现状，待所有者裁决；对比度为在所列合成表面上的实测值，不是通过/失败裁定，也不构成验收证据。
+
+| Item | Measured facts | Current state |
+|---|---|---|
+| Time clock ink `#8b7355` / Time 时钟墨色 | 4.20:1 on the `#f8f8f0` card; game clock and month-day 4.49:1 on a white panel; game weekday 4.32:1 on the `#fffbe7` capsule | Reference value kept, undecided / 保留参考值，待裁决 |
+| Time custom-style demo / Time 自定义样式示例 | The reference demo customises the clock through its class name; `IslandTime` has no style API | Not reproduced, undecided |
+| Countdown reminder colours / Countdown 提醒色 | `#c77c34` is 2.96–3.30:1 and `#e05a5a` is 3.26–3.63:1 on the number surfaces | Reference values kept (the `IslandCountdownReminder.defaults` pair), undecided |
+| Loading circle reveal and tip / Loading 圆形揭示与提示 | The reveal removes the centred tip first, as the reference does | Reference behavior kept, undecided |
+| Loading input during the reveal / Loading 揭示期间输入 | The reference lets pointer events through while the circle opens | Deliberate difference: input stays blocked until the surface is removed |
+| Loading first paint / Loading 首次绘制 | The mask first paints on the second frame, because the shared `ViewportOverlay` inserts post-frame | Current behavior kept, undecided |
+| Loading sailboat artwork / Loading 帆船图形 | The sailboat uses the existing naive-icons 1.6.0 glyph, not the 1.14.0 artwork | Existing glyph used; to be re-pinned with the icon import |
+| Upload card bar-mode percentage / Upload 卡片条形进度百分比 | Reference white on the dark overlay is 4.32:1 over a white thumbnail | Shown in the existing pale pill with link ink `#006b62` (6.3:1); differs from the reference |
+| Upload background-mode text and cue / Upload 背景进度文字与提示 | Size text is 4.31:1 (4.11:1 hovered); the background fill as the only progress cue is 1.24:1 when `showInfo` is false | Reference values kept, undecided |
+| Progress caller colour / Progress 调用方颜色 | The reference demo colours are 1.61–2.74:1 against the track; the registered 2px fill edge is not drawn for a caller `color` | Reference behavior kept, undecided |
+| Cursor selection highlight `#e9c46a` / Cursor 选区高亮 | Flutter keeps each text's own colour over the highlight: body text `#736857` is 3.27:1, dark-theme inks are 1.07–1.47:1 | Reference value kept, undecided |
+| Modal opened inside an open Drawer / 抽屉内打开的 Modal | The Modal is drawn under the drawer | Pre-existing layering, unchanged by this round, undecided |
+
 <a id="notification-type"></a>
 ## Notification type / 通知类型
 

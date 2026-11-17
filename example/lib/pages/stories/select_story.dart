@@ -50,7 +50,7 @@ class _SelectStoryState extends State<SelectStory> {
     bool clear = false,
     bool search = false,
     String clearLabel = '清除',
-    IslandSelectVariant variant = IslandSelectVariant.dropdown,
+    IslandSelectVariant variant = IslandSelectVariant.normal,
   }) => IslandSelect<String>(
     label: placeholder,
     options: options,
@@ -199,9 +199,9 @@ class _SelectStoryState extends State<SelectStory> {
           ('disabled', '禁用', 'bool', 'false'),
           (
             'variant',
-            '下拉弹出方式：dropdown 常规正下方（空间不足翻到正上方）、game 贴触发区侧边',
+            '下拉弹出方式：normal 常规正下方（空间不足翻到正上方）、game 贴触发区侧边',
             'IslandSelectVariant',
-            'dropdown',
+            'normal',
           ),
           ('allowClear', '一键清空', 'bool', 'false'),
           ('showSearch', '输入过滤', 'bool', 'false'),

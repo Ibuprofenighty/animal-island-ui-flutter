@@ -1,5 +1,6 @@
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+
+import 'viewport_presence.dart';
 
 /// Decorative double-layer ocean wave shared by Divider, Progress and Upload.
 ///
@@ -26,33 +27,14 @@ const _cycle = Duration(seconds: 18);
 const _period = 128.0;
 
 class _OceanWaveState extends State<OceanWave>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, ViewportPresence {
   late final controller = AnimationController(vsync: this, duration: _cycle);
-  final positions = <ScrollPosition>[];
-  bool visible = false, reduced = false, checkScheduled = false;
+  bool reduced = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     reduced = MediaQuery.disableAnimationsOf(context);
-    MediaQuery.sizeOf(context);
-    final next = <ScrollPosition>[];
-    for (
-      var scrollable = Scrollable.maybeOf(context);
-      scrollable != null;
-      scrollable = Scrollable.maybeOf(scrollable.context)
-    ) {
-      next.add(scrollable.position);
-    }
-    for (final position in positions) {
-      position.removeListener(scheduleCheck);
-    }
-    positions
-      ..clear()
-      ..addAll(next);
-    for (final position in positions) {
-      position.addListener(scheduleCheck);
-    }
     sync();
   }
 
@@ -62,43 +44,14 @@ class _OceanWaveState extends State<OceanWave>
     sync();
   }
 
-  void scheduleCheck() {
-    if (checkScheduled) return;
-    checkScheduled = true;
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      checkScheduled = false;
-      if (!mounted) return;
-      final next = inViewport();
-      if (next == visible) return;
-      visible = next;
-      sync();
-    });
-  }
-
-  bool inViewport() {
-    final box = context.findRenderObject() as RenderBox?;
-    if (box == null || !box.attached || !box.hasSize) return false;
-    var rect = (box.localToGlobal(Offset.zero) & box.size).intersect(
-      Offset.zero & MediaQuery.sizeOf(context),
-    );
-    for (
-      var scrollable = Scrollable.maybeOf(context);
-      scrollable != null;
-      scrollable = Scrollable.maybeOf(scrollable.context)
-    ) {
-      final viewport = scrollable.context.findRenderObject() as RenderBox?;
-      if (viewport == null || !viewport.hasSize) continue;
-      rect = rect.intersect(
-        viewport.localToGlobal(Offset.zero) & viewport.size,
-      );
-    }
-    return rect.width > 0 && rect.height > 0;
-  }
+  @override
+  void viewportPresenceChanged() => sync();
 
   void sync() {
+    watchViewport(widget.animated && !reduced);
     if (reduced) {
       controller.value = 0;
-    } else if (widget.animated && visible) {
+    } else if (widget.animated && inViewport) {
       if (!controller.isAnimating) controller.repeat();
     } else {
       controller.stop();
@@ -107,16 +60,12 @@ class _OceanWaveState extends State<OceanWave>
 
   @override
   void dispose() {
-    for (final position in positions) {
-      position.removeListener(scheduleCheck);
-    }
     controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    scheduleCheck();
     return ExcludeSemantics(
       child: IgnorePointer(
         child: CustomPaint(

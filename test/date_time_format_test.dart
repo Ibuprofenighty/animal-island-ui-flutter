@@ -41,7 +41,7 @@ void main() {
     await t.pumpWidget(
       host(
         IslandDatePicker(
-          value: DateTime(2026, 8, 10),
+          value: DateTime(2026, 8, 10, 15, 30),
           onChanged: null,
           format: 'ddd, YYYY/MM/DD HH:mm',
         ),

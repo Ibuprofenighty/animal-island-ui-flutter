@@ -30,7 +30,7 @@ enum IslandSelectVariant {
   /// flipping directly above when the space below is too short and the space
   /// above is larger. A centred panel that would cross a viewport edge aligns
   /// with the trigger's edge on that side.
-  dropdown,
+  normal,
 
   /// Playful side popover: beside the trigger (right, or left when the right
   /// has no room) and vertically centred, falling back to below or above the
@@ -47,7 +47,7 @@ class IslandSelect<T> extends StatefulWidget {
     required this.onChanged,
     this.placeholder = '请选择',
     this.disabled = false,
-    this.variant = IslandSelectVariant.dropdown,
+    this.variant = IslandSelectVariant.normal,
     this.allowClear = false,
     this.showSearch = false,
     this.onClear,
@@ -658,7 +658,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
         transitionOffset: Offset.zero,
         onDismiss: close,
         placement: switch (widget.variant) {
-          IslandSelectVariant.dropdown => PanelPlacement.belowCentered,
+          IslandSelectVariant.normal => PanelPlacement.belowCentered,
           IslandSelectVariant.game => PanelPlacement.beside,
         },
         width: panelWidth,

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import '../foundation/recipes/number.dart';
 import '../foundation/size.dart';
 import '../internal/number_surface.dart';
+import '../internal/viewport_presence.dart';
 import '../internal/rolling_digit.dart';
 
 enum IslandCountdownVariant { normal, island }
@@ -125,7 +126,7 @@ class IslandCountdown extends StatefulWidget {
 }
 
 class _IslandCountdownState extends State<IslandCountdown>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, ViewportPresence {
   final shakeClock = _ShakeClock();
   late final shakeTicker = createTicker(shakeClock.tick);
   Timer? timer;
@@ -190,8 +191,14 @@ class _IslandCountdownState extends State<IslandCountdown>
     super.dispose();
   }
 
-  /// Runs the shake ticker exactly while [active]; a new run starts at rest.
-  void driveShake(bool active) {
+  @override
+  void viewportPresenceChanged() => setState(() {});
+
+  /// Runs the shake ticker exactly while [due] and shown; a new run starts at
+  /// rest.
+  void driveShake(bool due) {
+    watchViewport(due);
+    final active = due && inViewport;
     if (active == shakeTicker.isActive) return;
     shakeClock.elapsed = Duration.zero;
     if (active) {

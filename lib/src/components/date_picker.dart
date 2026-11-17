@@ -167,7 +167,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
             widget.format == 'YYYY-MM-DD'
         ? 'YYYY-MM'
         : widget.format;
-    return formatDateTokens(d, template);
+    return formatDateTokens(day(d), template);
   }
 
   @override
