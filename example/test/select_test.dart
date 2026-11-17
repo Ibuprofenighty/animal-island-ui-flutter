@@ -158,48 +158,33 @@ void main() {
     );
     await t.pumpAndSettle();
     final fields = find.byType(IslandSelect<String>);
+    // Measured on the live reference 4.0.0 page at 1440x1000.
     const expected = [
-      Rect.fromLTWH(313, 332, 140, 41),
-      Rect.fromLTWH(314, 467, 140, 41),
-      Rect.fromLTWH(1218, 467, 140, 41),
-      Rect.fromLTWH(313, 602, 140, 41),
-      Rect.fromLTWH(313, 736, 140, 41),
-      Rect.fromLTWH(469, 736, 140, 41),
-      Rect.fromLTWH(313, 870, 213, 39),
-      Rect.fromLTWH(542, 870, 213, 39),
+      Rect.fromLTWH(313, 338, 140, 41),
+      Rect.fromLTWH(501, 338, 140, 41),
+      Rect.fromLTWH(313, 500, 140, 41),
+      Rect.fromLTWH(314, 635, 140, 41),
+      Rect.fromLTWH(1218, 635, 140, 41),
+      Rect.fromLTWH(313, 770, 140, 41),
+      Rect.fromLTWH(313, 904, 140, 41),
+      Rect.fromLTWH(469, 904, 140, 41),
+      Rect.fromLTWH(313, 1038, 213, 39),
+      Rect.fromLTWH(542, 1038, 213, 39),
     ];
-    // The 4.0.0 variant section precedes these sections and its two
-    // triggers; its own height is not reference-measured.
-    final shift = Offset(0, t.getRect(fields.at(2)).top - expected[0].top);
-    expect(t.getRect(fields.at(0)).topLeft, const Offset(313, 338));
-    expect(t.getRect(fields.at(1)).top, t.getRect(fields.at(0)).top);
     for (var i = 0; i < expected.length; i++) {
-      expect(
-        t.getRect(fields.at(i + 2)),
-        expected[i].shift(shift),
-        reason: 'trigger $i',
-      );
+      expect(t.getRect(fields.at(i)), expected[i], reason: 'trigger $i');
     }
     final codeLabel = find
         .ancestor(of: find.text('使用示例'), matching: find.byType(Container))
         .first;
     expect(t.getTopLeft(codeLabel).dy - t.getBottomLeft(fields.at(8)).dy, 52);
-    await t.tap(find.text('鲈鱼').at(1));
+    await t.tap(find.text('鲈鱼').first);
     await t.pumpAndSettle();
     final option = find
         .ancestor(of: find.text('鲷鱼'), matching: find.byType(MouseRegion))
         .first;
-    // Default dropdown: centred under the trigger, 6px gap, 12px padding,
-    // second 41px row.
-    final trigger = t.getRect(fields.at(2));
-    expect(
-      t.getRect(option),
-      Rect.fromLTWH(
-        trigger.center.dx - 51,
-        trigger.bottom + 6 + 12 + 41,
-        102,
-        41,
-      ),
-    );
+    // Measured on the reference: the normal panel is centred under the
+    // trigger with a 6px gap and 12px padding; this is its second 41px row.
+    expect(t.getRect(option), const Rect.fromLTWH(332, 438, 102, 41));
   });
 }

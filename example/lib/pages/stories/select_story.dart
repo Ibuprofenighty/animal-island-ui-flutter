@@ -115,6 +115,7 @@ class _SelectStoryState extends State<SelectStory> {
             ),
           ],
           spacing: 48,
+          runSpacing: 48,
           align: WrapCrossAlignment.center,
         ),
       ),

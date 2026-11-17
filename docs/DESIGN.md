@@ -192,6 +192,7 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Calendar header on narrow widths / Calendar 窄屏头部 | The header is a space-between row of three groups with no wrapping | The groups wrap only when they cannot fit, a narrow-layout usability difference under [Gallery parent layout](#gallery-parent-layout) / 放不下时才换行 |
 | Chart time x outside the Date range / Chart 时间轴越界值 | A time x beyond ±8.64e15 ms yields a label "Invalid Date" | Such a value is invalid data: not drawn, not counted, keeps its index; an axis tick outside the range still reads "Invalid Date" / 视为无效数据，不绘制 |
 | Chart dark theme / Chart 深色主题 | None: the reference has no dark theme | `ChartColors.dark` maps the reference variables onto the dark product roles; it is this library's own design, not a reference value / 本库自有映射，非参考值 |
+| Gallery page loading mask / Gallery 页面加载遮罩 | The demo shell shows a circle Loading as the `Suspense` fallback while a lazily loaded page chunk downloads (`demo/App.tsx`) | Pages are compiled into the app and there is no chunk to wait for, so no mask is shown on navigation; the Skill page keeps its own 2s circle Loading / 页面已编译进应用，无分块加载，导航时不显示遮罩 |
 | Chart and Calendar chrome language / 界面文案语言 | Fixed Chinese | `IslandLocalizations`: Chinese equal to the reference under a `zh` locale, English otherwise / 随 `IslandLocalizations` |
 
 <a id="pending-owner-decisions-400"></a>
