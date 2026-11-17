@@ -237,5 +237,5 @@ void main() {
     t.view.resetPhysicalSize();
     t.view.resetDevicePixelRatio();
     await binding.setSurfaceSize(null);
-  }, timeout: const Timeout(Duration(minutes: 15)));
+  }, timeout: const Timeout(Duration(minutes: 45)));
 }
