@@ -71,6 +71,7 @@ export 'src/foundation/background_type.dart' show IslandBackgroundType;
 export 'src/components/avatar.dart'
     show IslandAvatar, IslandAvatarGroup, IslandAvatarShape;
 export 'src/components/badge.dart' show IslandBadge, IslandBadgeSize;
+export 'src/components/no_data.dart' show IslandNoData, IslandNoDataVariant;
 
 export 'src/components/collapse.dart' show IslandCollapse;
 

@@ -38,6 +38,7 @@ class IslandLocalizations {
   String get imagePreview => _zh ? '图片预览' : 'Image preview';
   String get closePreview => _zh ? '关闭预览' : 'Close preview';
   String viewImage(String alt) => _zh ? '查看图片：$alt' : 'View image: $alt';
+  String get noResults => _zh ? '没有找到相关结果' : 'No matching results';
   static IslandLocalizations of(BuildContext context) =>
       Localizations.of<IslandLocalizations>(context, IslandLocalizations) ??
       const IslandLocalizations(Locale('en'));

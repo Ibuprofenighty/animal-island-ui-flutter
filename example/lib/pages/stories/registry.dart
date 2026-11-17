@@ -33,6 +33,7 @@ import 'tag_story.dart';
 import 'divider_story.dart';
 import 'rate_story.dart';
 import 'skeleton_story.dart';
+import 'no_data_story.dart';
 
 import 'package:flutter/material.dart';
 
@@ -79,6 +80,7 @@ final storyBuilders = <String, WidgetBuilder>{
   'divider-comp': (_) => const DividerStory(),
   'rate': (_) => const RateStory(),
   'skeleton': (_) => const SkeletonStory(),
+  'no-data': (_) => const NoDataStory(),
   'input': (_) => const InputStory(),
   'switch': (_) => const SwitchStory(),
   'checkbox': (_) => const SelectionStory(radio: false),
