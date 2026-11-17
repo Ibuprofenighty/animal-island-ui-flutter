@@ -357,14 +357,14 @@ void main() {
       for (final width in [1440.0, 375.0]) {
         await page(t, 'home', width);
         final cards = find.byType(IslandCard);
-        expect(cards, findsNWidgets(24));
+        expect(cards, findsNWidgets(27));
         expect(t.getSize(find.text('特性')).height, 33);
         expect(t.getSize(find.text('为什么选择 animal-island-ui')).height, 20);
         expect(t.getSize(find.text('治愈系风格')).height, 22);
         expect(t.getSize(find.text('Input')).height, 20);
         if (width == 1440) {
-          for (final first in [0, 4, 8, 12, 16, 20]) {
-            for (var i = first + 1; i < first + 4; i++) {
+          for (final first in [0, 4, 8, 12, 16, 20, 24]) {
+            for (var i = first + 1; i < first + 4 && i < 27; i++) {
               expect(
                 t.getSize(cards.at(i)).height,
                 t.getSize(cards.at(first)).height,

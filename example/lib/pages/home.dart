@@ -167,6 +167,7 @@ class _GalleryHomeState extends State<GalleryHome>
   }
 
   static const overviewSummaries = <String, String>{
+    "charts": "19 种海岛统计图，趋势、占比、分布、仪表盘与地图",
     "input": "前后缀、一键清空、校验状态",
     "form": "校验规则 / 命令式控制器 / 三种布局",
     "switch": "受控/非受控、自定义文案、加载状态",
@@ -174,12 +175,14 @@ class _GalleryHomeState extends State<GalleryHome>
     "rate": "评分组件，支持悬停预览与只读展示",
     "date-picker": "日期选择与范围选择，年/月/日面板、禁用日期、键盘导航",
     "time-picker": "时间选择，时/分/秒滚选、此刻/确定、步进",
+    "calendar": "轻量月面板日历，事项通知与跨日期连续条",
     "time": "实时时钟卡片，星期 + 月日 + HH:MM 每秒刷新",
     "countup": "计分数字滚动，缓动可调，结束可庆祝动效",
     "pagination": "分页组件，每页条数切换、快速跳转",
     "drawer": "下沉景深抽屉，四方向 + 背景下沉",
     "notification": "命令式通知，4 种 type × 6 个 position",
     "loading": "全屏落雪，结束渐变消失",
+    "no-data": "海岛空态、搜索无结果、自定义文案与恢复操作",
     "card": "默认/标题两种卡片风格",
     "codeblock": "代码语法高亮组件",
     "background": "奶油/深绿波点 + 彩色针糖 + 12 色 Card pattern 底色壁纸",
@@ -273,28 +276,6 @@ class _GalleryHomeState extends State<GalleryHome>
       for (final group in galleryGroups.values)
         for (final item in group) item.id: item,
     };
-    const overview = [
-      'input',
-      'form',
-      'switch',
-      'checkbox',
-      'rate',
-      'date-picker',
-      'time-picker',
-      'time',
-      'countup',
-      'pagination',
-      'drawer',
-      'notification',
-      'loading',
-      'card',
-      'codeblock',
-      'background',
-      'image',
-      'avatar',
-      'badge',
-      'carousel',
-    ];
     return ColoredBox(
       color: IslandTokens.light.canvas,
       child: Stack(
@@ -436,6 +417,7 @@ class _GalleryHomeState extends State<GalleryHome>
                                       style: TextStyle(
                                         fontSize: mobile ? 14 : 17,
                                         height: 1.7,
+                                        fontWeight: FontWeight.w500,
                                         color: HomeWallpaperInk.body,
                                       ),
                                     ),
@@ -540,7 +522,7 @@ class _GalleryHomeState extends State<GalleryHome>
                     ),
                     const _Feature(
                       IslandGlyph.star,
-                      '40 个组件',
+                      '43 个组件',
                       'Button / Input / Switch / Modal / Form / Table / Title / Tooltip / Typewriter / Card / Collapse / Cursor / Divider / Footer / Icon / Checkbox / Select / DatePicker / TimePicker / Tabs / CodeBlock / Radio / Tag / Notification / Progress / CountUp',
                     ),
                     const _Feature(
@@ -559,7 +541,8 @@ class _GalleryHomeState extends State<GalleryHome>
                   '组件一览',
                   '详细文档与在线演示请从左侧菜单进入',
                   grid([
-                    for (final id in overview)
+                    for (final MapEntry(key: id, value: summary)
+                        in overviewSummaries.entries)
                       IslandCard(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
@@ -583,7 +566,7 @@ class _GalleryHomeState extends State<GalleryHome>
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              overviewSummaries[id]!,
+                              summary,
                               style: TextStyle(
                                 fontSize: 12,
                                 height: 1.5,
@@ -673,12 +656,14 @@ class _GalleryHomeState extends State<GalleryHome>
                             const _HomeFooterAction(
                               'GitHub',
                               openReferenceSource,
+                              leading: _GitHubMark(),
                             ),
                           ],
                         ),
                         const SizedBox(height: 12),
                         const Text(
-                          'Flutter + Dart · Reference Gallery',
+                          '© 2026 Animal Island. All Rights Reserved · MIT License · Reference Gallery',
+                          textAlign: TextAlign.center,
                           strutStyle: StrutStyle(
                             fontSize: 12,
                             height: 16 / 12,
@@ -846,10 +831,12 @@ class _FeatureState extends State<_Feature>
   );
 }
 
+/// Reference S.footerLink: `inline-flex`, centred, 4px gap before the label.
 class _HomeFooterAction extends StatelessWidget {
-  const _HomeFooterAction(this.label, this.onPressed);
+  const _HomeFooterAction(this.label, this.onPressed, {this.leading});
   final String label;
   final VoidCallback onPressed;
+  final Widget? leading;
   @override
   Widget build(BuildContext context) => TextButton(
     onPressed: onPressed,
@@ -878,15 +865,116 @@ class _HomeFooterAction extends StatelessWidget {
                 : Colors.transparent,
           ),
         ),
-    child: Text(
-      label,
-      strutStyle: const StrutStyle(
-        fontSize: 13,
-        height: 20 / 13,
-        forceStrutHeight: true,
-      ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 4,
+      children: [
+        ?leading,
+        Text(
+          label,
+          strutStyle: const StrutStyle(
+            fontSize: 13,
+            height: 20 / 13,
+            forceStrutHeight: true,
+          ),
+        ),
+      ],
     ),
   );
+}
+
+/// The footer GitHub link mark: a decorative 14px vector beside the label,
+/// raised 1px, in the link colour. Path data is the inline SVG in the
+/// reference demo/HomePage.tsx (v4.0.0) on its 16-unit viewBox.
+class _GitHubMark extends StatelessWidget {
+  const _GitHubMark();
+  @override
+  Widget build(BuildContext context) => Transform.translate(
+    offset: const Offset(0, -1),
+    child: const SizedBox.square(
+      dimension: 14,
+      child: CustomPaint(painter: _GitHubMarkPainter()),
+    ),
+  );
+}
+
+class _GitHubMarkPainter extends CustomPainter {
+  const _GitHubMarkPainter();
+
+  static const pathData =
+      'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 '
+      '0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13'
+      '-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66'
+      '.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15'
+      '-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09'
+      ' 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82'
+      ' 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01'
+      ' 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z';
+
+  /// Parses the commands this path uses: M, C/c, S/s, A and Z.
+  static final Path mark = () {
+    final path = Path();
+    final tokens = RegExp(r'[MCcSsAZz]|[+-]?(?:\d+\.?\d*|\.\d+)')
+        .allMatches(pathData)
+        .map((m) => m[0]!)
+        .toList();
+    var i = 0;
+    var command = '';
+    var current = Offset.zero;
+    var control = Offset.zero;
+    double next() => double.parse(tokens[i++]);
+    while (i < tokens.length) {
+      if (RegExp(r'[A-Za-z]').hasMatch(tokens[i])) command = tokens[i++];
+      final relative = command == command.toLowerCase() ? current : Offset.zero;
+      switch (command.toUpperCase()) {
+        case 'M':
+          current = relative + Offset(next(), next());
+          path.moveTo(current.dx, current.dy);
+          control = current;
+        case 'C':
+          final c1 = relative + Offset(next(), next());
+          final c2 = relative + Offset(next(), next());
+          final end = relative + Offset(next(), next());
+          path.cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, end.dx, end.dy);
+          control = c2;
+          current = end;
+        case 'S':
+          final c1 = current * 2 - control;
+          final c2 = relative + Offset(next(), next());
+          final end = relative + Offset(next(), next());
+          path.cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, end.dx, end.dy);
+          control = c2;
+          current = end;
+        case 'A':
+          final radius = Radius.elliptical(next(), next());
+          final rotation = next();
+          final largeArc = next() != 0;
+          final clockwise = next() != 0;
+          current = relative + Offset(next(), next());
+          path.arcToPoint(
+            current,
+            radius: radius,
+            rotation: rotation,
+            largeArc: largeArc,
+            clockwise: clockwise,
+          );
+          control = current;
+        case 'Z':
+          path.close();
+      }
+    }
+    return path;
+  }();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas
+      ..scale(size.width / 16)
+      ..drawPath(mark, Paint()..color = HomeWallpaperInk.body);
+  }
+
+  @override
+  bool shouldRepaint(_GitHubMarkPainter old) => false;
 }
 
 /// Reference scroll-hint arrow: `M12 5v14M5 12l7 7 7-7`, stroke 2 on a 24

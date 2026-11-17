@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:animal_island_ui/animal_island_ui.dart';
@@ -8,8 +9,43 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 import '../../shared/story.dart';
 import '../../shared/palette.dart';
 
-class SkillStory extends StatelessWidget {
+/// Reference SkillDemo: the page mounts under a circle Loading that stays for
+/// 2s, then the opening circle reveals it.
+class SkillStory extends StatefulWidget {
   const SkillStory({super.key});
+  @override
+  State<SkillStory> createState() => _SkillStoryState();
+}
+
+class _SkillStoryState extends State<SkillStory> {
+  bool loading = true;
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => loading = false);
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    children: [
+      const _SkillPage(),
+      IslandLoading(type: IslandLoadingType.circle, active: loading),
+    ],
+  );
+}
+
+class _SkillPage extends StatelessWidget {
+  const _SkillPage();
   static Color get ink => IslandTokens.light.ink;
 
   /// Reference `.lead` (1.8); card descriptions pass `.cardDesc` 1.7.
@@ -108,7 +144,10 @@ class SkillStory extends StatelessWidget {
       border: Border.all(color: GalleryPalette.rule),
       borderRadius: BorderRadius.circular(12),
     ),
-    child: Text(text, style: TextStyle(fontSize: 12, color: ink)),
+    child: Text(
+      text,
+      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: ink),
+    ),
   );
   Widget step(int number, String title, String text, [String? shell]) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +210,7 @@ class SkillStory extends StatelessWidget {
             children: [
               for (final label in [
                 'Flutter + Dart',
-                '40 个组件目标',
+                '43 个组件目标',
                 'Windows + Web',
                 'MIT License',
               ])
@@ -329,7 +368,7 @@ class SkillStory extends StatelessWidget {
       ),
       section(
         '组件目录',
-        ["40 Components"],
+        ["43 Components"],
         [
           prose(
             '合约位于 components/<id>/contract.json；公共 API 以 Dart 导出声明为准。未通过对照验收的组件保持 experimental。',
@@ -389,6 +428,9 @@ class SkillStory extends StatelessWidget {
                   'Table · CodeBlock · Tag · Badge · Pagination',
                   'data',
                 ),
+                ('Calendar', IslandColorway.brown, 'Calendar', 'calendar'),
+                ('Empty state', IslandColorway.green, 'NoData', 'no-data'),
+                ('Charts', IslandColorway.teal, 'Chart', 'chart'),
                 ('Count-up score', IslandColorway.teal, 'CountUp', 'countup'),
                 (
                   'Media',

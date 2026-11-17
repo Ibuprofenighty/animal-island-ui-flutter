@@ -615,7 +615,9 @@ void homeWallpaperContrastOracle({
               ],
             );
           }
-          final credit = find.text('Flutter + Dart · Reference Gallery');
+          final credit = find.text(
+            '© 2026 Animal Island. All Rights Reserved · MIT License · Reference Gallery',
+          );
           await t.ensureVisible(credit);
           await t.pumpAndSettle();
           final cr = t.renderObject<RenderParagraph>(credit);

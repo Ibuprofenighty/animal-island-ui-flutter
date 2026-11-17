@@ -54,6 +54,9 @@ void main() {
         await t.tap(find.widgetWithText(IslandButton, '开始使用 →'));
         await t.pumpAndSettle();
         expect(path, '/skill');
+        expect(find.byType(IslandLoading), findsOneWidget);
+        await t.pump(const Duration(seconds: 2));
+        await t.pumpAndSettle();
         if (width == 375) {
           final back = find.descendant(
             of: find.byWidgetPredicate(
@@ -394,6 +397,48 @@ void main() {
           ),
         ),
         findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('chart group closes the sidebar and its last item scrolls in', (
+      tester,
+    ) async {
+      await showPath(tester, '/charts');
+      final heading = find.text('── 图表统计 ──');
+      expect(heading, findsOneWidget);
+      expect(
+        tester.getTopLeft(heading).dy,
+        greaterThan(tester.getTopLeft(find.text('── 数据展示 ──')).dy),
+      );
+      expect(badge(tester, 'Chart 图表总览').color, Colors.white);
+      expect(
+        find.descendant(of: item('Column 柱状图'), matching: find.text('NEW')),
+        findsNothing,
+      );
+      final menu = find
+          .descendant(
+            of: find.byWidgetPredicate(
+              (w) =>
+                  w is Container &&
+                  w.margin == const EdgeInsets.fromLTRB(12, 12, 0, 8),
+            ),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      await tester.scrollUntilVisible(item('Map 地图统计'), 100, scrollable: menu);
+      await tester.pumpAndSettle();
+      expect(item('Map 地图统计').hitTestable(), findsOneWidget);
+      expect(
+        aside(tester).contains(tester.getBottomLeft(item('Map 地图统计'))),
+        isTrue,
+      );
+      // Reference v4.0.0 logo `transform: translateY(-2px)`.
+      final logo = find.byType(Image).first;
+      final title = find.text('Animal Island UI').first;
+      expect(
+        tester.getCenter(logo).dy,
+        closeTo(tester.getCenter(title).dy - 2, .5),
       );
       expect(tester.takeException(), isNull);
     });

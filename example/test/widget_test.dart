@@ -72,7 +72,9 @@ void main() {
         isTrue,
       );
       expect(find.text('v2.2.1'), findsNothing);
-      final credit = find.text('Flutter + Dart · Reference Gallery');
+      final credit = find.text(
+        '© 2026 Animal Island. All Rights Reserved · MIT License · Reference Gallery',
+      );
       await t.ensureVisible(credit);
       await t.pumpAndSettle();
       expect(credit, findsOneWidget);
@@ -373,7 +375,7 @@ void main() {
         }
         expect(
           find.text('API'),
-          id == 'skill' || id == 'form'
+          id == 'skill' || id == 'form' || id == 'charts' || id == 'calendar'
               ? findsNothing
               : (id == 'avatar' || id == 'notification'
                     ? findsNWidgets(2)
@@ -383,6 +385,11 @@ void main() {
           // Reference Form demo titles its two tables.
           expect(find.text('Form API'), findsOneWidget);
           expect(find.text('FormItem API'), findsOneWidget);
+        }
+        if (id == 'calendar') {
+          // Reference Calendar demo titles its two tables.
+          expect(find.text('Calendar API'), findsOneWidget);
+          expect(find.text('IslandCalendarEvent'), findsOneWidget);
         }
       });
     }
@@ -459,6 +466,89 @@ void main() {
     await t.pumpAndSettle();
     await t.tap(find.text('开始使用 →'));
     expect(route, 'skill');
+    expect(t.takeException(), isNull);
+  });
+
+  testWidgets('Home 4.0.0 subtitle, overview entries and GitHub mark', (
+    t,
+  ) async {
+    t.view.physicalSize = const Size(1440, 1000);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.resetPhysicalSize);
+    addTearDown(t.view.resetDevicePixelRatio);
+    await t.pumpWidget(
+      MaterialApp(
+        theme: galleryTheme(),
+        home: MediaQuery(
+          data: const MediaQueryData(
+            size: Size(1440, 1000),
+            disableAnimations: true,
+          ),
+          child: Scaffold(
+            body: GalleryHome(wallpaperSeed: 17, onNavigate: (_) {}),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(
+      t
+          .widget<IslandTypewriter>(find.byType(IslandTypewriter))
+          .style!
+          .fontWeight,
+      FontWeight.w500,
+    );
+    final names = [
+      for (final card in t.widgetList<IslandCard>(
+        find.descendant(
+          of: find.byType(GalleryHome),
+          matching: find.byType(IslandCard),
+        ),
+      ))
+        if (card.padding ==
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16))
+          ((card.child as Column).children.first as Text).data!,
+    ];
+    expect(names.first, 'Chart');
+    expect(names.indexOf('Calendar'), names.indexOf('TimePicker') + 1);
+    expect(names.indexOf('NoData'), names.indexOf('Loading') + 1);
+    expect(names, hasLength(23));
+    final github = find.widgetWithText(TextButton, 'GitHub');
+    final mark = find.descendant(
+      of: github,
+      matching: find.byWidgetPredicate(
+        (w) => w is SizedBox && w.width == 14 && w.height == 14,
+      ),
+    );
+    expect(mark, findsOneWidget);
+    expect(t.getSize(mark), const Size.square(14));
+    final label = find.descendant(of: github, matching: find.text('GitHub'));
+    expect(t.getTopLeft(label).dx - t.getTopRight(mark).dx, 4);
+    expect(t.getCenter(mark).dy, closeTo(t.getCenter(label).dy - 1, .01));
+    expect(
+      find.text(
+        '© 2026 Animal Island. All Rights Reserved · MIT License · Reference Gallery',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Skill page opens under a circle Loading for 2s', (t) async {
+    final mounted = t.binding.clock.now();
+    await _showVisualStory(t, '/skill', const Size(1440, 1000));
+    IslandLoading loading() => t.widget(find.byType(IslandLoading));
+    expect(loading().type, IslandLoadingType.circle);
+    expect(loading().active, isTrue);
+    expect(find.text('快速开始').hitTestable(), findsNothing);
+    await t.pump(
+      const Duration(milliseconds: 1999) -
+          t.binding.clock.now().difference(mounted),
+    );
+    expect(loading().active, isTrue);
+    await t.pump(const Duration(milliseconds: 1));
+    expect(loading().active, isFalse);
+    await t.pumpAndSettle();
+    expect(find.text('快速开始').hitTestable(), findsOneWidget);
     expect(t.takeException(), isNull);
   });
 
@@ -709,7 +799,7 @@ void main() {
       expect(colorOf(t, '向下滑动'), HomeWallpaperInk.cream);
       expect(colorOf(t, '特性'), HomeWallpaperInk.title);
       expect(colorOf(t, '为什么选择'), HomeWallpaperInk.body);
-      expect(colorOf(t, 'Flutter + Dart'), HomeWallpaperInk.body);
+      expect(colorOf(t, '© 2026 Animal Island'), HomeWallpaperInk.body);
       final footer = t.widget<RichText>(
         find.descendant(
           of: find.widgetWithText(TextButton, '组件文档'),

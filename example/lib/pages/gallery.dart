@@ -127,10 +127,14 @@ class _GalleryPageState extends State<GalleryPage> {
               ),
               child: Row(
                 children: [
-                  Image.asset(
-                    'assets/reference/logo.png',
-                    width: 25,
-                    height: 25,
+                  // Reference logo `transform: translateY(-2px)`.
+                  Transform.translate(
+                    offset: const Offset(0, -2),
+                    child: Image.asset(
+                      'assets/reference/logo.png',
+                      width: 25,
+                      height: 25,
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Text(
