@@ -35,6 +35,35 @@ abstract final class GalleryPalette {
   /// reference `#9a6a38` (4.2:1) deepened in hue to 4.5:1.
   static const countdownReminderBrown = Color(0xff946533);
 
+  /// Time custom-style demo (reference `.my-time`): clock ink
+  /// `--animal-time-color` `#fffdf4`.
+  static const timeCustomClock = Color(0xfffffdf4);
+
+  /// Time custom-style demo weekday `--animal-primary-color` `#ffd166`.
+  static const timeCustomWeekday = Color(0xffffd166);
+
+  /// Time custom-style demo month-day: the demo leaves
+  /// `--animal-text-color-secondary` at `#9f927d` (4.46:1 on the capsule),
+  /// lightened in hue to 4.5:1.
+  static const timeCustomDate = Color(0xffa0937e);
+
+  /// Time custom-style demo decorative dot `--animal-text-color-disabled`.
+  static const timeCustomDot = Color(0xffe0bd75);
+
+  /// Time custom-style demo capsule `--animal-primary-color-bg` `#3d2a17`.
+  static const timeCustomCapsule = Color(0xff3d2a17);
+
+  /// Time custom-style demo 160deg gradient stops at 0% and 55%; the 100%
+  /// stop is the library `leaf` (`#19c8b9`).
+  static const timeCustomGradientStart = Color(0xff0f4c46);
+
+  /// Reference `#137f74` deepened in its own hue so the cream clock keeps
+  /// 4.5:1 over the lightest gradient point under it.
+  static const timeCustomGradientMiddle = Color(0xff00766b);
+
+  /// Time custom-style demo shadow rgba(15, 76, 70, .28).
+  static const timeCustomShadow = Color(0x470f4c46);
+
   // API table (StoryApiTable) and its code label.
   static const apiTableBackground = Color(0xff2b2118);
   static const apiTableRule = Color(0xff3d3028);

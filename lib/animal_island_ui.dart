@@ -49,7 +49,8 @@ export 'src/components/code_block.dart'
 
 export 'src/components/select.dart' show IslandSelect, IslandSelectVariant;
 
-export 'src/components/time.dart' show IslandTime, IslandTimeVariant;
+export 'src/components/time.dart'
+    show IslandTime, IslandTimeStyle, IslandTimeVariant;
 export 'src/components/countdown.dart'
     show
         IslandCountdown,

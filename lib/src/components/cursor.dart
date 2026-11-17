@@ -14,8 +14,10 @@ enum IslandCursorVariant { arrow, raindrop }
 /// Scoped children retain their native MouseCursor contracts.
 ///
 /// The arrow variant also sets the warm text-selection highlight for its
-/// subtree; the raindrop variant restores the selection colour that applies
-/// outside every enclosing cursor, so the innermost cursor decides.
+/// subtree (the reference yellow, or the same hue deepened for light inks
+/// under a dark [Theme]); the raindrop variant restores the selection colour
+/// that applies outside every enclosing cursor, so the innermost cursor
+/// decides.
 class IslandCursor extends StatefulWidget {
   const IslandCursor({
     super.key,
@@ -77,7 +79,9 @@ class _IslandCursorState extends State<IslandCursor> {
             owner: owner,
             forceAll: widget.forceAll,
             child: DefaultSelectionStyle(
-              selectionColor: drop ? hostSelection : CursorColors.selection,
+              selectionColor: drop
+                  ? hostSelection
+                  : CursorColors.selection(Theme.of(context).brightness),
               cursorColor: ambient.cursorColor,
               mouseCursor: ambient.mouseCursor,
               child: widget.child,

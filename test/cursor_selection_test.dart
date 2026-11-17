@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const warm = Color(0xffe9c46a);
+const dark = Color(0xff654c01);
 const host = Color(0x6633aa77);
 
 Color? seen(WidgetTester t, String key) =>
@@ -102,6 +103,55 @@ void main() {
     expect(seen(t, 'nested drop'), host);
     expect(seen(t, 'deep'), warm);
     expect(seen(t, 'drop'), host);
+  });
+
+  testWidgets('a dark theme deepens the arrow highlight; nesting still wins', (
+    t,
+  ) async {
+    late StateSetter rebuild;
+    var brightness = Brightness.dark;
+    await t.pumpWidget(
+      StatefulBuilder(
+        builder: (_, set) {
+          rebuild = set;
+          return MaterialApp(
+            theme: ThemeData(
+              brightness: brightness,
+              textSelectionTheme: const TextSelectionThemeData(
+                selectionColor: host,
+              ),
+            ),
+            home: const Scaffold(
+              body: IslandCursor(
+                child: Column(
+                  children: [
+                    SizedBox(key: ValueKey('arrow')),
+                    IslandCursor(
+                      variant: IslandCursorVariant.raindrop,
+                      child: Column(
+                        children: [
+                          SizedBox(key: ValueKey('nested drop')),
+                          IslandCursor(child: SizedBox(key: ValueKey('deep'))),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(seen(t, 'arrow'), dark);
+    expect(seen(t, 'nested drop'), host);
+    expect(seen(t, 'deep'), dark);
+    rebuild(() => brightness = Brightness.light);
+    await t.pumpAndSettle();
+    expect(seen(t, 'arrow'), warm);
+    expect(seen(t, 'nested drop'), host);
+    expect(seen(t, 'deep'), warm);
   });
 
   testWidgets('raindrop without a host selection colour keeps it unset', (

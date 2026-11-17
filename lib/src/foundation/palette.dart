@@ -141,6 +141,7 @@ abstract final class Primitive {
   // yellow
   static const yellow426A22 = Color(0x385b4e1e);
   static const yellow426A32 = Color(0x525b4e1e);
+  static const yellow431 = Color(0xff654c01);
   static const yellow524 = Color(0xff886300);
   static const yellow541 = Color(0xff8a6a08);
   static const yellow642 = Color(0xffaf8600);

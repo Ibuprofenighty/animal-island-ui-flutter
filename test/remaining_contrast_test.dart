@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'counter_audit_test.dart' show pixel;
+import 'foundation_test.dart' show contrast;
 import 'palette_contrast_test.dart' show host, foreground, fill, readable;
 
 void main() {
@@ -626,6 +627,39 @@ void registerUpgradeColorOracles() {
       expect(fill(t, find.text('Monday')), _capsule);
       expect(foreground(t, 'Monday'), card);
       readable(foreground(t, 'Monday'), _capsule);
+    }
+    await t.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('Cursor selection highlight follows the theme inks', (t) async {
+    for (final brightness in Brightness.values) {
+      await t.pumpWidget(
+        host(
+          const IslandCursor(child: SizedBox(key: ValueKey('selected'))),
+          brightness: brightness,
+        ),
+      );
+      // Let the app theme finish its brightness transition.
+      await t.pump(const Duration(milliseconds: 300));
+      final highlight = DefaultSelectionStyle.of(
+        t.element(find.byKey(const ValueKey('selected'))),
+      ).selectionColor!;
+      if (brightness == Brightness.light) {
+        expect(highlight, const Color(0xffe9c46a));
+        readable(IslandTokens.light.ink, highlight);
+        // Owner-accepted registered difference (2026-11-17).
+        expect(
+          contrast(IslandTokens.light.muted, highlight),
+          closeTo(3.27, .01),
+        );
+      } else {
+        expect(highlight, const Color(0xff654c01));
+        readable(IslandTokens.dark.ink, highlight);
+        readable(IslandTokens.dark.muted, highlight);
+        for (final paper in _darkPapers) {
+          expect(contrast(highlight, paper), greaterThanOrEqualTo(1.46));
+        }
+      }
     }
     await t.pumpWidget(const SizedBox());
   });

@@ -1,6 +1,5 @@
 import '../internal/surface_motion.dart';
 import '../foundation/recipes/time.dart';
-import '../foundation/theme.dart';
 import '../foundation/time_value.dart';
 
 import 'dart:async';
@@ -17,6 +16,67 @@ enum IslandTimeVariant {
   game,
 }
 
+/// Instance styling of one [IslandTime], the counterpart of the reference
+/// `className` overrides (`--animal-time-color`, `--animal-primary-color`,
+/// `--animal-text-color-secondary`, `--animal-text-color-disabled`,
+/// `--animal-primary-color-bg`, `--animal-font-family`,
+/// `--animal-font-size-sm`, and the root background, radius, padding and
+/// shadow).
+///
+/// Each non-null field replaces the recipe value of the chosen variant and
+/// host brightness; a null field keeps it. Caller colours are caller-owned:
+/// the library neither checks nor corrects their contrast.
+@immutable
+class IslandTimeStyle {
+  const IslandTimeStyle({
+    this.clockColor,
+    this.weekdayColor,
+    this.dateColor,
+    this.separatorColor,
+    this.capsuleColor,
+    this.decoration,
+    this.padding,
+    this.fontFamily,
+    this.capsuleFontSize,
+  });
+
+  /// Ink of the `HH:MM` digits and the blinking colon, in both variants.
+  final Color? clockColor;
+
+  /// Ink of the weekday: inside the card's date capsule, or inside the game
+  /// HUD's weekday capsule.
+  final Color? weekdayColor;
+
+  /// Ink of the month-day: inside the card's date capsule, or beside the game
+  /// HUD's weekday capsule.
+  final Color? dateColor;
+
+  /// The card's decorative `·` between weekday and month-day, or the game
+  /// HUD's decorative rule under the clock.
+  final Color? separatorColor;
+
+  /// Fill of the card's date capsule, or of the game HUD's weekday capsule.
+  final Color? capsuleColor;
+
+  /// Surface painted behind the whole clock, replacing the card's soft-shadow
+  /// surface (for example with a gradient, another radius or shadow). The game
+  /// HUD has no surface by default and paints this one when given.
+  final Decoration? decoration;
+
+  /// Space between the surface edge and the content; the card default is
+  /// 20/32/15 (top/sides/bottom), the game default 50 on every side.
+  final EdgeInsetsGeometry? padding;
+
+  /// Font family of every text in the clock; null inherits the ambient
+  /// [DefaultTextStyle] family.
+  final String? fontFamily;
+
+  /// Font size of the capsule text: the card's weekday · month-day (default
+  /// 12) or the game HUD's weekday (default 15). The clock and the game
+  /// month-day keep their sizes.
+  final double? capsuleFontSize;
+}
+
 /// A wall-clock display. [now] supplies local time and may be replaced for a
 /// deterministic preview. This instance owns and cancels its refresh timer,
 /// which also steps the reference 1s colon blink (visible, then hidden for
@@ -31,6 +91,7 @@ class IslandTime extends StatefulWidget {
     this.weekdayFormat = 'dddd',
     this.dateFormat,
     this.locale = IslandTimeLocale.en,
+    this.style,
   });
 
   /// Local time source; null reads [DateTime.now].
@@ -52,6 +113,10 @@ class IslandTime extends StatefulWidget {
 
   /// Language of weekday and month names.
   final IslandTimeLocale locale;
+
+  /// Instance colours, surface, padding and typography; null keeps the
+  /// recipe of [variant] and the host brightness.
+  final IslandTimeStyle? style;
   @override
   State<IslandTime> createState() => _IslandTimeState();
 }
@@ -113,7 +178,19 @@ class _IslandTimeState extends State<IslandTime>
     );
     final clock = '${pad(current.hour)}:${pad(current.minute)}';
     final game = widget.variant == IslandTimeVariant.game;
-    final hudText = TimeColors.gameText(Theme.of(context).brightness);
+    final style = widget.style;
+    final roles = TimeRoles.resolve(
+      game: game,
+      brightness: Theme.of(context).brightness,
+      clock: style?.clockColor,
+      weekday: style?.weekdayColor,
+      date: style?.dateColor,
+      separator: style?.separatorColor,
+      capsule: style?.capsuleColor,
+      decoration: style?.decoration,
+      padding: style?.padding,
+      capsuleFontSize: style?.capsuleFontSize,
+    );
     Widget clockRow({
       required double fontSize,
       required double letterSpacing,
@@ -121,7 +198,7 @@ class _IslandTimeState extends State<IslandTime>
       required double colonRise,
     }) => DefaultTextStyle.merge(
       style: TextStyle(
-        color: game ? hudText : TimeColors.digits,
+        color: roles.clock,
         fontSize: fontSize,
         fontWeight: FontWeight.w900,
         height: 1,
@@ -148,6 +225,118 @@ class _IslandTimeState extends State<IslandTime>
         ],
       ),
     );
+    final content = game
+        ? IntrinsicWidth(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                clockRow(
+                  fontSize: 40,
+                  letterSpacing: 2,
+                  colonGap: 1,
+                  colonRise: 40 * .08,
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  height: 2,
+                  child: CustomPaint(painter: _GameRule(roles.separator)),
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Reference flex item: under a narrow parent the
+                    // month-day wraps; the capsule keeps its width.
+                    Flexible(
+                      child: Text(
+                        date,
+                        style: TextStyle(
+                          color: roles.date,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Container(
+                      // 7 + 15 + 5 = 27px; the extra top pixel lands
+                      // CJK ink on the optical centre.
+                      padding: const EdgeInsets.fromLTRB(16, 7, 16, 5),
+                      decoration: BoxDecoration(
+                        color: roles.capsule,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        weekday,
+                        style: TextStyle(
+                          color: roles.weekday,
+                          fontSize: roles.capsuleFontSize,
+                          fontWeight: FontWeight.w900,
+                          height: 1,
+                          letterSpacing: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+        : Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              clockRow(
+                fontSize: 44,
+                letterSpacing: 1,
+                colonGap: 2,
+                colonRise: 44 * .11,
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: roles.capsule,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    fontSize: roles.capsuleFontSize,
+                    height: 1.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0,
+                    color: roles.date,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        weekday.toUpperCase(),
+                        style: TextStyle(
+                          color: roles.weekday,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Text(
+                          '·',
+                          style: TextStyle(color: roles.separator),
+                        ),
+                      ),
+                      Text(date),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+    final family = style?.fontFamily;
     return Semantics(
       label: widget.semanticLabel,
       value: '$clock $weekday $date',
@@ -161,138 +350,16 @@ class _IslandTimeState extends State<IslandTime>
             offset: const Offset(0, 4),
             child: child!,
           ),
-          child: game
-              ? Padding(
-                  padding: const EdgeInsets.all(50),
-                  child: IntrinsicWidth(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        clockRow(
-                          fontSize: 40,
-                          letterSpacing: 2,
-                          colonGap: 1,
-                          colonRise: 40 * .08,
-                        ),
-                        const SizedBox(height: 8),
-                        const SizedBox(
-                          width: double.infinity,
-                          height: 2,
-                          child: CustomPaint(painter: _GameRule()),
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Reference flex item: under a narrow parent the
-                            // month-day wraps; the capsule keeps its width.
-                            Flexible(
-                              child: Text(
-                                date,
-                                style: TextStyle(
-                                  color: hudText,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Container(
-                              // 7 + 15 + 5 = 27px; the extra top pixel lands
-                              // CJK ink on the optical centre.
-                              padding: const EdgeInsets.fromLTRB(16, 7, 16, 5),
-                              decoration: BoxDecoration(
-                                color: TimeColors.gameWeekdayPill,
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                weekday,
-                                style: const TextStyle(
-                                  color: TimeColors.digits,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w900,
-                                  height: 1,
-                                  letterSpacing: 0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+          child: Container(
+            padding: roles.padding,
+            decoration: roles.decoration,
+            child: family == null
+                ? content
+                : DefaultTextStyle.merge(
+                    style: TextStyle(fontFamily: family),
+                    child: content,
                   ),
-                )
-              : Container(
-                  padding: const EdgeInsets.fromLTRB(32, 20, 32, 15),
-                  decoration: BoxDecoration(
-                    color: TimeColors.surface,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: TimeColors.shadow,
-                        offset: Offset(0, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      clockRow(
-                        fontSize: 44,
-                        letterSpacing: 1,
-                        colonGap: 2,
-                        colonRise: 44 * .11,
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: TimeColors.datePill,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: DefaultTextStyle.merge(
-                          style: TextStyle(
-                            fontSize: 12,
-                            height: 1.5,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0,
-                            color: IslandTokens.light.muted,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                weekday.toUpperCase(),
-                                style: TextStyle(
-                                  color: IslandTokens.light.link,
-                                  letterSpacing: 1,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
-                                child: Text(
-                                  '·',
-                                  style: TextStyle(
-                                    color: IslandTokens.light.muted,
-                                  ),
-                                ),
-                              ),
-                              Text(date),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+          ),
         ),
       ),
     );
@@ -302,16 +369,17 @@ class _IslandTimeState extends State<IslandTime>
 /// Reference `.divider`: a 2px rounded rule spanning the content width plus
 /// 5px, centred, so it overhangs 2.5px on each side.
 class _GameRule extends CustomPainter {
-  const _GameRule();
+  const _GameRule(this.color);
+  final Color color;
   @override
   void paint(Canvas canvas, Size size) => canvas.drawRRect(
     RRect.fromRectAndRadius(
       Rect.fromLTWH(-2.5, 0, size.width + 5, size.height),
       const Radius.circular(2),
     ),
-    Paint()..color = TimeColors.gameDivider,
+    Paint()..color = color,
   );
 
   @override
-  bool shouldRepaint(_GameRule old) => false;
+  bool shouldRepaint(_GameRule old) => old.color != color;
 }

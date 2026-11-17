@@ -17,7 +17,7 @@
     "localization": "Reference Chinese Gallery; host content and inherited directionality. Weekday and month-day text follow weekdayFormat (default dddd) and dateFormat (default MMM D, or M月D日 under IslandTimeLocale.zhCn) in core date tokens with English or Simplified Chinese names; the per-instance locale changes no global state.",
     "async_behavior": "Owner-local 500ms refresh timer also steps the decorative colon blink (reference animal-time-blink 1s step-end: visible then hidden for half a second each second); digits never dim, semantics keep the complete clock, and reduced motion keeps the colon visible. No second timer. Opaque entry uses modest displacement (4px) on the reference .35s cubic-bezier(.4,0,.2,1) timing and reduced motion settles the same wrapper.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
-    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Instance styling is one immutable IslandTimeStyle (the reference className restyle): clockColor (digits and colon), weekdayColor, dateColor, separatorColor (card dot, game rule), capsuleColor (card date capsule, game weekday capsule), decoration (replaces the card surface; game paints it when given), padding, fontFamily and capsuleFontSize (card capsule text, game weekday). TimeRoles in the Time recipe resolves each role once: a non-null instance value wins, a null field keeps the recipe of the variant and host brightness. There is no theme-level Time style. Caller colours are caller-owned and not contrast-corrected.",
     "performance": "Platform profiling required before release.",
     "migration": "Fresh implementation; no old-library compatibility track."
   },
@@ -39,6 +39,12 @@
       "given": "weekdayFormat, dateFormat and locale",
       "when": "Monday 2026-06-08 is shown",
       "then": "Defaults show Monday / Jun 8 (card: MONDAY); zhCn shows 星期一 / 6月8日; ddd + YYYY/MM/DD shows Mon / 2026/06/08; zhCn + ddd shows 周一; [text] renders literally."
+    },
+    {
+      "id": "time.style",
+      "given": "IslandTimeStyle on either variant, partially or fully set, under a light or dark host theme",
+      "when": "The clock renders or the host brightness changes",
+      "then": "Every non-null field replaces its role in both variants (card: clock, upper-cased weekday, month-day, dot, date capsule, surface decoration, padding, family, capsule text size; game: clock, weekday, month-day, rule, weekday capsule, optional decoration, padding, family, weekday size; clock and game month-day sizes fixed). Null fields keep the recipe, including the brightness-dependent game clock and month-day ink. Semantics label and value, timer, colon blink and entrance are unchanged."
     },
     {
       "id": "time.composition",
