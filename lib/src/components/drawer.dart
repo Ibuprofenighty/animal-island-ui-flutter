@@ -298,6 +298,7 @@ class _IslandDrawerState extends State<IslandDrawer>
   Widget build(BuildContext context) => ViewportOverlay(
     visible: true,
     decorative: !widget.open,
+    followsRoute: true,
     builder: (context) {
       final size = MediaQuery.sizeOf(context);
       final horizontal =

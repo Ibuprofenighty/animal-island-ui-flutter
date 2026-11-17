@@ -1,3 +1,4 @@
+import '../internal/viewport_overlay.dart';
 import '../internal/light_surface_scope.dart';
 import '../foundation/theme.dart';
 
@@ -238,6 +239,32 @@ class _IslandModalRoute<T> extends RawDialogRoute<T> {
        );
   final bool reduced;
   bool settling = false;
+
+  // Page-level overlay surfaces stay under this route (ViewportOverlay).
+  @override
+  void install() {
+    super.install();
+    ViewportOverlay.routesChanged();
+  }
+
+  @override
+  void didChangeNext(Route<dynamic>? nextRoute) {
+    super.didChangeNext(nextRoute);
+    ViewportOverlay.routesChanged();
+  }
+
+  @override
+  void didPopNext(Route<dynamic> nextRoute) {
+    super.didPopNext(nextRoute);
+    ViewportOverlay.routesChanged();
+  }
+
+  @override
+  void dispose() {
+    ViewportOverlay.routesChanged();
+    super.dispose();
+  }
+
   @override
   Duration get transitionDuration =>
       reduced ? Duration.zero : super.transitionDuration;

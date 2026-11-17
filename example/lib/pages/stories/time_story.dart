@@ -138,7 +138,7 @@ class TimeStory extends StatelessWidget {
         "    gradient: LinearGradient(\n"
         "      begin: Alignment.topCenter,\n"
         "      end: Alignment.bottomCenter,\n"
-        "      colors: [Color(0xFF0F4C46), Color(0xFF137F74), Color(0xFF19C8B9)],\n"
+        "      colors: [Color(0xFF0F4C46), Color(0xFF00766B), Color(0xFF19C8B9)],\n"
         "      stops: [0, .55, 1],\n"
         "      transform: CssGradientAngle(160),\n"
         "    ),\n"

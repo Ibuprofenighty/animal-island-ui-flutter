@@ -99,6 +99,7 @@ class _IslandBackTopState extends State<IslandBackTop> {
         : const Duration(milliseconds: 300);
     return ViewportOverlay(
       visible: true,
+      followsRoute: true,
       builder: (_) => Positioned(
         right: widget.right,
         bottom: widget.bottom,
