@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "id": "calendar",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Calendar 日历: the reference 4.0.0 standalone month panel (added in 2.3.0) with event bars and drag-to-create; reference Gallery contract with accessibility color decisions pending (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandCalendar](../../lib/src/components/calendar.dart), [IslandCalendarEvent](../../lib/src/components/calendar.dart), [IslandCalendarColor](../../lib/src/components/calendar.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list.",
+    "outputs": "Selection requests (onChanged, a local-midnight day), panel month requests (onMonthChanged, the first day of the month) and drag-to-create requests (onCreateEvent, an ordered local-midnight DateTimeRange). The host decides whether to commit controlled values and whether to add an event.",
+    "state_model": "An always-visible month panel: no popup, no week or year view. The selected day and the panel month are independently controlled (value / month non-null) or component-owned (IslandCalendar.uncontrolled initialValue defaulting to today; initialMonth). The panel opens on initialMonth, else the selected day, else today. The grid always holds 42 days from the Sunday on or before the 1st. A keyboard cursor (roving focus) is clamped into the visible grid on every build, and the shown selection is clamped by the same rule, so exactly one cell is a Tab stop and the cursor and selection share a cell. Event layout is recomputed from the events list on every build.",
+    "events": "Activating a cell or the 今天 action selects that day; a day outside the panel month also requests that month. Month/year arrows request the adjacent month/year and move the cursor to the same day clamped to the target month length; they do not select. A drag reports one ordered range on release.",
+    "composition": "Parent owns width and placement; the panel fills the available width (750 when unbounded) and derives its rhythm from it: scale = width / 750 clamped to 0.6..2 multiplies the week-header height 32, cell height 104, day circle 28, number band 42, event row 22, bar height 17 and event font 11; the day number stays 13px. The header (year/month arrows, month chip, 今天, month/year arrows) keeps reference space-between and wraps its three groups only when they cannot fit (narrow-layout usability difference, docs/DESIGN.md#gallery-parent-layout).",
+    "accessibility": "Arrow controls are named 上一年 / 上个月 / 下个月 / 下一年; 今天 is named by its visible text. Each day cell is a selectable action named 'YYYY-MM-DD', or 'YYYY-MM-DD {n} 项事项：{titles joined by ，}' where n counts the visible events covering that day, duplicate titles collapse with a trailing ' 等' and empty titles are omitted ('YYYY-MM-DD {n} 项事项' when none remain). Event bars, day digits and +N are excluded from semantics. semanticLabel names the grid. Arrow keys move the cursor by a day/week and move focus with it, requesting an adjacent month only when the cursor leaves the panel month; PageUp/PageDown change month; Enter/Space select the focused cell exactly once. Screen-reader execution is excluded by the 2026-10-17 user scope decision.",
+    "localization": "Reference Chinese labels: weekdays 日 一 二 三 四 五 六, month chip 'YYYY年M月'.",
+    "async_behavior": "None.",
+    "lifecycle": "The component owns and disposes its 42 cell focus nodes; a pending keyboard focus move is dropped after disposal. An active drag is cancelled by pointer cancel or a release outside the panel.",
+    "styling": "One foundation-owned recipe (lib/src/foundation/recipes/calendar.dart) holds the reference 4.0.0 calendar.module.less values: cream #fffdf7 card with the two-layer dot grid, 1.5px #e8dcc8 border, radius 20, 0 6 18 shadow; teal accent #19c8b9 with its 14% soft and #e6f9f6 tint; five event palettes (teal is the warm orange set). Cells: radius 12, hover #f4f0e4, selected tint with a filled accent circle and white digit, today an inset 1.5px accent ring and accent digit, neighbouring-month digits #c4b89e; precedence selected > today > outside > hover. Event bars: 1px border, radius 10 (6 for multi-day), 5px gutter; multi-day bars keep a 1px seam except at the week edges; the drag preview has a dashed border. Reference values that fail the text 4.5:1 / graphics 3:1 budget are kept pending an owner decision (docs/DESIGN.md#measured-color-differences). Reference 0.15s cell, digit, arrow and 今天 transitions; reduced motion settles them immediately.",
+    "performance": "Layout is O(events x weeks) per build. Platform profiling required before release.",
+    "migration": "New component; no previous Flutter API."
+  },
+  "scenarios": [
+    {
+      "id": "calendar.reference",
+      "given": "The pinned reference 4.0.0 Calendar page and its three demos",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry and interaction agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures."
+    },
+    {
+      "id": "calendar.grid",
+      "given": "Any panel month, including one whose 1st is a Sunday, and any width",
+      "when": "The panel renders",
+      "then": "42 day cells in 6 weeks from the Sunday on or before the 1st, the 日..六 header and 'YYYY年M月'; the scale is width / 750 clamped to 0.6..2 and an event bar's vertical centre is (32 + week x 104 + 42 + (row + 1) x 22) x scale below the grid top, so two event rows end inside the week."
+    },
+    {
+      "id": "calendar.selection",
+      "given": "Controlled and uncontrolled value and month, including a controlled value or unacknowledged month request outside the grid",
+      "when": "Click a cell, a neighbouring-month cell or 今天, or the parent changes value",
+      "then": "onChanged reports the day; an uncontrolled value and month follow it; a controlled month only receives onMonthChanged; a changed controlled value moves the cursor and an uncontrolled month to it; a value outside the grid shows selection and the single Tab stop on the nearest grid cell."
+    },
+    {
+      "id": "calendar.navigation",
+      "given": "Month/year arrows and keyboard focus inside the grid",
+      "when": "Press arrows, PageUp/PageDown, Enter or Space",
+      "then": "Uncontrolled months change themselves; controlled months request the change; moving inside the panel month requests nothing; crossing out requests the new month; focus follows the cursor; Enter/Space select once per key press; exactly one cell is focusable even when the month request is ignored."
+    },
+    {
+      "id": "calendar.events",
+      "given": "Same-day, multi-day, overlapping, timed and out-of-view events",
+      "when": "The panel lays them out",
+      "then": "Events are placed in start-time order (stable for equal starts) into the first of 2 free rows per week; multi-day bars are cut at week boundaries; the first segment of an event starting in view shows 'HH:mm' when showEventTime and the event's showTime are set, continuation and truncated segments show the title only; a segment without a free row folds into '+N' (covering events minus drawn bars); events entirely outside the 42 cells are neither drawn, counted nor named; an end before the start is a one-day event; bars keep their identity by event id when events are inserted before them."
+    },
+    {
+      "id": "calendar.drag-create",
+      "given": "onCreateEvent set, a primary mouse button and a pointer path across cells",
+      "when": "Press on a cell, move across cells or outside the grid, then release",
+      "then": "A dashed preview bar takes a row like an event but never counts toward '+N'; release anywhere inside the panel, header included, reports the ordered range once; a same-day press-release only selects; a release outside the panel or a pointer cancel discards it; a secondary button or a missing onCreateEvent never starts a drag."
+    },
+    {
+      "id": "calendar.reduced-motion",
+      "given": "MediaQuery.disableAnimations",
+      "when": "Hover, select or focus changes",
+      "then": "Cell, digit, arrow and 今天 colors settle immediately with the same states."
+    }
+  ]
+}

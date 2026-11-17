@@ -1,6 +1,7 @@
 import 'upload_story.dart';
 import 'form_story.dart';
 import 'date_picker_story.dart';
+import 'calendar_story.dart';
 import 'skill_story.dart';
 import 'cursor_story.dart';
 import 'drawer_story.dart';
@@ -46,6 +47,7 @@ final storyBuilders = <String, WidgetBuilder>{
   'upload': (_) => const UploadStory(),
   'form': (_) => const FormStory(),
   'date-picker': (_) => const DatePickerStory(),
+  'calendar': (_) => const CalendarStory(),
   'skill': (_) => const SkillStory(),
   'cursor': (_) => const CursorStory(),
   'drawer': (_) => const DrawerStory(),

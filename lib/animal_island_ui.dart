@@ -120,6 +120,8 @@ export 'src/components/cursor.dart' show IslandCursor, IslandCursorVariant;
 
 export 'src/components/date_picker.dart'
     show IslandDatePicker, IslandDatePickerMode;
+export 'src/components/calendar.dart'
+    show IslandCalendar, IslandCalendarEvent, IslandCalendarColor;
 
 export 'src/components/form.dart'
     show
