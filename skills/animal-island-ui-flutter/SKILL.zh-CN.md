@@ -21,6 +21,10 @@
 
 进入、退出、反向、重开、取消、卸载、主题切换和减少动态沿用唯一内容子树及生命周期。[表面采样](../../docs/DESIGN.md#surface-sampling)不授权对子文字补偿或全局加滤镜，Notification 与 Tooltip 改为整个表面按整设备像素位移；[首页／照片例外](../../docs/DESIGN.md#home-host-and-photo-gradient)仅适用具名 Gallery 区域。
 
+## 图表、日历与图标
+
+图表种类通过对应的 `IslandChartData` 具名构造函数选择，数据形状和无效数据规则见 [API](../../docs/API.md#reference-400-additions)；地图须由调用方提供区域轮廓，空状态使用 `IslandNoData`。Calendar、Chart、NoData 的界面文案取自 `IslandLocalizations`，没有其 `zh` 语言时显示英文。`IslandGlyph`（709 个，naive-icons v1.14.0）只能通过运行 `python -B tool/import_icons.py` 改动，不得手改 `assets/icons`；`docs/icon-paint-roles.json` 中 `import_v1_14.pending` 所列元素角色视为未审查。
+
 ## 原子扩展
 
 未知行为先观察固定[参考身份](../../docs/reference-gallery.json)对应实现；代码示例可适配 Dart，不能自行发明产品行为。同批更新声明、契约、实现、全部消费者、测试、文档及双语 Skill。仅维护一种机制，不添加别名、兼容分支、平行色板或仅供测试读取的生产接口。

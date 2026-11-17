@@ -1,8 +1,8 @@
 # Product design / 产品设计
 
-The pinned [reference identity](reference-gallery.json) defines the 40 component families, Home and Skill pages. Windows and Web are primary targets. Preserve reference layout, typography, silhouettes, content and interaction except for the explicit differences below; adapt technical examples to Flutter. Current component details are in [the reference catalog](component-reference-details.json) and component contracts.
+The pinned [reference identity](reference-gallery.json) defines the 43 component families, Home and Skill pages. Windows and Web are primary targets. Preserve reference layout, typography, silhouettes, content and interaction except for the explicit differences below; adapt technical examples to Flutter. Current component details are in [the reference catalog](component-reference-details.json) and component contracts.
 
-固定[参考身份](reference-gallery.json)定义 40 类组件、首页和 Skill 页，Windows 与 Web 优先。除下列明确差异外，保留参考布局、字形、造型、内容和交互，技术示例适配 Flutter；组件细节见[参考目录](component-reference-details.json)及各组件契约。
+固定[参考身份](reference-gallery.json)定义 43 类组件、首页和 Skill 页，Windows 与 Web 优先。除下列明确差异外，保留参考布局、字形、造型、内容和交互，技术示例适配 Flutter；组件细节见[参考目录](component-reference-details.json)及各组件契约。
 
 ## Color and ownership / 配色与所有权
 
@@ -140,10 +140,21 @@ User rule: measure each reference value on its actual composited backgrounds in 
 | Calendar panel (`IslandTokens.light` `muted`/`link`/`onLeaf`/`focus`) / 日历面板 | weekday `#a09080` (2.8–3.0:1) and neighbouring-month digits `#c4b89e` (1.7–1.9:1) → `muted`; today digit and ring `#19c8b9` (1.8–2.1:1), +N → `link`; white selected digit (2.1:1) → `onLeaf`; focus ring → `focus`, as DatePicker / 与 DatePicker 同角色 |
 | Calendar header (`CalendarColors.arrow`/`arrowHover`/`headerFocus`/`todayAction`/`todayActionHover`) / 日历头部 | on the host paper: arrows `#a0936e`, hover and focus `#19c8b9` kept on dark papers; on light papers (1.7–3.0:1) → `muted`/`link`/`focus`; 今天 `#8a7b66` (3.7–4.1:1 light) → `muted`, (2.9:1 dark) → `#ad9e88`; hover `#725d42` kept on light, 1.8:1 dark → `#b8a184` / 深色纸面保留达标参考值，浅色取 DatePicker 角色 |
 | Calendar event text (`CalendarColors.eventTime`, `CalendarColors.teal.ink`) / 日程文字 | time `#9f927d` 2.5–2.8:1 on the five fills → `#746753` (the BackTop value); warm-orange title `#b04a1f` 4.48:1 on `#ffe4cc` → `#af4a1e` / 同色相加深 |
+| NoData description (`NoDataColors.description`) / 空状态说明文字 | `#9f927d` 2.7–3.1:1 on the light papers → `#7a6d59`, 4.5:1 on every light paper; dark papers use `muted` / 同色相加深 |
+| Chart secondary text (`ChartColors.secondaryInk`) / 图表次要文字 | description, axis text, ring centre, loading and notes `#9f927d` 2.9:1 on `#f8f8f0` → `#7d705c` (light); dark uses the dark product role `#b7c6b5` / 同色相加深 |
+| Chart focus outline (`ChartColors.focus`) / 图表焦点轮廓 | primary `#19c8b9` 2.0:1 on the light surface → `#04a195`; dark keeps `#19c8b9` / 同色相加深 |
+| Chart hidden legend label (`ChartColors.legendHiddenInk`) / 已隐藏图例文字 | the reference halves the whole pill, text 2.2:1 → the pill keeps its half opacity and the label takes the opaque `#7f6a51` / 胶囊保持半透明，文字不透明 |
+| Chart rising candle (`ChartColors.candleRise`) / 上涨蜡烛 | coral `#dc7367` 2.94:1 on the light surface → `#da7166`; dark keeps the reference; the falling mint `#3b9d85` passes and is kept / 浅色加深，深色保留 |
+| Chart default series, light (`ChartColors.series`) / 图表默认系列色（浅色） | seven of the eight below 3:1 on `#f8f8f0`: mint `#19b7a7`, peach `#e59266`, green `#8ac68a`, purple `#b38ad3`, yellow `#e4b84f`, blue `#7e9fc4`, pink `#dc8c9e` → `#03a193`, `#cc7b50`, `#639d64`, `#a87fc8`, `#b4890c`, `#7292b7`, `#c7798b`; brown `#9a835a` passes and is kept; dark keeps all eight (3.2:1 or more) / 七个同色相加深至 3:1，棕色与深色保留 |
+| Chart gauge needle, dark (`ChartColors.needle`) / 仪表盘指针（深色） | `#725d42` 1.9:1 on the dark surface → `#937d61`; light keeps the reference / 深色提亮 |
+| Gallery chart demo series (`GalleryPalette.chartMeadow`/`chartSunset`/`chartForest`/`chartFlowers`/`chartHoney`) / 示例图表系列色 | reference sets meadow `#48a891 #97bc76 #e4b75c #ce9271 #aa91ba`, sunset `#dc886b #e4b75c #c993a5 #ab8cba #8dab9b`, forest `#408f7c #68a18b #8fb6a0 #b3cbb4 #d2dfc8`, flowers `#a88abb #d38ba3 #e9b782 #92b7a0 #c1b979` measure 1.3–2.9:1 → each value moves in its own hue until it reaches 3:1 on the default, cream, mint and blossom chart surfaces (`#408f7c` passes and is kept; honey `#e4b75c` → `#b38827`); forest is registered as pending below / 逐色加深至四种图表底板 3:1 |
+| Gallery chart ring remainder and note (`GalleryPalette.chartRingRemainder`, `chartNote`) / 示例环形余量与注释 | 待完成 sector `#e4dcc9` 1.3:1 → `#968e7d`; `.note` `#8a7b66` 4.1:1 → `#837460` / 同色相加深 |
 
 Transparent per-hue Tag text is validated on the product papers; caller-filled or accent surfaces need a filled variant or an explicit style. 透明 Tag 色相文字仅在产品纸面验证，强调色或调用方表面请用填色变体或显式样式。
 
 Kept from the 4.0.0 upgrade: the Upload background percentage `#794f27` (4.6:1 or more), the Calendar selected disc `#19c8b9` with its `#e6f9f6` cell tint (selection fill, as DatePicker and Tabs), the decorative month icon, event borders and Time rule, and the passing Calendar day inks. A caller `color` on Progress or Upload progress stays authoritative (explicit caller styles win): the library draws no same-hue edge for it, and the Gallery passes public colorway accents beside the shown percentage. 4.0.0 升级保留：Upload 背景百分比、Calendar 选中圆与格底（选中填色，同 DatePicker、Tabs）、装饰月份图标、日程边框、Time 分割线及达标日期墨色。Progress 与 Upload 的调用方 `color` 由调用方负责，库不为其加边；Gallery 使用公开色相并显示百分比。
+
+Kept from the 4.0.0 chart and NoData ports: the NoData title `#794f27`, bordered fill `#f8f8f0` and decorative dashed outline `#e8e2d6`; the Chart light surface, ink, border, grid, zero line, crosshair, legend pill fills, separators `#fffdf7`, gauge track `#eae2ce`, gauge ticks `#b6a184`, empty map regions, the falling candle and the Gallery chart surfaces and borders (decorative or passing); and every caller-supplied series, point, `backgroundColor` and `borderColor`, which stay the caller's responsibility. NoData 的标题、描边底色与装饰性虚线轮廓，Chart 浅色的底板、墨色、边框、网格、零线、十字线、图例底色、分隔线、仪表盘轨道与刻度、无数据地图区域、下跌蜡烛及 Gallery 图表底板边框（装饰或达标）保留参考值；调用方传入的系列色、点色、`backgroundColor`、`borderColor` 由调用方负责。
 
 <a id="time-colon-blink"></a>
 The Time colon is a decorative separator: it blinks on the reference 1s step-end cycle, the clock value stays complete in semantics, digits never dim and reduced motion keeps it visible. Time 冒号是装饰分隔符，按参考 1s step-end 闪烁；语义值完整、数字不变暗，减少动态时常亮。
@@ -157,10 +168,21 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Modal and Image preview entrance / 弹层入场 | One shared dialog route and entrance; differs slightly from the two reference entrances | One mechanism, no per-consumer parameter |
 | Tabs active dot / Tabs 选中圆点 | Follows the pinned 2.2.1 source: the dot inherits the active label colour | The live site (3.0.4) is outside this round's scope |
 
+<a id="behaviour-differences-400"></a>
+## Deliberate behaviour differences (4.0.0 components) / 有意行为差异（4.0.0 新组件）
+
+| Item | Reference | This library |
+|---|---|---|
+| Calendar pointer cancel / Calendar 指针取消 | The root `onPointerCancel` finishes the drag and creates the event | A cancelled pointer (the system aborted the gesture) commits nothing, as Flutter reports it as a cancel and never as a release; a release outside the panel also discards the drag / 取消不创建事件，面板外松开同样丢弃 |
+| Calendar header on narrow widths / Calendar 窄屏头部 | The header is a space-between row of three groups with no wrapping | The groups wrap only when they cannot fit, a narrow-layout usability difference under [Gallery parent layout](#gallery-parent-layout) / 放不下时才换行 |
+| Chart time x outside the Date range / Chart 时间轴越界值 | A time x beyond ±8.64e15 ms yields a label "Invalid Date" | Such a value is invalid data: not drawn, not counted, keeps its index; an axis tick outside the range still reads "Invalid Date" / 视为无效数据，不绘制 |
+| Chart dark theme / Chart 深色主题 | None: the reference has no dark theme | `ChartColors.dark` maps the reference variables onto the dark product roles; it is this library's own design, not a reference value / 本库自有映射，非参考值 |
+| Chart and Calendar chrome language / 界面文案语言 | Fixed Chinese | `IslandLocalizations`: Chinese equal to the reference under a `zh` locale, English otherwise / 随 `IslandLocalizations` |
+
 <a id="pending-owner-decisions-400"></a>
 ## Pending owner decisions (4.0.0) / 待所有者裁决（4.0.0）
 
-The existing-component ports to reference 4.0.0 keep the reference values below, or the stated current behavior, until the owner decides. Colour items that the [measured colour rule](#measured-color-differences) settles are registered in its table; only items it does not settle remain here. Contrast figures are measured on the composited surfaces named and are not acceptance evidence. 4.0.0 版本既有组件移植暂保留下列参考值或所述现状，待所有者裁决；实测配色规则可裁定的颜色项已登记于其表格，此处仅保留该规则无法裁定的项目。对比度为在所列合成表面上的实测值，不构成验收证据。
+The 4.0.0 ports and new components keep the reference values below, or the stated current behavior, until the owner decides. Colour items that the [measured colour rule](#measured-color-differences) settles are registered in its table; only items it does not settle remain here. Contrast figures are measured on the composited surfaces named and are not acceptance evidence. 4.0.0 版本既有组件移植与新组件暂保留下列参考值或所述现状，待所有者裁决；实测配色规则可裁定的颜色项已登记于其表格，此处仅保留该规则无法裁定的项目。对比度为在所列合成表面上的实测值，不构成验收证据。
 
 | Item | Measured facts | Current state |
 |---|---|---|
@@ -168,9 +190,15 @@ The existing-component ports to reference 4.0.0 keep the reference values below,
 | Loading circle reveal and tip / Loading 圆形揭示与提示 | The reveal removes the centred tip first, as the reference does | Reference behavior kept, undecided / 保留参考行为，待裁决 |
 | Loading input during the reveal / Loading 揭示期间输入 | The reference lets pointer events through while the circle opens | Deliberate difference: input stays blocked until the surface is removed / 有意差异：移除前持续拦截输入 |
 | Loading first paint / Loading 首次绘制 | The mask first paints on the second frame, because the shared `ViewportOverlay` inserts post-frame | Current behavior kept, undecided / 保留现状，待裁决 |
-| Loading sailboat artwork / Loading 帆船图形 | The sailboat uses the existing naive-icons 1.6.0 glyph, not the 1.14.0 artwork | Existing glyph used; to be re-pinned with the icon import / 沿用现有图形，随图标导入重新固定 |
 | Cursor selection highlight `#e9c46a` / Cursor 选区高亮 | The reference pair, `#2b2620` selected text on `#e9c46a`, passes at 9.0:1, but Flutter keeps each text's own colour over the highlight: light inks are 3.3–4.7:1 (muted `#736857` 3.27:1), dark-theme inks 1.0–1.5:1. The rule is ambiguous here: the failing value is the platform pairing, not a reference value, and moving the highlight in its own hue until every ink passes (`#ffea8f` light, `#624100` dark) leaves the selection only 1.1–1.3:1 from the paper | Reference value kept, undecided / 规则在此不明确：不达标源于平台配对；按色相移动高亮可使文字达标，但选区与纸面仅差 1.1–1.3:1，待裁决 |
 | Modal opened inside an open Drawer / 抽屉内打开的 Modal | The Modal is drawn under the drawer | Pre-existing layering, unchanged by this round, undecided / 既有层级，本轮未变，待裁决 |
+| Icon paint roles pending / 图标配色角色待定 | The naive-icons 1.14.0 import ([MAINTENANCE](MAINTENANCE.md)) applies only root ink → `currentColor`; 425 of the 709 glyphs have element roles that no rule settles (`import_v1_14.pending` in `docs/icon-paint-roles.json`), and 43 of the 56 redrawn glyphs dropped at least one authored repair (`repairs_dropped`). The Loading sailboat now uses the 1.14.0 glyph | Unreviewed, undecided / 未审查，待裁决 |
+| Failing icon contrast tests / 失败的图标对比度测试 | Three icon contrast tests fail on redrawn glyphs: the eye-off slash; the host contrast of scooter, trophy, arrow-up-right and search; the named probes of cactus, cat, fish, owl, penguin, rabbit, tree and the coffee-cup heart | Left failing, undecided / 保持失败，待裁决 |
+| NoData and Search built-in artwork on dark papers / 暗色纸面上的内置插图 | The built-in box and magnifier keep their fixed `#2a2a2a` ink in every theme: about 1.04–1.21:1 on dark papers. The artwork is decorative and excluded from semantics, title and description stay readable | Reference behaviour kept, undecided; its paint roles are part of the pending icon import / 保留参考行为，待裁决 |
+| NoData dark bordered outline / NoData 深色描边轮廓 | The reference has no dark theme and so no value; the dashed outline and fill use `tokens.outline` and `tokens.paper` | This library's own choice, undecided / 本库自选，待裁决 |
+| Gallery chart forest ramp / Gallery 图表 forest 渐变 | The reference forest ramp `#408f7c #68a18b #8fb6a0 #b3cbb4 #d2dfc8` reads as a light-to-pale tonal ramp; deepening each value to 3:1 gives `#408f7c #629a85 #719782 #7e947f #87927d`, which is nearly flat | Deepened values used, undecided / 使用加深值，待裁决 |
+| Chart arc and map low values / 圆弧与地图低值 | The arcbar and gauge value arc is about 2.5:1 against its `#eae2ce` track at the end cap, and choropleth low values (fill opacity from 0.3) fall under 3:1 on the surface; each reading is also in the tooltip and the data table | Reference geometry kept, undecided / 保留参考几何，待裁决 |
+| Home footer copyright / 首页页脚版权 | The reference line reads `© 2026 Animal Island. All Rights Reserved · MIT License`; this Gallery appends `· Reference Gallery` to keep its attribution | Appended wording kept, undecided / 保留追加文字，待裁决 |
 
 <a id="notification-type"></a>
 ## Notification type / 通知类型

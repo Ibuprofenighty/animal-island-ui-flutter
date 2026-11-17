@@ -26,6 +26,10 @@ Follow [shared recipes](../../docs/DESIGN.md#original-color-restoration), [share
 
 Keep one content subtree and lifecycle across entry, exit, reverse, reopen, cancel, disposal, theme changes and reduced motion. [Surface sampling](../../docs/DESIGN.md#surface-sampling) does not authorize per-child offsets or a blanket filter; Notification and Tooltip move their whole surface in whole device pixels instead. The [Home/photo exception](../../docs/DESIGN.md#home-host-and-photo-gradient) applies only to those named Gallery regions.
 
+## Charts, Calendar and icons
+
+Choose a chart kind through the matching typed `IslandChartData` constructor and follow its data shapes and invalid-data rules in [API](../../docs/API.md#reference-400-additions); a map needs caller-supplied regions, and the empty state is `IslandNoData`. Calendar, Chart and NoData take their chrome text from `IslandLocalizations` and show English without its `zh` locale. `IslandGlyph` values (709, naive-icons v1.14.0) change only by running `python -B tool/import_icons.py`; never hand-edit `assets/icons`, and treat the element roles listed under `import_v1_14.pending` in `docs/icon-paint-roles.json` as unreviewed.
+
 ## Extend atomically
 
 Inspect unknown reference behavior before changing it. Use the pinned [reference identity](../../docs/reference-gallery.json); adapted code examples may use Dart, but do not invent product behavior. Update declarations, contract, implementation, every consumer, tests, documentation and both Skill languages together. Keep one mechanism: no aliases, compatibility branches, parallel palette or test-only production API.
