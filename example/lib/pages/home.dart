@@ -662,7 +662,7 @@ class _GalleryHomeState extends State<GalleryHome>
                         ),
                         const SizedBox(height: 12),
                         const Text(
-                          '© 2026 Animal Island. All Rights Reserved · MIT License · Reference Gallery',
+                          'MIT License · Reference Gallery',
                           textAlign: TextAlign.center,
                           strutStyle: StrutStyle(
                             fontSize: 12,

@@ -72,9 +72,7 @@ void main() {
         isTrue,
       );
       expect(find.text('v2.2.1'), findsNothing);
-      final credit = find.text(
-        '© 2026 Animal Island. All Rights Reserved · MIT License · Reference Gallery',
-      );
+      final credit = find.text('MIT License · Reference Gallery');
       await t.ensureVisible(credit);
       await t.pumpAndSettle();
       expect(credit, findsOneWidget);
@@ -525,12 +523,7 @@ void main() {
     final label = find.descendant(of: github, matching: find.text('GitHub'));
     expect(t.getTopLeft(label).dx - t.getTopRight(mark).dx, 4);
     expect(t.getCenter(mark).dy, closeTo(t.getCenter(label).dy - 1, .01));
-    expect(
-      find.text(
-        '© 2026 Animal Island. All Rights Reserved · MIT License · Reference Gallery',
-      ),
-      findsOneWidget,
-    );
+    expect(find.text('MIT License · Reference Gallery'), findsOneWidget);
   });
 
   testWidgets('Skill page opens under a circle Loading for 2s', (t) async {
@@ -799,7 +792,7 @@ void main() {
       expect(colorOf(t, '向下滑动'), HomeWallpaperInk.cream);
       expect(colorOf(t, '特性'), HomeWallpaperInk.title);
       expect(colorOf(t, '为什么选择'), HomeWallpaperInk.body);
-      expect(colorOf(t, '© 2026 Animal Island'), HomeWallpaperInk.body);
+      expect(colorOf(t, 'MIT License · Reference'), HomeWallpaperInk.body);
       final footer = t.widget<RichText>(
         find.descendant(
           of: find.widgetWithText(TextButton, '组件文档'),

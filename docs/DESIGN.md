@@ -71,9 +71,9 @@ Surface-sampling owner coverage / 表面采样所有者覆盖：
 <a id="gallery-product-version"></a>
 ### Gallery product version / Gallery 产品版本
 
-The existing Home badge shows the independent root `pubspec.yaml` version through the generated `example/lib/shared/version.g.dart` projection. `tool/verify.py --generate-gallery-version` owns generation and validates equality with the Gallery pubspec; source policy rejects stale output. Do not maintain per-page version literals. Badge style and layout stay unchanged. The footer retains Reference Gallery attribution without presenting its observed version as this product's version; the original observed version remains provenance in `docs/reference-gallery.json`.
+The existing Home badge shows the independent root `pubspec.yaml` version through the generated `example/lib/shared/version.g.dart` projection. `tool/verify.py --generate-gallery-version` owns generation and validates equality with the Gallery pubspec; source policy rejects stale output. Do not maintain per-page version literals. Badge style and layout stay unchanged. The footer reads `MIT License · Reference Gallery` and does not repeat the reference site's copyright line (owner decision 2026-11-17); it retains Reference Gallery attribution without presenting its observed version as this product's version; the original observed version remains provenance in `docs/reference-gallery.json`.
 
-首页现有徽标通过生成的 `example/lib/shared/version.g.dart` 展示独立项目根 `pubspec.yaml` 版本；生成及与 Gallery pubspec 的一致性由 `tool/verify.py --generate-gallery-version` 所有，源码检查拒绝过期输出。不在页面手工维护另一份版本值，不改变徽标样式或布局。页脚保留 Reference Gallery 归属，但不把参考观测版本当成本项目版本；原观测版本仍保留在 `docs/reference-gallery.json` 来源记录中。
+首页现有徽标通过生成的 `example/lib/shared/version.g.dart` 展示独立项目根 `pubspec.yaml` 版本；生成及与 Gallery pubspec 的一致性由 `tool/verify.py --generate-gallery-version` 所有，源码检查拒绝过期输出。不在页面手工维护另一份版本值，不改变徽标样式或布局。页脚只写 `MIT License · Reference Gallery`，不照搬参考站的版权声明（所有者决定 2026-11-17），但不把参考观测版本当成本项目版本；原观测版本仍保留在 `docs/reference-gallery.json` 来源记录中。
 
 
 
@@ -198,7 +198,6 @@ The 4.0.0 ports and new components keep the reference values below, or the state
 | NoData dark bordered outline / NoData 深色描边轮廓 | The reference has no dark theme and so no value; the dashed outline and fill use `tokens.outline` and `tokens.paper` | This library's own choice, undecided / 本库自选，待裁决 |
 | Gallery chart forest ramp / Gallery 图表 forest 渐变 | The reference forest ramp `#408f7c #68a18b #8fb6a0 #b3cbb4 #d2dfc8` reads as a light-to-pale tonal ramp; deepening each value to 3:1 gives `#408f7c #629a85 #719782 #7e947f #87927d`, which is nearly flat | Deepened values used, undecided / 使用加深值，待裁决 |
 | Chart arc and map low values / 圆弧与地图低值 | The arcbar and gauge value arc is about 2.5:1 against its `#eae2ce` track at the end cap, and choropleth low values (fill opacity from 0.3) fall under 3:1 on the surface; each reading is also in the tooltip and the data table | Reference geometry kept, undecided / 保留参考几何，待裁决 |
-| Home footer copyright / 首页页脚版权 | The reference line reads `© 2026 Animal Island. All Rights Reserved · MIT License`; this Gallery appends `· Reference Gallery` to keep its attribution | Appended wording kept, undecided / 保留追加文字，待裁决 |
 
 <a id="notification-type"></a>
 ## Notification type / 通知类型
