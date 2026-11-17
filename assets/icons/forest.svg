@@ -5,5 +5,5 @@
 <rect x="12" y="34" width="4" height="5" fill="#8B5E3C" stroke="none"/>
 <rect x="23" y="34" width="4" height="5" fill="#8B5E3C" stroke="none"/>
 <rect x="34" y="34" width="4" height="5" fill="#8B5E3C" stroke="none"/>
-<path d="M6 40 H42" stroke="#8B5E3C" stroke-width="3"/>
+<path d="M6 40 H42" stroke="currentColor" stroke-width="3"/>
 </svg>

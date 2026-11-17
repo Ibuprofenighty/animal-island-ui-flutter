@@ -3,7 +3,7 @@
 <path d="M31 18 C36 17 41 15 42 11 C43 8 40 6 37 9 C34 12 32 15 31 18 Z" fill="#E76F51"/>
 <path d="M18 20 C16 24 16 30 18 35 L20 40 L28 40 L30 35 C32 30 32 24 30 20 C28 17 20 17 18 20 Z" fill="#E76F51"/>
 <path d="M18 26 L30 26 M18 33 L30 33" stroke="#FAEDCD" stroke-width="2" fill="none"/>
-<path d="M22 40 L18 43 L24 42 L30 43 L26 40" fill="#E76F51" stroke="#2A2A2A" stroke-width="2"/>
-<path d="M20 8 L18 14 M24 7 L24 13 M28 8 L30 14" stroke="#264653" stroke-width="2" fill="none"/>
+<path d="M22 40 L18 43 L24 42 L30 43 L26 40" fill="#E76F51" stroke="currentColor" stroke-width="2"/>
+<path d="M20 8 L18 14 M24 7 L24 13 M28 8 L30 14" stroke="currentColor" stroke-width="2" fill="none"/>
 <circle cx="24" cy="21" r="1.5" fill="#2A2A2A" stroke="none"/>
 </svg>

@@ -2,10 +2,10 @@
 <path d="M12.92 14.77 L15.69 6.46 L21.23 12.92 Z" fill="#264653"/>
 <path d="M35.08 14.77 L32.31 6.46 L26.77 12.92 Z" fill="#264653"/>
 <ellipse cx="24" cy="26.77" rx="13.85" ry="14.77" fill="#264653"/>
-<circle cx="18.46" cy="22.15" r="5.54" fill="#FFFFFF"/>
-<circle cx="29.54" cy="22.15" r="5.54" fill="#FFFFFF"/>
-<circle cx="18.46" cy="23.08" r="2.31" fill="#2A2A2A"/>
-<circle cx="29.54" cy="23.08" r="2.31" fill="#2A2A2A"/>
+<circle cx="18.46" cy="22.15" r="5.54" fill="#FFFFFF" stroke="#FFFFFF"/>
+<circle cx="29.54" cy="22.15" r="5.54" fill="#FFFFFF" stroke="#FFFFFF"/>
+<circle cx="18.46" cy="23.08" r="2.31" fill="#2A2A2A" stroke="#2A2A2A"/>
+<circle cx="29.54" cy="23.08" r="2.31" fill="#2A2A2A" stroke="#2A2A2A"/>
 <path d="M21.69 27.69 L26.31 27.69 L24 31.38 Z" fill="#E9C46A" stroke="none"/>
 <path d="M17.54 36 Q 20.31 37.85 23.08 36" stroke="#2A2A2A" fill="none" stroke-width="1.8"/>
 <path d="M24.92 36 Q 27.69 37.85 30.46 36" stroke="#2A2A2A" fill="none" stroke-width="1.8"/>

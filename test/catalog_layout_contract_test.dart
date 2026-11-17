@@ -281,7 +281,7 @@ void main() {
     (t) async {
       for (final brightness in Brightness.values) {
         for (final sample in [
-          (IslandGlyph.eyeOff, const Offset(19, 19), const Offset(14, 24)),
+          (IslandGlyph.eyeOff, const Offset(18, 18), const Offset(14, 24)),
           (IslandGlyph.bellOff, const Offset(24, 25), const Offset(17, 25)),
         ]) {
           final key = GlobalKey();

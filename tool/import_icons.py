@@ -298,6 +298,19 @@ def stroke_mask(subs, half: float) -> set[int]:
 
 # ---------------------------------------------------------------- analysis
 
+_MASKS: dict = {}
+
+
+def masks(geometry, half: float | None) -> set[int]:
+    """Fill (half None) or stroke mask of one element geometry; paint never changes a mask."""
+    key = (geometry, half)
+    if key not in _MASKS:
+        tag, matrix, attrib = geometry
+        subs = [([apply(matrix, p) for p in pts], closed) for pts, closed in shape(tag, dict(attrib))]
+        _MASKS[key] = frozenset(fill_mask(subs) if half is None else stroke_mask(subs, half))
+    return _MASKS[key]
+
+
 class Element:
     """One drawable element in paint order with its resolved upstream paint."""
 
@@ -308,9 +321,9 @@ class Element:
         self.fill = attrib.get("fill", inherited["fill"])
         width = float(attrib.get("stroke-width", inherited["stroke-width"]))
         scale = math.sqrt(abs(matrix[0] * matrix[3] - matrix[1] * matrix[2]))
-        subs = [([apply(matrix, p) for p in pts], closed) for pts, closed in shape(tag, attrib)]
-        self.fill_px = fill_mask(subs) if self.fill != "none" and tag != "line" else set()
-        self.stroke_px = stroke_mask(subs, width * scale / 2) if self.stroke != "none" and width > 0 else set()
+        geometry = (tag, matrix, tuple(sorted((k, v) for k, v in attrib.items() if k in GEOMETRY)))
+        self.fill_px = masks(geometry, None) if self.fill != "none" and tag != "line" else set()
+        self.stroke_px = masks(geometry, width * scale / 2) if self.stroke != "none" and width > 0 else set()
         self.inherits_ink = bool(self.stroke_px) and (self.stroke == "currentColor" or (
             self.stroke_attr is None and self.stroke.upper() == INK))
 
@@ -404,7 +417,7 @@ def pending_roles(svg: str, fresh: set[str] | None) -> list[dict]:
     out, host_contour = [], False
     for r in classify(svg):
         exposed = r["stroke_exposed"] > EXPOSURE
-        if r["kind"] == "inherited" and exposed:
+        if (r["kind"] == "inherited" and exposed) or (r["fill"] == "currentColor" and r["fill_exposed"] > EXPOSURE):
             host_contour = True
         if fresh is not None and r["element"] not in fresh:
             continue
@@ -435,6 +448,122 @@ def pending_roles(svg: str, fresh: set[str] | None) -> list[dict]:
         out.append({"element": "*", "category": "fixed-silhouette",
                     "detail": "no inherited contour reaches the host; fixed outline/silhouette disposition"})
     return out
+
+
+# ---------------------------------------------------------------- owner rules (2026-11-17)
+
+# The owner applied the previous round's majority practice in bulk, one rule per pending
+# category. A rule only rewrites the one paint attribute it names and never geometry.
+OWNER_RULES = {
+    "O1": "colour-on-host: an explicit coloured stroke reaching the host background becomes "
+          "currentColor (previous round: 28 of 32), unless its colour carries meaning (SEMANTIC_COLOUR).",
+    "O2": "fixed-ink-on-host: an explicit #2A2A2A stroke reaching the host becomes currentColor "
+          "(previous round: 57 of 64).",
+    "O3": "inherited-interior: an inherited stroke lying only on the glyph's own paint becomes fixed "
+          "drawing ink #2A2A2A (previous round: 148 of 167), only where #2A2A2A keeps 3:1 on every "
+          "measured own backing; otherwise it stays currentColor and is held for the owner.",
+    "O4": "fixed-silhouette: a glyph whose contour reaches the host only in fixed paint has its "
+          "host-reaching contour follow currentColor: O1/O2 on its strokes, and a host-reaching "
+          "#2A2A2A fill (an ink outline drawn as a filled shape) becomes currentColor.",
+    "O5": "interior-contrast: interior detail under 3:1 on its own backing keeps the upstream paint "
+          "as decorative interior detail (kept by rule, not certified as necessary).",
+}
+# Coloured host-reaching strokes whose hue is the meaning (a red negation slash): O1 would
+# turn the slash into ordinary ink, so they keep upstream paint and are held for the owner.
+SEMANTIC_COLOUR = {
+    ("cloud-off", "1"): "red negation slash",
+    ("location-off", "2"): "red negation slash",
+    ("mic-off", "3"): "red negation slash",
+    ("phone-off", "1"): "red negation slash",
+    ("video-off", "2"): "red negation slash",
+}
+# Host contexts the held entries are measured against (light/dark paper and canvas tokens).
+HOSTS = {"light paper": "#F8F8F0", "light canvas": "#88C9A1", "dark paper": "#243C33", "dark canvas": "#172B26"}
+
+
+def hex_backings(backing: dict[str, int]) -> dict[str, int]:
+    return {k: v for k, v in backing.items() if v > EXPOSURE and k.startswith("#")}
+
+
+def ratios(paint: str, backing) -> dict[str, float]:
+    return {b: round(contrast(paint, b), 2) for b in backing if b.upper() != paint.upper()}
+
+
+def settle(name: str, svg: str, scope: set[str] | None):
+    """Apply the owner rules O1-O5 to the pending roles of one glyph.
+
+    Returns (edits, settled, held). Each settled entry names its rule; held entries keep
+    upstream paint with the measured reason no rule applies. The result is re-measured:
+    every O1/O2/O4 element must now reach the host in currentColor and every O3 element must
+    keep 3:1 on its own backing, or the import stops."""
+    rows = {r["element"]: r for r in classify(svg)}
+    edits: dict[str, dict[str, str | None]] = {}
+    settled, held = [], []
+    for p in pending_roles(svg, scope):
+        el, cat = p["element"], p["category"]
+        if cat == "fixed-silhouette":
+            continue
+        r = rows[el]
+        if cat == "colour-on-host":
+            if (name, el) in SEMANTIC_COLOUR:
+                held.append({**p, "reason": f"{SEMANTIC_COLOUR[(name, el)]}: O1 would remove the colour that "
+                             f"carries the meaning; upstream {r['stroke']} on hosts " + ", ".join(
+                                 f"{h} {contrast(r['stroke'], c):.2f}:1" for h, c in HOSTS.items())})
+                continue
+            edits.setdefault(el, {})["stroke"] = "currentColor"
+            settled.append({"element": el, "category": cat, "rule": "O1", "before": r["stroke"],
+                            "after": "currentColor"})
+        elif cat == "fixed-ink-on-host":
+            edits.setdefault(el, {})["stroke"] = "currentColor"
+            settled.append({"element": el, "category": cat, "rule": "O2", "before": INK, "after": "currentColor"})
+        elif cat == "inherited-interior":
+            measured = ratios(INK, hex_backings(r["stroke_backing"]))
+            if measured and min(measured.values()) < 3:
+                held.append({**p, "reason": "O3 not applied: fixed #2A2A2A measures " + ", ".join(
+                    f"{v:.2f}:1 on own {b}" for b, v in sorted(measured.items())) + "; stays currentColor"})
+                continue
+            edits.setdefault(el, {})["stroke"] = INK
+            settled.append({"element": el, "category": cat, "rule": "O3", "before": "currentColor (R1)",
+                            "after": INK, "ratios": measured})
+        else:
+            settled.append({"element": el, "category": cat, "rule": "O5", "kept": p["detail"].split(";")[0]})
+    if scope is None and any(p["category"] == "fixed-silhouette" for p in pending_roles(edit(svg, edits), None)):
+        after = {r["element"]: r for r in classify(edit(svg, edits))}
+        for el, r in after.items():
+            if r["fill"].upper() == INK and r["fill_exposed"] > EXPOSURE and r["kind"] == "none":
+                edits.setdefault(el, {})["fill"] = "currentColor"
+                settled.append({"element": el, "category": "fixed-silhouette", "rule": "O4",
+                                "before": f"fill {INK}", "after": "fill currentColor"})
+    result = edit(svg, edits)
+    final = {r["element"]: r for r in classify(result)}
+    for s in settled:
+        r = final[s["element"]]
+        if s["rule"] in ("O1", "O2") and not (r["kind"] == "inherited" and r["stroke_exposed"] > EXPOSURE):
+            raise SystemExit(f"{name} {s['element']}: {s['rule']} did not yield a host-reaching currentColor stroke")
+        if s["rule"] == "O3" and (r["kind"] != "ink" or low_contrast(INK, hex_backings(r["stroke_backing"]))):
+            raise SystemExit(f"{name} {s['element']}: O3 ink lost 3:1 on its own backing")
+    o5 = {(s["element"], s["category"]) for s in settled if s["rule"] == "O5"}
+    o4 = any(s["rule"] == "O4" for s in settled)
+    known = {(h["element"], h["category"]) for h in held}
+    for p in pending_roles(result, scope):
+        key = (p["element"], p["category"])
+        if key in o5 or key in known:
+            continue
+        if p["category"] == "fixed-silhouette":
+            held.append({**p, "reason": "after O1/O2" + ("/O4" if o4 else "") + " no stroke or #2A2A2A fill "
+                         "reaches the host; the host contour is coloured fill only, outside the rules"})
+        elif p["category"] == "interior-contrast":
+            settled.append({**{k: p[k] for k in ("element", "category")}, "rule": "O5",
+                            "kept": p["detail"].split(";")[0] + " (arises after O3)"})
+        else:
+            raise SystemExit(f"{name} {key}: a rule left an unsettled role")
+    if scope is None and any(p["category"] == "fixed-silhouette" for p in pending_roles(svg, None)) \
+            and not any(h["category"] == "fixed-silhouette" for h in held):
+        settled.append({"element": "*", "category": "fixed-silhouette", "rule": "O4",
+                        "after": "host contour follows currentColor through " + ", ".join(
+                            sorted({s["element"] for s in settled if s["rule"] in ("O1", "O2", "O4")},
+                                   key=natural))})
+    return edits, sorted(settled, key=lambda s: (s["element"] == "*", natural(s["element"]) if s["element"] != "*" else [])), held
 
 
 # ---------------------------------------------------------------- derivation
@@ -488,6 +617,75 @@ def root_to_current(svg: str) -> str:
     return head.replace(f'stroke="{INK}"', 'stroke="currentColor"') + sep + rest
 
 
+# Authored repairs on redrawn geometry, applied after the rules and R1. A clip split draws the
+# mark once per segment: each later segment is clipped to the fill geometry of one element and
+# paints over the earlier ones, so every part of the mark gets a paint chosen for its backing.
+REPAIRS = {
+    "eye-off": {
+        "kind": "clip-split",
+        "mark": "4",
+        "segments": [(None, "currentColor"), ("0", "#E05A5A"), ("1", "#E76F51")],
+        "reason": "Re-derives the baseline split (slash currentColor outside the eye, #E05A5A inside "
+                  "the cream body) on the 1.14.0 geometry. Upstream now draws a #264653 iris (element 1, "
+                  "r 7) under the slash, where #E05A5A measures 2.72:1; there the upstream #E76F51 passes "
+                  "and is kept (owner rule: passing reference values stay).",
+    },
+}
+
+
+def clip_split(svg: str, mark: str, segments) -> str:
+    nodes = {p: (t, a) for p, t, a in structure(svg)}
+    tag, attrib = nodes[mark]
+    if tag != "path" or "transform" in attrib:
+        raise SystemExit("clip split needs an untransformed path mark")
+    clips = [c for c, _ in segments if c is not None]
+    defs = "<defs>" + "".join(
+        f'<clipPath id="role-{c}-clip" clipPathUnits="userSpaceOnUse"><use href="#role-{c}" /></clipPath>'
+        for c in clips) + f'<path id="role-mark-{mark}" d="{attrib["d"]}" fill="none" /></defs>'
+    uses = "".join(
+        f'<use href="#role-mark-{mark}" fill="none" stroke-width="{attrib.get("stroke-width", "3.5")}" '
+        f'stroke="{paint}"' + (f' clip-path="url(#role-{c}-clip)"' if c else "") + " />"
+        for c, paint in segments)
+    out = edit(svg, {c: {"id": f"role-{c}"} for c in clips})
+    a, b = tag_spans(out)[mark]
+    out = out[:a] + uses + out[b:]
+    head = out.index(">") + 1
+    return out[:head] + "\n" + defs + out[head:]
+
+
+def measure_split(svg: str, mark: str, segments) -> list[dict]:
+    """Measure each segment of a split mark against the own paint actually under it."""
+    _, els = elements(svg)
+    index = {e.path: i for i, e in enumerate(els)}
+    painted: dict[int, str] = {}
+    for e in els[:index[mark]]:
+        for px in e.fill_px:
+            painted[px] = e.fill
+        for px in e.stroke_px:
+            painted[px] = "currentColor" if e.inherits_ink else e.stroke
+    later: set[int] = set()
+    for e in els[index[mark] + 1:]:
+        later |= e.fill_px | e.stroke_px
+    regions = {c: els[index[c]].fill_px for c, _ in segments if c is not None}
+    counts: dict[tuple[str, str], int] = {}
+    for px in els[index[mark]].stroke_px - later:
+        paint = segments[0][1]
+        for c, p in segments[1:]:
+            if px in regions[c]:
+                paint = p
+        key = (paint, painted.get(px, "host"))
+        counts[key] = counts.get(key, 0) + 1
+    out = []
+    for (paint, backing), n in sorted(counts.items()):
+        if n <= EXPOSURE:
+            continue
+        row = {"paint": paint, "backing": backing, "samples": n}
+        if paint.startswith("#") and backing.startswith("#"):
+            row["ratio"] = round(contrast(paint, backing), 2)
+        out.append(row)
+    return out
+
+
 def structure(svg: str) -> list[tuple[str, str, dict]]:
     spans = list(tag_spans(svg))
     root = ET.fromstring(svg)
@@ -502,8 +700,21 @@ def signature(node) -> tuple:
     return (tag,) + tuple(sorted((k, v) for k, v in attrib.items() if k in GEOMETRY))
 
 
+def paint_attrs(attrib: dict) -> dict:
+    return {k: v for k, v in attrib.items() if k not in GEOMETRY}
+
+
+def role_key(row: dict) -> tuple[str, bool]:
+    return row["kind"], row["stroke_exposed"] > EXPOSURE
+
+
 def carry(old_up: str, new_up: str, authored: str):
-    """Carry authored per-attribute repairs onto upstream elements with unchanged geometry."""
+    """Carry authored per-attribute repairs onto upstream elements with unchanged geometry.
+
+    Role carry: where upstream kept the element count and tag sequence, an element at the
+    same position with unchanged paint attributes is the same role on moved geometry. Its
+    authored repairs are carried, and if its measured role (stroke kind, host reach) is also
+    unchanged, the previous review of that role settles it (returned in `role_settled`)."""
     o, n, a = structure(old_up), structure(new_up), structure(authored)
     edits: dict[str, dict[str, str | None]] = {}
     kept, dropped = [], []
@@ -515,17 +726,33 @@ def carry(old_up: str, new_up: str, authored: str):
             match[block.a + k] = block.b + k
     fresh = {n[j][0] for j in range(len(n)) if j not in match.values()}
     fresh |= {n[j][0] for i, j in match.items() if o[i][2] != n[j][2]}
+    role_settled: set[str] = set()
     if len(o) != len(a) or any(x[1] != y[1] for x, y in zip(o, a)):
         dropped.append({"element": "*", "reason": "authored asset restructures the upstream elements "
                         "(local clip/use); its repair needs re-authoring on the new geometry"})
-        return edits, kept, dropped, fresh
+        return edits, kept, dropped, fresh, role_settled
+    aligned = len(o) == len(n) and all(x[1] == y[1] for x, y in zip(o, n))
+    role = {}
+    if aligned:
+        old_rows = {r["element"]: role_key(r) for r in classify(old_up)}
+        new_rows = {r["element"]: role_key(r) for r in classify(new_up)}
+        for i in range(len(o)):
+            if i not in match and paint_attrs(o[i][2]) == paint_attrs(n[i][2]):
+                role[i] = n[i][0]
+                if o[i][1] not in DRAW_TAGS or old_rows[o[i][0]] == new_rows[n[i][0]]:
+                    role_settled.add(n[i][0])
     for i, (path, _, oa) in enumerate(o):
         aa = a[i][2]
         for key in sorted(set(oa) | set(aa)):
             if oa.get(key) == aa.get(key):
                 continue
             item = {"element": path, "attribute": key, "upstream": oa.get(key), "authored": aa.get(key)}
-            if i not in match:
+            if i not in match and i in role:
+                edits.setdefault(role[i], {})[key] = aa.get(key)
+                kept.append({**item, "element": role[i],
+                             "reason": "role carry: upstream moved only this element's geometry "
+                                       "(same position, tag and paint attributes)"})
+            elif i not in match:
                 dropped.append({**item, "reason": "upstream redrew this element"})
             elif n[match[i]][2].get(key) != oa.get(key):
                 dropped.append({**item, "reason": f"upstream changed this attribute to {n[match[i]][2].get(key)}"})
@@ -546,7 +773,7 @@ def carry(old_up: str, new_up: str, authored: str):
                     edits.setdefault(path, {})[key] = target_value
                     kept.append({"element": path, "attribute": key, "upstream": value, "authored": target_value,
                                  "reason": "glyph-wide authored substitution re-applied to a redrawn element"})
-    return edits, kept, dropped, fresh
+    return edits, kept, dropped, fresh, role_settled
 
 
 # ---------------------------------------------------------------- outputs
@@ -585,26 +812,43 @@ def build():
     if set(authored) - set(names) or set(authored) - set(upstream_names(OLD_PIN)):
         raise SystemExit("An authored glyph is missing upstream")
     outputs: dict[str, str] = {}
-    record = {"kept": [], "carried": {}, "added": [], "pending": {}}
+    record = {"kept": [], "carried": {}, "added": [], "settled": {}, "repairs": {}, "pending": {}}
     for name in names:
         new_up = upstream_svg(PIN, name)
         if name not in authored:
-            outputs[name] = root_to_current(new_up)
             record["added"].append(name)
-            pending = pending_roles(new_up, None)
+            base, scope = new_up, None
         else:
             old_up = upstream_svg(OLD_PIN, name)
             if old_up == new_up:
                 outputs[name] = authored[name]
                 record["kept"].append(name)
                 continue
-            edits, kept, dropped, fresh = carry(old_up, new_up, authored[name])
-            outputs[name] = root_to_current(edit(new_up, edits))
+            edits, kept, dropped, fresh, role_settled = carry(old_up, new_up, authored[name])
             record["carried"][name] = {"upstream_changed_elements": sorted(fresh, key=natural),
-                                       "repairs_carried": kept, "repairs_dropped": dropped}
-            pending = pending_roles(edit(new_up, edits), None if dropped and not kept else fresh)
-        if pending:
-            record["pending"][name] = pending
+                                       "repairs_carried": kept, "repairs_dropped": dropped,
+                                       "roles_settled_by_role_carry": sorted(role_settled, key=natural)}
+            base = edit(new_up, edits)
+            scope = None if dropped and not kept else fresh - role_settled
+        rule_edits, settled, held = settle(name, base, scope)
+        ruled = edit(base, rule_edits)
+        output = root_to_current(ruled)
+        if name in REPAIRS:
+            r = REPAIRS[name]
+            output = clip_split(output, r["mark"], r["segments"])
+            measured = measure_split(ruled, r["mark"], r["segments"])
+            if any(m.get("ratio", 3) < 3 for m in measured):
+                raise SystemExit(f"{name}: authored repair leaves a segment under 3:1")
+            record["repairs"][name] = {**{k: v for k, v in r.items() if k != "segments"},
+                                       "segments": [{"clip_to_fill_of": c, "stroke": p} for c, p in r["segments"]],
+                                       "measured": measured}
+            held = [h for h in held if h["element"] != r["mark"]]
+            settled = [s for s in settled if s["element"] != r["mark"]]
+        outputs[name] = output
+        if settled:
+            record["settled"][name] = settled
+        if held:
+            record["pending"][name] = held
     return names, outputs, record
 
 
@@ -613,12 +857,17 @@ def transformation(name: str, record: dict) -> str:
     if name in record["carried"]:
         c = record["carried"][name]
         text += (f" Authored per-element repairs from project baseline {BASELINE[:12]} carried onto unchanged "
-                 f"upstream elements: {len(c['repairs_carried'])} carried, {len(c['repairs_dropped'])} dropped "
-                 "where upstream changed the element or attribute. Other paint and all geometry are upstream bytes.")
-    else:
-        text += " Every other attribute and all geometry are the upstream bytes."
+                 f"upstream elements or roles: {len(c['repairs_carried'])} carried, {len(c['repairs_dropped'])} "
+                 "dropped where upstream changed the element or attribute.")
+    rules = sorted({s["rule"] for s in record["settled"].get(name, []) if "before" in s})
+    if rules:
+        text += (" Owner rules " + "/".join(rules) + " (2026-11-17) set the stroke or fill paint of the elements "
+                 "listed in docs/icon-paint-roles.json import_v1_14.settled.")
+    if name in record["repairs"]:
+        text += " Authored clip split of the mark: docs/icon-paint-roles.json import_v1_14.repairs."
+    text += " Other paint and all geometry are the upstream bytes."
     if name in record["pending"]:
-        text += " Unsettled element roles: docs/icon-paint-roles.json import_v1_14.pending."
+        text += " Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
     return text
 
 
@@ -651,29 +900,44 @@ def main() -> int:
         "authored_baseline": BASELINE,
         "importer": "tool/import_icons.py",
         "rules": {
-            "R1": "Root drawing ink #2A2A2A -> currentColor. It held for all 163 authored assets and is the "
-                  "only rule applied to new paint.",
+            "R1": "Root drawing ink #2A2A2A -> currentColor. It held for all 163 authored assets.",
             "carry": "Authored per-attribute repairs are re-applied to upstream elements whose tag and geometry "
                      "are unchanged, where upstream left the repaired attribute unchanged. A glyph-wide authored "
                      "substitution (every element with an explicit paint value got the same new value) is "
                      "re-applied to redrawn elements of that glyph with that value; those entries carry a "
                      "reason and need owner confirmation.",
+            "role_carry": "Where upstream kept a glyph's element count and tag sequence, an element at the same "
+                          "position with unchanged paint attributes is the same role on moved geometry: its "
+                          "authored repairs are carried (reason 'role carry'), and when its measured role (stroke "
+                          "kind, host reach) is unchanged too, the previous review settles it "
+                          "(carried.<name>.roles_settled_by_role_carry) and no owner rule is applied to it.",
+            **OWNER_RULES,
+            "semantic_colour": "Held from O1 because the colour is the meaning: " + "; ".join(
+                f"{n} element {e} ({why})" for (n, e), why in sorted(SEMANTIC_COLOUR.items())) + ".",
+            "repairs": "Authored repairs on redrawn geometry (REPAIRS in the importer), measured per segment "
+                       "against the own paint under it; each listed under repairs.",
             "superseded": "Where carried.<name>.repairs_dropped lists a repair, earlier sections of this file "
                           "describe the previous asset of that glyph, not the current one.",
-            "not_mechanical": "Audit of the 163 authored assets against their pinned sources: 148 of 167 inherited "
+            "previous_round": "Audit of the 163 authored assets against their pinned sources: 148 of 167 inherited "
                               "interior strokes became fixed #2A2A2A, 57 of 64 explicit host-reaching #2A2A2A "
                               "strokes became currentColor, 28 of 32 coloured host-reaching strokes became "
-                              "currentColor, plus individual recolours and clip splits. These are per-glyph "
-                              "review decisions; matching elements of new geometry are listed under pending "
-                              "and keep upstream paint.",
+                              "currentColor, plus individual recolours and clip splits. The owner adopted this "
+                              "majority practice as O1-O5 on 2026-11-17.",
             "measurement": f"Upstream geometry rasterised at {SCALE} samples per unit; up to {EXPOSURE} samples "
-                           "of host exposure or own backing are edge noise.",
+                           "of host exposure or own backing are edge noise. Held entries name the measured ratio "
+                           "that stops a rule; host ratios use " + ", ".join(f"{h} {c}" for h, c in HOSTS.items()) + ".",
         },
         "counts": {"total": len(names), "kept": len(record["kept"]), "carried": len(record["carried"]),
-                   "added": len(record["added"]), "with_pending": len(record["pending"])},
+                   "added": len(record["added"]), "with_settled": len(record["settled"]),
+                   "settled_by_rule": {rule: sum(1 for v in record["settled"].values() for s in v
+                                                 if s["rule"] == rule) for rule in sorted(OWNER_RULES)},
+                   "repairs": len(record["repairs"]), "with_pending": len(record["pending"]),
+                   "pending_elements": sum(len(v) for v in record["pending"].values())},
         "kept": record["kept"],
         "carried": record["carried"],
         "added": record["added"],
+        "settled": record["settled"],
+        "repairs": record["repairs"],
         "pending": record["pending"],
     }
     write(ROLES, json.dumps(roles, indent=2, ensure_ascii=False) + "\n", args.check, changed)

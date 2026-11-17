@@ -6,8 +6,8 @@
 <circle cx="21.08" cy="10.39" r="2.43" fill="#F4A6A4" stroke="none"/>
 <circle cx="26.92" cy="10.39" r="2.43" fill="#F4A6A4" stroke="none"/>
 <circle cx="24" cy="12.82" r="2.43" fill="#F4A6A4" stroke="none"/>
-<circle cx="23.03" cy="20.11" r="1.26" fill="#2A2A2A"/>
-<circle cx="25.95" cy="20.11" r="1.26" fill="#2A2A2A"/>
+<circle cx="23.03" cy="20.11" r="1.26" fill="#2A2A2A" stroke="#2A2A2A"/>
+<circle cx="25.95" cy="20.11" r="1.26" fill="#2A2A2A" stroke="#2A2A2A"/>
 <path d="M23.03 23.03 Q 24.49 24.49 25.95 23.03" stroke="#2A2A2A" fill="none" stroke-width="1.5"/>
 <path d="M14.28 43.45 L33.73 43.45" stroke="#8B5E3C" stroke-width="3"/>
 </svg>

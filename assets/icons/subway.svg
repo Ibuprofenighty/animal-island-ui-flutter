@@ -3,5 +3,5 @@
 <rect x="14" y="12" width="20" height="12" rx="2" fill="#FAEDCD" stroke="none"/>
 <circle cx="16" cy="30" r="2" fill="#E9C46A" stroke="none"/>
 <circle cx="32" cy="30" r="2" fill="#E9C46A" stroke="none"/>
-<path d="M14 36 L10 42 M34 36 L38 42" stroke="#2A2A2A" fill="none"/>
+<path d="M14 36 L10 42 M34 36 L38 42" stroke="currentColor" fill="none"/>
 </svg>

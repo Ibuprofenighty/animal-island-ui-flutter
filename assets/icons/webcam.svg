@@ -2,5 +2,5 @@
 <circle cx="24" cy="20" r="11" fill="#264653"/>
 <circle cx="24" cy="20" r="5" fill="#FAEDCD" stroke="none"/>
 <circle cx="24" cy="20" r="2" fill="#2A2A2A" stroke="none"/>
-<path d="M24 31 L24 38 M10 38 L38 38" stroke="#2A2A2A" fill="none"/>
+<path d="M24 31 L24 38 M10 38 L38 38" stroke="currentColor" fill="none"/>
 </svg>

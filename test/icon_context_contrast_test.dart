@@ -239,7 +239,7 @@ const contextualGlyphSamples = <String, List<Offset>>{
   'penguin': [Offset(8.8, 32), Offset(39.2, 32)],
   'water-cup': [Offset(30.5, 6)],
   'snowflake': [Offset(24, 5), Offset(24, 43), Offset(24, 24)],
-  'scooter': [Offset(36, 43), Offset(10, 43), Offset(19.5, 9)],
+  'scooter': [Offset(34, 40), Offset(11, 40), Offset(20, 10)],
 };
 
 // Each tuple binds a necessary painted identity mark to its actual opaque
@@ -265,5 +265,5 @@ const filledGlyphSamples = <String, List<(Offset, Offset, Color)>>{
   'charger': [(Offset(24, 21), Offset(14, 27), Color(0xffe76f51))],
   'map': [(Offset(32, 12), Offset(34, 22), Color(0xfffaedcd))],
   'mouse': [(Offset(24, 20), Offset(24, 27), Color(0xff2a9d8f))],
-  'trophy': [(Offset(24, 14), Offset(18, 22), Color(0xffe9c46a))],
+  'trophy': [(Offset(24, 10), Offset(18, 22), Color(0xffe9c46a))],
 };
