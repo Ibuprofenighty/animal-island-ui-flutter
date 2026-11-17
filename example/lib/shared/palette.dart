@@ -200,4 +200,77 @@ abstract final class GalleryPalette {
       Color(0xffb8d890),
     ),
   ];
+
+  // Chart story (reference demo/components/Chart). The series sets mirror
+  // gallery-shared.ts in order. Chart marks are necessary graphics: each
+  // value is measured on the four chart surfaces it is drawn on (default
+  // #f8f8f0, cream, mint, blossom) and, where the reference fails 3:1, moved
+  // along OKLCH lightness in its own hue until it passes on all four.
+
+  /// Reference meadow `#48a891 #97bc76 #e4b75c #ce9271 #aa91ba`
+  /// (1.7–2.8:1).
+  static const chartMeadow = [
+    Color(0xff3d9e88),
+    Color(0xff769955),
+    chartHoney,
+    Color(0xffbc8161),
+    Color(0xff9e86ae),
+  ];
+
+  /// Reference sunset `#dc886b #e4b75c #c993a5 #ab8cba #8dab9b`
+  /// (1.7–2.8:1).
+  static const chartSunset = [
+    Color(0xffcc795d),
+    chartHoney,
+    Color(0xffb58092),
+    Color(0xffa284b1),
+    Color(0xff789586),
+  ];
+
+  /// Reference forest `#408f7c` (passes, kept) `#68a18b #8fb6a0 #b3cbb4
+  /// #d2dfc8` (1.3–2.8:1); the deepened tail no longer reads as a ramp.
+  static const chartForest = [
+    Color(0xff408f7c),
+    Color(0xff629a85),
+    Color(0xff719782),
+    Color(0xff7e947f),
+    Color(0xff87927d),
+  ];
+
+  /// Reference flowers `#a88abb #d38ba3 #e9b782 #92b7a0 #c1b979`
+  /// (1.7–2.9:1).
+  static const chartFlowers = [
+    Color(0xffa184b4),
+    Color(0xffc17a92),
+    Color(0xffb58552),
+    Color(0xff739781),
+    Color(0xff999052),
+  ];
+
+  /// Reference `#e4b75c`, shared by meadow and sunset.
+  static const chartHoney = Color(0xffb38827);
+
+  /// Ring goal 待完成 sector: reference `#e4dcc9` (1.3:1).
+  static const chartRingRemainder = Color(0xff968e7d);
+
+  /// Reference `creamSurface`, `mintSurface`, `blossomSurface` chart
+  /// containers (decorative borders keep the reference).
+  static const chartCreamSurface = Color(0xfffffaf0);
+  static const chartCreamBorder = Color(0xffeadfc9);
+  static const chartMintSurface = Color(0xfff3f8ef);
+  static const chartMintBorder = Color(0xffdce6d6);
+  static const chartBlossomSurface = Color(0xfffcf5f1);
+  static const chartBlossomBorder = Color(0xffeadcd4);
+
+  /// Reference `.note` `#8a7b66` (4.1:1 on the white section) deepened to
+  /// 4.5:1.
+  static const chartNote = Color(0xff837460);
+
+  /// Catalog card hover fill and decorative border (reference `#f0f5eb`,
+  /// `#b8cbb2`).
+  static const chartCatalogHover = Color(0xfff0f5eb);
+  static const chartCatalogHoverBorder = Color(0xffb8cbb2);
+
+  /// Gallery item action hover (reference `#f0e8d8`).
+  static const chartActionHover = codeChip;
 }

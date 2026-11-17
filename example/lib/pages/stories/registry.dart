@@ -34,8 +34,10 @@ import 'divider_story.dart';
 import 'rate_story.dart';
 import 'skeleton_story.dart';
 import 'no_data_story.dart';
+import 'chart_story.dart';
 
 import 'package:flutter/material.dart';
+import 'package:animal_island_ui/animal_island_ui.dart';
 
 import 'button_story.dart';
 import 'input_story.dart';
@@ -81,6 +83,26 @@ final storyBuilders = <String, WidgetBuilder>{
   'rate': (_) => const RateStory(),
   'skeleton': (_) => const SkeletonStory(),
   'no-data': (_) => const NoDataStory(),
+  'charts': (_) => const ChartOverviewStory(),
+  'chart-column': (_) => const ChartTypeStory(type: IslandChartType.column),
+  'chart-bar': (_) => const ChartTypeStory(type: IslandChartType.bar),
+  'chart-line': (_) => const ChartTypeStory(type: IslandChartType.line),
+  'chart-area': (_) => const ChartTypeStory(type: IslandChartType.area),
+  'chart-mount': (_) => const ChartTypeStory(type: IslandChartType.mount),
+  'chart-mix': (_) => const ChartTypeStory(type: IslandChartType.mix),
+  'chart-pie': (_) => const ChartTypeStory(type: IslandChartType.pie),
+  'chart-ring': (_) => const ChartTypeStory(type: IslandChartType.ring),
+  'chart-rose': (_) => const ChartTypeStory(type: IslandChartType.rose),
+  'chart-radar': (_) => const ChartTypeStory(type: IslandChartType.radar),
+  'chart-scatter': (_) => const ChartTypeStory(type: IslandChartType.scatter),
+  'chart-bubble': (_) => const ChartTypeStory(type: IslandChartType.bubble),
+  'chart-arcbar': (_) => const ChartTypeStory(type: IslandChartType.arcbar),
+  'chart-gauge': (_) => const ChartTypeStory(type: IslandChartType.gauge),
+  'chart-funnel': (_) => const ChartTypeStory(type: IslandChartType.funnel),
+  'chart-word': (_) => const ChartTypeStory(type: IslandChartType.word),
+  'chart-candle': (_) => const ChartTypeStory(type: IslandChartType.candle),
+  'chart-time': (_) => const ChartTypeStory(type: IslandChartType.time),
+  'chart-map': (_) => const ChartTypeStory(type: IslandChartType.map),
   'input': (_) => const InputStory(),
   'switch': (_) => const SwitchStory(),
   'checkbox': (_) => const SelectionStory(radio: false),
