@@ -23,4 +23,12 @@ abstract final class UploadColors {
   static const buttonDepthDisabled = Primitive.brown839;
 
   static const progressTrack = Primitive.teal967;
+
+  /// Background progress: the default fill (painted at .28 opacity), its
+  /// wave, the percent label, and the pale card mask that replaces the dark
+  /// overlay.
+  static const backgroundFill = Primitive.teal750;
+  static const backgroundWave = Primitive.neutral1000;
+  static const backgroundPercent = Primitive.brown466;
+  static const backgroundCardMask = Primitive.neutral994A88;
 }

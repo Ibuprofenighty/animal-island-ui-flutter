@@ -14,7 +14,7 @@
     "events": "A child action dispatches once and does not activate its ancestor.",
     "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
     "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
-    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "localization": "Reference Chinese Gallery; host content and inherited directionality. Weekday and month-day text follow weekdayFormat (default dddd) and dateFormat (default MMM D, or M月D日 under IslandTimeLocale.zhCn) in core date tokens with English or Simplified Chinese names; the per-instance locale changes no global state.",
     "async_behavior": "Owner-local 500ms refresh timer also steps the decorative colon blink (reference animal-time-blink 1s step-end: visible then hidden for half a second each second); digits never dim, semantics keep the complete clock, and reduced motion keeps the colon visible. No second timer. Opaque entry uses modest displacement (4px) on the reference .35s cubic-bezier(.4,0,.2,1) timing and reduced motion settles the same wrapper.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
     "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
@@ -27,6 +27,18 @@
       "given": "The pinned reference page and its recorded sections",
       "when": "Capture the same viewport and interaction state",
       "then": "Layout, typography, geometry, assets and motion agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures. User-approved readable-motion deviations follow docs/DESIGN.md with no transition exemption."
+    },
+    {
+      "id": "time.variant",
+      "given": "IslandTimeVariant.normal (default) or IslandTimeVariant.game",
+      "when": "The clock renders",
+      "then": "Normal: the #f8f8f0 card (20px radius, 20/32/15 padding, soft shadow) with the 44px/900 #8b7355 clock above one teal capsule holding the upper-cased weekday · month-day. Game (reference 4.0.0): no card, shadow or radius; 50px padding; 40px/900 clock with 2px letter-spacing in #8b7355 and its colon 1px apart, raised .08em; 8px below, a decorative 2px rgba(159,146,125,.35) rule with 2px radius spanning the content width plus 5px (2.5px overhang each side); 5px below, the 22px/800/2px-spaced month-day and, 20px to its right, the weekday (15px/900, line-height 1, not upper-cased) in a #fffbe7 capsule padded 7/16/5. Both variants share one entrance, colon blink, timer and semantics."
+    },
+    {
+      "id": "time.format",
+      "given": "weekdayFormat, dateFormat and locale",
+      "when": "Monday 2026-06-08 is shown",
+      "then": "Defaults show Monday / Jun 8 (card: MONDAY); zhCn shows 星期一 / 6月8日; ddd + YYYY/MM/DD shows Mon / 2026/06/08; zhCn + ddd shows 周一; [text] renders literally."
     },
     {
       "id": "time.composition",

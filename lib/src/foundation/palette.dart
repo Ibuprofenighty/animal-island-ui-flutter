@@ -40,8 +40,10 @@ abstract final class Primitive {
   static const neutral979 = Color(0xfffaf8f2);
   static const neutral984 = Color(0xfffbfaf5);
   static const neutral994 = Color(0xfffffdf7);
+  static const neutral994A88 = Color(0xe0fffdf7);
   static const neutral1000 = Color(0xffffffff);
   static const neutral1000A0 = Color(0x00ffffff);
+  static const neutral1000A24 = Color(0x3dffffff);
   static const neutral1000A45 = Color(0x73ffffff);
   static const neutral1000A55 = Color(0x8cffffff);
   static const neutral1000A60 = Color(0x99ffffff);
@@ -54,6 +56,7 @@ abstract final class Primitive {
   static const sand538 = Color(0xff796c5a);
   static const sand619 = Color(0xff8f8474);
   static const sand641 = Color(0xff978b73);
+  static const sand666A35 = Color(0x599f927d);
   static const sand786 = Color(0xffc4b89e);
   static const sand786A10 = Color(0x1ac4b89e);
   static const sand824 = Color(0xffd5c3a2);
@@ -82,6 +85,7 @@ abstract final class Primitive {
   static const brown257A55 = Color(0x8c2b2118);
   static const brown321 = Color(0xff3d3028);
   static const brown321A94 = Color(0xf03d3028);
+  static const brown331A0 = Color(0x003d3428);
   static const brown331A10 = Color(0x1a3d3428);
   static const brown331A12 = Color(0x1f3d3428);
   static const brown331A18 = Color(0x2e3d3428);
@@ -98,6 +102,7 @@ abstract final class Primitive {
   static const brown492A0 = Color(0x00725d42);
   static const brown492A10 = Color(0x1a725d42);
   static const brown492A12 = Color(0x1f725d42);
+  static const brown571 = Color(0xff8b7355);
   static const brown658 = Color(0xff9d8f7e);
   static const brown760 = Color(0xffbdaea0);
   static const brown798 = Color(0xffd4b896);
@@ -106,6 +111,7 @@ abstract final class Primitive {
   static const brown882A30 = Color(0x4de8d5bc);
 
   // orange
+  static const orange653 = Color(0xffc77c34);
   static const orange784 = Color(0xfff5a623);
   static const orange789 = Color(0xfff0a870);
 
@@ -117,6 +123,7 @@ abstract final class Primitive {
   static const yellow760 = Color(0xffdba90e);
   static const yellow795 = Color(0xffe0b800);
   static const yellow820 = Color(0xffffb400);
+  static const yellow834 = Color(0xffe9c46a);
   static const yellow838 = Color(0xfff5c31c);
   static const yellow844 = Color(0xffffc107);
   static const yellow865 = Color(0xfff7cd67);

@@ -2,7 +2,16 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-enum PanelPlacement { below, above, beside }
+enum PanelPlacement {
+  below,
+  above,
+  beside,
+
+  /// Below and horizontally centred on the anchor, flipping above like
+  /// [below]. A centred panel crossing a viewport edge aligns with the
+  /// anchor's edge on that side instead.
+  belowCentered,
+}
 
 /// Owns only overlay placement and outside dismissal. The component owns selection,
 /// keyboard behavior and focus. Anchor and panel share one tap-region boundary.
@@ -246,6 +255,17 @@ class _AnchoredPanelLayout extends SingleChildLayoutDelegate {
         follower = Alignment(-x, 0);
         gap = Offset(left ? -6 : 6, 0);
       }
+    } else if (panel.placement == PanelPlacement.belowCentered) {
+      final up = opensAbove(size);
+      final centered = rect.center.dx - childSize.width / 2;
+      final x = centered < 0
+          ? -1.0
+          : centered + childSize.width > size.width
+          ? 1.0
+          : 0.0;
+      anchor = Alignment(x, up ? -1 : 1);
+      follower = Alignment(x, up ? 1 : -1);
+      gap = Offset(0, up ? -panel.gap : panel.gap);
     } else {
       final up = opensAbove(size);
       final right = rect.left + childSize.width > size.width - 8;

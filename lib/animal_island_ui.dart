@@ -47,15 +47,19 @@ export 'src/components/code_block.dart'
         IslandCodeBlockStyle,
         IslandCodeBlockTheme;
 
-export 'src/components/select.dart' show IslandSelect;
+export 'src/components/select.dart' show IslandSelect, IslandSelectVariant;
 
-export 'src/components/time.dart' show IslandTime;
+export 'src/components/time.dart' show IslandTime, IslandTimeVariant;
 export 'src/components/countdown.dart'
-    show IslandCountdown, IslandCountdownVariant;
+    show
+        IslandCountdown,
+        IslandCountdownVariant,
+        IslandCountdownReminder,
+        IslandCountdownShake;
 
 export 'src/foundation/field_status.dart' show IslandFieldStatus;
 
-export 'src/foundation/time_value.dart' show IslandTimeValue;
+export 'src/foundation/time_value.dart' show IslandTimeValue, IslandTimeLocale;
 export 'src/components/time_picker.dart' show IslandTimePicker;
 
 export 'src/components/progress.dart' show IslandProgress;
@@ -70,7 +74,7 @@ export 'src/components/badge.dart' show IslandBadge, IslandBadgeSize;
 
 export 'src/components/collapse.dart' show IslandCollapse;
 
-export 'src/components/loading.dart' show IslandLoading;
+export 'src/components/loading.dart' show IslandLoading, IslandLoadingType;
 
 export 'src/components/back_top.dart' show IslandBackTop;
 
@@ -138,6 +142,8 @@ export 'src/components/upload.dart'
         IslandUploadPreviewBuilder,
         IslandUploadStatus,
         IslandUploadListType,
+        IslandUploadProgress,
+        IslandUploadProgressType,
         IslandUploadChange,
         IslandUploadCancellation,
         IslandUploadTransfer,

@@ -17,7 +17,7 @@
     "localization": "Reference Chinese Gallery; host content and inherited directionality.",
     "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
-    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Repeated icons use complete size+gap cycles, at least one icon, with connectors only between icons. Tiled wave patterns use the reference centered tile phase and clip at the viewport.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Repeated icons use complete size+gap cycles, at least one icon, with connectors only between icons. Tiled wave patterns use the reference centered tile phase and clip at the viewport. The ocean-wave variant is 24px high and draws the shared decorative double-layer wave in #19c8b9: a 128px period, back layer full height at .28 drifting left over 6s, front layer over the lower 80% at .48 with a -32px tile offset drifting right over 9s, one 18s timeline.",
     "performance": "Platform profiling required before release.",
     "migration": "Fresh implementation; no old-library compatibility track."
   },
@@ -27,6 +27,12 @@
       "given": "A divider between content",
       "when": "Read semantics",
       "then": "It adds no focusable or named node"
+    },
+    {
+      "id": "divider.ocean-wave-motion",
+      "given": "An ocean-wave divider",
+      "when": "animated is false, reduced motion is on, tickers are muted, or it lies outside the screen or an ancestor scroll viewport",
+      "then": "The wave does not tick and keeps a static shape: pausing freezes the reached phase, reduced motion settles phase zero; it resumes when animated and visible again and releases its ticker on disposal."
     },
     {
       "id": "divider.reference",

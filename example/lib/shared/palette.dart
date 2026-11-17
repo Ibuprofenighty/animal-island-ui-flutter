@@ -27,6 +27,12 @@ abstract final class GalleryPalette {
   /// Inline code chips (BackTop, Skill, Tooltip stories).
   static const codeChip = Color(0xfff0e8d8);
 
+  /// Countdown custom-reminder demo: berry (`#b25770`) in the last 5 seconds.
+  static const countdownReminderBerry = Color(0xffb25770);
+
+  /// Countdown custom-reminder demo: warm brown (`#9a6a38`) from 20 seconds.
+  static const countdownReminderBrown = Color(0xff9a6a38);
+
   // API table (StoryApiTable) and its code label.
   static const apiTableBackground = Color(0xff2b2118);
   static const apiTableRule = Color(0xff3d3028);

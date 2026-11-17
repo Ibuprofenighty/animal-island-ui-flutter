@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 import '../foundation/size.dart';
 import '../foundation/field_status.dart';
+import '../foundation/time_value.dart';
 import '../internal/action_surface.dart';
 import '../internal/anchored_panel.dart';
 import '../internal/picker_trigger.dart';
@@ -125,7 +126,12 @@ class IslandDatePicker extends StatefulWidget {
   final ValueChanged<DateTimeRange?>? _onRangeChanged;
   final bool _range, controlled, disabled, allowClear, showToday;
   final IslandDatePickerMode mode;
-  final String placeholder, label, format;
+  final String placeholder, label;
+
+  /// Trigger text pattern in core date tokens (`YYYY`, `MM`, `DD`, `M`, `D`,
+  /// `ddd`, `HH`, `mm`, …, English names); `[text]` renders literally. The
+  /// default `YYYY-MM-DD` shows `YYYY-MM` in [IslandDatePickerMode.month].
+  final String format;
   final IslandSize size;
   final IslandFieldStatus status;
   final bool Function(DateTime)? disabledDate;
@@ -161,16 +167,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
             widget.format == 'YYYY-MM-DD'
         ? 'YYYY-MM'
         : widget.format;
-    return template.replaceAllMapped(
-      RegExp('YYYY|MM|DD|M|D'),
-      (m) => switch (m[0]) {
-        'YYYY' => d.year.toString().padLeft(4, '0'),
-        'MM' => d.month.toString().padLeft(2, '0'),
-        'DD' => d.day.toString().padLeft(2, '0'),
-        'M' => '${d.month}',
-        _ => '${d.day}',
-      },
-    );
+    return formatDateTokens(d, template);
   }
 
   @override

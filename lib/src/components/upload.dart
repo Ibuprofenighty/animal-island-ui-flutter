@@ -11,6 +11,9 @@ import '../internal/action_surface.dart';
 import '../foundation/dashed_border.dart';
 import '../internal/hover_surface.dart';
 import '../internal/owned_route.dart';
+import '../internal/wave.dart';
+import '../foundation/size.dart';
+import 'progress.dart';
 part 'upload_types.dart';
 
 class IslandUpload extends StatefulWidget {
@@ -30,6 +33,7 @@ class IslandUpload extends StatefulWidget {
     this.showList = true,
     this.showPreview = true,
     this.showRemove = true,
+    this.progress,
     this.tip,
     this.child,
     this.beforeUpload,
@@ -57,6 +61,7 @@ class IslandUpload extends StatefulWidget {
     this.showList = true,
     this.showPreview = true,
     this.showRemove = true,
+    this.progress,
     this.tip,
     this.child,
     this.beforeUpload,
@@ -83,6 +88,10 @@ class IslandUpload extends StatefulWidget {
       showRemove;
   final int? maxCount;
   final IslandUploadListType listType;
+
+  /// Progress of uploading files as a bar or a background fill. Null keeps
+  /// the spinner with its percentage.
+  final IslandUploadProgress? progress;
   final Widget? tip, child;
   final IslandUploadBefore? beforeUpload;
   final FutureOr<bool> Function(IslandUploadFile)? onRemove;
@@ -708,120 +717,256 @@ class _IslandUploadState extends State<IslandUpload> {
           errorBuilder: (_, _, _) =>
               IslandIcon(IslandGlyph.file, size: card ? 25.6 : 14),
         );
-  Widget row(IslandUploadFile file) => HoverSurface(
-    key: ValueKey(file.id),
-    enabled: !widget.disabled,
-    cursor: MouseCursor.defer,
-    builder: (states) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      decoration: BoxDecoration(
-        color: file.status == IslandUploadStatus.error
-            ? UploadColors.errorRowFill
-            : states.contains(WidgetState.hovered)
-            ? UploadColors.hoverFill
-            : UploadColors.surface,
-        border: Border.all(
+  Widget row(IslandUploadFile file) {
+    final progress = progressOf(file);
+    final state = status(file);
+    return HoverSurface(
+      key: ValueKey(file.id),
+      enabled: !widget.disabled,
+      cursor: MouseCursor.defer,
+      builder: (states) => Container(
+        decoration: BoxDecoration(
           color: file.status == IslandUploadStatus.error
-              ? IslandTokens.light.dangerText
-              : UploadColors.border,
-          width: IslandTheme.borderWidth(context, 1.5),
+              ? UploadColors.errorRowFill
+              : states.contains(WidgetState.hovered)
+              ? UploadColors.hoverFill
+              : UploadColors.surface,
+          border: Border.all(
+            color: file.status == IslandUploadStatus.error
+                ? IslandTokens.light.dangerText
+                : UploadColors.border,
+            width: IslandTheme.borderWidth(context, 1.5),
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          if (widget.listType == IslandUploadListType.picture)
-            Container(
-              width: 30,
-              height: 30,
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: UploadColors.border,
-                  width: IslandTheme.borderWidth(context, 1.5),
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: thumb(file),
-            )
-          else
-            const IslandIcon(IslandGlyph.file, size: 15),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    file.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: UploadColors.fileName,
+        child: Stack(
+          children: [
+            if (progress?.type == IslandUploadProgressType.background)
+              backgroundProgress(file, progress!, 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              child: Row(
+                children: [
+                  if (widget.listType == IslandUploadListType.picture)
+                    Container(
+                      width: 30,
+                      height: 30,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: UploadColors.border,
+                          width: IslandTheme.borderWidth(context, 1.5),
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: thumb(file),
+                    )
+                  else
+                    const IslandIcon(IslandGlyph.file, size: 15),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          file.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: UploadColors.fileName,
+                          ),
+                        ),
+                        if (progress?.type == IslandUploadProgressType.bar)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: progressBar(
+                              file,
+                              progress!,
+                              showInfo: progress.showInfo,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  size(file.size),
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: IslandTokens.light.muted,
+                  const SizedBox(width: 8),
+                  Text(
+                    size(file.size),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: IslandTokens.light.muted,
+                    ),
                   ),
-                ),
-              ],
+                  if (state != null) ...[const SizedBox(width: 8), state],
+                  if (widget.showPreview &&
+                      (file.thumbnail != null ||
+                          file.thumbnailBuilder != null)) ...[
+                    const SizedBox(width: 4),
+                    iconAction(
+                      '预览 ${file.name}',
+                      IslandGlyph.eye,
+                      () => preview(file),
+                    ),
+                  ],
+                  if (widget.showRemove) ...[
+                    const SizedBox(width: 4),
+                    iconAction(
+                      '删除 ${file.name}',
+                      IslandGlyph.close,
+                      () => remove(file),
+                    ),
+                  ],
+                ],
+              ),
             ),
-          ),
-          status(file),
-          if (widget.showPreview &&
-              (file.thumbnail != null || file.thumbnailBuilder != null)) ...[
-            const SizedBox(width: 4),
-            iconAction('预览 ${file.name}', IslandGlyph.eye, () => preview(file)),
           ],
-          if (widget.showRemove) ...[
-            const SizedBox(width: 4),
-            iconAction(
-              '删除 ${file.name}',
-              IslandGlyph.close,
-              () => remove(file),
-            ),
-          ],
-        ],
+        ),
+      ),
+    );
+  }
+
+  /// The configured progress while [file] uploads; null otherwise.
+  IslandUploadProgress? progressOf(IslandUploadFile file) =>
+      file.status == IslandUploadStatus.uploading ? widget.progress : null;
+
+  /// Displayed percentage: clamped and rounded, NaN as 0.
+  int percentOf(IslandUploadFile file) =>
+      file.percent.isNaN ? 0 : file.percent.clamp(0, 100).round();
+
+  static const _figures = [FontFeature.tabularFigures()];
+
+  Widget progressBar(
+    IslandUploadFile file,
+    IslandUploadProgress progress, {
+    required bool showInfo,
+  }) => IslandProgress(
+    percent: percentOf(file).toDouble(),
+    label: '${file.name} 上传进度',
+    size: IslandSize.small,
+    color: progress.color,
+    wave: progress.wave,
+    animated: progress.animated,
+    showInfo: showInfo,
+    duration: progress.duration,
+    infoBuilder: (value) => Text(
+      '${value.round()}%',
+      style: const TextStyle(
+        fontSize: 11,
+        letterSpacing: .22,
+        fontFeatures: _figures,
       ),
     ),
   );
-  Widget status(IslandUploadFile file) =>
-      file.status == IslandUploadStatus.removed
-      ? const SizedBox.shrink()
-      : Semantics(
-          label: switch (file.status) {
-            IslandUploadStatus.done => '上传完成',
-            IslandUploadStatus.error => '上传失败',
-            _ => '上传中 ${file.percent.round()}%',
-          },
-          child: file.status == IslandUploadStatus.uploading
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const _UploadSpinner(),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${file.percent.round()}%',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: IslandTokens.light.link,
-                      ),
-                    ),
-                  ],
-                )
-              : IslandIcon(
-                  file.status == IslandUploadStatus.done
-                      ? IslandGlyph.check
-                      : IslandGlyph.close,
-                  size: 16,
+
+  /// The item backing as progress area: its own semantics node behind the
+  /// content, so it never absorbs the adjacent actions.
+  Widget backgroundProgress(
+    IslandUploadFile file,
+    IslandUploadProgress progress,
+    double radius,
+  ) {
+    final percent = percentOf(file);
+    return Positioned.fill(
+      child: Semantics(
+        container: true,
+        label: '${file.name} 上传进度',
+        value: '$percent%',
+        child: IgnorePointer(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(radius),
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(end: percent / 100),
+              duration: MediaQuery.disableAnimationsOf(context)
+                  ? Duration.zero
+                  : progress.duration,
+              curve: Curves.fastOutSlowIn,
+              builder: (_, fraction, _) => FractionallySizedBox(
+                alignment: AlignmentDirectional.centerStart,
+                widthFactor: fraction,
+                heightFactor: 1,
+                child: Opacity(
+                  opacity: .28,
+                  child: ColoredBox(
+                    color: progress.color ?? UploadColors.backgroundFill,
+                    child: progress.wave
+                        ? OceanWave(
+                            color: UploadColors.backgroundWave,
+                            animated:
+                                progress.animated &&
+                                percent > 0 &&
+                                percent < 100,
+                          )
+                        : const SizedBox.expand(),
+                  ),
                 ),
-        );
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget pill(Widget child) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+    decoration: BoxDecoration(
+      color: IslandTokens.light.inputSurface,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: child,
+  );
+
+  /// Status after the file size; null when nothing is shown.
+  Widget? status(IslandUploadFile file) {
+    if (file.status == IslandUploadStatus.removed) return null;
+    final progress = progressOf(file);
+    if (progress != null)
+      return progress.type == IslandUploadProgressType.background &&
+              progress.showInfo
+          ? ExcludeSemantics(
+              child: Text(
+                '${percentOf(file)}%',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: UploadColors.backgroundPercent,
+                  fontFeatures: _figures,
+                ),
+              ),
+            )
+          : null;
+    return Semantics(
+      label: switch (file.status) {
+        IslandUploadStatus.done => '上传完成',
+        IslandUploadStatus.error => '上传失败',
+        _ => '上传中 ${percentOf(file)}%',
+      },
+      child: file.status == IslandUploadStatus.uploading
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const _UploadSpinner(),
+                const SizedBox(width: 4),
+                Text(
+                  '${percentOf(file)}%',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: IslandTokens.light.link,
+                  ),
+                ),
+              ],
+            )
+          : IslandIcon(
+              file.status == IslandUploadStatus.done
+                  ? IslandGlyph.check
+                  : IslandGlyph.close,
+              size: 16,
+            ),
+    );
+  }
+
   Widget card(IslandUploadFile file) => _UploadCard(
     key: ValueKey(file.id),
     builder: (hover) => Container(
@@ -856,22 +1001,50 @@ class _IslandUploadState extends State<IslandUpload> {
           ),
           if (file.status == IslandUploadStatus.uploading ||
               file.status == IslandUploadStatus.error)
-            ColoredBox(
-              color: UploadColors.cardOverlay,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
+            switch (progressOf(file)) {
+              null => ColoredBox(
+                color: UploadColors.cardOverlay,
+                child: Center(child: pill(status(file)!)),
+              ),
+              final progress
+                  when progress.type == IslandUploadProgressType.background =>
+                Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    const ColoredBox(color: UploadColors.backgroundCardMask),
+                    backgroundProgress(file, progress, 0),
+                    Center(child: status(file)),
+                  ],
+                ),
+              final progress => ColoredBox(
+                color: UploadColors.cardOverlay,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (progress.showInfo) ...[
+                        ExcludeSemantics(
+                          child: pill(
+                            Text(
+                              '${percentOf(file)}%',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: IslandTokens.light.link,
+                                fontFeatures: _figures,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                      ],
+                      progressBar(file, progress, showInfo: false),
+                    ],
                   ),
-                  decoration: BoxDecoration(
-                    color: IslandTokens.light.inputSurface,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: status(file),
                 ),
               ),
-            ),
+            },
           if (widget.showPreview &&
               (file.thumbnail != null || file.thumbnailBuilder != null))
             Positioned(

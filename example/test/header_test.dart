@@ -318,7 +318,7 @@ void main() {
       expect(active.color, Colors.white);
       expect(active.gradient, isNull);
       expect(active.boxShadow!.single.color, const Color(0x26725d42));
-      final inactive = badge(tester, 'Title 标题');
+      final inactive = badge(tester, 'Icon 图标');
       expect((inactive.gradient! as LinearGradient).colors, const [
         Color(0xfffc736d),
         Color(0xfff7825a),
@@ -335,7 +335,7 @@ void main() {
             find
                 .ancestor(
                   of: find.descendant(
-                    of: item('Title 标题'),
+                    of: item('Icon 图标'),
                     matching: find.text('NEW'),
                   ),
                   matching: find.byType(Transform),

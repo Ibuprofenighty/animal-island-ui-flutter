@@ -146,7 +146,7 @@ void main() {
       );
       await tab(tester);
     }
-    expect(entries.last.id, 'countup');
+    expect(entries.last.id, 'chart-map');
     expectDisclosureFocus(tester, 0);
     await tab(tester, reverse: true);
     expect(

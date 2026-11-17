@@ -44,7 +44,7 @@ void main() {
         );
         await t.pumpAndSettle();
         final fields = find.byType(IslandSelect<String>);
-        final flower = t.getRect(fields.at(1)), fruit = t.getRect(fields.at(2));
+        final flower = t.getRect(fields.at(3)), fruit = t.getRect(fields.at(4));
         final content = t.getRect(find.byType(StoryDemoBox).first).deflate(17);
         for (final rect in [flower, fruit]) {
           expect(rect.size, const Size(140, 41));
@@ -62,10 +62,10 @@ void main() {
           expect(fruit.right, closeTo(content.right, .001));
           expect(fruit.left - flower.right, greaterThanOrEqualTo(16));
         }
-        await t.ensureVisible(fields.at(2));
-        await t.tap(fields.at(2));
+        await t.ensureVisible(fields.at(4));
+        await t.tap(fields.at(4));
         await t.pumpAndSettle();
-        expect(find.text('蓝莓'), findsOneWidget);
+        expect(find.text('猕猴桃'), findsOneWidget);
         await t.sendKeyEvent(LogicalKeyboardKey.escape);
         await t.pumpAndSettle();
         expect(t.takeException(), isNull);
@@ -168,18 +168,38 @@ void main() {
       Rect.fromLTWH(313, 870, 213, 39),
       Rect.fromLTWH(542, 870, 213, 39),
     ];
+    // The 4.0.0 variant section precedes these sections and its two
+    // triggers; its own height is not reference-measured.
+    final shift = Offset(0, t.getRect(fields.at(2)).top - expected[0].top);
+    expect(t.getRect(fields.at(0)).topLeft, const Offset(313, 338));
+    expect(t.getRect(fields.at(1)).top, t.getRect(fields.at(0)).top);
     for (var i = 0; i < expected.length; i++) {
-      expect(t.getRect(fields.at(i)), expected[i], reason: 'trigger $i');
+      expect(
+        t.getRect(fields.at(i + 2)),
+        expected[i].shift(shift),
+        reason: 'trigger $i',
+      );
     }
     final codeLabel = find
         .ancestor(of: find.text('使用示例'), matching: find.byType(Container))
         .first;
-    expect(t.getTopLeft(codeLabel).dy - t.getBottomLeft(fields.at(6)).dy, 52);
-    await t.tap(find.text('鲈鱼'));
+    expect(t.getTopLeft(codeLabel).dy - t.getBottomLeft(fields.at(8)).dy, 52);
+    await t.tap(find.text('鲈鱼').at(1));
     await t.pumpAndSettle();
     final option = find
         .ancestor(of: find.text('鲷鱼'), matching: find.byType(MouseRegion))
         .first;
-    expect(t.getRect(option), const Rect.fromLTWH(459, 291, 102, 41));
+    // Default dropdown: centred under the trigger, 6px gap, 12px padding,
+    // second 41px row.
+    final trigger = t.getRect(fields.at(2));
+    expect(
+      t.getRect(option),
+      Rect.fromLTWH(
+        trigger.center.dx - 51,
+        trigger.bottom + 6 + 12 + 41,
+        102,
+        41,
+      ),
+    );
   });
 }

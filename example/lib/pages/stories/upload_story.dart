@@ -331,8 +331,15 @@ IslandUpload.uncontrolled(
   onChanged: (change) => print(change.files.length),
 );""",
         ),
+        _UploadProgressDemo(pickFiles: widget.pickFiles, request: simulate),
         const StoryApi(
           rows: [
+            (
+              'progress',
+              '上传进度配置；默认 null 保留转圈与百分比，type 支持 background / bar',
+              'IslandUploadProgress?',
+              'null',
+            ),
             ('accept', '选择和拖放共同执行类型过滤', 'String', "''"),
             (
               'multiple / maxCount',
@@ -398,6 +405,99 @@ IslandUpload.uncontrolled(
             ('label', '辅助技术名称', 'String', '上传文件'),
           ],
         ),
+      ],
+    ),
+  );
+}
+
+/// The two progress displays across the text, picture and picture-card lists.
+/// The preset files are fixed previews; newly picked files use the demo
+/// simulation, not a network request.
+class _UploadProgressDemo extends StatelessWidget {
+  const _UploadProgressDemo({required this.pickFiles, required this.request});
+  final IslandUploadPicker pickFiles;
+  final IslandUploadRequest request;
+  static const modes = [
+    (IslandUploadProgressType.background, '背景进度：整个文件项背景随百分比填充', 'background'),
+    (IslandUploadProgressType.bar, '条形进度：在文件名下方显示独立进度条', 'bar'),
+  ];
+  @override
+  Widget build(BuildContext context) => Semantics(
+    container: true,
+    explicitChildNodes: true,
+    label: '新增上传进度演示',
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '新增示例：两种上传进度',
+          strutStyle: StrutStyle(
+            fontSize: 18,
+            height: 1.5,
+            forceStrutHeight: true,
+          ),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: GalleryPalette.storyInk,
+          ),
+        ),
+        const StoryLabel('预置文件为固定进度预览；点击上传可体验新文件的模拟进度。'),
+        for (final (type, label, name) in modes) ...[
+          StoryLabel(label),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 16,
+              children: [
+                for (final listType in IslandUploadListType.values)
+                  IslandUpload.uncontrolled(
+                    pickFiles: pickFiles,
+                    request: request,
+                    listType: listType,
+                    progress: IslandUploadProgress(
+                      type: type,
+                      wave: true,
+                      color: IslandTokens.light.leaf,
+                    ),
+                    initialFiles: [
+                      IslandUploadFile(
+                        id: '$name-${listType.name}',
+                        name: '海岛游记.png',
+                        percent: 46,
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ],
+        const StoryCode("""// 背景就是进度区域，不额外显示条形
+IslandUpload.uncontrolled(
+  pickFiles: islandPickFiles,
+  request: islandSimulatedUpload(),
+  progress: const IslandUploadProgress(
+    type: IslandUploadProgressType.background,
+    wave: true,
+  ),
+);
+
+// 独立进度条
+IslandUpload.uncontrolled(
+  pickFiles: islandPickFiles,
+  request: islandSimulatedUpload(),
+  progress: IslandUploadProgress(
+    color: IslandColorway.teal.accent,
+    wave: true,
+  ),
+);
+
+// 不传 progress，保留原来的转圈与百分比
+IslandUpload.uncontrolled(
+  pickFiles: islandPickFiles,
+  request: islandSimulatedUpload(),
+);"""),
       ],
     ),
   );

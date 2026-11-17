@@ -51,20 +51,22 @@ class IslandModal extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (title != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: ContentScope(
-                  textStyle: const TextStyle(
-                    fontSize: 28,
-                    // Reference .title sets no line-height (font normal).
-                    height: kTextHeightNone,
-                    fontWeight: FontWeight.w700,
-                    color: ModalColors.title,
-                  ),
-                  child: Semantics(
-                    container: true,
-                    header: true,
-                    child: title!,
+              SelectionContainer.disabled(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: ContentScope(
+                    textStyle: const TextStyle(
+                      fontSize: 28,
+                      // Reference .title sets no line-height (font normal).
+                      height: kTextHeightNone,
+                      fontWeight: FontWeight.w700,
+                      color: ModalColors.title,
+                    ),
+                    child: Semantics(
+                      container: true,
+                      header: true,
+                      child: title!,
+                    ),
                   ),
                 ),
               ),
@@ -83,12 +85,14 @@ class IslandModal extends StatelessWidget {
               ),
             ),
             if (actions.isNotEmpty)
-              Wrap(
-                alignment: WrapAlignment.end,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 12,
-                runSpacing: 12,
-                children: actions,
+              SelectionContainer.disabled(
+                child: Wrap(
+                  alignment: WrapAlignment.end,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: actions,
+                ),
               ),
           ],
         ),

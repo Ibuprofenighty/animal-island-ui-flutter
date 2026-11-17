@@ -1,6 +1,6 @@
 import '../palette.dart';
 
-/// Loading (night snow) colour recipe.
+/// Loading (night snow / circle reveal) colour recipe.
 abstract final class LoadingColors {
   static const night = Primitive.blue173;
   static const text = Primitive.neutral977;
@@ -10,4 +10,8 @@ abstract final class LoadingColors {
   static const snow = Primitive.neutral1000;
   static const vignetteInner = Primitive.blue144A0;
   static const vignetteOuter = Primitive.blue144A60;
+
+  /// Circle-form sailboat outline (reference root stroke `#2A2A2A`); the
+  /// sails, hull and water keep the glyph's own artwork colours.
+  static const boatInk = Primitive.neutral285;
 }

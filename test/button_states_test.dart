@@ -294,7 +294,7 @@ void main() {
     },
   );
   testWidgets(
-    'busy donut is 28px, rotates counterclockwise in 2.5s and honors reduced motion',
+    'busy donut is 28px, rotates clockwise in 2.5s and honors reduced motion',
     (t) async {
       Widget button() => IslandButton(
         busy: true,
@@ -319,7 +319,7 @@ void main() {
       await t.pump(const Duration(milliseconds: 625));
       final last = await sampleFrame(t, () => turns.value);
       final elapsed = last.stamp - first.stamp;
-      final distance = (first.value - last.value) % 1;
+      final distance = (last.value - first.value) % 1;
       final expected = (elapsed.inMicroseconds / 2500000) % 1;
       expect(distance, closeTo(expected, .0001));
       await t.pumpWidget(host(button(), reduced: true));

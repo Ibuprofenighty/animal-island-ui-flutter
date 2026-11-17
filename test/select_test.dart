@@ -61,7 +61,7 @@ void main() {
                 showSearch: true,
                 onSearch: searches.add,
               ),
-              const SizedBox(height: 80),
+              const SizedBox(height: 200),
               const Text('Outside'),
             ],
           ),

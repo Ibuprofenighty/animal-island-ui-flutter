@@ -19,6 +19,7 @@ class _SelectStoryState extends State<SelectStory> {
     'fish3',
     'flower4',
     null,
+    'fruit2',
   ];
   static const fish = [
     IslandOption(value: 'fish1', label: '鲈鱼'),
@@ -49,6 +50,7 @@ class _SelectStoryState extends State<SelectStory> {
     bool clear = false,
     bool search = false,
     String clearLabel = '清除',
+    IslandSelectVariant variant = IslandSelectVariant.dropdown,
   }) => IslandSelect<String>(
     label: placeholder,
     options: options,
@@ -59,6 +61,20 @@ class _SelectStoryState extends State<SelectStory> {
     allowClear: clear,
     showSearch: search,
     clearLabel: clearLabel,
+    variant: variant,
+  );
+  Widget variantDemo(String tag, Widget select) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    spacing: 10,
+    children: [
+      IslandTag(
+        variant: IslandTagVariant.soft,
+        size: IslandSize.small,
+        child: Text(tag),
+      ),
+      select,
+    ],
   );
   Widget box(
     Widget child, {
@@ -88,7 +104,21 @@ class _SelectStoryState extends State<SelectStory> {
     title: 'Select',
     tags: ["基础用法"],
     children: [
-      label('默认状态', first: true),
+      label('variant 弹出方式', first: true),
+      box(
+        storyRow(
+          [
+            variantDemo('default（默认）', field(0, fish)),
+            variantDemo(
+              'game',
+              field(8, fruits, variant: IslandSelectVariant.game),
+            ),
+          ],
+          spacing: 48,
+          align: WrapCrossAlignment.center,
+        ),
+      ),
+      label('默认状态'),
       Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Text.rich(
@@ -122,7 +152,12 @@ class _SelectStoryState extends State<SelectStory> {
       box(
         storyRow([
           field(1, flowers, placeholder: '请选择花朵'),
-          field(3, fruits, placeholder: '请选择水果'),
+          field(
+            3,
+            fruits,
+            placeholder: '请选择水果',
+            variant: IslandSelectVariant.game,
+          ),
         ], alignment: WrapAlignment.spaceBetween),
         decorated: true,
       ),
@@ -149,7 +184,7 @@ class _SelectStoryState extends State<SelectStory> {
         trailingSpace: false,
       ),
       const StoryCode(
-        "IslandSelect<String>(\n  options: options,\n  value: value,\n  onChanged: (v) => setState(() => value = v),\n  allowClear: true,\n  showSearch: true,\n)",
+        "IslandSelect<String>(\n  options: options,\n  value: value,\n  onChanged: (v) => setState(() => value = v),\n  allowClear: true,\n  showSearch: true,\n)\n// 弹出方式：dropdown 常规正下方（默认）/ game 贴触发区侧边\nIslandSelect<String>(\n  options: options,\n  value: value,\n  onChanged: (v) => setState(() => value = v),\n  variant: IslandSelectVariant.game,\n)",
       ),
       const StoryApi(
         rows: [
@@ -162,6 +197,12 @@ class _SelectStoryState extends State<SelectStory> {
           ('focusNode', '借用焦点；打开后可直接键盘操作；清除/搜索独立', 'FocusNode?', 'null'),
           ('placeholder', '占位文本', 'String', '请选择'),
           ('disabled', '禁用', 'bool', 'false'),
+          (
+            'variant',
+            '下拉弹出方式：dropdown 常规正下方（空间不足翻到正上方）、game 贴触发区侧边',
+            'IslandSelectVariant',
+            'dropdown',
+          ),
           ('allowClear', '一键清空', 'bool', 'false'),
           ('showSearch', '输入过滤', 'bool', 'false'),
           (

@@ -23,6 +23,21 @@ import '../internal/anchored_panel.dart';
 
 int _nextSelectId = 0;
 
+/// Where the option panel opens relative to the trigger. Both variants share
+/// the same panel styling and content-sized width.
+enum IslandSelectVariant {
+  /// Conventional dropdown: directly below the trigger and centred on it,
+  /// flipping directly above when the space below is too short and the space
+  /// above is larger. A centred panel that would cross a viewport edge aligns
+  /// with the trigger's edge on that side.
+  dropdown,
+
+  /// Playful side popover: beside the trigger (right, or left when the right
+  /// has no room) and vertically centred, falling back to below or above the
+  /// trigger when the vertical space is short.
+  game,
+}
+
 class IslandSelect<T> extends StatefulWidget {
   IslandSelect({
     super.key,
@@ -32,6 +47,7 @@ class IslandSelect<T> extends StatefulWidget {
     required this.onChanged,
     this.placeholder = '请选择',
     this.disabled = false,
+    this.variant = IslandSelectVariant.dropdown,
     this.allowClear = false,
     this.showSearch = false,
     this.onClear,
@@ -51,6 +67,9 @@ class IslandSelect<T> extends StatefulWidget {
   final T? value;
   final ValueChanged<T?>? onChanged;
   final bool disabled, allowClear, showSearch, filterLocally;
+
+  /// Panel placement; see [IslandSelectVariant].
+  final IslandSelectVariant variant;
   final VoidCallback? onClear;
   final ValueChanged<String>? onSearch;
   final bool Function(String query, IslandOption<T> option)? filter;
@@ -638,7 +657,10 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
         transitionCurve: Curves.ease,
         transitionOffset: Offset.zero,
         onDismiss: close,
-        placement: PanelPlacement.beside,
+        placement: switch (widget.variant) {
+          IslandSelectVariant.dropdown => PanelPlacement.belowCentered,
+          IslandSelectVariant.game => PanelPlacement.beside,
+        },
         width: panelWidth,
         estimatedHeight: visible.length * 44 + 24,
         anchor: anchor,

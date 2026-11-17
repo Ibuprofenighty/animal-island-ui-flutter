@@ -310,7 +310,7 @@ class IslandButton extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (busy) ...[
-                              _ButtonBusyIcon(color: foreground),
+                              const _ButtonBusyIcon(),
                               const SizedBox(width: 8),
                             ] else if (icon != null) ...[
                               icon!,
@@ -335,8 +335,7 @@ class IslandButton extends StatelessWidget {
 
 /// This ticker owns presentation only; the host owns async work.
 class _ButtonBusyIcon extends StatefulWidget {
-  const _ButtonBusyIcon({required this.color});
-  final Color color;
+  const _ButtonBusyIcon();
   @override
   State<_ButtonBusyIcon> createState() => _ButtonBusyIconState();
 }
@@ -349,7 +348,7 @@ class _ButtonBusyIconState extends State<_ButtonBusyIcon>
   );
   late final Animation<double> turns = Tween<double>(
     begin: 0,
-    end: -1,
+    end: 1,
   ).animate(spin);
   @override
   void didChangeDependencies() {
@@ -371,7 +370,11 @@ class _ButtonBusyIconState extends State<_ButtonBusyIcon>
   @override
   Widget build(BuildContext context) => RotationTransition(
     turns: turns,
-    child: IslandIcon(IslandGlyph.donut, size: 28, color: widget.color),
+    child: const IslandIcon(
+      IslandGlyph.donut,
+      size: 28,
+      color: ButtonColors.busyGlyphInk,
+    ),
   );
 }
 

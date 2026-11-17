@@ -207,7 +207,7 @@ void registerAnchoredViewportTests({
   );
 
   testWidgets(
-    '375px Select flips overflowing side without changing natural width or gap',
+    '375px game Select flips overflowing side without changing natural width or gap',
     (t) async {
       t.view.physicalSize = const Size(375, 812);
       t.view.devicePixelRatio = 1;
@@ -226,6 +226,7 @@ void registerAnchoredViewportTests({
                   child: IslandSelect<String>(
                     label: 'Choice',
                     value: 'a',
+                    variant: IslandSelectVariant.game,
                     onChanged: (_) {},
                     options: const [
                       IslandOption(value: 'a', label: '鲈鱼'),
@@ -505,41 +506,48 @@ void registerAnchoredViewportTests({
     );
   }
 
-  testWidgets('fitting desktop Select retains reference beside attachment', (
-    t,
-  ) async {
-    t.view.physicalSize = const Size(1440, 1000);
-    t.view.devicePixelRatio = 1;
-    addTearDown(t.view.resetPhysicalSize);
-    addTearDown(t.view.resetDevicePixelRatio);
-    await t.pumpWidget(
-      MaterialApp(
-        theme: IslandTheme.create(),
-        home: Scaffold(
-          body: Stack(
-            children: [
-              Positioned(
-                left: 300,
-                top: 300,
-                width: 140,
-                child: control('select'),
-              ),
-            ],
+  testWidgets(
+    'fitting desktop game Select retains reference beside attachment',
+    (t) async {
+      t.view.physicalSize = const Size(1440, 1000);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.resetPhysicalSize);
+      addTearDown(t.view.resetDevicePixelRatio);
+      await t.pumpWidget(
+        MaterialApp(
+          theme: IslandTheme.create(),
+          home: Scaffold(
+            body: Stack(
+              children: [
+                Positioned(
+                  left: 300,
+                  top: 300,
+                  width: 140,
+                  child: IslandSelect<String>(
+                    label: 'Choice',
+                    options: choices,
+                    value: 'a',
+                    variant: IslandSelectVariant.game,
+                    onChanged: (_) {},
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-    await t.tap(trigger('select'));
-    await t.pumpAndSettle();
-    final anchor = t.getRect(trigger('select'));
-    final panel = t.getRect(surface('select'));
-    // Trigger semantics occupy the label; the public Select owns the full140px anchor.
-    final fullAnchor = t.getRect(find.byType(IslandSelect<String>));
-    expect(panel.left, closeTo(fullAnchor.right + 6, .01));
-    expect(panel.center.dy, closeTo(fullAnchor.center.dy, .01));
-    expect(panel.center.dy, closeTo(anchor.center.dy, .01));
-    expect(t.takeException(), isNull);
-  });
+      );
+      await t.tap(trigger('select'));
+      await t.pumpAndSettle();
+      final anchor = t.getRect(trigger('select'));
+      final panel = t.getRect(surface('select'));
+      // Trigger semantics occupy the label; the public Select owns the full140px anchor.
+      final fullAnchor = t.getRect(find.byType(IslandSelect<String>));
+      expect(panel.left, closeTo(fullAnchor.right + 6, .01));
+      expect(panel.center.dy, closeTo(fullAnchor.center.dy, .01));
+      expect(panel.center.dy, closeTo(anchor.center.dy, .01));
+      expect(t.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'Select follows scroll resize and dynamic long search without losing commit authority',

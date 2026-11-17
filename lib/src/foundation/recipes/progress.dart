@@ -16,4 +16,16 @@ abstract final class ProgressColors {
   /// The reference fill (#19c8b9, 1.9:1 on the track) needs a 3:1 edge:
   /// the same hue, OKLCH-deepened.
   static const fillEdge = Primitive.teal626;
+
+  /// Sheen over a caller fill colour (reference stops 0, .6, .6, 1: white .24
+  /// fading out, then warm shade .08 fading in).
+  static const customSheen = [
+    Primitive.neutral1000A24,
+    Primitive.neutral1000A0,
+    Primitive.brown331A0,
+    Primitive.brown331A8,
+  ];
+
+  /// Ocean wave inside the fill.
+  static const wave = Primitive.neutral1000;
 }

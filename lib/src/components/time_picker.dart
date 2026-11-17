@@ -59,7 +59,12 @@ class IslandTimePicker extends StatefulWidget {
   final IslandTimeValue? value, initialValue;
   final ValueChanged<IslandTimeValue?>? onChanged;
   final bool controlled, disabled, allowClear;
-  final String placeholder, label, format;
+  final String placeholder, label;
+
+  /// Trigger text pattern in core time tokens (`HH`, `mm`, `ss`, `h`, `A`,
+  /// …); `[text]` renders literally. An unescaped `ss` shows the seconds
+  /// column. See [IslandTimeValue.format].
+  final String format;
   final IslandSize size;
   final IslandFieldStatus status;
   final int hourStep, minuteStep, secondStep;
@@ -181,7 +186,9 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
   @override
   Widget build(BuildContext context) {
     final shown = open ? pending : current;
-    final seconds = widget.format.contains('ss');
+    final seconds = widget.format
+        .replaceAll(RegExp(r'\[[^\]]*]'), '')
+        .contains('ss');
     return PickerFocusBoundary(
       onKeyEvent: (_, event) => key(event),
       onFocusExit: () => requestOpen(false),

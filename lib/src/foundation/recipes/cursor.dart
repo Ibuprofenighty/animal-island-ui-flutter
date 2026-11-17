@@ -7,4 +7,7 @@ abstract final class CursorColors {
   static const raindropFill = Primitive.blue810;
   static const raindropStroke = Primitive.blue585;
   static const raindropHighlight = Primitive.blue955;
+
+  /// Text selection highlight inside an arrow cursor scope.
+  static const selection = Primitive.yellow834;
 }
