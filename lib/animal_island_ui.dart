@@ -72,6 +72,24 @@ export 'src/components/avatar.dart'
     show IslandAvatar, IslandAvatarGroup, IslandAvatarShape;
 export 'src/components/badge.dart' show IslandBadge, IslandBadgeSize;
 export 'src/components/no_data.dart' show IslandNoData, IslandNoDataVariant;
+export 'src/components/chart/chart.dart'
+    show
+        IslandChart,
+        IslandChartData,
+        IslandChartType,
+        IslandChartSeries,
+        IslandChartSeriesMode,
+        IslandChartPointSeries,
+        IslandChartCandleSeries,
+        IslandChartValue,
+        IslandChartPoint,
+        IslandChartCandle,
+        IslandChartRegion,
+        IslandChartDataEvent,
+        IslandChartTooltip,
+        IslandChartTooltipTrigger,
+        IslandChartTooltipContext,
+        IslandChartTooltipItem;
 
 export 'src/components/collapse.dart' show IslandCollapse;
 
