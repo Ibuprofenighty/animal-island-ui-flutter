@@ -436,6 +436,28 @@ void main() {
     );
   });
 
+  testWidgets('catalog card border snaps to device pixels as the browser', (
+    t,
+  ) async {
+    await pumpRoute(t, 'charts', 1440);
+    final card = find.byType(ChartCatalogCard).first;
+    final lines = find.descendant(of: card, matching: find.byType(RichText));
+    final top = t.getRect(card).top;
+    // Reference `border: 1.5px` + `padding: 24px`: at 1x the browser floors
+    // the border to 1px, so the title line starts 25px below the card top;
+    // `strong` 16px / 1.5 then 12px gap to the 13px / 1.8 description.
+    expect(t.getRect(lines.at(0)).top - top, 25);
+    expect(t.getSize(lines.at(0)).height, 24);
+    expect(t.getRect(lines.at(1)).top - top, 25 + 24 + 12);
+    final border = t
+        .widgetList<AnimatedContainer>(
+          find.descendant(of: card, matching: find.byType(AnimatedContainer)),
+        )
+        .map((w) => (w.decoration! as BoxDecoration).border! as Border)
+        .single;
+    expect(border.top.width, 1);
+  });
+
   testWidgets('a hovered catalog card lifts 2px; a press drops the lift', (
     t,
   ) async {

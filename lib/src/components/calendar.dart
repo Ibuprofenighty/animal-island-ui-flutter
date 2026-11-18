@@ -11,6 +11,7 @@ import '../foundation/recipes/calendar.dart';
 import '../foundation/theme.dart';
 import '../foundation/time_value.dart';
 import '../internal/action_surface.dart';
+import '../internal/css_line_box.dart';
 import '../internal/dot_pattern.dart';
 import '../internal/focus_outline.dart';
 
@@ -686,6 +687,14 @@ class _IslandCalendarState extends State<IslandCalendar> {
         );
       },
     );
+    final monthTitle = strings.monthTitle(month.year, month.month);
+    const monthTitleStyle = TextStyle(
+      fontSize: 15,
+      height: kTextHeightNone,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.15,
+      color: CalendarColors.monthChipInk,
+    );
     return Wrap(
       alignment: WrapAlignment.spaceBetween,
       crossAxisAlignment: WrapCrossAlignment.center,
@@ -716,17 +725,18 @@ class _IslandCalendarState extends State<IslandCalendar> {
                 color: CalendarColors.accent,
               ),
               const SizedBox(width: 6),
-              Text(
-                strings.monthTitle(month.year, month.month),
-                style: const TextStyle(
-                  fontSize: 15,
-                  // Reference `line-height: normal`, as the 今天 action: the
-                  // chip (padding 4 + one line) sets the header row height.
-                  height: kTextHeightNone,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.15,
-                  color: CalendarColors.monthChipInk,
+              // Reference `line-height: normal`, as the 今天 action: the
+              // chip (padding 4 + one line) sets the header row height.
+              // Blink rounds the ascent and descent separately (Nunito with
+              // a Noto Sans SC run at 15px: 17 + 5 = 22, a 30px chip), not
+              // their sum (23).
+              CssLineBox(
+                height: cssNormalLineHeight(
+                  context,
+                  monthTitle,
+                  monthTitleStyle,
                 ),
+                child: Text(monthTitle, style: monthTitleStyle),
               ),
             ],
           ),

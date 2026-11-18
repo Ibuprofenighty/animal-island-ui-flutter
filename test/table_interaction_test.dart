@@ -15,6 +15,83 @@ Finder rows() => find.byWidgetPredicate(
 
 void main() {
   testWidgets(
+    'a narrow table keeps every header unwrapped and scrolls sideways',
+    (t) async {
+      await t.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Align(
+              alignment: Alignment.topLeft,
+              child: SizedBox(
+                width: 300,
+                child: IslandTable<int>(
+                  columns: [
+                    IslandTableColumn(
+                      id: 'name',
+                      title: const Text('岛民'),
+                      preferredWidth: 120,
+                      cellBuilder: (_, row, _) => Text('Mochi $row'),
+                    ),
+                    IslandTableColumn(
+                      id: 'age',
+                      title: const Text('年龄'),
+                      preferredWidth: 80,
+                      cellBuilder: (_, row, _) => Text('$row'),
+                    ),
+                    IslandTableColumn(
+                      id: 'island',
+                      title: const Text('岛屿'),
+                      cellBuilder: (_, _, _) => const Text('彩虹岛'),
+                    ),
+                    IslandTableColumn(
+                      id: 'fruit',
+                      title: const Text('喜欢的水果'),
+                      cellBuilder: (_, _, _) => const Text('苹果'),
+                    ),
+                  ],
+                  rows: const [1, 2],
+                  rowKey: (row) => row,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      // Reference `.headerCell { white-space: nowrap }`: the header text is
+      // the column's min-content, so the title is laid out whole.
+      final title = t.renderObject<RenderParagraph>(
+        find.descendant(
+          of: find.text('喜欢的水果'),
+          matching: find.byType(RichText),
+        ),
+      );
+      expect(title.size.width, title.getMaxIntrinsicWidth(double.infinity));
+      expect(title.didExceedMaxLines, isFalse);
+      final cell = find
+          .ancestor(
+            of: find.text('喜欢的水果'),
+            matching: find.byWidgetPredicate(
+              (w) =>
+                  w is Semantics &&
+                  w.properties.role == ui.SemanticsRole.columnHeader,
+            ),
+          )
+          .first;
+      expect(
+        t.getSize(cell).width,
+        greaterThanOrEqualTo(title.size.width + 40),
+      );
+      // The overflow scrolls inside the table instead of clipping a header.
+      final scroll = t.state<ScrollableState>(
+        find.ancestor(of: cell, matching: find.byType(Scrollable)).first,
+      );
+      expect(scroll.position.axis, Axis.horizontal);
+      expect(scroll.position.maxScrollExtent, greaterThan(0));
+      expect(t.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'row focus preserves opaque cell state and geometry; child activation stays local',
     (t) async {
       var parent = 0;

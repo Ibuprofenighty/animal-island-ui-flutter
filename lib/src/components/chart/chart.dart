@@ -823,6 +823,8 @@ class _IslandChartState extends State<IslandChart>
                     crossAxisMargin: 0,
                     mainAxisMargin: 0,
                     thumbColor: colors.scrollbar,
+                    // Shown at full colour at once, as the reference.
+                    fadeDuration: Duration.zero,
                     child: ScrollConfiguration(
                       behavior: ScrollConfiguration.of(context)
                           .copyWith(scrollbars: false),

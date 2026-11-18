@@ -318,9 +318,9 @@ class _FormStoryState extends State<FormStory> {
                 'liveValues: ${json(live)}',
                 // Reference `fontFamily: 'monospace'` at 12px renders at
                 // 13/16 (measured 82px for `liveValues: {}`), as StoryLabel code.
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12 * 13 / 16,
-                  color: IslandColorway.blue.ink,
+                  color: GalleryPalette.formLiveValues,
                   fontFamily: IslandTheme.codeFontFamily,
                 ),
               ),

@@ -14,6 +14,7 @@ Future<void> pump(
   double width = 750,
   bool reduceMotion = false,
   Locale locale = const Locale('zh'),
+  TextScaler textScaler = TextScaler.noScaling,
 }) async {
   t.view.physicalSize = Size(width + 100, 2400);
   t.view.devicePixelRatio = 1;
@@ -27,6 +28,7 @@ Future<void> pump(
         data: MediaQueryData(
           size: Size(width + 100, 2400),
           disableAnimations: reduceMotion,
+          textScaler: textScaler,
         ),
         child: Scaffold(
           body: Padding(
@@ -294,6 +296,38 @@ void main() {
         closeTo((chipHeight > 28 ? chipHeight : 28) + 8 + 1 + 8 + 32, 0.01),
       );
     });
+
+    testWidgets(
+      'the month chip line box rounds ascent and descent like Blink',
+      (t) async {
+        // 15px x 1.3 = 19.5px test font: ascent 14.625 -> 15 and descent
+        // 4.875 -> 5, so the CSS line box is 20px (not 19.5) and the chip
+        // 28px, the same rule that makes the reference zh chip 30px.
+        await pump(
+          t,
+          IslandCalendar(
+            value: null,
+            onChanged: null,
+            month: DateTime(2026, 8),
+            now: fixedNow,
+          ),
+          textScaler: const TextScaler.linear(1.3),
+        );
+        final chip = find
+            .ancestor(
+              of: find.text('2026年8月'),
+              matching: find.byType(Container),
+            )
+            .first;
+        expect(t.getSize(chip).height, 8 + 20);
+        // The text keeps its own line, centred in the line box, unclipped.
+        expect(t.getSize(find.text('2026年8月')).height, closeTo(19.5, 0.51));
+        expect(
+          t.getRect(find.text('2026年8月')).center.dy,
+          closeTo(t.getRect(chip).center.dy, 0.01),
+        );
+      },
+    );
 
     testWidgets('event bars centre under the number band, two rows per week', (
       t,

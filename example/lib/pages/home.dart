@@ -24,6 +24,60 @@ abstract final class HomeWallpaperInk {
   static const body = GalleryPalette.homeBody;
 }
 
+/// Browser `line-height: normal` for 14px Gallery text whose stack is
+/// Nunito with the CJK fallback (reference Home section descriptions and the
+/// component page description). The browser rounds each used font's ascent
+/// and descent and takes the maxima: Nunito 14/5, CJK 16/4, so a 21px line
+/// with its baseline 16px below the top. The previous forced Nunito struts
+/// put it at 15.1 (21px, even leading) and 14.8 (20px), about 1px high.
+/// With even half-leading the baseline is 21/2 + size * (ascent - descent)/2;
+/// the Nunito strut size below solves it for 16 (hhea 1011/353 per 1000).
+const galleryNormalLine14 = StrutStyle(
+  fontFamily: 'Nunito',
+  fontSize: _normalLineStrutSize,
+  height: 21 / _normalLineStrutSize,
+  leadingDistribution: TextLeadingDistribution.even,
+  forceStrutHeight: true,
+);
+const double _normalLineStrutSize = 2 * (16 - 21 / 2) / ((1011 - 353) / 1000);
+
+/// A Gallery page or sidebar scroller with the reference hidden scrollbar
+/// (`*::-webkit-scrollbar { display: none; }` in demo/main.tsx). Wheel,
+/// keyboard, drag and touch scrolling are unchanged. The platform bar is
+/// dropped for this scroller only: its child gets the inherited scroll
+/// behavior back, so component scroll areas keep their own bars.
+class GalleryScrollView extends StatelessWidget {
+  const GalleryScrollView({
+    super.key,
+    required this.controller,
+    this.padding,
+    this.clipBehavior = Clip.hardEdge,
+    required this.child,
+  });
+
+  final ScrollController controller;
+  final EdgeInsetsGeometry? padding;
+
+  /// [Clip.none] lets content scrolled past the top keep painting under an
+  /// overlaid header.
+  final Clip clipBehavior;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final behavior = ScrollConfiguration.of(context);
+    return ScrollConfiguration(
+      behavior: behavior.copyWith(scrollbars: false),
+      child: SingleChildScrollView(
+        controller: controller,
+        padding: padding,
+        clipBehavior: clipBehavior,
+        child: ScrollConfiguration(behavior: behavior, child: child),
+      ),
+    );
+  }
+}
+
 /// Same reference composition. Random wallpaper is stable for a page lifetime.
 class GalleryHome extends StatefulWidget {
   const GalleryHome({super.key, required this.onNavigate, this.wallpaperSeed});
@@ -225,11 +279,7 @@ class _GalleryHomeState extends State<GalleryHome>
                 const SizedBox(height: 8),
                 Text(
                   description,
-                  strutStyle: const StrutStyle(
-                    fontSize: 14,
-                    height: 20 / 14,
-                    forceStrutHeight: true,
-                  ),
+                  strutStyle: galleryNormalLine14,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
@@ -328,7 +378,7 @@ class _GalleryHomeState extends State<GalleryHome>
               ),
             ),
           ),
-          SingleChildScrollView(
+          GalleryScrollView(
             controller: scroll,
             child: Column(
               children: [

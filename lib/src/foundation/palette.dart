@@ -273,4 +273,7 @@ abstract final class Primitive {
   // Drawer close glyph: reference rgba(114, 93, 66, .6) on #f7f3df deepened
   // in hue to 3:1.
   static const sand642 = Color(0xff988b73);
+  // Reference Cursor `--animal-selection-fg`: selected text ink on the
+  // light #e9c46a highlight (8.97:1).
+  static const brown272 = Color(0xff2b2620);
 }

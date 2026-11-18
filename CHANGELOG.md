@@ -34,6 +34,10 @@ The reference is re-pinned from 2.2.1 to 4.0.0 (`docs/reference-gallery.json`). 
 - Drawer: the close glyph rests at `#988b73` and changes colour and fill over 0.2s ease on hover (reduced motion settles at once).
 - Form: the control row is centred inside its 32px minimum height. Divider: the `dashedBrown` and `hairline` variants centre their dash phase, so both ends can show partial dashes.
 - Progress: the track border is `#9a8e77` (was the `outline` token) and the percentage ink is the reference `#725d42` under the reference palette; dark or customized token sets keep `ink`.
+- **Behaviour change, Table:** a header title no longer wraps or clips: an automatic column is at least as wide as its unwrapped title and the table scrolls sideways; a header meant to wrap needs `column.width`.
+- CodeBlock: inside an arrow `IslandCursor` scope under a light theme, selected code is painted in the reference dark ink `#2b2620` over the `#e9c46a` highlight (the code inks were 1.1–1.6:1 there); every code line keeps the 1.7 line pitch, also with CJK text.
+- Time: the game row shrinks like a CSS flex row, so a weekday is never split inside a word; the date capsule and the Calendar month chip use the reference `line-height: normal` box.
+- Progress: the fill highlight follows the pill's rounded ends. Chart: the plot scrollbar appears at full colour at once.
 - Gallery: shell and story spacing, the mobile menu (opens instantly, keeps back, Escape and focus scope), the sidebar, component description, Icon, Typewriter and Chart gallery inks, the Cursor native controls, the BackTop chip, the API table required mark and description minimum width, and the story code margin were adjusted after a page-by-page comparison with the live reference. Measured colours are in `docs/DESIGN.md#measured-color-differences`; the sidebar inks await owner confirmation in `docs/DESIGN.md#pending-owner-decisions-400`.
 
 ## 0.0.1 — independent project, unreleased

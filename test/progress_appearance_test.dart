@@ -81,6 +81,30 @@ void main() {
     expect(mint[1] > mint[0], isTrue, reason: 'default keeps the mint fill');
   });
 
+  testWidgets(
+    'the fill highlight is the reference inset 0 2px 0 shadow following the '
+    'pill ends',
+    (t) async {
+      await t.pumpWidget(host(bar(45, color: peach)));
+      await t.pump();
+      // Track border 2px: the 20px fill (radius 10) starts at (2, 2). One
+      // fill row below the 2px band (local y 3) is plain fill mid-bar, but on
+      // the rounded left end it is still inside the pill and outside the pill
+      // moved 2px down (local x 2.4-4.7), so the inset shadow lights it.
+      final band = await pixel(t, 60, 2);
+      final below = await pixel(t, 60, 5);
+      final end = await pixel(t, 5, 5);
+      for (var channel = 0; channel < 3; channel++) {
+        expect(band[channel], greaterThan(below[channel]), reason: 'band');
+        expect(
+          end[channel],
+          greaterThan(below[channel]),
+          reason: 'rounded end',
+        );
+      }
+    },
+  );
+
   testWidgets('scene takes precedence over colour', (t) async {
     await t.pumpWidget(
       host(bar(45, color: peach, scene: IslandScene.forestGrove)),

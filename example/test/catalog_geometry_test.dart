@@ -359,7 +359,28 @@ void main() {
         final cards = find.byType(IslandCard);
         expect(cards, findsNWidgets(27));
         expect(t.getSize(find.text('特性')).height, 33);
-        expect(t.getSize(find.text('为什么选择 animal-island-ui')).height, 20);
+        // Reference section description `line-height: normal`: 21px with
+        // the baseline 16px below the top (Nunito with the CJK fallback).
+        double baseline(String text) {
+          final paragraph = t.renderObject<RenderBox>(
+            find.descendant(
+              of: find.text(text),
+              matching: find.byType(RichText),
+            ),
+          );
+          return paragraph.getDryBaseline(
+            paragraph.constraints,
+            TextBaseline.alphabetic,
+          )!;
+        }
+
+        for (final description in [
+          '为什么选择 animal-island-ui',
+          '详细文档与在线演示请从左侧菜单进入',
+        ]) {
+          expect(t.getSize(find.text(description)).height, 21);
+          expect(baseline(description), closeTo(16, .01));
+        }
         expect(t.getSize(find.text('治愈系风格')).height, 22);
         expect(t.getSize(find.text('Input')).height, 20);
         if (width == 1440) {

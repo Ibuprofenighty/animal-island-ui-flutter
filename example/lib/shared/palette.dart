@@ -381,4 +381,10 @@ abstract final class GalleryPalette {
   /// dashed demo box) moved along OKLCH lightness in its own hue, chroma
   /// gamut-mapped as [modalEmphasis], until it passes 4.5:1 there (4.51:1).
   static const typewriterEmphasis = Color(0xffaa6000);
+
+  /// Form story `liveValues` line: reference `#5b8def` (2.90:1 on the
+  /// orange pattern card `#fff0e8`, 2.57:1 over its dot) moved along OKLCH
+  /// lightness in its own hue until it passes 4.5:1 over any card pixel
+  /// (5.14:1 on the fill, 4.50:1 over the dot centre `#fadfd1`).
+  static const formLiveValues = Color(0xff3361c7);
 }

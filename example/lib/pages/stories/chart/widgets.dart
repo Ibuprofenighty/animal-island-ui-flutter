@@ -598,6 +598,10 @@ class _ChartCatalogCardState extends State<ChartCatalogCard> {
   Widget build(BuildContext context) {
     final reduced = MediaQuery.disableAnimationsOf(context);
     final duration = reduced ? Duration.zero : _short;
+    // Reference `border: 1.5px`: the browser snaps a border width down to
+    // whole device pixels (at least one), so it paints and lays out 1px at
+    // 1x and 1.5px at 2x. The content then starts 25px below the card top.
+    final border = IslandTheme.borderWidth(context, 1.5);
     return FocusableActionDetector(
       mouseCursor: SystemMouseCursors.click,
       onShowHoverHighlight: (value) => setState(() => hover = value),
@@ -649,7 +653,7 @@ class _ChartCatalogCardState extends State<ChartCatalogCard> {
                         ? GalleryPalette.chartCatalogHover
                         : IslandTokens.light.paper,
                     border: Border.all(
-                      width: 1.5,
+                      width: border,
                       color: hover
                           ? GalleryPalette.chartCatalogHoverBorder
                           : GalleryPalette.rule,

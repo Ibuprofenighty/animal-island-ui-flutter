@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../foundation/recipes/progress.dart';
 
 import 'package:flutter/material.dart';
@@ -157,13 +159,14 @@ class IslandProgress extends StatelessWidget {
                                         alignment: Alignment.topLeft,
                                       ),
                                     ),
-                                  const Positioned(
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    height: 2,
-                                    child: ColoredBox(
-                                      color: ProgressColors.highlight,
+                                  // Reference `box-shadow: inset 0 2px 0`:
+                                  // a 2px band that follows the pill's
+                                  // rounded ends, painted on the fill itself.
+                                  const Positioned.fill(
+                                    child: CustomPaint(
+                                      painter: _InsetTopHighlight(
+                                        ProgressColors.highlight,
+                                      ),
                                     ),
                                   ),
                                   if (wave)
@@ -220,6 +223,33 @@ class IslandProgress extends StatelessWidget {
       ),
     );
   }
+}
+
+/// CSS `box-shadow: inset 0 2px 0 <color>` on a `border-radius: 999px` box:
+/// the box's rounded shape minus the same shape moved 2px down. CSS scales
+/// the oversized radii to half the shorter side.
+class _InsetTopHighlight extends CustomPainter {
+  const _InsetTopHighlight(this.color);
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final shape = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      Radius.circular(math.min(size.width, size.height) / 2),
+    );
+    canvas.drawPath(
+      Path.combine(
+        PathOperation.difference,
+        Path()..addRRect(shape),
+        Path()..addRRect(shape.shift(const Offset(0, 2))),
+      ),
+      Paint()..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_InsetTopHighlight old) => old.color != color;
 }
 
 class _TrackDots extends CustomPainter {

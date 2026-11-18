@@ -199,8 +199,14 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
                             letterSpacing: header ? .28 : 0,
                             color: TableColors.text,
                           ),
+                          // Reference `.headerCell { white-space: nowrap }`:
+                          // the header's unwrapped width is the column's
+                          // min-content, so an auto column never squeezes or
+                          // clips its title; the table scrolls sideways
+                          // instead. Flutter's min intrinsic width ignores
+                          // `softWrap: false`, so the cell reports its max.
                           child: header
-                              ? column.title
+                              ? IntrinsicWidth(child: column.title)
                               : column.cellBuilder(context, record as T, index),
                         ),
                       ),

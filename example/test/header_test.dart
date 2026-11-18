@@ -591,6 +591,147 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('page description keeps the browser normal line box', (
+      tester,
+    ) async {
+      await showPath(tester, '/button');
+      final description = find.byWidgetPredicate(
+        (w) =>
+            w is Text &&
+            w.style?.fontSize == 14 &&
+            w.style?.color == GalleryPalette.pageDescription,
+      );
+      // Reference `line-height: normal` over Nunito with the CJK fallback:
+      // a 21px line whose baseline is 16px below its top.
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.descendant(of: description, matching: find.byType(RichText)),
+      );
+      final line = paragraph
+          .getBoxesForSelection(
+            const TextSelection(baseOffset: 0, extentOffset: 1),
+            boxHeightStyle: ui.BoxHeightStyle.max,
+          )
+          .single;
+      expect(line.bottom - line.top, 21);
+      expect(
+        paragraph.getDryBaseline(
+          paragraph.constraints,
+          TextBaseline.alphabetic,
+        ),
+        closeTo(16, .01),
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('mobile page scrolls under the fixed translucent header', (
+      tester,
+    ) async {
+      await showPath(tester, '/collapse', width: 375);
+      final page = find
+          .ancestor(
+            of: find.byType(IslandTitle).first,
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      // Reference: the bar is `position: fixed` over the main scroller. The
+      // viewport starts below the bar (so reveals stay visible) and paints
+      // unclipped under it.
+      expect(tester.getRect(page), const Rect.fromLTWH(0, 52, 375, 760));
+      expect(
+        tester
+            .widget<SingleChildScrollView>(
+              find
+                  .ancestor(
+                    of: find.byType(IslandTitle).first,
+                    matching: find.byType(SingleChildScrollView),
+                  )
+                  .first,
+            )
+            .clipBehavior,
+        Clip.none,
+      );
+      final header = find
+          .ancestor(of: action('返回首页'), matching: find.byType(BackdropFilter))
+          .first;
+      expect(tester.getRect(header), const Rect.fromLTWH(0, 0, 375, 52));
+      expect(tester.getTopLeft(find.byType(IslandTitle).first).dy, 68);
+      tester.state<ScrollableState>(page).position.jumpTo(40);
+      await tester.pump();
+      // The title now passes under the bar, which stays on top and tappable.
+      expect(tester.getTopLeft(find.byType(IslandTitle).first).dy, 28);
+      final hit = tester.hitTestOnBinding(tester.getCenter(action('打开导航')));
+      expect(
+        hit.path.any((e) => e.target == tester.renderObject(action('打开导航'))),
+        isTrue,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+      'page and sidebar scrollers show no scrollbar and still scroll',
+      (tester) async {
+        await showPath(tester, '/collapse');
+        // Reference `*::-webkit-scrollbar { display: none; }`.
+        expect(
+          find.ancestor(
+            of: find.byType(IslandTitle).first,
+            matching: find.byWidgetPredicate((w) => w is RawScrollbar),
+          ),
+          findsNothing,
+        );
+        expect(
+          find.ancestor(
+            of: item('Button 按钮'),
+            matching: find.byWidgetPredicate((w) => w is RawScrollbar),
+          ),
+          findsNothing,
+        );
+        ScrollPosition position(Finder child) => tester
+            .state<ScrollableState>(
+              find.ancestor(of: child, matching: find.byType(Scrollable)).first,
+            )
+            .position;
+        final page = position(find.byType(IslandTitle).first);
+        final menu = position(item('Button 按钮'));
+        tester.binding.handlePointerEvent(
+          const PointerScrollEvent(
+            position: Offset(800, 400),
+            scrollDelta: Offset(0, 120),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(page.pixels, 120);
+        tester.binding.handlePointerEvent(
+          const PointerScrollEvent(
+            position: Offset(100, 400),
+            scrollDelta: Offset(0, 60),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(menu.pixels, 60);
+        // Keyboard: Page Down from a focused control on the page.
+        final control = find
+            .descendant(
+              of: find
+                  .ancestor(
+                    of: find.byType(IslandTitle).first,
+                    matching: find.byType(Scrollable),
+                  )
+                  .first,
+              matching: find.byType(IslandCollapse),
+            )
+            .first;
+        await tester.tap(control);
+        await tester.pumpAndSettle();
+        final before = page.pixels;
+        await tester.sendKeyEvent(LogicalKeyboardKey.pageDown);
+        await tester.pumpAndSettle();
+        expect(page.pixels, greaterThan(before));
+        expect(tester.takeException(), isNull);
+      },
+      variant: TargetPlatformVariant.only(TargetPlatform.windows),
+    );
+
     testWidgets('mobile drawer is the 240px aside over a .35 scrim', (
       tester,
     ) async {

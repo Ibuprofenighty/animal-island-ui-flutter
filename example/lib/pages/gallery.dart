@@ -203,7 +203,7 @@ class _GalleryPageState extends State<GalleryPage> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
+            child: GalleryScrollView(
               controller: _menu,
               padding: const EdgeInsets.only(top: 8, bottom: 82),
               child: Column(
@@ -304,8 +304,14 @@ class _GalleryPageState extends State<GalleryPage> {
     } else if (info == null) {
       content = const Center(child: Text('页面不存在'));
     } else {
-      content = SingleChildScrollView(
+      // Reference main: `padding: 16` with `paddingTop: 68` on mobile under
+      // the fixed 52px header, so the page starts at 68 and scrolls under
+      // the bar's glass. Here the viewport starts below the bar and paints
+      // unclipped above it: the same pixels and scroll extent, while focus
+      // and ensureVisible reveal targets below the bar, not hidden under it.
+      content = GalleryScrollView(
         controller: _content,
+        clipBehavior: mobile ? Clip.none : Clip.hardEdge,
         padding: EdgeInsets.fromLTRB(
           mobile ? 16 : 40,
           mobile ? 16 : 32,
@@ -336,11 +342,7 @@ class _GalleryPageState extends State<GalleryPage> {
                     RegExp(r'(?<=[a-zA-Z0-9])/(?=[a-zA-Z0-9])'),
                     (_) => '\u2060/\u2060',
                   ),
-                  strutStyle: StrutStyle.fromTextStyle(
-                    Theme.of(context).textTheme.bodyMedium!
-                        .copyWith(fontSize: 14, height: 1.5),
-                    forceStrutHeight: true,
-                  ),
+                  strutStyle: galleryNormalLine14,
                   style: TextStyle(
                     fontSize: 14,
                     height: 1.5,
@@ -365,6 +367,9 @@ class _GalleryPageState extends State<GalleryPage> {
           children: [
             Scaffold(
               backgroundColor: IslandTokens.light.canvas,
+              // Reference mobile top bar: `position: fixed` over the scrolling
+              // main, so the page shows through its 92% glass and blur.
+              extendBodyBehindAppBar: true,
               appBar: showMobileNavigation
                   ? _GalleryMobileHeader(
                       title: info?.title ?? 'Animal Island UI',
@@ -410,7 +415,14 @@ class _GalleryPageState extends State<GalleryPage> {
                           child: FocusTraversalGroup(
                             child: PrimaryScrollController(
                               controller: _content,
-                              child: content,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: showMobileNavigation
+                                      ? _GalleryMobileHeader.height
+                                      : 0,
+                                ),
+                                child: content,
+                              ),
                             ),
                           ),
                         ),
@@ -485,8 +497,11 @@ class _GalleryMobileHeader extends StatelessWidget
   final String title;
   final VoidCallback onBack, onMenu;
 
+  /// Reference fixed top bar height, border included.
+  static const height = 52.0;
+
   @override
-  Size get preferredSize => const Size.fromHeight(52);
+  Size get preferredSize => const Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context) {

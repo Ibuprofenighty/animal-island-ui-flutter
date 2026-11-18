@@ -22,4 +22,8 @@ abstract final class CodeBlockColors {
   static const copyBackgroundHover = Primitive.brown367;
   static const copyBorder = Primitive.brown882A30;
   static const copyFocusRing = Primitive.teal750;
+
+  /// Selected code ink inside the light Cursor highlight, as the reference
+  /// `.animal-cursor ::selection { color: #2b2620 }` (8.97:1 on #e9c46a).
+  static const selectedInk = Primitive.brown272;
 }

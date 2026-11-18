@@ -1,10 +1,13 @@
+import '../internal/css_line_box.dart';
 import '../internal/surface_motion.dart';
 import '../foundation/recipes/time.dart';
 import '../foundation/time_value.dart';
 
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 /// Layout of an [IslandTime].
 enum IslandTimeVariant {
@@ -205,25 +208,22 @@ class _IslandTimeState extends State<IslandTime>
       letterSpacing: 0,
     );
     const gameWeekdayPadding = EdgeInsets.fromLTRB(16, 7, 16, 5);
-    // CSS flex-shrink: an overflowing row shrinks each item in proportion to
-    // its natural width; Flexible shares the row the same way when weighted
-    // by that width, and leaves fitting items at their natural width.
-    int shrinkWeight(String text, TextStyle textStyle, {double padding = 0}) {
-      final painter = TextPainter(
-        text: TextSpan(
-          text: text,
-          style: DefaultTextStyle.of(context).style
-              .merge(TextStyle(fontFamily: style?.fontFamily))
-              .merge(textStyle),
-        ),
-        textDirection: Directionality.of(context),
-        textScaler: MediaQuery.textScalerOf(context),
-        locale: Localizations.maybeLocaleOf(context),
-      )..layout();
-      final width = painter.width + padding;
-      painter.dispose();
-      return (width * 10).round().clamp(1, 1 << 20);
-    }
+    final capsuleStyle = TextStyle(
+      fontSize: roles.capsuleFontSize,
+      // Reference `line-height: normal`: the fonts' own metrics.
+      height: kTextHeightNone,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+      color: roles.date,
+    );
+    // Blink `line-height: normal` rounds the fonts' ascent and descent
+    // separately (Noto Sans SC 15px: 17 + 4 = 21, where Flutter's own line is
+    // the rounded 21.72 = 22), so the capsule line box is that sum.
+    final capsuleLine = cssNormalLineHeight(
+      context,
+      '${weekday.toUpperCase()}·$date',
+      capsuleStyle.merge(TextStyle(fontFamily: style?.fontFamily)),
+    );
 
     Widget clockRow({
       required double fontSize,
@@ -277,33 +277,23 @@ class _IslandTimeState extends State<IslandTime>
                   child: CustomPaint(painter: _GameRule(roles.separator)),
                 ),
                 const SizedBox(height: 5),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+                // Reference flex items: under a narrow parent both shrink
+                // in proportion to their natural widths, but never below
+                // their min-content width, so the month-day and CJK capsule
+                // text wrap (Nov / 17, 星期 / 二) while `Tuesday` stays whole.
+                _CssShrinkRow(
+                  gap: 20,
                   children: [
-                    // Reference flex items: under a narrow parent both
-                    // shrink in proportion to their natural widths, so the
-                    // month-day and the capsule text wrap (星期 / 二).
-                    Flexible(
-                      flex: shrinkWeight(date, gameDateStyle),
-                      child: Text(date, style: gameDateStyle),
-                    ),
-                    const SizedBox(width: 20),
-                    Flexible(
-                      flex: shrinkWeight(
-                        weekday,
-                        gameWeekdayStyle,
-                        padding: gameWeekdayPadding.horizontal,
+                    Text(date, style: gameDateStyle),
+                    Container(
+                      // 7 + 15 + 5 = 27px; the extra top pixel lands
+                      // CJK ink on the optical centre.
+                      padding: gameWeekdayPadding,
+                      decoration: BoxDecoration(
+                        color: roles.capsule,
+                        borderRadius: BorderRadius.circular(999),
                       ),
-                      child: Container(
-                        // 7 + 15 + 5 = 27px; the extra top pixel lands
-                        // CJK ink on the optical centre.
-                        padding: gameWeekdayPadding,
-                        decoration: BoxDecoration(
-                          color: roles.capsule,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(weekday, style: gameWeekdayStyle),
-                      ),
+                      child: Text(weekday, style: gameWeekdayStyle),
                     ),
                   ],
                 ),
@@ -330,35 +320,30 @@ class _IslandTimeState extends State<IslandTime>
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    fontSize: roles.capsuleFontSize,
-                    // Reference `line-height: normal`: the fonts' own
-                    // metrics (24px capsule for Latin text at 12px).
-                    height: kTextHeightNone,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
-                    color: roles.date,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        weekday.toUpperCase(),
-                        style: TextStyle(
-                          color: roles.weekday,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w800,
+                  style: capsuleStyle,
+                  child: CssLineBox(
+                    height: capsuleLine,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          weekday.toUpperCase(),
+                          style: TextStyle(
+                            color: roles.weekday,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Text(
-                          '·',
-                          style: TextStyle(color: roles.separator),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Text(
+                            '·',
+                            style: TextStyle(color: roles.separator),
+                          ),
                         ),
-                      ),
-                      Text(date),
-                    ],
+                        Text(date),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -410,4 +395,190 @@ class _GameRule extends CustomPainter {
 
   @override
   bool shouldRepaint(_GameRule old) => old.color != color;
+}
+
+/// CSS flex row (`flex-shrink: 1`, `min-width: auto`) with a fixed [gap]:
+/// items keep their max-content widths while they fit; an overflowing row
+/// shrinks the items in proportion to those widths, and an item that reaches
+/// its min-content width (its longest unbreakable run) freezes there while
+/// the rest keep shrinking. Items are vertically centred
+/// (`align-items: center`).
+class _CssShrinkRow extends MultiChildRenderObjectWidget {
+  const _CssShrinkRow({required this.gap, required super.children});
+  final double gap;
+  @override
+  _RenderCssShrinkRow createRenderObject(BuildContext context) =>
+      _RenderCssShrinkRow(gap, Directionality.of(context));
+  @override
+  void updateRenderObject(BuildContext context, _RenderCssShrinkRow render) =>
+      render
+        ..gap = gap
+        ..textDirection = Directionality.of(context);
+}
+
+class _CssShrinkRowParentData extends ContainerBoxParentData<RenderBox> {}
+
+class _RenderCssShrinkRow extends RenderBox
+    with
+        ContainerRenderObjectMixin<RenderBox, _CssShrinkRowParentData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, _CssShrinkRowParentData> {
+  _RenderCssShrinkRow(this._gap, this._textDirection);
+  double _gap;
+  TextDirection _textDirection;
+  set gap(double value) {
+    if (value == _gap) return;
+    _gap = value;
+    markNeedsLayout();
+  }
+
+  set textDirection(TextDirection value) {
+    if (value == _textDirection) return;
+    _textDirection = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! _CssShrinkRowParentData) {
+      child.parentData = _CssShrinkRowParentData();
+    }
+  }
+
+  List<RenderBox> get _children {
+    final result = <RenderBox>[];
+    var child = firstChild;
+    while (child != null) {
+      result.add(child);
+      child = childAfter(child);
+    }
+    return result;
+  }
+
+  double get _gaps => _gap * math.max(0, childCount - 1);
+
+  /// CSS 9.7 "Resolving Flexible Lengths" for shrinking with min-content
+  /// floors; overflow below the floors stays (CSS overflow).
+  List<double> _widths(double maxWidth) {
+    final children = _children;
+    final base = [
+      for (final child in children) child.getMaxIntrinsicWidth(double.infinity),
+    ];
+    final floor = [
+      for (final child in children) child.getMinIntrinsicWidth(double.infinity),
+    ];
+    final available = maxWidth - _gaps;
+    final widths = [...base];
+    if (!available.isFinite ||
+        base.fold<double>(0, (a, b) => a + b) <= available) {
+      return widths;
+    }
+    final frozen = List.filled(children.length, false);
+    while (true) {
+      final open = [
+        for (var i = 0; i < children.length; i++)
+          if (!frozen[i]) i,
+      ];
+      if (open.isEmpty) break;
+      final frozenWidth = [
+        for (var i = 0; i < children.length; i++)
+          if (frozen[i]) widths[i],
+      ].fold<double>(0, (a, b) => a + b);
+      final openBase = open.fold<double>(0, (a, i) => a + base[i]);
+      final overflow =
+          open.fold<double>(0, (a, i) => a + base[i]) + frozenWidth - available;
+      if (overflow <= 0 || openBase <= 0) break;
+      var violated = false;
+      for (final i in open) {
+        widths[i] = base[i] - overflow * base[i] / openBase;
+        if (widths[i] < floor[i]) {
+          widths[i] = floor[i];
+          frozen[i] = true;
+          violated = true;
+        }
+      }
+      if (!violated) break;
+    }
+    return widths;
+  }
+
+  Size _layout(BoxConstraints constraints, {required bool dry}) {
+    final children = _children;
+    final widths = _widths(constraints.maxWidth);
+    final sizes = [
+      for (var i = 0; i < children.length; i++)
+        dry
+            ? children[i].getDryLayout(
+                BoxConstraints.tightFor(width: widths[i]),
+              )
+            : (children[i]..layout(
+                    BoxConstraints.tightFor(width: widths[i]),
+                    parentUsesSize: true,
+                  ))
+                  .size,
+    ];
+    final height = sizes.fold<double>(0, (a, s) => math.max(a, s.height));
+    final width = widths.fold<double>(0, (a, b) => a + b) + _gaps;
+    if (!dry) {
+      var x = 0.0;
+      for (var i = 0; i < children.length; i++) {
+        (children[i].parentData! as _CssShrinkRowParentData).offset = Offset(
+          _textDirection == TextDirection.rtl ? width - x - sizes[i].width : x,
+          (height - sizes[i].height) / 2,
+        );
+        x += sizes[i].width + _gap;
+      }
+    }
+    return constraints.constrain(Size(width, height));
+  }
+
+  @override
+  void performLayout() => size = _layout(constraints, dry: false);
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) =>
+      _layout(constraints, dry: true);
+
+  @override
+  double computeMinIntrinsicWidth(double height) =>
+      _children.fold<double>(
+        0,
+        (a, child) => a + child.getMinIntrinsicWidth(double.infinity),
+      ) +
+      _gaps;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) =>
+      _children.fold<double>(
+        0,
+        (a, child) => a + child.getMaxIntrinsicWidth(double.infinity),
+      ) +
+      _gaps;
+
+  double _height(double width) {
+    final children = _children;
+    final widths = _widths(width);
+    var height = 0.0;
+    for (var i = 0; i < children.length; i++) {
+      height = math.max(height, children[i].getMaxIntrinsicHeight(widths[i]));
+    }
+    return height;
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) => _height(width);
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => _height(width);
+
+  @override
+  double? computeDistanceToActualBaseline(TextBaseline baseline) =>
+      defaultComputeDistanceToHighestActualBaseline(baseline);
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) =>
+      defaultHitTestChildren(result, position: position);
+
+  @override
+  void paint(PaintingContext context, Offset offset) =>
+      defaultPaint(context, offset);
 }

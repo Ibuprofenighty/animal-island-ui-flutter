@@ -250,6 +250,66 @@ void main() {
     await t.pumpWidget(const SizedBox());
   });
 
+  testWidgets(
+    'a narrow English game HUD keeps the weekday whole at its min-content '
+    'width and wraps only the month-day',
+    (t) async {
+      Future<void> pump(double width) async {
+        await t.pumpWidget(
+          host(
+            SizedBox(
+              width: width,
+              child: const IslandTime(
+                now: monday,
+                variant: IslandTimeVariant.game,
+              ),
+            ),
+          ),
+        );
+        await t.pumpAndSettle();
+      }
+
+      await pump(600);
+      final wide = t.getSize(find.text('Monday')).height;
+      final wideDate = t.getSize(find.text('Jun 8')).height;
+      // Test font: `Jun 8` is 5 x (22 + 2) = 120px, the capsule 6 x 15 + 32
+      // = 122px, so the row needs 262px. In 100 + 230 the proportional
+      // share would cut the capsule to ~106px, below its min-content width
+      // (`Monday`, 122px): CSS freezes it there and the month-day takes the
+      // remaining 88px and wraps (`Jun / 8`).
+      await pump(100 + 230);
+      expect(t.getSize(find.text('Monday')).height, wide);
+      final capsule = find
+          .ancestor(of: find.text('Monday'), matching: find.byType(Container))
+          .first;
+      expect(t.getSize(capsule).width, 122);
+      expect(t.getSize(find.text('Jun 8')).width, 88);
+      expect(t.getSize(find.text('Jun 8')).height, greaterThan(wideDate));
+      expect(t.takeException(), isNull);
+      await t.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets('the card capsule line box rounds ascent and descent like Blink '
+      'line-height: normal', (t) async {
+    await t.pumpWidget(
+      host(
+        const IslandTime(
+          now: monday,
+          style: IslandTimeStyle(capsuleFontSize: 12.5),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final capsule = find
+        .ancestor(of: find.text('MONDAY'), matching: find.byType(Container))
+        .first;
+    // Test font at 12.5px: ascent 9.375 -> 9, descent 3.125 -> 3, so the
+    // line box is 12px (not 12.5) inside the 4px + 4px padding.
+    expect(t.getSize(capsule).height, 8 + 12);
+    await t.pumpWidget(const SizedBox());
+  });
+
   testWidgets('style changes no semantics', (t) async {
     final handle = t.ensureSemantics();
     for (final variant in IslandTimeVariant.values) {
