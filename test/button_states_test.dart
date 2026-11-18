@@ -242,7 +242,11 @@ void main() {
         1.0,
       );
       final fraction = curve.transform(phase);
-      expect(last.value, closeTo(base.top - fraction, .001));
+      // Cubic.transform resolves its parameter only to 0.001 and the curve's
+      // steepest slope is about 2, so the first sample, the rendered value and
+      // this prediction each carry up to 0.002px. 0.005px still separates a
+      // 1ms error in the 250ms duration.
+      expect(last.value, closeTo(base.top - fraction, .005));
       expect(textColor(t), const Color(0xff005e56));
       await mouse.removePointer();
       await t.pumpAndSettle();

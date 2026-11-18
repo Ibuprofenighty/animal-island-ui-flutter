@@ -92,6 +92,97 @@ void main() {
   );
 
   testWidgets(
+    'an overflowing table runs to the wrapper edge and is cut square there',
+    (t) async {
+      final boundaryKey = GlobalKey();
+      Future<void> pump(double width) => t.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            backgroundColor: Colors.white,
+            body: Align(
+              alignment: Alignment.topLeft,
+              child: RepaintBoundary(
+                key: boundaryKey,
+                child: ColoredBox(
+                  color: Colors.white,
+                  child: SizedBox(
+                    width: width,
+                    child: IslandTable<int>(
+                      columns: [
+                        for (final id in ['岛民', '年龄', '岛屿', '喜欢的水果'])
+                          IslandTableColumn(
+                            id: id,
+                            title: Text(id),
+                            cellBuilder: (_, row, _) => Text('$row'),
+                          ),
+                      ],
+                      rows: const [1, 2],
+                      rowKey: (row) => row,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      Future<int> pixel(Offset at) async => (await t.runAsync(() async {
+        final boundary =
+            boundaryKey.currentContext!.findRenderObject()!
+                as RenderRepaintBoundary;
+        final image = await boundary.toImage(pixelRatio: 1);
+        final bytes = await image.toByteData(
+          format: ui.ImageByteFormat.rawRgba,
+        );
+        final i = (at.dy.floor() * image.width + at.dx.floor()) * 4;
+        final rgb =
+            bytes!.getUint8(i) << 16 |
+            bytes.getUint8(i + 1) << 8 |
+            bytes.getUint8(i + 2);
+        image.dispose();
+        return rgb;
+      }))!;
+      Finder header(String title) => find
+          .ancestor(
+            of: find.text(title),
+            matching: find.byWidgetPredicate(
+              (w) =>
+                  w is Semantics &&
+                  w.properties.role == ui.SemanticsRole.columnHeader,
+            ),
+          )
+          .first;
+
+      // Reference `.wrapper` (no `scroll`) does not clip: the table starts
+      // inside the 6px padding and runs past the wrapper's right edge, where
+      // only the outer edge cuts it, square, over the rounded corner.
+      await pump(300);
+      final table = t.getRect(find.byType(IslandTable<int>));
+      final viewport = t.getRect(find.byType(Scrollable).first);
+      expect(viewport.left, table.left);
+      expect(viewport.right, table.right);
+      expect(t.getRect(header('岛民')).left, table.left + 6);
+      expect(t.getRect(header('喜欢的水果')).right, greaterThan(table.right));
+      expect(await pixel(const Offset(298, 10)), 0xf7f3df);
+      expect(await pixel(const Offset(0, 0)), 0xffffff);
+      // Scrolled to the end, the last column keeps the wrapper's 6px padding.
+      final scroll = t.state<ScrollableState>(find.byType(Scrollable).first);
+      scroll.position.jumpTo(scroll.position.maxScrollExtent);
+      await t.pump();
+      expect(t.getRect(header('喜欢的水果')).right, table.right - 6);
+
+      // A table that fits keeps every column inside the padding and all four
+      // rounded corners.
+      await pump(600);
+      final wide = t.getRect(find.byType(IslandTable<int>));
+      expect(t.getRect(header('岛民')).left, wide.left + 6);
+      expect(t.getRect(header('喜欢的水果')).right, wide.right - 6);
+      expect(await pixel(const Offset(599, 8)), 0xffffff);
+      expect(t.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'row focus preserves opaque cell state and geometry; child activation stays local',
     (t) async {
       var parent = 0;

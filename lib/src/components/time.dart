@@ -1,3 +1,4 @@
+import '../internal/css_flex.dart';
 import '../internal/css_line_box.dart';
 import '../internal/surface_motion.dart';
 import '../foundation/recipes/time.dart';
@@ -460,45 +461,17 @@ class _RenderCssShrinkRow extends RenderBox
   /// floors; overflow below the floors stays (CSS overflow).
   List<double> _widths(double maxWidth) {
     final children = _children;
-    final base = [
-      for (final child in children) child.getMaxIntrinsicWidth(double.infinity),
-    ];
-    final floor = [
-      for (final child in children) child.getMinIntrinsicWidth(double.infinity),
-    ];
-    final available = maxWidth - _gaps;
-    final widths = [...base];
-    if (!available.isFinite ||
-        base.fold<double>(0, (a, b) => a + b) <= available) {
-      return widths;
-    }
-    final frozen = List.filled(children.length, false);
-    while (true) {
-      final open = [
-        for (var i = 0; i < children.length; i++)
-          if (!frozen[i]) i,
-      ];
-      if (open.isEmpty) break;
-      final frozenWidth = [
-        for (var i = 0; i < children.length; i++)
-          if (frozen[i]) widths[i],
-      ].fold<double>(0, (a, b) => a + b);
-      final openBase = open.fold<double>(0, (a, i) => a + base[i]);
-      final overflow =
-          open.fold<double>(0, (a, i) => a + base[i]) + frozenWidth - available;
-      if (overflow <= 0 || openBase <= 0) break;
-      var violated = false;
-      for (final i in open) {
-        widths[i] = base[i] - overflow * base[i] / openBase;
-        if (widths[i] < floor[i]) {
-          widths[i] = floor[i];
-          frozen[i] = true;
-          violated = true;
-        }
-      }
-      if (!violated) break;
-    }
-    return widths;
+    return cssShrinkWidths(
+      base: [
+        for (final child in children)
+          child.getMaxIntrinsicWidth(double.infinity),
+      ],
+      floor: [
+        for (final child in children)
+          child.getMinIntrinsicWidth(double.infinity),
+      ],
+      available: maxWidth - _gaps,
+    );
   }
 
   Size _layout(BoxConstraints constraints, {required bool dry}) {

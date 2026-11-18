@@ -105,6 +105,40 @@ void main() {
     },
   );
 
+  testWidgets(
+    'on the default fill the highlight shows inside the 2px same-hue edge',
+    (t) async {
+      await t.pumpWidget(host(bar(45)));
+      await t.pump();
+      // Mid-bar column of the 24px bar: track border rows 0-1, the 20px fill
+      // from row 2. The registered #039d91 edge keeps fill rows 0-1 (y 2-3);
+      // the reference inset highlight (white .45 over #3dd4c6, #93e7df in the
+      // reference capture) follows on fill rows 2-3 (y 4-5), as a CSS inset
+      // shadow sits inside a border; the gradient continues below.
+      for (final y in [2, 3]) {
+        expect(await pixel(t, 60, y), [0x03, 0x9d, 0x91], reason: 'edge $y');
+      }
+      for (final y in [4, 5]) {
+        final highlight = await pixel(t, 60, y);
+        for (final (channel, value) in [(0, 0x93), (1, 0xe7), (2, 0xdf)]) {
+          expect(
+            highlight[channel],
+            closeTo(value, 4),
+            reason: 'highlight $y channel $channel',
+          );
+        }
+      }
+      final fill = await pixel(t, 60, 6);
+      expect(fill[0], lessThan(0x60), reason: 'gradient below the highlight');
+      // The edge still bounds the fill against the track at the far end.
+      expect(await pixel(t, (2 + 296 * .45 - 1).floor(), 12), [
+        0x03,
+        0x9d,
+        0x91,
+      ]);
+    },
+  );
+
   testWidgets('scene takes precedence over colour', (t) async {
     await t.pumpWidget(
       host(bar(45, color: peach, scene: IslandScene.forestGrove)),

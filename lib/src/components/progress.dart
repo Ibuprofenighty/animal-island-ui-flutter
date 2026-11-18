@@ -162,10 +162,18 @@ class IslandProgress extends StatelessWidget {
                                   // Reference `box-shadow: inset 0 2px 0`:
                                   // a 2px band that follows the pill's
                                   // rounded ends, painted on the fill itself.
-                                  const Positioned.fill(
-                                    child: CustomPaint(
-                                      painter: _InsetTopHighlight(
-                                        ProgressColors.highlight,
+                                  // Beside the 2px fill edge it sits inside
+                                  // the edge, as a CSS inset shadow sits
+                                  // inside a border, so both stay visible.
+                                  Positioned.fill(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(
+                                        scene != null || color == null ? 2 : 0,
+                                      ),
+                                      child: const CustomPaint(
+                                        painter: _InsetTopHighlight(
+                                          ProgressColors.highlight,
+                                        ),
                                       ),
                                     ),
                                   ),

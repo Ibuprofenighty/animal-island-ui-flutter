@@ -11,6 +11,7 @@ import '../foundation/recipes/calendar.dart';
 import '../foundation/theme.dart';
 import '../foundation/time_value.dart';
 import '../internal/action_surface.dart';
+import '../internal/css_flex.dart';
 import '../internal/css_line_box.dart';
 import '../internal/dot_pattern.dart';
 import '../internal/focus_outline.dart';
@@ -506,7 +507,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _header(month, today, duration),
+                  _header(month, today, duration, width),
                   const SizedBox(height: 8),
                   DecoratedBox(
                     decoration: BoxDecoration(
@@ -607,7 +608,12 @@ class _IslandCalendarState extends State<IslandCalendar> {
     );
   }
 
-  Widget _header(DateTime month, DateTime today, Duration duration) {
+  Widget _header(
+    DateTime month,
+    DateTime today,
+    Duration duration,
+    double width,
+  ) {
     final strings = IslandLocalizations.of(context);
     final brightness = Theme.of(context).brightness;
     Widget arrow(String label, bool forward, bool year) => ActionSurface(
@@ -646,7 +652,15 @@ class _IslandCalendarState extends State<IslandCalendar> {
         );
       },
     );
-    final todayAction = ActionSurface(
+    // Merged, so the action keeps the ambient font family.
+    final todayStyle = DefaultTextStyle.of(context).style.merge(
+      const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        height: kTextHeightNone,
+      ),
+    );
+    Widget todayAction(Widget label) => ActionSurface(
       onActivate: () => _select(today),
       builder: (_, states) {
         final hover = states.contains(WidgetState.hovered);
@@ -668,21 +682,16 @@ class _IslandCalendarState extends State<IslandCalendar> {
             color: hover ? CalendarColors.controlHoverFill : null,
             borderRadius: BorderRadius.circular(10),
           ),
+          // Reference `line-height: normal`: the fonts' own metrics.
           child: AnimatedDefaultTextStyle(
             duration: duration,
             curve: _curve,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
+            style: todayStyle.copyWith(
               color: hover
                   ? CalendarColors.todayActionHover(brightness)
                   : CalendarColors.todayAction(brightness),
             ),
-            // Reference `line-height: normal`: the fonts' own metrics.
-            child: Text(
-              strings.today,
-              style: const TextStyle(height: kTextHeightNone),
-            ),
+            child: label,
           ),
         );
       },
@@ -695,61 +704,169 @@ class _IslandCalendarState extends State<IslandCalendar> {
       letterSpacing: 0.15,
       color: CalendarColors.monthChipInk,
     );
-    return Wrap(
-      alignment: WrapAlignment.spaceBetween,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 8,
-      runSpacing: 8,
+    Widget chip(Widget title) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: CalendarColors.monthChipFill,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const IslandIcon(
+            IslandGlyph.calendar,
+            size: 16,
+            strokeWidth: 2.4,
+            color: CalendarColors.accent,
+          ),
+          const SizedBox(width: 6),
+          title,
+        ],
+      ),
+    );
+    Widget leading() => Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            arrow(strings.previousYear, false, true),
-            const SizedBox(width: 2),
-            arrow(strings.previousMonth, false, false),
-          ],
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: CalendarColors.monthChipFill,
-            borderRadius: BorderRadius.circular(12),
+        arrow(strings.previousYear, false, true),
+        const SizedBox(width: 2),
+        arrow(strings.previousMonth, false, false),
+      ],
+    );
+    Widget trailing(Widget action) => Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        action,
+        const SizedBox(width: 4),
+        arrow(strings.nextMonth, true, false),
+        const SizedBox(width: 2),
+        arrow(strings.nextYear, true, true),
+      ],
+    );
+    // Reference `.header` is a space-between flex row (gap 8) of the arrow
+    // group (two fixed 28px buttons, 2px apart), the month chip (padding 12,
+    // 16px icon, 6px gap) and the 今天 group (padding 12, then 2px margin +
+    // 2px gap and two 28px buttons). When the row overflows, the chip and
+    // the 今天 group shrink in proportion to their max-content widths down to
+    // their min-content widths and their text wraps (2026 / 年8月, 今 / 天).
+    final monthStyle = DefaultTextStyle.of(context).style
+        .merge(monthTitleStyle);
+    // (min-content with Blink's CJK break opportunities, max-content).
+    (double, double) extent(String text, TextStyle style) {
+      double measure(String value, {required bool min}) {
+        final painter = TextPainter(
+          text: TextSpan(text: value, style: style),
+          textDirection: Directionality.of(context),
+          textScaler: MediaQuery.textScalerOf(context),
+          locale: Localizations.maybeLocaleOf(context),
+        )..layout();
+        final width = min
+            ? painter.minIntrinsicWidth
+            : painter.maxIntrinsicWidth;
+        painter.dispose();
+        return width;
+      }
+
+      return (
+        measure(cssBreakOpportunities(text), min: true),
+        measure(text, min: false),
+      );
+    }
+
+    const arrows = 28 + 2 + 28.0, chipInset = 12 + 16 + 6 + 12.0;
+    const todayInset = 12 + 12.0, trailingInset = todayInset + 4 + arrows;
+    final (titleMin, titleMax) = extent(monthTitle, monthStyle);
+    final (todayMin, todayMax) = extent(strings.today, todayStyle);
+    final base = [arrows, chipInset + titleMax, trailingInset + todayMax];
+    final floor = [arrows, chipInset + titleMin, trailingInset + todayMin];
+    final available = width - 2 * 8;
+    final fits = base.fold<double>(0, (a, b) => a + b) <= available;
+    final floors = floor.fold<double>(0, (a, b) => a + b);
+    if (fits || floors > available) {
+      // Below the summed min-content widths the groups wrap instead of
+      // overflowing (narrow-layout usability difference, DESIGN.md).
+      return Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          leading(),
+          chip(
+            // Reference `line-height: normal`, as the 今天 action: the
+            // chip (padding 4 + one line) sets the header row height.
+            // Blink rounds the ascent and descent separately (Nunito with
+            // a Noto Sans SC run at 15px: 17 + 5 = 22, a 30px chip), not
+            // their sum (23).
+            CssLineBox(
+              height: cssNormalLineHeight(context, monthTitle, monthTitleStyle),
+              child: Text(monthTitle, style: monthTitleStyle),
+            ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const IslandIcon(
-                IslandGlyph.calendar,
-                size: 16,
-                strokeWidth: 2.4,
-                color: CalendarColors.accent,
+          trailing(todayAction(Text(strings.today))),
+        ],
+      );
+    }
+    final widths = cssShrinkWidths(
+      base: base,
+      floor: floor,
+      available: available,
+    );
+    // Each wrapped line keeps its own CSS line box; the button centres its
+    // lines (reference `<button>` text-align), the chip starts them.
+    Widget lines(
+      String text,
+      TextStyle style,
+      double maxWidth,
+      CrossAxisAlignment alignment,
+    ) => Semantics(
+      label: text,
+      excludeSemantics: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: alignment,
+        children: [
+          for (final line in cssWrappedLines(context, text, style, maxWidth))
+            CssLineBox(
+              height: line.height,
+              child: Text(line.text, softWrap: false),
+            ),
+        ],
+      ),
+    );
+    return Row(
+      children: [
+        leading(),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: widths[1],
+          child: chip(
+            DefaultTextStyle.merge(
+              style: monthTitleStyle,
+              child: lines(
+                monthTitle,
+                monthStyle,
+                widths[1] - chipInset,
+                CrossAxisAlignment.start,
               ),
-              const SizedBox(width: 6),
-              // Reference `line-height: normal`, as the 今天 action: the
-              // chip (padding 4 + one line) sets the header row height.
-              // Blink rounds the ascent and descent separately (Nunito with
-              // a Noto Sans SC run at 15px: 17 + 5 = 22, a 30px chip), not
-              // their sum (23).
-              CssLineBox(
-                height: cssNormalLineHeight(
-                  context,
-                  monthTitle,
-                  monthTitleStyle,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: widths[2],
+          child: trailing(
+            SizedBox(
+              width: widths[2] - trailingInset + todayInset,
+              child: todayAction(
+                lines(
+                  strings.today,
+                  todayStyle,
+                  widths[2] - trailingInset,
+                  CrossAxisAlignment.center,
                 ),
-                child: Text(monthTitle, style: monthTitleStyle),
               ),
-            ],
+            ),
           ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            todayAction,
-            const SizedBox(width: 4),
-            arrow(strings.nextMonth, true, false),
-            const SizedBox(width: 2),
-            arrow(strings.nextYear, true, true),
-          ],
         ),
       ],
     );

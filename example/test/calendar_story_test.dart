@@ -71,7 +71,38 @@ void main() {
       // Reference demo caption and the leading `width` API row.
       expect(find.text('拖拽跨日期创建事项（draggableEvents）'), findsOneWidget);
       expect(find.text('面板宽度，默认铺满父容器（数值按 px 处理）'), findsOneWidget);
-      expect(find.text('2026年8月'), findsNWidgets(3));
+      if (width == 1440) {
+        expect(find.text('2026年8月'), findsNWidgets(3));
+      } else {
+        // Reference 375: one toolbar row whose chip and 今天 shrink and wrap
+        // (`2026` / `年8月`, `今` / `天`); the chip is 4 + 20 + 22 + 4 = 50px
+        // (ref calendar-375-0: chip fill y 342-391).
+        expect(find.bySemanticsLabel('2026年8月'), findsNWidgets(3));
+        expect(find.text('2026'), findsNWidgets(3));
+        expect(find.text('年8月'), findsNWidgets(3));
+        expect(find.text('今'), findsNWidgets(3));
+        expect(find.text('天'), findsNWidgets(3));
+        for (var i = 0; i < 3; i++) {
+          final chip = find
+              .ancestor(
+                of: find.text('2026').at(i),
+                matching: find.byType(Container),
+              )
+              .first;
+          expect(t.getSize(chip).height, 50, reason: 'chip $i');
+          final row = [
+            for (final name in ['上一年', '今天', '下一年'])
+              t.getRect(find.bySemanticsLabel(name).at(i)).center.dy,
+          ];
+          expect(row[1], closeTo(row[0], 0.01), reason: 'one row $i');
+          expect(row[2], closeTo(row[0], 0.01), reason: 'one row $i');
+          expect(
+            t.getRect(chip).center.dy,
+            closeTo(row[0], 0.01),
+            reason: 'chip centred in the row $i',
+          );
+        }
+      }
       expect(find.text('09:30'), findsOneWidget);
       expect(find.text('20:00'), findsNothing);
       expect(find.text('摘果子'), findsOneWidget);

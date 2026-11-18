@@ -374,6 +374,72 @@ void main() {
       }
     });
 
+    testWidgets(
+      'an overflowing header shrinks the chip and 今天 like the reference flex row',
+      (t) async {
+        // 300px panel in the 1em-square test font: the max-content row
+        // (58 + 152 + 112 + 2 x 8 gaps = 338) overflows, the min-content row
+        // (58 + 106.6 + 99 + 16 = 279.6) fits, so the reference flex row
+        // shrinks instead of wrapping (as at 375 in the Gallery).
+        final h = t.ensureSemantics();
+        await pump(
+          t,
+          IslandCalendar(
+            value: null,
+            onChanged: null,
+            month: DateTime(2026, 8),
+            now: fixedNow,
+          ),
+          width: 300,
+        );
+        final actions = [
+          for (final name in ['上一年', '上个月', '今天', '下个月', '下一年'])
+            t.getRect(find.bySemanticsLabel(name)),
+        ];
+        // One toolbar row: every action is centred on the same line.
+        for (final rect in actions) {
+          expect(rect.center.dy, closeTo(actions.first.center.dy, 0.01));
+        }
+        expect(actions.last.right, closeTo(40 + 300.0, 0.01));
+        // The arrow group (58) keeps its width and the 今天 group freezes at
+        // its min-content (12 + 13.5 + 12 + 4 + 58 = 99.5: one 13px glyph
+        // plus the host's ambient 0.5px letter spacing); the chip takes the
+        // rest of the 284px after the gaps.
+        final chip = find
+            .ancestor(
+              of: find.bySemanticsLabel('2026年8月'),
+              matching: find.byType(Container),
+            )
+            .first;
+        expect(t.getSize(chip).width, closeTo(284 - 58 - 99.5, 0.01));
+        // Both texts wrap, each line in its own CSS line box (15px and 13px
+        // test-font lines: ascent and descent rounded, 11 + 4 and 10 + 3).
+        final chipLines = find.descendant(
+          of: chip,
+          matching: find.byType(Text),
+        );
+        expect(chipLines, findsNWidgets(2));
+        expect(
+          [for (final e in chipLines.evaluate()) (e.widget as Text).data]
+              .join(),
+          '2026年8月',
+        );
+        expect(find.text('今'), findsOneWidget);
+        expect(find.text('天'), findsOneWidget);
+        expect(t.getSize(chip).height, closeTo(8 + 15 + 15, 0.01));
+        expect(actions[2].height, closeTo(8 + 13 + 13, 0.01));
+        // The chip is the tallest item, so it sets the header height; the
+        // week header is 32 x the scale (300 / 750 clamped to 0.6).
+        expect(
+          t.getTopLeft(cell('2026-07-26')).dy -
+              t.getTopLeft(find.byType(IslandCalendar)).dy,
+          closeTo(38 + 8 + 1 + 8 + 32 * 0.6, 0.01),
+        );
+        expect(t.takeException(), isNull);
+        h.dispose();
+      },
+    );
+
     testWidgets('a narrow panel wraps its header instead of overflowing', (
       t,
     ) async {

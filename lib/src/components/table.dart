@@ -153,8 +153,11 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
     final strings = IslandLocalizations.of(context);
     Widget content = LayoutBuilder(
       builder: (context, constraints) {
+        // The scroll viewport spans the wrapper's 6px side padding, which
+        // stays inside the scrolled content: reference `.table` overflows
+        // the wrapper's padding box and is cut only at its outer edge.
         final available = constraints.hasBoundedWidth
-            ? constraints.maxWidth
+            ? math.max(0.0, constraints.maxWidth - 12)
             : math.max(widget.minWidth, 600.0);
         final width = math.max(widget.minWidth, available);
         Widget cells({T? record, int index = 0, bool header = false}) => Row(
@@ -332,14 +335,20 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
         );
         Widget scroll = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: _IntrinsicColumns(
-            geometry: geometry,
-            minimumWidth: width,
-            fixedWidths: [for (final column in widget.columns) column.width],
-            preferredWidths: [
-              for (final column in widget.columns) column.preferredWidth,
-            ],
-            child: table,
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          // Reference `.thead`/`.tbody` paint the surface on the table box,
+          // so a table wider than the wrapper covers its rounded corner.
+          child: ColoredBox(
+            color: TableColors.surface,
+            child: _IntrinsicColumns(
+              geometry: geometry,
+              minimumWidth: width,
+              fixedWidths: [for (final column in widget.columns) column.width],
+              preferredWidths: [
+                for (final column in widget.columns) column.preferredWidth,
+              ],
+              child: table,
+            ),
           ),
         );
         if (widget.maxHeight != null)
@@ -356,7 +365,7 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
         content,
         if (paging != null)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+            padding: const EdgeInsets.fromLTRB(22, 10, 22, 8),
             child: Align(
               alignment: AlignmentDirectional.centerEnd,
               child: IslandPagination(
@@ -376,11 +385,16 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
       ],
     );
     return LightSurfaceScope(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.all(6),
+      // Reference `.wrapper` rounds its background but does not clip: an
+      // overflowing table is cut square at the wrapper's outer edge by the
+      // scroll viewport, not by the rounded corner.
+      child: DecoratedBox(
+        decoration: BoxDecoration(
           color: TableColors.surface,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
           child: Stack(
             children: [
               ExcludeFocus(
@@ -395,6 +409,8 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
               ),
               if (widget.loading)
                 Positioned.fill(
+                  left: 6,
+                  right: 6,
                   child: Semantics(
                     liveRegion: true,
                     label: strings.loading,
