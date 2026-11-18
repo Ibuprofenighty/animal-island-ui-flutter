@@ -29,7 +29,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/air-fryer.svg",
     "upstream_sha256": "13e0d8a37f0d1e1cf4859c076e3199cd35e15ef84aa9bd3a8e5430384b210914",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/airplane.svg",
@@ -423,7 +423,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/barcode.svg",
     "upstream_sha256": "29783c3b47364b7797c1dd4d2459c3939bb97b8f90ab2f8451c1e1ad6781a70b",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/barn.svg",
@@ -617,7 +617,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/bolt.svg",
     "upstream_sha256": "87ee37c2ceb42d5af659c6660c07f6173826b91c769ae47414ff0ef81f9edf77",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/bone.svg",
@@ -940,7 +940,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/cat.svg",
     "upstream_sha256": "9f24f398f19f37a8cb99c99e665f0a76796051ecda331746878f8aab70a76a5c",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Authored per-element repairs from project baseline ec05573efde4 carried onto unchanged upstream elements or roles: 0 carried, 5 dropped where upstream changed the element or attribute. Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Authored per-element repairs from project baseline ec05573efde4 carried onto unchanged upstream elements or roles: 0 carried, 5 dropped where upstream changed the element or attribute. Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/charger.svg",
@@ -1171,11 +1171,11 @@
   },
   {
     "path": "assets/icons/cloud-off.svg",
-    "sha256": "04fe5e60910db534f3a069f121973b30c393f801f6f5e3b3652bd20944e2e0c2",
+    "sha256": "e1899dc58b1751f02e3880d4f5ef0fd88970ced9b98725de0ad0ee49fe01f12d",
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/cloud-off.svg",
     "upstream_sha256": "b9ff6da7a4225ac7603cdc64d132d82eaa1983c37ac98abbdfd856ad142c55b3",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O6 (2026-11-18) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/cloud-upload.svg",
@@ -2213,7 +2213,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/grip.svg",
     "upstream_sha256": "12f511cc4cb62640e0daec888ac910972eb6d5a4fb1e0e1362f45ca91ca93ce4",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/gym.svg",
@@ -2790,11 +2790,11 @@
   },
   {
     "path": "assets/icons/location-off.svg",
-    "sha256": "81e02899d6a4781cc4b243780abffa2a95346082e6f281fdb43c783bbd31f2e0",
+    "sha256": "a7615323b2480a869f1e21d8acebdb99b049680158e5a436624fa0862e398ee1",
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/location-off.svg",
     "upstream_sha256": "5241c3e5162cce87cfd7e7a82ac5b9bcfe4f3be5409da0d1637baa2b2d56557f",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O6 (2026-11-18) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/location.svg",
@@ -3062,11 +3062,11 @@
   },
   {
     "path": "assets/icons/mic-off.svg",
-    "sha256": "88d4c7562f2f4e86e93fc6a8e4499673e27c9fb149d0fec6b8ebb615bca7f619",
+    "sha256": "6e9f4956deef4d110151a5b08e4e3297043a89f8918aabb9b10e8b4fa2582208",
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/mic-off.svg",
     "upstream_sha256": "4bfd75c38dacc79cd8a723432559a5068b24216f2da7fe5b4faabdb75fad9746",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O2 (2026-11-17) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O2/O6 (2026-11-17, 2026-11-18) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/mic.svg",
@@ -3483,7 +3483,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/peacock.svg",
     "upstream_sha256": "20beada57a0c4ce66ae419143e213544fde332a5fd7484c1938758010d09a944",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/pear.svg",
@@ -3560,11 +3560,11 @@
   },
   {
     "path": "assets/icons/phone-off.svg",
-    "sha256": "4c5062ea021202d2d4a206c7c0ca8883dd3a538dfdc9708feb4f4c9ad6e7c976",
+    "sha256": "2b80de7201fb28b1aa143c8cbd257c3e023fb76abd9711d634845b514423fb89",
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/phone-off.svg",
     "upstream_sha256": "993d3f6ee99f86639ffc2fc110f11e3adbf784d4f889ab832a605b41495b20a6",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O6 (2026-11-18) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/phone-outgoing.svg",
@@ -3605,7 +3605,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/picture-in-picture.svg",
     "upstream_sha256": "8c1b7ecadf6b55a716981a795d50a55eccd406dd6a6158b4b2b53bd3e05ff305",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/pie-chart.svg",
@@ -3782,7 +3782,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/police-station.svg",
     "upstream_sha256": "6eae4baa31bbd35cb2a5a953614b867a138092067db58a0c14e67dcb811a298f",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/popcorn.svg",
@@ -3854,7 +3854,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/projector.svg",
     "upstream_sha256": "cf04603b7d6317cbe2f4856a60fe1242f55215e1bbe46dc8c6e0c60bbe7967ca",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O2 (2026-11-17) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O2 (2026-11-17) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/pulse-oximeter.svg",
@@ -4552,7 +4552,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/smartwatch.svg",
     "upstream_sha256": "702d7981c570cae4244d4c6f6bce6eaa974f6d60c392a51666a3da6f9aad491d",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O2 (2026-11-17) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O2 (2026-11-17) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/smile.svg",
@@ -4658,7 +4658,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/sparkles.svg",
     "upstream_sha256": "c3a9815019999ce96d8f0b8222eaf5a38c92709ba2da6206c45b456cce2a664b",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/speaker.svg",
@@ -4666,7 +4666,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/speaker.svg",
     "upstream_sha256": "48cff80973998da06ddfba6e2262103af95c5b8e952ac0d2ff615d2068c1ddc7",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/spider.svg",
@@ -5159,7 +5159,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/train-station.svg",
     "upstream_sha256": "c28cc21063ebdcca365359d81613ce95e4d6732496776ef28b705ea4ef262e0a",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O3 (2026-11-17) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O3 (2026-11-17) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/train.svg",
@@ -5415,11 +5415,11 @@
   },
   {
     "path": "assets/icons/video-off.svg",
-    "sha256": "80feca36389784af4053c3abd35eff1e4324aa2aed9989132f2d08f717b72fc2",
+    "sha256": "45adfc4fa4835891e3c94a920cc8a868abcfe73c2c152bb1ab062b5627b2ed18",
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/video-off.svg",
     "upstream_sha256": "50553c6b9919a190c29f5156f92d35b6b3db7cf051de02c9549ed4bdb7e42e84",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rules O6 (2026-11-18) set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/video.svg",
@@ -5509,7 +5509,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/waffle.svg",
     "upstream_sha256": "d0aa7d6f661ef079b779c1e8f7a61436aae8a66c28725776bb1978695cc95deb",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/walker.svg",
@@ -5533,7 +5533,7 @@
     "source": "https://github.com/guokaigdg/naive-icons/blob/13103049a6ceee09797bb41d535bc84bb927158a/svg/wallet.svg",
     "upstream_sha256": "78f0e90bb7f7f15b5c9a53a0c4132076d9f18ba1296430665c5d27db5cf37932",
     "license": "MIT",
-    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Other paint and all geometry are the upstream bytes. Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+    "transformation": "Root drawing ink #2A2A2A -> currentColor (rule R1, tool/import_icons.py). Owner rule O7 (2026-11-18) keeps the upstream paint of the element roles it lists in docs/icon-paint-roles.json import_v1_14.settled. Other paint and all geometry are the upstream bytes."
   },
   {
     "path": "assets/icons/warehouse.svg",

@@ -17,9 +17,9 @@ Per glyph exactly one disposition:
 - added:   new upstream glyph: upstream PIN source with rule R1.
 
 R1 (root drawing ink #2A2A2A -> currentColor) is the only paint rule that held for every
-authored asset. Interior fixed ink, host currentColor and recolouring were per-glyph review
-decisions, so the importer never applies them: it measures upstream geometry on a raster
-and records each unsettled element role in docs/icon-paint-roles.json import_v1_14.pending.
+authored asset. Other paint changes come only from the owner rules O1-O7 and REPAIRS below;
+the importer measures upstream geometry on a raster and records each element role no rule
+settles in docs/icon-paint-roles.json import_v1_14.pending (a held role keeps upstream paint).
 """
 from __future__ import annotations
 
@@ -450,7 +450,7 @@ def pending_roles(svg: str, fresh: set[str] | None) -> list[dict]:
     return out
 
 
-# ---------------------------------------------------------------- owner rules (2026-11-17)
+# ---------------------------------------------------------------- owner rules (2026-11-17, 2026-11-18)
 
 # The owner applied the previous round's majority practice in bulk, one rule per pending
 # category. A rule only rewrites the one paint attribute it names and never geometry.
@@ -467,9 +467,20 @@ OWNER_RULES = {
           "#2A2A2A fill (an ink outline drawn as a filled shape) becomes currentColor.",
     "O5": "interior-contrast: interior detail under 3:1 on its own backing keeps the upstream paint "
           "as decorative interior detail (kept by rule, not certified as necessary).",
+    # Owner decision 2026-11-18 on the roles O1-O5 held.
+    "O6": "semantic-colour: a SEMANTIC_COLOUR stroke, excluded from O1, keeps its hue and moves along "
+          "OKLCH lightness (chroma and hue fixed, clipped to sRGB only if needed and recorded) to the first "
+          "8-bit colour that reaches 3:1 on light paper #F8F8F0, the least change that passes; it must keep "
+          "3:1 on dark paper and dark canvas or the import stops. No fixed colour reaches 3:1 on both the "
+          "light canvas #88C9A1 and dark paper #243C33, so the light canvas stays under 3:1 (recorded per "
+          "element with the ratios on the stroke's own backing, which O6 does not change).",
+    "O7": "owner-kept: the roles listed in OWNER_KEPT keep the upstream paint by owner decision; each "
+          "keeps the measurement that stopped O1-O5, and no contrast matrix certifies it.",
 }
+RULE_DATES = {"O1": "2026-11-17", "O2": "2026-11-17", "O3": "2026-11-17", "O4": "2026-11-17",
+              "O5": "2026-11-17", "O6": "2026-11-18", "O7": "2026-11-18"}
 # Coloured host-reaching strokes whose hue is the meaning (a red negation slash): O1 would
-# turn the slash into ordinary ink, so they keep upstream paint and are held for the owner.
+# turn the slash into ordinary ink, so they keep their hue and are deepened by O6 instead.
 SEMANTIC_COLOUR = {
     ("cloud-off", "1"): "red negation slash",
     ("location-off", "2"): "red negation slash",
@@ -477,8 +488,74 @@ SEMANTIC_COLOUR = {
     ("phone-off", "1"): "red negation slash",
     ("video-off", "2"): "red negation slash",
 }
-# Host contexts the held entries are measured against (light/dark paper and canvas tokens).
+# Host contexts measured against (light/dark paper and canvas tokens).
 HOSTS = {"light paper": "#F8F8F0", "light canvas": "#88C9A1", "dark paper": "#243C33", "dark canvas": "#172B26"}
+O6_TARGET = "light paper"
+O6_KEEP = ("dark paper", "dark canvas")
+# Roles O1-O5 hold that the owner kept with upstream paint (2026-11-18), with the category
+# each must still have; a listed role that no longer arises, or arises differently, stops the import.
+OWNER_KEPT = {
+    **{(n, e): "inherited-interior" for n, e in (
+        ("air-fryer", "2"), ("cat", "9"), ("peacock", "7"), ("picture-in-picture", "1"),
+        ("police-station", "2"), ("projector", "1"), ("smartwatch", "1"), ("speaker", "2"),
+        ("train-station", "5"), ("waffle", "2"), ("wallet", "2"))},
+    **{(n, "*"): "fixed-silhouette" for n in ("barcode", "bolt", "grip", "sparkles")},
+}
+
+
+def _srgb_to_linear(v: float) -> float:
+    return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+
+
+def _linear_to_srgb(v: float) -> float:
+    return 12.92 * v if v <= 0.0031308 else 1.055 * v ** (1 / 2.4) - 0.055
+
+
+def oklch(hex_color: str) -> tuple[float, float, float]:
+    """OKLCH (lightness, chroma, hue in degrees) of an sRGB hex colour (Ottosson's OKLab)."""
+    r, g, b = (_srgb_to_linear(int(hex_color[i:i + 2], 16) / 255) for i in (1, 3, 5))
+    l, m, s = (x ** (1 / 3) for x in (0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
+                                      0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
+                                      0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b))
+    lightness = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s
+    a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s
+    bb = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+    return lightness, math.hypot(a, bb), math.degrees(math.atan2(bb, a)) % 360
+
+
+def oklch_srgb(lightness: float, chroma: float, hue: float) -> tuple[list[float], bool]:
+    """Gamma-encoded sRGB channels (0-1) of an OKLCH colour, clipped; True if clipping was needed."""
+    a, b = chroma * math.cos(math.radians(hue)), chroma * math.sin(math.radians(hue))
+    l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3
+    m = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3
+    s = (lightness - 0.0894841775 * a - 1.2914855480 * b) ** 3
+    rgb = [_linear_to_srgb(v) if v > 0 else 0.0 for v in (
+        4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+        -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+        -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s)]
+    clipped = any(v < 0 or v > 1 for v in rgb)
+    return [min(1.0, max(0.0, v)) for v in rgb], clipped
+
+
+def deepen(paint: str, host: str, target: float = 3.0) -> dict:
+    """O6: move along OKLCH lightness away from the host, chroma and hue fixed, in steps of 1e-5
+    (far below one 8-bit level), and return the first 8-bit rounding that reaches the target."""
+    lightness, chroma, hue = oklch(paint)
+    step = -1e-5 if luminance(paint) <= luminance(host) else 1e-5
+    for k in range(200000):
+        rgb, clipped = oklch_srgb(lightness + k * step, chroma, hue)
+        hex_color = "#" + "".join(f"{round(v * 255):02X}" for v in rgb)
+        if contrast(hex_color, host) >= target:
+            return {"colour": hex_color, "clipped_to_srgb": clipped,
+                    "oklch_before": [round(lightness, 4), round(chroma, 4), round(hue, 2)],
+                    "oklch_lightness_searched": round(lightness + k * step, 5),
+                    "oklch_after_rounded": [round(x, 4) for x in oklch(hex_color)[:2]]
+                    + [round(oklch(hex_color)[2], 2)]}
+    raise SystemExit(f"O6: no lightness of {paint} reaches {target}:1 on {host}")
+
+
+def host_ratios(paint: str) -> dict[str, float]:
+    return {h: round(contrast(paint, c), 2) for h, c in HOSTS.items()}
 
 
 def hex_backings(backing: dict[str, int]) -> dict[str, int]:
@@ -490,7 +567,7 @@ def ratios(paint: str, backing) -> dict[str, float]:
 
 
 def settle(name: str, svg: str, scope: set[str] | None):
-    """Apply the owner rules O1-O5 to the pending roles of one glyph.
+    """Apply the owner rules O1-O7 to the pending roles of one glyph.
 
     Returns (edits, settled, held). Each settled entry names its rule; held entries keep
     upstream paint with the measured reason no rule applies. The result is re-measured:
@@ -506,9 +583,13 @@ def settle(name: str, svg: str, scope: set[str] | None):
         r = rows[el]
         if cat == "colour-on-host":
             if (name, el) in SEMANTIC_COLOUR:
-                held.append({**p, "reason": f"{SEMANTIC_COLOUR[(name, el)]}: O1 would remove the colour that "
-                             f"carries the meaning; upstream {r['stroke']} on hosts " + ", ".join(
-                                 f"{h} {contrast(r['stroke'], c):.2f}:1" for h, c in HOSTS.items())})
+                derived = deepen(r["stroke"], HOSTS[O6_TARGET])
+                edits.setdefault(el, {})["stroke"] = derived["colour"]
+                settled.append({"element": el, "category": cat, "rule": "O6", "role": SEMANTIC_COLOUR[(name, el)],
+                                "before": r["stroke"], "after": derived["colour"],
+                                "derivation": {k: v for k, v in derived.items() if k != "colour"},
+                                "hosts_before": host_ratios(r["stroke"]),
+                                "hosts_after": host_ratios(derived["colour"])})
                 continue
             edits.setdefault(el, {})["stroke"] = "currentColor"
             settled.append({"element": el, "category": cat, "rule": "O1", "before": r["stroke"],
@@ -542,12 +623,27 @@ def settle(name: str, svg: str, scope: set[str] | None):
             raise SystemExit(f"{name} {s['element']}: {s['rule']} did not yield a host-reaching currentColor stroke")
         if s["rule"] == "O3" and (r["kind"] != "ink" or low_contrast(INK, hex_backings(r["stroke_backing"]))):
             raise SystemExit(f"{name} {s['element']}: O3 ink lost 3:1 on its own backing")
-    o5 = {(s["element"], s["category"]) for s in settled if s["rule"] == "O5"}
+        if s["rule"] == "O6":
+            if not (r["kind"] == "colour" and r["stroke"] == s["after"] and r["stroke_exposed"] > EXPOSURE):
+                raise SystemExit(f"{name} {s['element']}: O6 did not yield a host-reaching {s['after']} stroke")
+            if contrast(s["after"], HOSTS[O6_TARGET]) < 3 or any(contrast(s["after"], HOSTS[h]) < 3 for h in O6_KEEP):
+                raise SystemExit(f"{name} {s['element']}: O6 {s['after']} misses 3:1 on {O6_TARGET} or "
+                                 + "/".join(O6_KEEP) + "; the owner must decide")
+            backing = {k: v for k, v in r["stroke_backing"].items() if v > EXPOSURE}
+            s["own_backing"] = {b: {"samples": n, "before": round(contrast(s["before"], b), 2),
+                                    "after": round(contrast(s["after"], b), 2)} if b.startswith("#")
+                                else {"samples": n, "ratio": "follows the host ink"} for b, n in backing.items()}
+            s["limit"] = (f"light canvas {s['hosts_after']['light canvas']:.2f}:1 (was "
+                          f"{s['hosts_before']['light canvas']:.2f}:1): no fixed colour reaches 3:1 on both the "
+                          "light canvas and dark paper" + "".join(
+                              f"; crosses own {b} at {v['after']:.2f}:1 (was {v['before']:.2f}:1; body paint kept)"
+                              for b, v in s["own_backing"].items() if "after" in v and v["after"] < 3))
+    ruled_keys = {(s["element"], s["category"]) for s in settled if s["rule"] in ("O5", "O6")}
     o4 = any(s["rule"] == "O4" for s in settled)
     known = {(h["element"], h["category"]) for h in held}
     for p in pending_roles(result, scope):
         key = (p["element"], p["category"])
-        if key in o5 or key in known:
+        if key in ruled_keys or key in known:
             continue
         if p["category"] == "fixed-silhouette":
             held.append({**p, "reason": "after O1/O2" + ("/O4" if o4 else "") + " no stroke or #2A2A2A fill "
@@ -563,6 +659,13 @@ def settle(name: str, svg: str, scope: set[str] | None):
                         "after": "host contour follows currentColor through " + ", ".join(
                             sorted({s["element"] for s in settled if s["rule"] in ("O1", "O2", "O4")},
                                    key=natural))})
+    for h in [h for h in held if (name, h["element"]) in OWNER_KEPT]:
+        if OWNER_KEPT[(name, h["element"])] != h["category"]:
+            raise SystemExit(f"{name} {h['element']}: OWNER_KEPT names {OWNER_KEPT[(name, h['element'])]}, "
+                             f"the role is now {h['category']}; the owner must decide again")
+        held.remove(h)
+        settled.append({"element": h["element"], "category": h["category"], "rule": "O7",
+                        "kept": "upstream paint by owner decision", "measured": h["reason"]})
     return edits, sorted(settled, key=lambda s: (s["element"] == "*", natural(s["element"]) if s["element"] != "*" else [])), held
 
 
@@ -849,6 +952,10 @@ def build():
             record["settled"][name] = settled
         if held:
             record["pending"][name] = held
+    for rule, listed in (("O6", SEMANTIC_COLOUR), ("O7", OWNER_KEPT)):
+        applied = {(n, s["element"]) for n, v in record["settled"].items() for s in v if s["rule"] == rule}
+        if set(listed) - applied:
+            raise SystemExit(f"{rule} names roles that no longer arise: {sorted(set(listed) - applied)}")
     return names, outputs, record
 
 
@@ -861,8 +968,12 @@ def transformation(name: str, record: dict) -> str:
                  "dropped where upstream changed the element or attribute.")
     rules = sorted({s["rule"] for s in record["settled"].get(name, []) if "before" in s})
     if rules:
-        text += (" Owner rules " + "/".join(rules) + " (2026-11-17) set the stroke or fill paint of the elements "
-                 "listed in docs/icon-paint-roles.json import_v1_14.settled.")
+        text += (" Owner rules " + "/".join(rules) + " (" + ", ".join(sorted({RULE_DATES[r] for r in rules}))
+                 + ") set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json "
+                 "import_v1_14.settled.")
+    if any(s["rule"] == "O7" for s in record["settled"].get(name, [])):
+        text += (f" Owner rule O7 ({RULE_DATES['O7']}) keeps the upstream paint of the element roles it lists "
+                 "in docs/icon-paint-roles.json import_v1_14.settled.")
     if name in record["repairs"]:
         text += " Authored clip split of the mark: docs/icon-paint-roles.json import_v1_14.repairs."
     text += " Other paint and all geometry are the upstream bytes."
@@ -912,7 +1023,7 @@ def main() -> int:
                           "kind, host reach) is unchanged too, the previous review settles it "
                           "(carried.<name>.roles_settled_by_role_carry) and no owner rule is applied to it.",
             **OWNER_RULES,
-            "semantic_colour": "Held from O1 because the colour is the meaning: " + "; ".join(
+            "semantic_colour": "Excluded from O1 because the colour is the meaning, and settled by O6: " + "; ".join(
                 f"{n} element {e} ({why})" for (n, e), why in sorted(SEMANTIC_COLOUR.items())) + ".",
             "repairs": "Authored repairs on redrawn geometry (REPAIRS in the importer), measured per segment "
                        "against the own paint under it; each listed under repairs.",
@@ -924,8 +1035,8 @@ def main() -> int:
                               "currentColor, plus individual recolours and clip splits. The owner adopted this "
                               "majority practice as O1-O5 on 2026-11-17.",
             "measurement": f"Upstream geometry rasterised at {SCALE} samples per unit; up to {EXPOSURE} samples "
-                           "of host exposure or own backing are edge noise. Held entries name the measured ratio "
-                           "that stops a rule; host ratios use " + ", ".join(f"{h} {c}" for h, c in HOSTS.items()) + ".",
+                           "of host exposure or own backing are edge noise. Held and O7 entries name the measured "
+                           "ratio that stops a rule; host ratios use " + ", ".join(f"{h} {c}" for h, c in HOSTS.items()) + ".",
         },
         "counts": {"total": len(names), "kept": len(record["kept"]), "carried": len(record["carried"]),
                    "added": len(record["added"]), "with_settled": len(record["settled"]),

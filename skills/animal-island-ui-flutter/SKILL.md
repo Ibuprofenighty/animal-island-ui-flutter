@@ -28,7 +28,7 @@ Keep one content subtree and lifecycle across entry, exit, reverse, reopen, canc
 
 ## Charts, Calendar and icons
 
-Choose a chart kind through the matching typed `IslandChartData` constructor and follow its data shapes and invalid-data rules in [API](../../docs/API.md#reference-400-additions); a map needs caller-supplied regions, and the empty state is `IslandNoData`. Calendar, Chart and NoData take their chrome text from `IslandLocalizations` and show English without its `zh` locale. `IslandGlyph` values (709, naive-icons v1.14.0) change only by running `python -B tool/import_icons.py`; never hand-edit `assets/icons`, and treat the 20 element roles held under `import_v1_14.pending` in `docs/icon-paint-roles.json` as undecided and the paint outcomes as measured, not visually reviewed.
+Choose a chart kind through the matching typed `IslandChartData` constructor and follow its data shapes and invalid-data rules in [API](../../docs/API.md#reference-400-additions); a map needs caller-supplied regions, and the empty state is `IslandNoData`. Calendar, Chart and NoData take their chrome text from `IslandLocalizations` and show English without its `zh` locale. `IslandGlyph` values (709, naive-icons v1.14.0) change only by running `python -B tool/import_icons.py`; never hand-edit `assets/icons`, and treat the paint outcomes as measured, not visually reviewed (the 15 roles kept by owner rule O7 in `docs/icon-paint-roles.json` `import_v1_14.settled` are not certified by a contrast matrix).
 
 ## Extend atomically
 

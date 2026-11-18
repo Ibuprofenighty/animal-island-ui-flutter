@@ -10,15 +10,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'foundation_test.dart' show contrast;
 
 // Membership is every packaged glyph whose SVG source paints a fill; only the
-// glyphs below are held out, each with the reason docs/icon-paint-roles.json
-// import_v1_14.pending gives. The host contour oracle does not certify interior
+// glyphs below are held out, each kept with upstream paint by owner rule O7
+// (docs/icon-paint-roles.json import_v1_14.settled gives the measured reason).
+// The host contour oracle does not certify interior
 // semantic details: those have separately named actual-backing probes below and
 // in the existing oracle.
 const hostContourHeld = <String, String>{
-  'barcode': 'coloured fill silhouette only; outside owner rules O1-O4',
-  'bolt': 'coloured fill silhouette only; outside owner rules O1-O4',
-  'grip': 'coloured fill silhouette only; outside owner rules O1-O4',
-  'sparkles': 'coloured fill silhouette only; outside owner rules O1-O4',
+  'barcode': 'coloured fill silhouette; upstream paint kept by owner rule O7',
+  'bolt': 'coloured fill silhouette; upstream paint kept by owner rule O7',
+  'grip': 'coloured fill silhouette; upstream paint kept by owner rule O7',
+  'sparkles': 'coloured fill silhouette; upstream paint kept by owner rule O7',
 };
 const filledGlyphCount = 659;
 

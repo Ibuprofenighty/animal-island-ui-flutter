@@ -1434,28 +1434,32 @@
       "O3": "inherited-interior: an inherited stroke lying only on the glyph's own paint becomes fixed drawing ink #2A2A2A (previous round: 148 of 167), only where #2A2A2A keeps 3:1 on every measured own backing; otherwise it stays currentColor and is held for the owner.",
       "O4": "fixed-silhouette: a glyph whose contour reaches the host only in fixed paint has its host-reaching contour follow currentColor: O1/O2 on its strokes, and a host-reaching #2A2A2A fill (an ink outline drawn as a filled shape) becomes currentColor.",
       "O5": "interior-contrast: interior detail under 3:1 on its own backing keeps the upstream paint as decorative interior detail (kept by rule, not certified as necessary).",
-      "semantic_colour": "Held from O1 because the colour is the meaning: cloud-off element 1 (red negation slash); location-off element 2 (red negation slash); mic-off element 3 (red negation slash); phone-off element 1 (red negation slash); video-off element 2 (red negation slash).",
+      "O6": "semantic-colour: a SEMANTIC_COLOUR stroke, excluded from O1, keeps its hue and moves along OKLCH lightness (chroma and hue fixed, clipped to sRGB only if needed and recorded) to the first 8-bit colour that reaches 3:1 on light paper #F8F8F0, the least change that passes; it must keep 3:1 on dark paper and dark canvas or the import stops. No fixed colour reaches 3:1 on both the light canvas #88C9A1 and dark paper #243C33, so the light canvas stays under 3:1 (recorded per element with the ratios on the stroke's own backing, which O6 does not change).",
+      "O7": "owner-kept: the roles listed in OWNER_KEPT keep the upstream paint by owner decision; each keeps the measurement that stopped O1-O5, and no contrast matrix certifies it.",
+      "semantic_colour": "Excluded from O1 because the colour is the meaning, and settled by O6: cloud-off element 1 (red negation slash); location-off element 2 (red negation slash); mic-off element 3 (red negation slash); phone-off element 1 (red negation slash); video-off element 2 (red negation slash).",
       "repairs": "Authored repairs on redrawn geometry (REPAIRS in the importer), measured per segment against the own paint under it; each listed under repairs.",
       "superseded": "Where carried.<name>.repairs_dropped lists a repair, earlier sections of this file describe the previous asset of that glyph, not the current one.",
       "previous_round": "Audit of the 163 authored assets against their pinned sources: 148 of 167 inherited interior strokes became fixed #2A2A2A, 57 of 64 explicit host-reaching #2A2A2A strokes became currentColor, 28 of 32 coloured host-reaching strokes became currentColor, plus individual recolours and clip splits. The owner adopted this majority practice as O1-O5 on 2026-11-17.",
-      "measurement": "Upstream geometry rasterised at 4 samples per unit; up to 2 samples of host exposure or own backing are edge noise. Held entries name the measured ratio that stops a rule; host ratios use light paper #F8F8F0, light canvas #88C9A1, dark paper #243C33, dark canvas #172B26."
+      "measurement": "Upstream geometry rasterised at 4 samples per unit; up to 2 samples of host exposure or own backing are edge noise. Held and O7 entries name the measured ratio that stops a rule; host ratios use light paper #F8F8F0, light canvas #88C9A1, dark paper #243C33, dark canvas #172B26."
     },
     "counts": {
       "total": 709,
       "kept": 107,
       "carried": 56,
       "added": 546,
-      "with_settled": 398,
+      "with_settled": 411,
       "settled_by_rule": {
         "O1": 263,
         "O2": 174,
         "O3": 45,
         "O4": 47,
-        "O5": 291
+        "O5": 291,
+        "O6": 5,
+        "O7": 15
       },
       "repairs": 1,
-      "with_pending": 20,
-      "pending_elements": 20
+      "with_pending": 0,
+      "pending_elements": 0
     },
     "kept": [
       "airplane",
@@ -4151,6 +4155,13 @@
       ],
       "air-fryer": [
         {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
           "element": "3",
           "category": "interior-contrast",
           "rule": "O5",
@@ -4643,6 +4654,15 @@
           "after": "currentColor"
         }
       ],
+      "barcode": [
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
+        }
+      ],
       "barn": [
         {
           "element": "1",
@@ -4855,6 +4875,15 @@
           "category": "fixed-silhouette",
           "rule": "O4",
           "after": "host contour follows currentColor through 1, 2, 3"
+        }
+      ],
+      "bolt": [
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
         }
       ],
       "boxing-glove": [
@@ -5182,6 +5211,15 @@
           }
         }
       ],
+      "cat": [
+        {
+          "element": "9",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 14.35:1 on own #FFFFFF; stays currentColor"
+        }
+      ],
       "charging-station": [
         {
           "element": "1",
@@ -5314,6 +5352,54 @@
           "rule": "O1",
           "before": "#2A9D8F",
           "after": "currentColor"
+        }
+      ],
+      "cloud-off": [
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O6",
+          "role": "red negation slash",
+          "before": "#E76F51",
+          "after": "#E46C4F",
+          "derivation": {
+            "clipped_to_srgb": false,
+            "oklch_before": [
+              0.6783,
+              0.1559,
+              35.18
+            ],
+            "oklch_lightness_searched": 0.67038,
+            "oklch_after_rounded": [
+              0.6694,
+              0.156,
+              34.81
+            ]
+          },
+          "hosts_before": {
+            "light paper": 2.9,
+            "light canvas": 1.61,
+            "dark paper": 3.84,
+            "dark canvas": 4.82
+          },
+          "hosts_after": {
+            "light paper": 3.0,
+            "light canvas": 1.66,
+            "dark paper": 3.71,
+            "dark canvas": 4.65
+          },
+          "own_backing": {
+            "#FAEDCD": {
+              "samples": 779,
+              "before": 2.66,
+              "after": 2.75
+            },
+            "currentColor": {
+              "samples": 481,
+              "ratio": "follows the host ink"
+            }
+          },
+          "limit": "light canvas 1.66:1 (was 1.61:1): no fixed colour reaches 3:1 on both the light canvas and dark paper; crosses own #FAEDCD at 2.75:1 (was 2.66:1; body paint kept)"
         }
       ],
       "cloud-upload": [
@@ -6471,6 +6557,15 @@
           "after": "currentColor"
         }
       ],
+      "grip": [
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
+        }
+      ],
       "gym": [
         {
           "element": "2",
@@ -7170,6 +7265,57 @@
           "category": "interior-contrast",
           "rule": "O5",
           "kept": "fill #FAEDCD on own #2A9D8F 2.86:1"
+        },
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O6",
+          "role": "red negation slash",
+          "before": "#E76F51",
+          "after": "#E46C4F",
+          "derivation": {
+            "clipped_to_srgb": false,
+            "oklch_before": [
+              0.6783,
+              0.1559,
+              35.18
+            ],
+            "oklch_lightness_searched": 0.67038,
+            "oklch_after_rounded": [
+              0.6694,
+              0.156,
+              34.81
+            ]
+          },
+          "hosts_before": {
+            "light paper": 2.9,
+            "light canvas": 1.61,
+            "dark paper": 3.84,
+            "dark canvas": 4.82
+          },
+          "hosts_after": {
+            "light paper": 3.0,
+            "light canvas": 1.66,
+            "dark paper": 3.71,
+            "dark canvas": 4.65
+          },
+          "own_backing": {
+            "#2A9D8F": {
+              "samples": 789,
+              "before": 1.07,
+              "after": 1.04
+            },
+            "#FAEDCD": {
+              "samples": 431,
+              "before": 2.66,
+              "after": 2.75
+            },
+            "currentColor": {
+              "samples": 401,
+              "ratio": "follows the host ink"
+            }
+          },
+          "limit": "light canvas 1.66:1 (was 1.61:1): no fixed colour reaches 3:1 on both the light canvas and dark paper; crosses own #2A9D8F at 1.04:1 (was 1.07:1; body paint kept); crosses own #FAEDCD at 2.75:1 (was 2.66:1; body paint kept)"
         }
       ],
       "login": [
@@ -7341,6 +7487,52 @@
           "rule": "O2",
           "before": "#2A2A2A",
           "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O6",
+          "role": "red negation slash",
+          "before": "#E76F51",
+          "after": "#E46C4F",
+          "derivation": {
+            "clipped_to_srgb": false,
+            "oklch_before": [
+              0.6783,
+              0.1559,
+              35.18
+            ],
+            "oklch_lightness_searched": 0.67038,
+            "oklch_after_rounded": [
+              0.6694,
+              0.156,
+              34.81
+            ]
+          },
+          "hosts_before": {
+            "light paper": 2.9,
+            "light canvas": 1.61,
+            "dark paper": 3.84,
+            "dark canvas": 4.82
+          },
+          "hosts_after": {
+            "light paper": 3.0,
+            "light canvas": 1.66,
+            "dark paper": 3.71,
+            "dark canvas": 4.65
+          },
+          "own_backing": {
+            "#264653": {
+              "samples": 576,
+              "before": 3.26,
+              "after": 3.15
+            },
+            "currentColor": {
+              "samples": 806,
+              "ratio": "follows the host ink"
+            }
+          },
+          "limit": "light canvas 1.66:1 (was 1.61:1): no fixed colour reaches 3:1 on both the light canvas and dark paper"
         }
       ],
       "microscope": [
@@ -7828,6 +8020,13 @@
           "category": "interior-contrast",
           "rule": "O5",
           "kept": "fill #E9C46A on own #2A9D8F 1.99:1"
+        },
+        {
+          "element": "7",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 4.32:1 on own #2A9D8F, 8.59:1 on own #E9C46A; stays currentColor"
         }
       ],
       "pear": [
@@ -7906,6 +8105,54 @@
           "after": "currentColor"
         }
       ],
+      "phone-off": [
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O6",
+          "role": "red negation slash",
+          "before": "#E76F51",
+          "after": "#E46C4F",
+          "derivation": {
+            "clipped_to_srgb": false,
+            "oklch_before": [
+              0.6783,
+              0.1559,
+              35.18
+            ],
+            "oklch_lightness_searched": 0.67038,
+            "oklch_after_rounded": [
+              0.6694,
+              0.156,
+              34.81
+            ]
+          },
+          "hosts_before": {
+            "light paper": 2.9,
+            "light canvas": 1.61,
+            "dark paper": 3.84,
+            "dark canvas": 4.82
+          },
+          "hosts_after": {
+            "light paper": 3.0,
+            "light canvas": 1.66,
+            "dark paper": 3.71,
+            "dark canvas": 4.65
+          },
+          "own_backing": {
+            "#588157": {
+              "samples": 129,
+              "before": 1.45,
+              "after": 1.4
+            },
+            "currentColor": {
+              "samples": 498,
+              "ratio": "follows the host ink"
+            }
+          },
+          "limit": "light canvas 1.66:1 (was 1.61:1): no fixed colour reaches 3:1 on both the light canvas and dark paper; crosses own #588157 at 1.40:1 (was 1.45:1; body paint kept)"
+        }
+      ],
       "phone-outgoing": [
         {
           "element": "1",
@@ -7949,6 +8196,15 @@
           "category": "fixed-silhouette",
           "rule": "O4",
           "after": "host contour follows currentColor through 0, 1, 2"
+        }
+      ],
+      "picture-in-picture": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "pie": [
@@ -8164,6 +8420,15 @@
           "after": "host contour follows currentColor through 0, 1, 2"
         }
       ],
+      "police-station": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
       "popcorn": [
         {
           "element": "1",
@@ -8258,6 +8523,13 @@
         }
       ],
       "projector": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
         {
           "element": "3",
           "category": "fixed-ink-on-host",
@@ -9286,6 +9558,13 @@
       ],
       "smartwatch": [
         {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
           "element": "2",
           "category": "fixed-ink-on-host",
           "rule": "O2",
@@ -9381,6 +9660,24 @@
           "rule": "O1",
           "before": "#2A9D8F",
           "after": "currentColor"
+        }
+      ],
+      "sparkles": [
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
+        }
+      ],
+      "speaker": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "spider": [
@@ -9894,6 +10191,13 @@
           "ratios": {
             "#E9C46A": 8.59
           }
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "tram": [
@@ -10119,6 +10423,54 @@
           "after": "currentColor"
         }
       ],
+      "video-off": [
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O6",
+          "role": "red negation slash",
+          "before": "#E76F51",
+          "after": "#E46C4F",
+          "derivation": {
+            "clipped_to_srgb": false,
+            "oklch_before": [
+              0.6783,
+              0.1559,
+              35.18
+            ],
+            "oklch_lightness_searched": 0.67038,
+            "oklch_after_rounded": [
+              0.6694,
+              0.156,
+              34.81
+            ]
+          },
+          "hosts_before": {
+            "light paper": 2.9,
+            "light canvas": 1.61,
+            "dark paper": 3.84,
+            "dark canvas": 4.82
+          },
+          "hosts_after": {
+            "light paper": 3.0,
+            "light canvas": 1.66,
+            "dark paper": 3.71,
+            "dark canvas": 4.65
+          },
+          "own_backing": {
+            "#264653": {
+              "samples": 1250,
+              "before": 3.26,
+              "after": 3.15
+            },
+            "currentColor": {
+              "samples": 758,
+              "ratio": "follows the host ink"
+            }
+          },
+          "limit": "light canvas 1.66:1 (was 1.61:1): no fixed colour reaches 3:1 on both the light canvas and dark paper"
+        }
+      ],
       "virus": [
         {
           "element": "7",
@@ -10175,6 +10527,15 @@
           "after": "currentColor"
         }
       ],
+      "waffle": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 8.59:1 on own #E9C46A; stays currentColor"
+        }
+      ],
       "walkie-talkie": [
         {
           "element": "0",
@@ -10182,6 +10543,15 @@
           "rule": "O2",
           "before": "#2A2A2A",
           "after": "currentColor"
+        }
+      ],
+      "wallet": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C; stays currentColor"
         }
       ],
       "warehouse": [
@@ -10508,167 +10878,6 @@
         ]
       }
     },
-    "pending": {
-      "air-fryer": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "barcode": [
-        {
-          "element": "*",
-          "category": "fixed-silhouette",
-          "detail": "no inherited contour reaches the host; fixed outline/silhouette disposition",
-          "reason": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
-        }
-      ],
-      "bolt": [
-        {
-          "element": "*",
-          "category": "fixed-silhouette",
-          "detail": "no inherited contour reaches the host; fixed outline/silhouette disposition",
-          "reason": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
-        }
-      ],
-      "cat": [
-        {
-          "element": "9",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, #FFFFFF; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 14.35:1 on own #FFFFFF; stays currentColor"
-        }
-      ],
-      "cloud-off": [
-        {
-          "element": "1",
-          "category": "colour-on-host",
-          "detail": "explicit #E76F51 stroke reaches the host (1024 samples); necessary (inherit or recolour) or decorative",
-          "reason": "red negation slash: O1 would remove the colour that carries the meaning; upstream #E76F51 on hosts light paper 2.90:1, light canvas 1.61:1, dark paper 3.84:1, dark canvas 4.82:1"
-        }
-      ],
-      "grip": [
-        {
-          "element": "*",
-          "category": "fixed-silhouette",
-          "detail": "no inherited contour reaches the host; fixed outline/silhouette disposition",
-          "reason": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
-        }
-      ],
-      "location-off": [
-        {
-          "element": "2",
-          "category": "colour-on-host",
-          "detail": "explicit #E76F51 stroke reaches the host (679 samples); necessary (inherit or recolour) or decorative",
-          "reason": "red negation slash: O1 would remove the colour that carries the meaning; upstream #E76F51 on hosts light paper 2.90:1, light canvas 1.61:1, dark paper 3.84:1, dark canvas 4.82:1"
-        }
-      ],
-      "mic-off": [
-        {
-          "element": "3",
-          "category": "colour-on-host",
-          "detail": "explicit #E76F51 stroke reaches the host (1450 samples); necessary (inherit or recolour) or decorative",
-          "reason": "red negation slash: O1 would remove the colour that carries the meaning; upstream #E76F51 on hosts light paper 2.90:1, light canvas 1.61:1, dark paper 3.84:1, dark canvas 4.82:1"
-        }
-      ],
-      "peacock": [
-        {
-          "element": "7",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, #2A9D8F, #E9C46A, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 4.32:1 on own #2A9D8F, 8.59:1 on own #E9C46A; stays currentColor"
-        }
-      ],
-      "phone-off": [
-        {
-          "element": "1",
-          "category": "colour-on-host",
-          "detail": "explicit #E76F51 stroke reaches the host (2829 samples); necessary (inherit or recolour) or decorative",
-          "reason": "red negation slash: O1 would remove the colour that carries the meaning; upstream #E76F51 on hosts light paper 2.90:1, light canvas 1.61:1, dark paper 3.84:1, dark canvas 4.82:1"
-        }
-      ],
-      "picture-in-picture": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "police-station": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "projector": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "smartwatch": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "sparkles": [
-        {
-          "element": "*",
-          "category": "fixed-silhouette",
-          "detail": "no inherited contour reaches the host; fixed outline/silhouette disposition",
-          "reason": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
-        }
-      ],
-      "speaker": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "train-station": [
-        {
-          "element": "5",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "video-off": [
-        {
-          "element": "2",
-          "category": "colour-on-host",
-          "detail": "explicit #E76F51 stroke reaches the host (1448 samples); necessary (inherit or recolour) or decorative",
-          "reason": "red negation slash: O1 would remove the colour that carries the meaning; upstream #E76F51 on hosts light paper 2.90:1, light canvas 1.61:1, dark paper 3.84:1, dark canvas 4.82:1"
-        }
-      ],
-      "waffle": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #E9C46A; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 8.59:1 on own #E9C46A; stays currentColor"
-        }
-      ],
-      "wallet": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C; stays currentColor"
-        }
-      ]
-    }
+    "pending": {}
   }
 }
