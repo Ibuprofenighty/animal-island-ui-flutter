@@ -693,7 +693,7 @@ void main() {
             .position;
         final page = position(find.byType(IslandTitle).first);
         final menu = position(item('Button 按钮'));
-        tester.binding.handlePointerEvent(
+        await tester.sendEventToBinding(
           const PointerScrollEvent(
             position: Offset(800, 400),
             scrollDelta: Offset(0, 120),
@@ -701,7 +701,7 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(page.pixels, 120);
-        tester.binding.handlePointerEvent(
+        await tester.sendEventToBinding(
           const PointerScrollEvent(
             position: Offset(100, 400),
             scrollDelta: Offset(0, 60),
