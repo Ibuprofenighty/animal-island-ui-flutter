@@ -235,6 +235,66 @@ void main() {
       }
     });
 
+    testWidgets(
+      'width sets the panel width and the rhythm, within the parent',
+      (t) async {
+        for (final (width, actual) in [(600.0, 600.0), (900.0, 750.0)]) {
+          await pump(
+            t,
+            IslandCalendar(
+              value: null,
+              onChanged: null,
+              month: DateTime(2026, 8),
+              width: width,
+              now: fixedNow,
+            ),
+          );
+          // Seven columns inside the border (1.5px snaps to one device pixel
+          // at DPR 1) and the 8px padding.
+          expect(
+            t.getSize(cell('2026-08-10')).width,
+            closeTo((actual - 18) / 7, 0.01),
+          );
+          expect(
+            t.getSize(cell('2026-08-10')).height,
+            closeTo(104 * actual / 750, 0.01),
+            reason: '$width',
+          );
+        }
+      },
+    );
+
+    testWidgets('the header row is the reference line-height: normal chip', (
+      t,
+    ) async {
+      await pump(
+        t,
+        IslandCalendar(
+          value: null,
+          onChanged: null,
+          month: DateTime(2026, 8),
+          now: fixedNow,
+        ),
+      );
+      final chip = find
+          .ancestor(of: find.text('2026年8月'), matching: find.byType(Container))
+          .first;
+      // padding 4 + one 15px line at the font's own metrics (1 em in the
+      // test font), not the inherited body line height.
+      final line = t.getSize(find.text('2026年8月')).height;
+      expect(line, closeTo(15, 0.01));
+      // The 16px month icon is taller than one test-font line.
+      final chipHeight = 8 + (line > 16 ? line : 16);
+      expect(t.getSize(chip).height, closeTo(chipHeight, 0.01));
+      // Header row (the taller of the chip and the 28px arrows), 8px gap,
+      // panel border (1px at DPR 1) and padding, week header.
+      expect(
+        t.getTopLeft(cell('2026-07-26')).dy -
+            t.getTopLeft(find.byType(IslandCalendar)).dy,
+        closeTo((chipHeight > 28 ? chipHeight : 28) + 8 + 1 + 8 + 32, 0.01),
+      );
+    });
+
     testWidgets('event bars centre under the number band, two rows per week', (
       t,
     ) async {
@@ -710,6 +770,49 @@ void main() {
         expect(left, isTrue);
       },
     );
+
+    testWidgets('hover outranks the today and neighbouring-month digits', (
+      t,
+    ) async {
+      await pump(
+        t,
+        IslandCalendar(
+          value: DateTime(2026, 11, 20),
+          onChanged: (_) {},
+          month: DateTime(2026, 11),
+          now: fixedNow,
+        ),
+        reduceMotion: true,
+      );
+      TextStyle digit(String date) => t
+          .widget<RichText>(
+            find.descendant(of: cell(date), matching: find.byType(RichText)),
+          )
+          .text
+          .style!;
+      final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+      addTearDown(mouse.removePointer);
+      await mouse.addPointer(location: Offset.zero);
+      for (final (date, idle, idleWeight) in [
+        ('2026-11-17', IslandTokens.light.link, FontWeight.w700),
+        ('2026-12-05', IslandTokens.light.muted, FontWeight.w400),
+        ('2026-11-10', const Color(0xff725d42), FontWeight.w500),
+      ]) {
+        await mouse.moveTo(Offset.zero);
+        await t.pump();
+        expect(digit(date).color, idle, reason: date);
+        expect(digit(date).fontWeight, idleWeight, reason: date);
+        await mouse.moveTo(t.getCenter(cell(date)));
+        await t.pump();
+        // Reference `.cell:hover .dayNumber` #5a4530 / 700.
+        expect(digit(date).color, const Color(0xff5a4530), reason: date);
+        expect(digit(date).fontWeight, FontWeight.w700, reason: date);
+      }
+      // The selected digit outranks hover.
+      await mouse.moveTo(t.getCenter(cell('2026-11-20')));
+      await t.pump();
+      expect(digit('2026-11-20').color, IslandTokens.light.onLeaf);
+    });
 
     testWidgets('reduced motion settles hover without scheduling frames', (
       t,

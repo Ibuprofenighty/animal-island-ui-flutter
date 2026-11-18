@@ -1,5 +1,4 @@
 import '../foundation/recipes/progress.dart';
-import '../foundation/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -85,7 +84,7 @@ class IslandProgress extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: ProgressColors.track,
                   border: Border.all(
-                    color: IslandTokens.light.outline,
+                    color: ProgressColors.trackBorder,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(999),
@@ -205,7 +204,7 @@ class IslandProgress extends StatelessWidget {
                 constraints: const BoxConstraints(minWidth: 44),
                 child: DefaultTextStyle.merge(
                   style: TextStyle(
-                    color: IslandTheme.of(context).ink,
+                    color: ProgressColors.info(context),
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
                     height: 1,

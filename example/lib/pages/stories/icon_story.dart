@@ -57,16 +57,16 @@ class IconStory extends StatelessWidget {
         ],
       ),
       const StoryLabel('color / strokeWidth 自定义'),
-      Row(
+      const Row(
         spacing: 20,
         children: [
-          const IslandIcon(
+          IslandIcon(
             IslandGlyph.coffee,
             size: 32,
             color: GalleryPalette.iconDemoCoffee,
             strokeWidth: 3,
           ),
-          const IslandIcon(
+          IslandIcon(
             IslandGlyph.cherry,
             size: 32,
             color: GalleryPalette.iconDemoCherry,
@@ -75,7 +75,7 @@ class IconStory extends StatelessWidget {
           IslandIcon(
             IslandGlyph.bulb,
             size: 32,
-            color: IslandColorway.yellow.ink,
+            color: GalleryPalette.iconDemoBulb,
             strokeWidth: 3,
           ),
         ],
@@ -187,12 +187,12 @@ class _IconTileState extends State<_IconTile> {
                   height: 13 / 11,
                   forceStrutHeight: true,
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 11,
                   fontFamily: IslandTheme.codeFontFamily,
                   height: 13 / 11,
                   letterSpacing: 0,
-                  color: IslandTokens.light.muted,
+                  color: GalleryPalette.iconTileName,
                 ),
               ),
               Text(

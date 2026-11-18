@@ -178,6 +178,37 @@ void main() {
     }
   });
 
+  testWidgets(
+    'Icon demo bulb and tile captions use the measured reference inks',
+    (t) async {
+      await showStory(t, '/icon');
+      final bulb = t.widget<IslandIcon>(
+        find.byWidgetPredicate(
+          (w) => w is IslandIcon && w.glyph == IslandGlyph.bulb && w.size == 32,
+        ),
+      );
+      expect(bulb.color, GalleryPalette.iconDemoBulb);
+      expect(
+        contrast(GalleryPalette.iconDemoBulb, GalleryPalette.demoSurface),
+        greaterThanOrEqualTo(3),
+      );
+      expect(
+        t.widget<Text>(find.text('BulbIcon')).style!.color,
+        GalleryPalette.iconTileName,
+      );
+      for (final tile in [
+        GalleryPalette.iconTile,
+        GalleryPalette.iconTileHover,
+      ]) {
+        expect(
+          contrast(GalleryPalette.iconTileName, tile),
+          greaterThanOrEqualTo(4.5),
+        );
+      }
+      expect(t.takeException(), isNull);
+    },
+  );
+
   testWidgets('Skill swatches and labels project the public product tokens', (
     t,
   ) async {
@@ -639,6 +670,26 @@ void homeWallpaperContrastOracle({
         observations.every((r) => (r['ratio']! as double).isFinite),
         isTrue,
         reason: 'HOME-REFERENCE-CONTRAST-001 measures actual ratios under the explicit user-approved Home text exception; not4.5PASS.',
+      );
+    },
+  );
+
+  test(
+    'Typewriter emphasis and API required mark keep their measured ratios',
+    () {
+      // Reference #FD9303 reads 2.1:1 on the dashed demo box; the same-hue
+      // value just passes there. The #f0a870 mark passes as the reference.
+      final typed = contrast(
+        GalleryPalette.typewriterEmphasis,
+        GalleryPalette.demoPanelDashed,
+      );
+      expect(typed, inInclusiveRange(4.5, 4.6));
+      expect(
+        contrast(
+          GalleryPalette.apiTableRequired,
+          GalleryPalette.apiTableBackground,
+        ),
+        greaterThanOrEqualTo(4.5),
       );
     },
   );

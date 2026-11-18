@@ -14,4 +14,8 @@ abstract final class LoadingColors {
   /// Circle-form sailboat outline (reference root stroke `#2A2A2A`); the
   /// sails, hull and water keep the glyph's own artwork colours.
   static const boatInk = Primitive.neutral285;
+
+  /// Sailboat water line (reference `Sailboat.tsx` wave stroke `#2A9D8F`,
+  /// decorative).
+  static const water = Primitive.teal630;
 }

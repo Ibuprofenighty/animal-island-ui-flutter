@@ -104,6 +104,7 @@ class IslandCountdown extends StatefulWidget {
     this.onChange,
     this.onFinish,
     this.now,
+    this.semanticLabel,
   });
   final DateTime value;
   final String format;
@@ -121,6 +122,10 @@ class IslandCountdown extends StatefulWidget {
   final ValueChanged<Duration>? onChange;
   final VoidCallback? onFinish;
   final DateTime Function()? now;
+
+  /// Accessible name of the timer, announced with its value (reference
+  /// `aria-label` on the `role="timer"` root).
+  final String? semanticLabel;
   @override
   State<IslandCountdown> createState() => _IslandCountdownState();
 }
@@ -264,7 +269,7 @@ class _IslandCountdownState extends State<IslandCountdown>
       IslandSize.large => 16.0,
     };
     final island = widget.variant == IslandCountdownVariant.island;
-    final ink = reminder?.color ?? IslandTokens.light.ink;
+    final ink = reminder?.color ?? NumberColors.digits;
     final baseStyle = DefaultTextStyle.of(context).style.copyWith(
       fontSize: font,
       height: 1.2,
@@ -355,6 +360,7 @@ class _IslandCountdownState extends State<IslandCountdown>
       ),
     );
     group = Semantics(
+      label: widget.semanticLabel,
       value: parts.map((p) => p.$2).join(),
       child: ExcludeSemantics(child: group),
     );

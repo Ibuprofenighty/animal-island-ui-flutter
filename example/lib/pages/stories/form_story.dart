@@ -316,8 +316,10 @@ class _FormStoryState extends State<FormStory> {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 'liveValues: ${json(live)}',
+                // Reference `fontFamily: 'monospace'` at 12px renders at
+                // 13/16 (measured 82px for `liveValues: {}`), as StoryLabel code.
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12 * 13 / 16,
                   color: IslandColorway.blue.ink,
                   fontFamily: IslandTheme.codeFontFamily,
                 ),

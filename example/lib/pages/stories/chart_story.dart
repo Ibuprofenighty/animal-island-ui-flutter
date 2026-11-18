@@ -88,6 +88,7 @@ class ChartOverviewStory extends StatelessWidget {
       children: [
         const ChartNote('19 种统计图形，共用岛屿配色、数据提示、图例筛选和键盘操作。以下均为演示数据。'),
         ChartGallerySection(
+          precedingMargin: chartNoteSpaceAfter,
           semanticLabel: '图表样式精选',
           title: '图表样式精选',
           body: '从趋势、构成到分布与转化。每种图表另有 4 组样式示例，所有数据与地图均为虚构演示。',
@@ -102,7 +103,10 @@ class ChartOverviewStory extends StatelessWidget {
               ),
           ],
         ),
-        const StoryLabel('基础概览'),
+        StoryLabel(
+          '基础概览',
+          spaceBefore: collapseMargin(20, chartGallerySpaceAfter),
+        ),
         Padding(
           padding: const EdgeInsets.only(bottom: 22),
           child: narrow
@@ -144,13 +148,13 @@ class ChartOverviewStory extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 24),
                       child: Semantics(
                         header: true,
-                        child: Text(
+                        child: const ChartLineText(
                           '选择图表类型',
                           style: TextStyle(
                             fontSize: 18,
                             height: 1.5,
                             fontWeight: FontWeight.w700,
-                            color: IslandTokens.light.ink,
+                            color: GalleryPalette.demoStrongInk,
                           ),
                         ),
                       ),
@@ -211,6 +215,12 @@ class _ChartTypeStoryState extends State<ChartTypeStory> {
       IslandChartType.time,
     }.contains(type);
     final examples = chartExamples[type]!;
+    final boundary = const {
+      IslandChartType.column,
+      IslandChartType.bar,
+      IslandChartType.line,
+      IslandChartType.area,
+    }.contains(type);
     final shown = (empty ? example.empty : example).copyWith(
       stacked: supportsStack && enhanced,
       smooth: supportsSmooth && enhanced,
@@ -224,6 +234,9 @@ class _ChartTypeStoryState extends State<ChartTypeStory> {
         ),
         if (type == IslandChartType.mount) const _MountCurveSection(),
         ChartGallerySection(
+          precedingMargin: type == IslandChartType.mount
+              ? chartGallerySpaceAfter
+              : chartNoteSpaceAfter,
           semanticLabel: '图表样式与场景示例',
           title: '样式与场景',
           body: '${examples.length} 种独立示例，比较配色、布局和数据表达；悬浮读数，点击图例筛选，展开配置即可复用。',
@@ -231,7 +244,10 @@ class _ChartTypeStoryState extends State<ChartTypeStory> {
             for (final item in examples) ChartGalleryItem(example: item),
           ],
         ),
-        const StoryLabel('基础示例与状态切换'),
+        StoryLabel(
+          '基础示例与状态切换',
+          spaceBefore: collapseMargin(20, chartGallerySpaceAfter),
+        ),
         Padding(
           padding: const EdgeInsets.only(bottom: 24),
           child: Wrap(
@@ -262,13 +278,11 @@ class _ChartTypeStoryState extends State<ChartTypeStory> {
           ),
         ),
         ChartNote(message, status: true),
-        if (const {
-          IslandChartType.column,
-          IslandChartType.bar,
-          IslandChartType.line,
-          IslandChartType.area,
-        }.contains(type)) ...[
-          const StoryLabel('边界示例：负值、零值与缺测'),
+        if (boundary) ...[
+          StoryLabel(
+            '边界示例：负值、零值与缺测',
+            spaceBefore: collapseMargin(20, chartNoteSpaceAfter),
+          ),
           ChartSpec(
             type,
             categories: const ['周一', '周二', '周三', '周四', '周五'],
@@ -277,7 +291,12 @@ class _ChartTypeStoryState extends State<ChartTypeStory> {
             ],
           ).chart(title: '盈余与支出', height: 240),
         ],
-        IslandCodeBlock(code: example.code()),
+        // Its 16px bottom margin collapses into the interaction section's
+        // 32px top margin.
+        StoryCode(
+          example.code(),
+          spaceBefore: boundary ? 36 : collapseMargin(36, chartNoteSpaceAfter),
+        ),
         _InteractionSection(type: type),
         const StoryApi(rows: _api),
       ],
@@ -311,6 +330,7 @@ class _MountCurveSection extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) => ChartGallerySection(
+    precedingMargin: chartNoteSpaceAfter,
     semanticLabel: '山峰弧度对照示例',
     title: '新增示例：圆润山峰',
     body: '同一组数据，对照尖顶与圆弧峰顶。圆润轮廓从山脚平滑过渡至峰顶，数值高度保持一致。',
@@ -393,7 +413,14 @@ class _InteractionSectionState extends State<_InteractionSection> {
     ];
     final trigger = shared ? 'axis' : 'item';
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 32),
+      // Reference `margin: 32px 0`, collapsed with the preceding code
+      // block's 16px bottom margin above and, through the section's open
+      // bottom edge, with its own last code block and the API table's top
+      // margin below (32 in all).
+      margin: const EdgeInsets.only(
+        top: 32 - 16,
+        bottom: 32 - StoryApi.spaceBefore,
+      ),
       padding: const EdgeInsets.only(top: 24),
       decoration: const BoxDecoration(
         border: Border(top: BorderSide(color: GalleryPalette.rule)),
@@ -461,33 +488,34 @@ class _InteractionSectionState extends State<_InteractionSection> {
               ),
             ),
             ChartNote('最近点击：$message。Enter / 空格锁定，Esc 解除。', status: true),
-            IslandCodeBlock(
-              code:
-                  'IslandChart(\n'
-                  '  data: data,\n'
-                  '  highlight: $highlight,\n'
-                  '  selectable: $selectable,\n'
-                  '  tooltip: const IslandChartTooltip(\n'
-                  '    trigger: IslandChartTooltipTrigger.$trigger,\n'
-                  '    crosshair: $crosshair,\n'
-                  '    showPercentage: $percentage,\n'
-                  '  ),\n'
-                  ')\n\n'
-                  '// 自定义提示（tooltip.items 包含原数据、格式化值、颜色及适用的比例）\n'
-                  'IslandChart(\n'
-                  '  data: data,\n'
-                  '  tooltip: IslandChartTooltip(\n'
-                  '    builder: (context, tooltip) => Column(\n'
-                  '      crossAxisAlignment: CrossAxisAlignment.start,\n'
-                  '      children: [\n'
-                  '        Text(tooltip.name, style: const TextStyle(fontWeight: FontWeight.bold)),\n'
-                  '        for (final item in tooltip.items)\n'
-                  r"          Text('${item.seriesName}：${item.formattedValue}'),"
-                  '\n'
-                  '      ],\n'
-                  '    ),\n'
-                  '  ),\n'
-                  ')',
+            StoryCode(
+              spaceBefore: collapseMargin(36, chartNoteSpaceAfter),
+              spaceAfter: 0,
+              'IslandChart(\n'
+              '  data: data,\n'
+              '  highlight: $highlight,\n'
+              '  selectable: $selectable,\n'
+              '  tooltip: const IslandChartTooltip(\n'
+              '    trigger: IslandChartTooltipTrigger.$trigger,\n'
+              '    crosshair: $crosshair,\n'
+              '    showPercentage: $percentage,\n'
+              '  ),\n'
+              ')\n\n'
+              '// 自定义提示（tooltip.items 包含原数据、格式化值、颜色及适用的比例）\n'
+              'IslandChart(\n'
+              '  data: data,\n'
+              '  tooltip: IslandChartTooltip(\n'
+              '    builder: (context, tooltip) => Column(\n'
+              '      crossAxisAlignment: CrossAxisAlignment.start,\n'
+              '      children: [\n'
+              '        Text(tooltip.name, style: const TextStyle(fontWeight: FontWeight.bold)),\n'
+              '        for (final item in tooltip.items)\n'
+              r"          Text('${item.seriesName}：${item.formattedValue}'),"
+              '\n'
+              '      ],\n'
+              '    ),\n'
+              '  ),\n'
+              ')',
             ),
           ],
         ),

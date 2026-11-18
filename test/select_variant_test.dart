@@ -120,6 +120,50 @@ void main() {
     expect(rect.center.dx, closeTo(anchor.center.dx, .01));
   });
 
+  testWidgets('search filtering keeps the flip estimate on every option', (
+    t,
+  ) async {
+    // Reference Select.tsx: dropdownHeight = options.length * 44 + 24, from
+    // all options, so typing a filter does not move a flipped panel back.
+    t.view.physicalSize = const Size(1440, 1000);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.resetPhysicalSize);
+    addTearDown(t.view.resetDevicePixelRatio);
+    await t.pumpWidget(
+      MaterialApp(
+        theme: IslandTheme.create(),
+        home: Scaffold(
+          body: Stack(
+            children: [
+              Positioned(
+                left: 300,
+                top: 880,
+                child: IslandSelect<String>(
+                  label: 'Choice',
+                  options: short,
+                  value: 'a',
+                  showSearch: true,
+                  onChanged: (_) {},
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    final trigger = t.getRect(select);
+    final below = 1000 - trigger.bottom - 6;
+    expect(below, lessThan(short.length * 44 + 24));
+    expect(below, greaterThan(1 * 44 + 24));
+    await t.tap(select);
+    await t.pumpAndSettle();
+    expect(t.getRect(select).top - t.getRect(panel).bottom, closeTo(6, .01));
+    await t.enterText(find.byType(TextField), 'Cherry');
+    await t.pumpAndSettle();
+    expect(find.text('Berry'), findsNothing);
+    expect(t.getRect(select).top - t.getRect(panel).bottom, closeTo(6, .01));
+  });
+
   testWidgets('dropdown aligns to the trigger edge on an overflowing side', (
     t,
   ) async {

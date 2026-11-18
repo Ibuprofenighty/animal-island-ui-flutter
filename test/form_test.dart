@@ -36,6 +36,30 @@ void main() {
     );
   });
 
+  testWidgets('a short control is centred in the 32px control row', (t) async {
+    // A 22px choice group, as the reference Radio/Checkbox rows, in the
+    // reference `align-items: center; min-height: 32px` control box.
+    await t.pumpWidget(
+      host(
+        const IslandForm(
+          layout: IslandFormLayout.vertical,
+          children: [
+            IslandFormItem(
+              label: '爱好',
+              help: Text('help', key: ValueKey('help')),
+              child: SizedBox(key: ValueKey('control'), height: 22),
+            ),
+          ],
+        ),
+      ),
+    );
+    final control = t.getRect(find.byKey(const ValueKey('control')));
+    final rowBottom = t.getTopLeft(find.byKey(const ValueKey('help'))).dy - 4;
+    expect(control.top - (rowBottom - 32), 5);
+    expect(rowBottom - control.bottom, 5);
+    expect(control.width, 400);
+  });
+
   testWidgets('labels use the reference fixed colour, not card ink', (t) async {
     Color? labelColor() {
       final label = find.byWidgetPredicate(

@@ -138,7 +138,12 @@ class _DatePickerStoryState extends State<DatePickerStory> {
             'IslandSize / IslandFieldStatus',
             'middle / normal',
           ),
-          ('format', 'YYYY / MM / DD / M / D 展示模板', 'String', 'YYYY-MM-DD'),
+          (
+            'format',
+            'YYYY / MM / DD / M / D 展示模板',
+            'String?',
+            'YYYY-MM-DD / month: YYYY-MM',
+          ),
           ('disabledDate', '不可提交的日历日期', 'bool Function(DateTime)?', 'null'),
           (
             'open / onOpenChanged',

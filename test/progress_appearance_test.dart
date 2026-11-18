@@ -167,4 +167,41 @@ void main() {
       h.dispose();
     }
   });
+
+  testWidgets('track boundary is the reference hue deepened to 3:1', (t) async {
+    // Reference @track-border #e2d6bd (1.3:1 on the #f8f8f0 track) moves
+    // along OKLCH lightness to #9a8e77.
+    await t.pumpWidget(host(bar(0)));
+    await t.pump();
+    expect(await pixel(t, 150, 1), [0x9a, 0x8e, 0x77]);
+  });
+
+  testWidgets('percentage takes the reference #725d42 on light papers', (
+    t,
+  ) async {
+    Color ink() => t
+        .widget<RichText>(
+          find.descendant(
+            of: find.byType(IslandProgress),
+            matching: find.byType(RichText),
+          ),
+        )
+        .text
+        .style!
+        .color!;
+    const progress = SizedBox(
+      width: 300,
+      child: IslandProgress(percent: 40, label: 'p'),
+    );
+    await t.pumpWidget(host(progress));
+    expect(ink(), const Color(0xff725d42));
+    await t.pumpWidget(
+      MaterialApp(
+        theme: IslandTheme.create(brightness: Brightness.dark),
+        home: const Scaffold(body: progress),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(ink(), IslandTokens.dark.ink, reason: 'dark keeps its ink role');
+  });
 }

@@ -68,6 +68,9 @@ void main() {
       expect(calendars[1].value, DateTime(2026, 8, 10));
       expect(calendars[1].month, DateTime(2026, 8));
       expect(calendars[2].onCreateEvent, isNotNull);
+      // Reference demo caption and the leading `width` API row.
+      expect(find.text('拖拽跨日期创建事项（draggableEvents）'), findsOneWidget);
+      expect(find.text('面板宽度，默认铺满父容器（数值按 px 处理）'), findsOneWidget);
       expect(find.text('2026年8月'), findsNWidgets(3));
       expect(find.text('09:30'), findsOneWidget);
       expect(find.text('20:00'), findsNothing);

@@ -94,8 +94,8 @@ class IslandCalendarEvent {
 ///
 /// The selected day and the panel month are controlled independently. Days
 /// are reported as local midnight and months as their first day. The panel
-/// fills the available width (750 when unbounded); its rhythm scales with
-/// width / 750, clamped to 0.6–2.
+/// is [width] wide, or fills the available width (750 when unbounded); its
+/// rhythm scales with that width / 750, clamped to 0.6–2.
 class IslandCalendar extends StatefulWidget {
   /// Controlled selection: [value] is the selected day (null selects none)
   /// and [onChanged] only requests a change.
@@ -109,6 +109,7 @@ class IslandCalendar extends StatefulWidget {
     this.events = const [],
     this.showEventTime = true,
     this.onCreateEvent,
+    this.width,
     this.semanticLabel,
     this.now,
   }) : _controlled = true,
@@ -125,6 +126,7 @@ class IslandCalendar extends StatefulWidget {
     this.events = const [],
     this.showEventTime = true,
     this.onCreateEvent,
+    this.width,
     this.semanticLabel,
     this.now,
   }) : _controlled = false,
@@ -166,6 +168,11 @@ class IslandCalendar extends StatefulWidget {
   /// at local midnight. A press and release on one day only selects it; a
   /// release outside the panel or a cancelled pointer reports nothing.
   final ValueChanged<DateTimeRange>? onCreateEvent;
+
+  /// Panel width in logical pixels; null fills the available width (750
+  /// when unbounded). Row heights and event density derive from the actual
+  /// width, which never exceeds the parent's maximum width.
+  final double? width;
 
   /// Accessible name of the day grid when no visible title names it.
   final String? semanticLabel;
@@ -479,102 +486,110 @@ class _IslandCalendarState extends State<IslandCalendar> {
       onPointerCancel: (_) => _finishDrag(false),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final width = constraints.maxWidth.isFinite
+          final width = widget.width != null
+              ? math.min(widget.width!, constraints.maxWidth)
+              : constraints.maxWidth.isFinite
               ? constraints.maxWidth
               : _baseWidth;
           final scale = (width / _baseWidth).clamp(0.6, 2.0);
           final border = IslandTheme.borderWidth(context, 1.5);
           final columnWidth = (width - 2 * border - 2 * _bodyPad) / _cols;
-          return SizedBox(
-            width: width,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _header(month, today, duration),
-                const SizedBox(height: 8),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: CalendarColors.panelFill,
-                    border: Border.all(
-                      color: CalendarColors.panelBorder,
-                      width: border,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: CalendarColors.panelShadow,
-                        offset: Offset(0, 6),
-                        blurRadius: 18,
+          // A narrower `width` sits at the start, as a CSS block does.
+          return Align(
+            alignment: AlignmentDirectional.topStart,
+            widthFactor: 1,
+            heightFactor: 1,
+            child: SizedBox(
+              width: width,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _header(month, today, duration),
+                  const SizedBox(height: 8),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: CalendarColors.panelFill,
+                      border: Border.all(
+                        color: CalendarColors.panelBorder,
+                        width: border,
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(border),
-                    child: CustomPaint(
-                      painter: const DotPatternPainter(
-                        largeDot: CalendarColors.panelLargeDot,
-                        smallDot: CalendarColors.panelSmallDot,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          _bodyPad,
-                          _bodyPad,
-                          _bodyPad,
-                          _baseEventRow * scale * _eventRows + 6 + _bodyPad,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: CalendarColors.panelShadow,
+                          offset: Offset(0, 6),
+                          blurRadius: 18,
                         ),
-                        child: Semantics(
-                          container: true,
-                          label: widget.semanticLabel,
-                          child: Focus(
-                            canRequestFocus: false,
-                            skipTraversal: true,
-                            includeSemantics: false,
-                            onKeyEvent: _key,
-                            child: Listener(
-                              onPointerDown: (event) {
-                                if (widget.onCreateEvent == null ||
-                                    event.kind != PointerDeviceKind.mouse ||
-                                    event.buttons != kPrimaryMouseButton) {
-                                  return;
-                                }
-                                final index = _cellAt(
-                                  event.localPosition,
-                                  columnWidth,
-                                  scale,
-                                );
-                                if (index == null) return;
-                                final date = _cellDate(grid, index);
-                                setState(() => _anchor = _head = date);
-                              },
-                              onPointerMove: (event) {
-                                if (_anchor == null) return;
-                                final index = _cellAt(
-                                  event.localPosition,
-                                  columnWidth,
-                                  scale,
-                                );
-                                if (index == null) return;
-                                final date = _cellDate(grid, index);
-                                if (date != _head) {
-                                  setState(() => _head = date);
-                                }
-                              },
-                              child: Stack(
-                                children: [
-                                  _grid(
-                                    grid: grid,
-                                    month: month,
-                                    today: today,
-                                    selectedIndex: selectedIndex,
-                                    layout: layout,
-                                    covering: covering,
-                                    scale: scale,
-                                    duration: duration,
-                                  ),
-                                  for (final segment in layout.segments)
-                                    _bar(segment, columnWidth, scale),
-                                ],
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(border),
+                      child: CustomPaint(
+                        painter: const DotPatternPainter(
+                          largeDot: CalendarColors.panelLargeDot,
+                          smallDot: CalendarColors.panelSmallDot,
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            _bodyPad,
+                            _bodyPad,
+                            _bodyPad,
+                            _baseEventRow * scale * _eventRows + 6 + _bodyPad,
+                          ),
+                          child: Semantics(
+                            container: true,
+                            label: widget.semanticLabel,
+                            child: Focus(
+                              canRequestFocus: false,
+                              skipTraversal: true,
+                              includeSemantics: false,
+                              onKeyEvent: _key,
+                              child: Listener(
+                                onPointerDown: (event) {
+                                  if (widget.onCreateEvent == null ||
+                                      event.kind != PointerDeviceKind.mouse ||
+                                      event.buttons != kPrimaryMouseButton) {
+                                    return;
+                                  }
+                                  final index = _cellAt(
+                                    event.localPosition,
+                                    columnWidth,
+                                    scale,
+                                  );
+                                  if (index == null) return;
+                                  final date = _cellDate(grid, index);
+                                  setState(() => _anchor = _head = date);
+                                },
+                                onPointerMove: (event) {
+                                  if (_anchor == null) return;
+                                  final index = _cellAt(
+                                    event.localPosition,
+                                    columnWidth,
+                                    scale,
+                                  );
+                                  if (index == null) return;
+                                  final date = _cellDate(grid, index);
+                                  if (date != _head) {
+                                    setState(() => _head = date);
+                                  }
+                                },
+                                child: Stack(
+                                  children: [
+                                    _grid(
+                                      grid: grid,
+                                      month: month,
+                                      today: today,
+                                      selectedIndex: selectedIndex,
+                                      layout: layout,
+                                      covering: covering,
+                                      scale: scale,
+                                      duration: duration,
+                                    ),
+                                    for (final segment in layout.segments)
+                                      _bar(segment, columnWidth, scale),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -582,8 +597,8 @@ class _IslandCalendarState extends State<IslandCalendar> {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -662,7 +677,11 @@ class _IslandCalendarState extends State<IslandCalendar> {
                   ? CalendarColors.todayActionHover(brightness)
                   : CalendarColors.todayAction(brightness),
             ),
-            child: Text(strings.today),
+            // Reference `line-height: normal`: the fonts' own metrics.
+            child: Text(
+              strings.today,
+              style: const TextStyle(height: kTextHeightNone),
+            ),
           ),
         );
       },
@@ -701,6 +720,9 @@ class _IslandCalendarState extends State<IslandCalendar> {
                 strings.monthTitle(month.year, month.month),
                 style: const TextStyle(
                   fontSize: 15,
+                  // Reference `line-height: normal`, as the 今天 action: the
+                  // chip (padding 4 + one line) sets the header row height.
+                  height: kTextHeightNone,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.15,
                   color: CalendarColors.monthChipInk,
@@ -808,21 +830,22 @@ class _IslandCalendarState extends State<IslandCalendar> {
       onActivate: () => _select(date),
       builder: (_, states) {
         final hover = states.contains(WidgetState.hovered);
+        // Reference cascade: `.cell:hover .dayNumber` outranks the outside
+        // and today digit rules, and only the selected digit outranks hover;
+        // the today ring stays under hover.
         final ink = selected
             ? IslandTokens.light.onLeaf
+            : hover
+            ? CalendarColors.dayHover
             : isToday
             ? IslandTokens.light.link
             : outside
             ? IslandTokens.light.muted
-            : hover
-            ? CalendarColors.dayHover
             : CalendarColors.day;
-        final weight = selected || isToday
+        final weight = selected || hover || isToday
             ? FontWeight.w700
             : outside
             ? FontWeight.w400
-            : hover
-            ? FontWeight.w700
             : FontWeight.w500;
         final number = _baseNumber * scale;
         return AnimatedContainer(

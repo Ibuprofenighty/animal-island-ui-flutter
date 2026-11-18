@@ -159,6 +159,7 @@ _Scene _mapScene(_SceneContext c) {
   final (low, high) = _extent([for (final p in c.points) p.value]);
   final background = <_Shape>[];
   final marks = <_Mark>[];
+  final emptyRegions = <(Path, String)>[];
   for (var i = 0; i < regions.length; i++) {
     final (name, rings) = regions[i];
     final projected = [
@@ -195,7 +196,12 @@ _Scene _mapScene(_SceneContext c) {
       );
     } else {
       background.addAll(shapes);
+      emptyRegions.add((path, name));
     }
   }
-  return _Scene(background: background, marks: marks);
+  return _Scene(
+    background: background,
+    marks: marks,
+    emptyRegions: emptyRegions,
+  );
 }

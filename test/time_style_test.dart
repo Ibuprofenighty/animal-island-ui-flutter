@@ -136,7 +136,8 @@ void main() {
       expect(textOf(t, 'MONDAY').color, const Color(0xff006b62));
       expect(textOf(t, 'MONDAY').fontSize, 12);
       expect(textOf(t, 'Jun 8').color, const Color(0xff736857));
-      expect(textOf(t, '·').color, const Color(0xff736857));
+      // Reference decorative `.dot` #c4b89e (aria-hidden), kept as is.
+      expect(textOf(t, '·').color, const Color(0xffc4b89e));
       expect(textOf(t, '09').fontFamily, isNot('StyleFamily'));
       expect(capsuleOf(t, 'MONDAY'), const Color(0xffe6f9f6));
       final card = surfaceOf(t)! as BoxDecoration;
@@ -199,6 +200,55 @@ void main() {
       await t.pumpWidget(const SizedBox());
     },
   );
+
+  testWidgets('the card capsule uses the reference line-height: normal', (
+    t,
+  ) async {
+    await t.pumpWidget(host(const IslandTime(now: monday)));
+    await t.pumpAndSettle();
+    final capsule = find
+        .ancestor(of: find.text('MONDAY'), matching: find.byType(Container))
+        .first;
+    final line = t.getSize(find.text('MONDAY')).height;
+    // 12px at the font's own metrics (1 em in the test font), not the
+    // inherited body line height; padding 4px above and below.
+    expect(line, 12);
+    expect(t.getSize(capsule).height, 8 + line);
+    await t.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('a narrow game HUD wraps the weekday capsule like a flex item', (
+    t,
+  ) async {
+    Future<void> pump(double width) async {
+      await t.pumpWidget(
+        host(
+          SizedBox(
+            width: width,
+            child: const IslandTime(
+              now: monday,
+              variant: IslandTimeVariant.game,
+              locale: IslandTimeLocale.zhCn,
+              dateFormat: 'YYYY年M月D日',
+            ),
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+    }
+
+    const date = '2026年6月8日';
+    await pump(600);
+    final wide = t.getSize(find.text('星期一')).height;
+    final wideDate = t.getSize(find.text(date)).height;
+    // Test font: the date row needs 216 + 20 + 77 = 313px and the clock
+    // 212px; 250px fits the clock, so both row items shrink and wrap.
+    await pump(100 + 250);
+    expect(t.getSize(find.text('星期一')).height, greaterThan(wide));
+    expect(t.getSize(find.text(date)).height, greaterThan(wideDate));
+    expect(t.takeException(), isNull);
+    await t.pumpWidget(const SizedBox());
+  });
 
   testWidgets('style changes no semantics', (t) async {
     final handle = t.ensureSemantics();

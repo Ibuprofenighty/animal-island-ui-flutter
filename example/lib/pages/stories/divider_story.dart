@@ -38,7 +38,9 @@ class DividerStory extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 16),
           child: IslandDivider(iconBuilder: (_) => IslandIcon(glyph, size: 24)),
         ),
+      // The last icon row's 16px margin collapses into the code block's 36.
       const StoryCode(
+        spaceBefore: 36 - 16,
         'IslandDivider(variant: IslandDividerVariant.waveYellow)\nIslandDivider(iconBuilder: (_) => const IslandIcon(IslandGlyph.fish))',
       ),
       const _OceanWaveDemo(),
@@ -101,12 +103,15 @@ class _OceanWaveDemoState extends State<_OceanWaveDemo> {
           variant: IslandDividerVariant.oceanWave,
           animated: false,
         ),
+        // The reference section has no padding: this block's 16px margin
+        // collapses through it into the following API table's 24.
         const StoryCode(
           'IslandDivider(variant: IslandDividerVariant.oceanWave)\n'
           'IslandDivider(\n'
           '  variant: IslandDividerVariant.oceanWave,\n'
           '  animated: false,\n'
           ')',
+          spaceAfter: 0,
         ),
       ],
     ),

@@ -48,9 +48,15 @@ class _SkillPage extends StatelessWidget {
   const _SkillPage();
   static Color get ink => IslandTokens.light.ink;
 
-  /// Reference `.lead` (1.8); card descriptions pass `.cardDesc` 1.7.
+  /// Reference `.lead` (1.8); card descriptions pass `.cardDesc` 1.7. The CSS
+  /// line-height is a fixed line box, also for mixed Latin/CJK runs.
   Widget prose(String text, {double height = 1.8, Color? color}) => Text(
     text,
+    strutStyle: StrutStyle(
+      fontSize: 12,
+      height: height,
+      forceStrutHeight: true,
+    ),
     style: TextStyle(
       fontSize: 12,
       height: height,

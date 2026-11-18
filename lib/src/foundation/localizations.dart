@@ -90,6 +90,10 @@ class IslandLocalizations {
   /// Chart busy status.
   String get chartLoading => _zh ? '正在整理数据…' : 'Preparing data…';
 
+  /// Hover text and accessible name of a chart map region without data.
+  String chartRegionNoData(String name) =>
+      _zh ? '$name：$noData' : '$name: $noData';
+
   /// Chart empty state when every legend entry is hidden.
   String get chartAllHidden =>
       _zh ? '所有图例已隐藏' : 'All legend entries are hidden';

@@ -91,6 +91,11 @@ class IslandTable<T> extends StatefulWidget {
   final List<T> rows;
   final Object Function(T record) rowKey;
   final bool striped, showHeader, loading;
+
+  /// Content under the built-in 48px empty chart icon when [rows] is empty
+  /// (reference `emptyText`, a block container since 3.0.0); null shows the
+  /// localized "no data" text. It spans the row width inside the cell
+  /// padding and inherits centred 14px muted text and icon defaults.
   final Widget? empty;
   final IslandTablePagination? pagination;
   final ValueChanged<T>? onRowPressed;
@@ -264,27 +269,36 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
                         vertical: 60,
                         horizontal: 20,
                       ),
-                      child:
-                          widget.empty ??
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: 16,
-                            children: [
-                              SvgPicture.string(
-                                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#9f927d" fill-opacity="0.5" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>',
-                                width: 48,
-                                height: 48,
-                                excludeFromSemantics: true,
-                              ),
-                              Text(
-                                strings.noData,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: IslandTokens.light.muted,
-                                ),
-                              ),
-                            ],
+                      // Reference `.emptyContent`: the icon always shows and
+                      // `emptyText` (or the custom block) sits beneath it.
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        spacing: 16,
+                        children: [
+                          Center(
+                            child: SvgPicture.string(
+                              '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#9f927d" fill-opacity="0.5" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>',
+                              width: 48,
+                              height: 48,
+                              excludeFromSemantics: true,
+                            ),
                           ),
+                          IconTheme.merge(
+                            data: IconThemeData(
+                              color: IslandTokens.light.muted,
+                            ),
+                            child: DefaultTextStyle.merge(
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: IslandTokens.light.muted,
+                              ),
+                              textAlign: TextAlign.center,
+                              child: widget.empty ?? Text(strings.noData),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -462,7 +476,7 @@ class _SpinnerPainter extends CustomPainter {
       extent * math.pi,
       false,
       Paint()
-        ..color = IslandTokens.light.link
+        ..color = TableColors.spinner
         ..style = PaintingStyle.stroke
         ..strokeWidth = 4
         ..strokeCap = StrokeCap.round,

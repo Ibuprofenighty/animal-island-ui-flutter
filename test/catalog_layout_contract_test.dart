@@ -64,6 +64,87 @@ void main() {
     expect(t.getTopLeft(text).dy - t.getTopLeft(block).dy, 21);
     expect(t.takeException(), isNull);
   });
+  testWidgets(
+    'CodeBlock copy reserve scrolls with the code, as the reference pre',
+    (t) async {
+      await t.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 300,
+                child: IslandCodeBlock(
+                  code: 'final value = IslandCodeBlock(code: longSourceLine);',
+                  margin: EdgeInsets.zero,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final block = t.getRect(find.byType(IslandCodeBlock));
+      final scrollable = find
+          .descendant(
+            of: find.byType(IslandCodeBlock),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      final text = find.descendant(
+        of: find.byType(IslandCodeBlock),
+        matching: find.byType(SelectableText),
+      );
+      // The viewport spans the block inside its 1px border; the left 24px
+      // padding and the 96px copy reserve are scroll content.
+      expect(t.getRect(scrollable).left, block.left + 1);
+      expect(t.getRect(scrollable).right, block.right - 1);
+      expect(t.getTopLeft(text).dx, block.left + 25);
+      final position = t.state<ScrollableState>(scrollable).position;
+      expect(position.maxScrollExtent, greaterThan(0));
+      position.jumpTo(position.maxScrollExtent);
+      await t.pump();
+      expect(t.getRect(text).right, closeTo(block.right - 1 - 96, .01));
+      expect(t.takeException(), isNull);
+    },
+  );
+  testWidgets('Dashed dividers centre their dash phase as the reference', (
+    t,
+  ) async {
+    // At the 1078px reference content width the centred 12px tile puts the
+    // first dashed-brown dash at +5px and the 6px hairline tile at +2px.
+    t.view.physicalSize = const Size(1200, 400);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    for (final (variant, dashes, gaps) in [
+      (IslandDividerVariant.dashedBrown, [5.5, 10.5, 1077.5], [4.5, 11.5]),
+      (IslandDividerVariant.hairline, [2.5, 4.5], [1.5, 5.5]),
+    ]) {
+      final boundary = GlobalKey();
+      await t.pumpWidget(
+        MaterialApp(
+          home: Align(
+            alignment: Alignment.topLeft,
+            child: RepaintBoundary(
+              key: boundary,
+              child: SizedBox(
+                width: 1078,
+                child: IslandDivider(variant: variant),
+              ),
+            ),
+          ),
+        ),
+      );
+      final rect = t.getRect(find.byType(IslandDivider));
+      for (final x in dashes) {
+        final color = await pixel(t, boundary, Offset(x, rect.center.dy));
+        expect(color.a, greaterThan(.9), reason: '$variant dash at $x');
+      }
+      for (final x in gaps) {
+        final color = await pixel(t, boundary, Offset(x, rect.center.dy));
+        expect(color.a, lessThan(.1), reason: '$variant gap at $x');
+      }
+    }
+    expect(t.takeException(), isNull);
+  });
   testWidgets('Divider repeats complete cycles and omits a final connector', (
     t,
   ) async {

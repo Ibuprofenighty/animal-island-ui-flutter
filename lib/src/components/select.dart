@@ -662,7 +662,9 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
           IslandSelectVariant.game => PanelPlacement.beside,
         },
         width: panelWidth,
-        estimatedHeight: visible.length * 44 + 24,
+        // Reference Select.tsx counts every option, not the filtered list,
+        // so typing a search does not move a flipped panel.
+        estimatedHeight: widget.options.length * 44 + 24,
         anchor: anchor,
         panel: Semantics(
           container: true,

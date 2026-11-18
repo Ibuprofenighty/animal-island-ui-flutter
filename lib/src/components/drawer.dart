@@ -391,41 +391,66 @@ class _IslandDrawerState extends State<IslandDrawer>
                                   label: widget.closeLabel,
                                   focusNode: closeFocus,
                                   onActivate: widget.onClose,
-                                  builder: (context, states) => Container(
-                                    width: 32,
-                                    height: 32,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color:
-                                          states.contains(WidgetState.hovered)
-                                          ? DrawerColors.closeHoverFill
-                                          : Colors.transparent,
-                                      border:
-                                          states.contains(WidgetState.focused)
-                                          ? Border.all(
-                                              color: IslandTokens.light.focus,
-                                              width: 2,
+                                  // Reference `.close` `transition: all 0.2s`
+                                  // (CSS ease); reduced motion settles.
+                                  builder: (context, states) =>
+                                      AnimatedContainer(
+                                        duration:
+                                            MediaQuery.disableAnimationsOf(
+                                              context,
                                             )
-                                          : null,
-                                    ),
-                                    child: DefaultTextStyle(
-                                      style: DefaultTextStyle.of(context).style
-                                          .copyWith(
-                                            fontSize: 22,
-                                            height: 1,
-                                            color:
-                                                states.contains(
-                                                  WidgetState.hovered,
+                                            ? Duration.zero
+                                            : const Duration(milliseconds: 200),
+                                        curve: Curves.ease,
+                                        width: 32,
+                                        height: 32,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color:
+                                              states.contains(
+                                                WidgetState.hovered,
+                                              )
+                                              ? DrawerColors.closeHoverFill
+                                              : Colors.transparent,
+                                          border:
+                                              states.contains(
+                                                WidgetState.focused,
+                                              )
+                                              ? Border.all(
+                                                  color:
+                                                      IslandTokens.light.focus,
+                                                  width: 2,
                                                 )
-                                                ? DrawerColors.closeHover
-                                                : IslandTokens.light.ink,
+                                              : null,
+                                        ),
+                                        child: AnimatedDefaultTextStyle(
+                                          duration:
+                                              MediaQuery.disableAnimationsOf(
+                                                context,
+                                              )
+                                              ? Duration.zero
+                                              : const Duration(
+                                                  milliseconds: 200,
+                                                ),
+                                          curve: Curves.ease,
+                                          style: DefaultTextStyle.of(context)
+                                              .style
+                                              .copyWith(
+                                                fontSize: 22,
+                                                height: 1,
+                                                color:
+                                                    states.contains(
+                                                      WidgetState.hovered,
+                                                    )
+                                                    ? DrawerColors.closeHover
+                                                    : DrawerColors.close,
+                                              ),
+                                          child: const ExcludeSemantics(
+                                            child: Text('×'),
                                           ),
-                                      child: const ExcludeSemantics(
-                                        child: Text('×'),
+                                        ),
                                       ),
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),

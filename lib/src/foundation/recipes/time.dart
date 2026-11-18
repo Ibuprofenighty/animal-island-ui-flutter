@@ -14,6 +14,11 @@ abstract final class TimeColors {
   static const digits = Primitive.brown544;
   static const datePill = Primitive.teal967;
 
+  /// Card `·` between weekday and month-day: the reference
+  /// `--animal-text-color-disabled` #c4b89e, kept as a decorative
+  /// (aria-hidden) glyph.
+  static const dateDot = Primitive.sand786;
+
   /// Game clock and month-day on the host paper: [digits] on light papers;
   /// on dark papers the reference (2.7–3.3:1) lightens in hue to 4.5:1.
   static Color gameText(Brightness brightness) =>
@@ -31,8 +36,9 @@ abstract final class TimeColors {
 ///
 /// The card is a fixed light surface (reference `.time`): clock
 /// [TimeColors.digits], weekday `--animal-primary-color` as the light `link`
-/// role, month-day and dot `--animal-text-color-secondary` as the light
-/// `muted` role, the teal capsule, 20/32/15 padding and the 20px soft-shadow
+/// role, month-day `--animal-text-color-secondary` as the light `muted` role,
+/// the decorative [TimeColors.dateDot], the teal capsule, 20/32/15 padding
+/// and the 20px soft-shadow
 /// surface. The game HUD has no surface and 50px padding; its clock and
 /// month-day read on the host paper ([TimeColors.gameText]), its weekday
 /// sits on the cream capsule in [TimeColors.digits].
@@ -77,7 +83,7 @@ final class TimeRoles {
       clock: clock ?? TimeColors.digits,
       weekday: weekday ?? IslandTokens.light.link,
       date: date ?? IslandTokens.light.muted,
-      separator: separator ?? IslandTokens.light.muted,
+      separator: separator ?? TimeColors.dateDot,
       capsule: capsule ?? TimeColors.datePill,
       decoration:
           decoration ??

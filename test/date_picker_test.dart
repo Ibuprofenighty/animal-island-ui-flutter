@@ -254,6 +254,30 @@ void main() {
       expect(values.single, DateTime(2026, 9));
     },
   );
+  testWidgets('month mode defaults to YYYY-MM only when format is omitted', (
+    t,
+  ) async {
+    for (final (format, shown) in [
+      (null, '2026-08'),
+      ('YYYY-MM-DD', '2026-08-15'),
+    ]) {
+      await t.pumpWidget(
+        host(
+          IslandDatePicker.uncontrolled(
+            key: ValueKey(format),
+            initialValue: DateTime(2026, 8, 15),
+            mode: IslandDatePickerMode.month,
+            format: format,
+          ),
+        ),
+      );
+      expect(find.text(shown), findsOneWidget, reason: '$format');
+    }
+    await t.pumpWidget(
+      host(IslandDatePicker.uncontrolled(initialValue: DateTime(2026, 8, 15))),
+    );
+    expect(find.text('2026-08-15'), findsOneWidget);
+  });
   testWidgets(
     'range trigger values share a fixed width; icon sits at the right edge',
     (t) async {

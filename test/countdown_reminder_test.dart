@@ -70,6 +70,46 @@ class _Probe {
 }
 
 void main() {
+  testWidgets('digits, colon and separators share the Time clock ink', (
+    t,
+  ) async {
+    final p = _Probe(t);
+    await p.mount(
+      (clock) =>
+          IslandCountdown(value: p.deadline, now: clock, format: 'mm 分 ss'),
+    );
+    await t.pump();
+    // Reference #8b7355 deepened in hue to the Time clock ink #836b4e.
+    const ink = Color(0xff836b4e);
+    expect(t.widget<Text>(find.text(' 分 ')).style!.color, ink);
+    final digits = find.descendant(
+      of: find.byType(IslandCountdown),
+      matching: find.byType(RichText),
+    );
+    for (final paragraph in t.widgetList<RichText>(digits)) {
+      expect(paragraph.text.style?.color, ink);
+    }
+    await t.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('semanticLabel names the timer beside its value', (t) async {
+    final handle = t.ensureSemantics();
+    final p = _Probe(t);
+    await p.mount(
+      (clock) => IslandCountdown(
+        value: p.deadline,
+        now: clock,
+        format: 'mm:ss',
+        semanticLabel: '默认提醒倒计时',
+      ),
+    );
+    await t.pump();
+    expect(find.bySemanticsLabel('默认提醒倒计时'), findsOneWidget);
+    expect(t.getSemantics(find.bySemanticsLabel('默认提醒倒计时')).value, '01:01');
+    await t.pumpWidget(const SizedBox());
+    handle.dispose();
+  });
+
   testWidgets(
     'default reminders turn orange at 60 and red at 10 displayed seconds, including bordered plates',
     (t) async {

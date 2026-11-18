@@ -78,7 +78,7 @@ class IslandUploadFile {
   const IslandUploadFile({
     required this.id,
     required this.name,
-    this.size = 0,
+    this.size,
     this.mimeType = '',
     this.status = IslandUploadStatus.uploading,
     this.percent = 0,
@@ -89,7 +89,9 @@ class IslandUploadFile {
     this.error,
   });
   final String id, name, mimeType;
-  final int size;
+
+  /// File size in bytes; null when unknown, and the list then shows no size.
+  final int? size;
   final IslandUploadStatus status;
   final double percent;
   final IslandUploadSource? source;

@@ -447,35 +447,36 @@ class _RevealClipper extends CustomClipper<Path> {
       old.motion != motion || old.circle != circle;
 }
 
-/// The pinned naive-icons `sailboat` glyph composed as two layers of the same
-/// asset in its 48-unit space: the boat above the water line, scaled 0.8 about
-/// its keel and bobbing (1s ease-in-out alternate: up 2 units, 1 degree), and
-/// the water line repeated at its 40-unit tile, scrolled one 30-unit window
-/// per 4s and shown through that centred window, 1.2 units lower.
+/// The pinned naive-icons `sailboat` glyph as reference `Sailboat.tsx`
+/// composes it in its 48-unit space: the boat above the water line, scaled
+/// 0.8 about its keel (24, 39.32) and bobbing (1s ease-in-out alternate: up 2
+/// units, 1 degree), and the glyph's water path redrawn at stroke 1.9, moved
+/// by -4.85 so a copy starts at the origin, tiled every 38.3 units (four
+/// equal 9.575 periods), scrolled one 28.74-unit window (three periods) per
+/// 4s so the restart is seamless, shown through the window at x 9.63 and
+/// 1.2 units lower.
 class _Sailboat extends StatelessWidget {
   const _Sailboat(this.clock);
   final _SceneClock clock;
 
-  /// Separates the hull stroke (to 41.75) from the wave stroke (from 42.1).
-  static const waterLine = 41.9;
-  static const keel = Offset(24, 40);
-  static const window = 30.0, windowLeft = 9.0, tile = 40.0;
+  /// Cuts the glyph between its hull stroke (to 41.07) and its own water
+  /// stroke (from 41.35), which [_SailboatWater] replaces.
+  static const waterLine = 41.2;
+  static const keel = Offset(24, 39.32);
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
       final extent = constraints.maxWidth;
       final unit = extent / 48;
-      Widget glyph(double top, double bottom) => ClipRect(
-        clipper: _Band(top * unit, bottom * unit),
+      final boat = ClipRect(
+        clipper: _Band(0, waterLine * unit),
         child: IslandIcon(
           IslandGlyph.sailboat,
           size: extent,
           color: LoadingColors.boatInk,
         ),
       );
-      final boat = glyph(0, waterLine);
-      final water = glyph(waterLine, 48);
       return AnimatedBuilder(
         animation: clock,
         builder: (context, _) {
@@ -483,7 +484,7 @@ class _Sailboat extends StatelessWidget {
           final seconds = still ? 0.0 : clock.seconds;
           final swing = seconds % 2;
           final bob = Curves.easeInOut.transform(swing < 1 ? swing : 2 - swing);
-          final scroll = (seconds % 4) / 4 * window;
+          final scroll = (seconds % 4) / 4 * _SailboatWater.window;
           final boatTransform = Matrix4.diagonal3Values(unit, unit, 1)
             ..translateByDouble(keel.dx, keel.dy, 0, 1)
             ..scaleByDouble(.8, .8, 1, 1)
@@ -497,28 +498,7 @@ class _Sailboat extends StatelessWidget {
                 child: Transform(transform: boatTransform, child: boat),
               ),
               Positioned.fill(
-                child: ClipRect(
-                  clipper: _Band.horizontal(
-                    windowLeft * unit,
-                    (windowLeft + window) * unit,
-                  ),
-                  child: Transform.translate(
-                    offset: Offset(scroll * unit, 1.2 * unit),
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        for (final shift in const [-tile, 0.0])
-                          Positioned(
-                            left: shift * unit,
-                            top: 0,
-                            width: extent,
-                            height: extent,
-                            child: water,
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
+                child: CustomPaint(painter: _SailboatWater(scroll)),
               ),
             ],
           );
@@ -528,19 +508,51 @@ class _Sailboat extends StatelessWidget {
   );
 }
 
-/// A clip band across the child: vertical [start]..[end] by default, or
-/// horizontal with [_Band.horizontal].
-class _Band extends CustomClipper<Rect> {
-  const _Band(this.start, this.end) : horizontal = false;
-  const _Band.horizontal(this.start, this.end) : horizontal = true;
-  final double start, end;
-  final bool horizontal;
-  @override
-  Rect getClip(Size size) => horizontal
-      ? Rect.fromLTRB(start, 0, end, size.height)
-      : Rect.fromLTRB(0, start, size.width, end);
+/// The reference sailboat water line, painted in the 48-unit glyph space.
+class _SailboatWater extends CustomPainter {
+  const _SailboatWater(this.scroll);
+  final double scroll;
+
+  static const tile = 38.3, origin = -4.85, window = 28.74, windowLeft = 9.63;
+  static const stroke = 1.9, drop = 1.2;
+  static final path = Path()
+    ..moveTo(4.85, 43.15)
+    ..cubicTo(8.68, 41.24, 10.59, 45.07, 14.42, 43.15)
+    ..cubicTo(18.25, 41.24, 20.17, 45.07, 24, 43.15)
+    ..cubicTo(27.83, 41.24, 29.75, 45.07, 33.58, 43.15)
+    ..cubicTo(37.41, 41.24, 39.32, 45.07, 43.15, 43.15);
 
   @override
-  bool shouldReclip(_Band old) =>
-      old.start != start || old.end != end || old.horizontal != horizontal;
+  void paint(Canvas canvas, Size size) {
+    final unit = size.width / 48;
+    final paint = Paint()
+      ..color = LoadingColors.water
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas
+      ..save()
+      ..scale(unit)
+      ..clipRect(const Rect.fromLTWH(windowLeft, 0, window, 48))
+      ..translate(scroll, drop);
+    for (var k = -2; k <= 1; k++) {
+      canvas.drawPath(path.shift(Offset(origin + k * tile, 0)), paint);
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_SailboatWater old) => old.scroll != scroll;
+}
+
+/// A vertical clip band [start]..[end] across the child.
+class _Band extends CustomClipper<Rect> {
+  const _Band(this.start, this.end);
+  final double start, end;
+  @override
+  Rect getClip(Size size) => Rect.fromLTRB(0, start, size.width, end);
+
+  @override
+  bool shouldReclip(_Band old) => old.start != start || old.end != end;
 }

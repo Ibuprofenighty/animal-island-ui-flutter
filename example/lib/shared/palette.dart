@@ -58,8 +58,9 @@ abstract final class GalleryPalette {
   static const timeCustomGradientStart = Color(0xff0f4c46);
 
   /// Reference `#137f74` deepened in its own hue so the cream clock keeps
-  /// 4.5:1 over the lightest gradient point under it.
-  static const timeCustomGradientMiddle = Color(0xff00766b);
+  /// 4.5:1 over the lightest gradient point under it (4.54:1 at the reference
+  /// capsule height).
+  static const timeCustomGradientMiddle = Color(0xff00756a);
 
   /// Time custom-style demo shadow rgba(15, 76, 70, .28).
   static const timeCustomShadow = Color(0x470f4c46);
@@ -123,7 +124,7 @@ abstract final class GalleryPalette {
 
   // Cursor story native-control imitation (browser UA defaults).
   static const nativeControlBorder = Color(0xff767676);
-  static const nativeControlFill = Color(0xfff0f0f0);
+  static const nativeControlFill = Color(0xffefefef);
   static const nativeInputFill = Color(0xffffffff);
   static const nativeLink = Color(0xff0000ee);
 
@@ -302,4 +303,82 @@ abstract final class GalleryPalette {
 
   /// Gallery item action hover (reference `#f0e8d8`).
   static const chartActionHover = codeChip;
+
+  /// API table required-prop mark (reference `#f0a870`, 7.9:1 on the table
+  /// background `#2b2118`).
+  static const apiTableRequired = Color(0xfff0a870);
+
+  // Gallery shell inks (reference demo/App.tsx, ComponentPage.tsx) under the
+  // measured-colour rule. The sidebar list scrolls over the cream aside
+  // `#faf8f3`, its `#a2b0e7` bottom wave and the `#d6dff0` hover fill.
+
+  /// Sidebar header, mobile header title and its glyphs: the reference
+  /// `#725d42` passes (5.9:1 on the aside, 5.1:1 on the header glass).
+  static const shellInk = storyInk;
+
+  /// Sidebar group labels: reference `#a0936e` (2.9:1 on the aside, 1.4:1 on
+  /// the wave) deepened in hue to 4.5:1 on the wave.
+  static const navGroupInk = Color(0xff504422);
+
+  /// Sidebar items: reference `#8a7b66` (3.9:1 aside, 3.1:1 hover, 1.9:1
+  /// wave) deepened in hue to 4.5:1 on the wave.
+  static const navInk = Color(0xff514330);
+
+  /// Active sidebar item: reference white (1.7:1 on `#b7c6e5`) moved along
+  /// lightness (achromatic) to 4.5:1.
+  static const navActiveInk = Color(0xff525252);
+
+  /// Component page description: reference `#794f27` (3.7:1 on `#88c9a1`,
+  /// 3.1:1 over a large wallpaper dot) deepened in hue to 4.5:1 over any
+  /// wallpaper pixel.
+  static const pageDescription = Color(0xff5e360b);
+
+  /// Home feature/component card title (`#725d42`, 5.6:1 on the card paper).
+  static const homeCardTitle = storyInk;
+
+  /// Home feature/component card description (`#7c5734`, 5.8:1).
+  static const homeCardBody = homeBody;
+
+  /// Icon demo bulb `color`: reference `#e9c46a` (1.7:1 on the white story
+  /// panel) deepened in hue to 3:1.
+  static const iconDemoBulb = Color(0xffb49033);
+
+  /// Icon tile `XxxIcon` caption: reference `#a0936e` (3.0:1 on white,
+  /// 2.8:1 on the `#faf7f0` hover) deepened in hue to 4.5:1 on both.
+  static const iconTileName = Color(0xff7e714e);
+
+  /// Cursor story native button text and disabled button, measured on the
+  /// `#faf8f2` demo box (Chrome UA ButtonText, and the disabled composites;
+  /// disabled controls keep the reference).
+  static const nativeButtonText = Color(0xff000000);
+  static const nativeDisabledBorder = Color(0xffcdccc9);
+  static const nativeDisabledFill = Color(0xffebeae7);
+  static const nativeDisabledText = Color(0xffa9a8a6);
+
+  // Chart Gallery inks resolved from the reference `:root` theme variables
+  // (`--animal-text-color` #794f27, `--animal-text-color-secondary` #9f927d),
+  // not the `#725d42` fallbacks, under the measured-colour rule.
+
+  /// Chart gallery header body (`.header p`): reference `#9f927d` (3.0:1 on
+  /// the white story panel) deepened in hue to 4.5:1.
+  static const chartGalleryBody = Color(0xff827561);
+
+  /// Chart gallery item link (`.actions`, `更多…示例`): reference `#9f927d`
+  /// (3.0:1 on white, 2.5:1 on the `#f0e8d8` hover) deepened in hue to 4.5:1
+  /// on both, the value [backTopCodeInk] takes for the same pair.
+  static const chartActionInk = backTopCodeInk;
+
+  /// Chart gallery 查看配置 summary and its marker (`reset.less`
+  /// `[class^='animal-']`): reference `#794f27` passes (5.8:1 on the hover).
+  static const chartSummaryInk = demoStrongInk;
+
+  /// Chart catalog card description (`.catalog a`): reference `#9f927d`
+  /// (2.9:1 on the `#f8f8f0` card, 2.8:1 on the `#f0f5eb` hover) deepened in
+  /// hue to 4.5:1 on both.
+  static const chartCatalogBody = Color(0xff7a6e5a);
+
+  /// Typewriter third line: reference `#FD9303` (2.1:1 on the `#faf8f2`
+  /// dashed demo box) moved along OKLCH lightness in its own hue, chroma
+  /// gamut-mapped as [modalEmphasis], until it passes 4.5:1 there (4.51:1).
+  static const typewriterEmphasis = Color(0xffaa6000);
 }

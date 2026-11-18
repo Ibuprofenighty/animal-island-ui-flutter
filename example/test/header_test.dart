@@ -1,12 +1,14 @@
 import 'dart:ui' as ui;
 
 import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:island_gallery/pages/gallery.dart';
 import 'package:island_gallery/pages/home.dart';
+import 'package:island_gallery/shared/palette.dart';
 import 'package:island_gallery/shared/theme.dart';
 
 import '../../test/support/fake_clock_only.dart';
@@ -191,7 +193,7 @@ void main() {
           final color = pixels![(y - 18) * 16 + x - 338];
           final isBar =
               x >= 339 && x <= 352 && [19, 20, 25, 26, 31, 32].contains(y);
-          expect(color == 0x573719, isBar, reason: 'header pixel ($x, $y)');
+          expect(color == 0x725d42, isBar, reason: 'header pixel ($x, $y)');
         }
       }
       expect(tester.takeException(), isNull);
@@ -294,6 +296,38 @@ void main() {
                 .decoration!
             as BoxDecoration;
 
+    // The fill behind a sidebar item (reference S.menuItem): its target, and
+    // the colour painted in the current frame.
+    Finder fillBox(String label) => find
+        .ancestor(of: item(label), matching: find.byType(AnimatedContainer))
+        .first;
+    Color? fill(WidgetTester tester, String label) =>
+        (tester.widget<AnimatedContainer>(fillBox(label)).decoration!
+                as BoxDecoration)
+            .color;
+    Color? painted(WidgetTester tester, String label) =>
+        (tester
+                    .renderObject<RenderDecoratedBox>(
+                      find
+                          .descendant(
+                            of: fillBox(label),
+                            matching: find.byType(DecoratedBox),
+                          )
+                          .first,
+                    )
+                    .decoration
+                as BoxDecoration)
+            .color;
+    Color? ink(WidgetTester tester, String label) => tester
+        .widget<TextButton>(item(label))
+        .style!
+        .foregroundColor!
+        .resolve({});
+    double ratio(Color a, Color b) {
+      final x = a.computeLuminance(), y = b.computeLuminance();
+      return x > y ? (x + .05) / (y + .05) : (y + .05) / (x + .05);
+    }
+
     testWidgets('sidebar items hover without ripple; NEW badge inverts', (
       tester,
     ) async {
@@ -303,15 +337,26 @@ void main() {
           .style!
           .overlayColor!
           .resolve(states);
+      expect(fill(tester, 'Button 按钮')!.a, 0);
+      expect(fill(tester, 'Skill 介绍'), const Color(0xffb7c6e5));
+      // The Skill page's 2s mount Loading blocks pointer input until it lifts.
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      addTearDown(mouse.removePointer);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(tester.getCenter(item('Button 按钮')));
+      await tester.pumpAndSettle();
+      expect(fill(tester, 'Button 按钮'), const Color(0xffd6dff0));
+      await mouse.moveTo(tester.getCenter(item('Skill 介绍')));
+      await tester.pumpAndSettle();
+      expect(fill(tester, 'Button 按钮')!.a, 0);
       expect(
-        overlay('Button 按钮', {WidgetState.hovered}),
-        const Color(0xffd6dff0),
-      );
-      expect(
-        overlay('Skill 介绍', {WidgetState.hovered}),
-        Colors.transparent,
+        fill(tester, 'Skill 介绍'),
+        const Color(0xffb7c6e5),
         reason: 'the active item keeps #B7C6E5',
       );
+      expect(overlay('Button 按钮', {WidgetState.hovered}), Colors.transparent);
       expect(overlay('Button 按钮', {WidgetState.pressed}), Colors.transparent);
       expect(
         tester.widget<TextButton>(item('Button 按钮')).style!.splashFactory,
@@ -327,6 +372,109 @@ void main() {
         Color(0xfff7825a),
       ]);
       expect(inactive.boxShadow!.single.color, const Color(0x40725d42));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('sidebar fill and ink move together over 0.15s ease', (
+      tester,
+    ) async {
+      await showPath(tester, '/title', reduced: false);
+      expect(ink(tester, 'Title 标题'), GalleryPalette.navActiveInk);
+      expect(ink(tester, 'Button 按钮'), GalleryPalette.navInk);
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      addTearDown(mouse.removePointer);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(tester.getCenter(item('Button 按钮')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 75));
+      expect(
+        painted(tester, 'Button 按钮')!.a,
+        allOf(greaterThan(0), lessThan(1)),
+      );
+      await tester.pump(const Duration(milliseconds: 80));
+      expect(painted(tester, 'Button 按钮'), GalleryPalette.navHover);
+      // Navigation: the new active item's fill and ink change over 0.15s.
+      await tester.tap(item('Button 按钮'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 75));
+      final step = painted(tester, 'Button 按钮')!;
+      expect(step, isNot(GalleryPalette.navHover));
+      expect(step, isNot(GalleryPalette.navActive));
+      final midInk = ink(tester, 'Button 按钮')!;
+      expect(midInk, isNot(GalleryPalette.navInk));
+      expect(midInk, isNot(GalleryPalette.navActiveInk));
+      // The intermediate pair stays readable.
+      expect(ratio(midInk, step), greaterThanOrEqualTo(4.5));
+      await tester.pump(const Duration(milliseconds: 80));
+      expect(painted(tester, 'Button 按钮'), GalleryPalette.navActive);
+      expect(ink(tester, 'Button 按钮'), GalleryPalette.navActiveInk);
+      expect(painted(tester, 'Title 标题')!.a, 0);
+      expect(ink(tester, 'Title 标题'), GalleryPalette.navInk);
+      await tester.pumpWidget(const SizedBox());
+    }, skip: fakeClockOnly);
+
+    testWidgets('shell inks follow the measured reference colours', (
+      tester,
+    ) async {
+      await showPath(tester, '/collapse');
+      Color? textColor(Finder finder) =>
+          tester.widget<Text>(finder.first).style?.color;
+      expect(textColor(find.text('Animal Island UI')), const Color(0xff725d42));
+      expect(textColor(find.text('── 基础 ──')), GalleryPalette.navGroupInk);
+      expect(ink(tester, 'Button 按钮'), GalleryPalette.navInk);
+      expect(ink(tester, 'Collapse 折叠面板'), GalleryPalette.navActiveInk);
+      // Aside, hover fill and the bottom wave under the scrolling list.
+      for (final surface in const [
+        Color(0xfffaf8f3),
+        Color(0xffd6dff0),
+        Color(0xffa2b0e7),
+      ]) {
+        expect(
+          ratio(GalleryPalette.navInk, surface),
+          greaterThanOrEqualTo(4.5),
+        );
+        if (surface != const Color(0xffd6dff0)) {
+          expect(
+            ratio(GalleryPalette.navGroupInk, surface),
+            greaterThanOrEqualTo(4.5),
+          );
+        }
+      }
+      expect(
+        ratio(GalleryPalette.navActiveInk, GalleryPalette.navActive),
+        greaterThanOrEqualTo(4.5),
+      );
+      // Page description over the wallpaper and its largest dot.
+      final description = find.byWidgetPredicate(
+        (w) =>
+            w is Text &&
+            w.style?.fontSize == 14 &&
+            w.style?.color == GalleryPalette.pageDescription,
+      );
+      expect(description, findsOneWidget);
+      for (final surface in [
+        IslandTokens.light.canvas,
+        Color.alphaBlend(
+          GalleryPalette.wallpaperLargeDot,
+          IslandTokens.light.canvas,
+        ),
+      ]) {
+        expect(
+          ratio(GalleryPalette.pageDescription, surface),
+          greaterThanOrEqualTo(4.5),
+        );
+      }
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('sidebar group labels are 17px line boxes', (tester) async {
+      await showPath(tester, '/collapse');
+      for (final label in ['── 指南 ──', '── 基础 ──', '── 表单 ──']) {
+        expect(tester.getSize(find.text(label)).height, 17);
+      }
+      // Label line box, its 4px bottom padding, then the item's 1px margin.
+      final label = tester.getRect(find.text('── 基础 ──'));
+      expect(tester.getTopLeft(item('Title 标题')).dy, label.bottom + 4 + 1);
       expect(tester.takeException(), isNull);
     });
 
@@ -456,15 +604,43 @@ void main() {
             .first,
       );
       expect(scroll.padding, const EdgeInsets.all(16));
-      expect(
-        tester.widget<Scaffold>(find.byType(Scaffold)).drawerScrimColor,
-        const Color(0x59000000),
+      Finder scrim() => find.byWidgetPredicate(
+        (w) => w is ColoredBox && w.color == const Color(0x59000000),
       );
+      expect(scrim(), findsNothing);
       await tester.tap(action('打开导航'));
       await tester.pumpAndSettle();
       expect(aside(tester), const Rect.fromLTRB(12, 12, 252, 812 - 8));
+      // The overlay covers the whole viewport, header included.
+      expect(tester.getRect(scrim()), const Rect.fromLTWH(0, 0, 375, 812));
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('mobile drawer appears and leaves at once, as the reference', (
+      tester,
+    ) async {
+      await showPath(tester, '/collapse', width: 375, reduced: false);
+      Finder scrim() => find.byWidgetPredicate(
+        (w) => w is ColoredBox && w.color == const Color(0x59000000),
+      );
+      await tester.tap(action('打开导航'));
+      await tester.pump();
+      // First frame: the full scrim and the aside at its resting place.
+      expect(scrim(), findsOneWidget);
+      expect(aside(tester), const Rect.fromLTRB(12, 12, 252, 812 - 8));
+      await tester.tapAt(const Offset(360, 400));
+      await tester.pump();
+      expect(find.byType(Drawer), findsNothing);
+      expect(scrim(), findsNothing);
+      // Navigating from the drawer closes it with the route change.
+      await tester.tap(action('打开导航'));
+      await tester.pump();
+      await tester.tap(item('Button 按钮'));
+      await tester.pump();
+      expect(find.byType(Drawer), findsNothing);
+      expect(scrim(), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    }, skip: fakeClockOnly);
 
     testWidgets('background wallpaper fades over 0.45s and back', (
       tester,

@@ -131,10 +131,13 @@ class _DividerPainter extends CustomPainter {
           ..color = thin ? DividerColors.hairline : DividerColors.dashedBrown
           ..strokeWidth = thin ? 1 : 2;
         final step = thin ? 6.0 : 12.0;
-        for (double x = 0; x < size.width; x += step) {
+        // Reference `background-position: center`: one tile is centred, so
+        // the dash phase is symmetric and both ends may show partial dashes.
+        final start = ((size.width - step) / 2) % step - step;
+        for (double x = start; x < size.width; x += step) {
           path
             ..moveTo(x, size.height / 2)
-            ..lineTo((x + step / 2).clamp(0, size.width), size.height / 2);
+            ..lineTo(x + step / 2, size.height / 2);
         }
       case IslandDividerVariant.waveYellow:
         paint

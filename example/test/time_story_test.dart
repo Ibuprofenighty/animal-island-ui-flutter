@@ -18,7 +18,7 @@ double contrast(Color a, Color b) {
 // Reference demo `.my-time` (demo/components/Time/index.tsx).
 const _stops = [
   (0.0, Color(0xff0f4c46)),
-  (.55, Color(0xff00766b)),
+  (.55, Color(0xff00756a)),
   (1.0, Color(0xff19c8b9)),
 ];
 

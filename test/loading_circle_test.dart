@@ -1,4 +1,8 @@
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
@@ -196,4 +200,94 @@ void main() {
     expect(h.taps, 1);
     await t.pumpWidget(const SizedBox());
   });
+
+  testWidgets(
+    'sailboat water is the reference 1.9 stroke and scrolls one wave period without a seam',
+    (t) async {
+      final h = _Host(t);
+      await h.mount();
+      await t.pump();
+      final scene = find
+          .ancestor(of: _sailboat.first, matching: find.byType(AspectRatio))
+          .first;
+      // Vertical water coverage and centre per device column across the reference
+      // window (x 9.63..38.37 of 48), in glyph units, below the hull.
+      Future<(List<double>, List<double>)> water() async {
+        final rect = t.getRect(scene);
+        RenderObject node = t.renderObject(scene);
+        while (!node.isRepaintBoundary) {
+          node = node.parent!;
+        }
+        final dpr = t.view.devicePixelRatio;
+        final unit = rect.width / 48 * dpr;
+        // The scene paints into the root view layer, which already carries
+        // the device pixel ratio.
+        final box = node is RenderBox ? node : null;
+        final origin = box == null
+            ? rect.topLeft * dpr
+            : box.globalToLocal(rect.topLeft) * dpr;
+        final image = await t.runAsync(
+          () => (node.debugLayer! as OffsetLayer).toImage(
+            box == null ? node.paintBounds : Offset.zero & box.size,
+            pixelRatio: box == null ? 1 : dpr,
+          ),
+        );
+        final data = (await t.runAsync(
+          () => image!.toByteData(format: ui.ImageByteFormat.rawRgba),
+        ))!;
+        List<int> at(int x, int y) {
+          final p = (y * image!.width + x) * 4;
+          return [data.getUint8(p), data.getUint8(p + 1), data.getUint8(p + 2)];
+        }
+
+        const ink = [0x2a, 0x9d, 0x8f];
+        final thickness = <double>[], centre = <double>[];
+        for (
+          var x = (origin.dx + 10 * unit).ceil();
+          x < origin.dx + 38 * unit;
+          x++
+        ) {
+          final bg = at(x, (origin.dy + 41.4 * unit).round());
+          final span = [for (var c = 0; c < 3; c++) ink[c] - bg[c]];
+          final norm = span.fold<int>(0, (a, v) => a + v * v);
+          var sum = 0.0, moment = 0.0;
+          for (
+            var y = (origin.dy + 41.4 * unit).round();
+            y < origin.dy + 47.5 * unit;
+            y++
+          ) {
+            final px = at(x, y);
+            var dot = 0;
+            for (var c = 0; c < 3; c++) {
+              dot += (px[c] - bg[c]) * span[c];
+            }
+            final weight = (dot / norm).clamp(0.0, 1.0);
+            sum += weight;
+            moment += weight * (y - origin.dy);
+          }
+          thickness.add(sum / unit);
+          centre.add(moment / sum / unit);
+        }
+        return (thickness, centre);
+      }
+
+      final (thickness, start) = await water();
+      final mean = thickness.reduce((a, b) => a + b) / thickness.length;
+      // Thickness: 1.9 across a gently sloped curve reads about 2.0 units;
+      // the glyph's own 2.5 stroke would read about 2.6.
+      expect(mean, closeTo(2.0, .15));
+      // One wave period (9.575 of the 28.74 window per 4s) later, across the
+      // 4s restart too, the water line centre is where it was.
+      for (var k = 1; k <= 3; k++) {
+        await t.pump(const Duration(microseconds: 1332638));
+        final (_, later) = await water();
+        var drift = 0.0;
+        for (var i = 0; i < start.length; i++) {
+          drift = math.max(drift, (later[i] - start[i]).abs());
+        }
+        expect(drift, lessThan(.05), reason: 'period $k');
+      }
+      await t.pumpWidget(const SizedBox());
+    },
+  );
 }

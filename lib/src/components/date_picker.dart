@@ -31,7 +31,7 @@ class IslandDatePicker extends StatefulWidget {
     this.allowClear = false,
     this.size = IslandSize.middle,
     this.status = IslandFieldStatus.normal,
-    this.format = 'YYYY-MM-DD',
+    this.format,
     this.disabledDate,
     this.open,
     this.onOpenChanged,
@@ -55,7 +55,7 @@ class IslandDatePicker extends StatefulWidget {
     this.allowClear = false,
     this.size = IslandSize.middle,
     this.status = IslandFieldStatus.normal,
-    this.format = 'YYYY-MM-DD',
+    this.format,
     this.disabledDate,
     this.open,
     this.onOpenChanged,
@@ -78,7 +78,7 @@ class IslandDatePicker extends StatefulWidget {
     this.allowClear = false,
     this.size = IslandSize.middle,
     this.status = IslandFieldStatus.normal,
-    this.format = 'YYYY-MM-DD',
+    this.format,
     this.disabledDate,
     this.open,
     this.onOpenChanged,
@@ -104,7 +104,7 @@ class IslandDatePicker extends StatefulWidget {
     this.allowClear = false,
     this.size = IslandSize.middle,
     this.status = IslandFieldStatus.normal,
-    this.format = 'YYYY-MM-DD',
+    this.format,
     this.disabledDate,
     this.open,
     this.onOpenChanged,
@@ -129,9 +129,11 @@ class IslandDatePicker extends StatefulWidget {
   final String placeholder, label;
 
   /// Trigger text pattern in core date tokens (`YYYY`, `MM`, `DD`, `M`, `D`,
-  /// `ddd`, `HH`, `mm`, …, English names); `[text]` renders literally. The
-  /// default `YYYY-MM-DD` shows `YYYY-MM` in [IslandDatePickerMode.month].
-  final String format;
+  /// `ddd`, `HH`, `mm`, …, English names); `[text]` renders literally. Null
+  /// uses `YYYY-MM` in [IslandDatePickerMode.month] and `YYYY-MM-DD`
+  /// otherwise; an explicit pattern, `YYYY-MM-DD` included, applies in every
+  /// mode (reference default only when `format` is omitted).
+  final String? format;
   final IslandSize size;
   final IslandFieldStatus status;
   final bool Function(DateTime)? disabledDate;
@@ -163,10 +165,8 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
   bool blocked(DateTime d) => widget.disabledDate?.call(day(d)) ?? false;
   String format(DateTime d) {
     final template =
-        widget.mode == IslandDatePickerMode.month &&
-            widget.format == 'YYYY-MM-DD'
-        ? 'YYYY-MM'
-        : widget.format;
+        widget.format ??
+        (widget.mode == IslandDatePickerMode.month ? 'YYYY-MM' : 'YYYY-MM-DD');
     return formatDateTokens(day(d), template);
   }
 

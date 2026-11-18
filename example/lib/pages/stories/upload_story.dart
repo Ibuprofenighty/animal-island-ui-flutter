@@ -442,7 +442,9 @@ class _UploadProgressDemo extends StatelessWidget {
             color: GalleryPalette.storyInk,
           ),
         ),
-        const StoryLabel('预置文件为固定进度预览；点击上传可体验新文件的模拟进度。'),
+        // The reference paragraph's bottom margin collapses with the first
+        // mode label's top margin.
+        const StoryLabel('预置文件为固定进度预览；点击上传可体验新文件的模拟进度。', spaceAfter: 0),
         for (final (type, label, name) in modes) ...[
           StoryLabel(label),
           ConstrainedBox(
@@ -473,7 +475,7 @@ class _UploadProgressDemo extends StatelessWidget {
             ),
           ),
         ],
-        const StoryCode("""// 背景就是进度区域，不额外显示条形
+        const StoryCode(spaceAfter: 0, """// 背景就是进度区域，不额外显示条形
 IslandUpload.uncontrolled(
   pickFiles: islandPickFiles,
   request: islandSimulatedUpload(),

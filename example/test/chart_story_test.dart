@@ -3,15 +3,25 @@ import 'dart:ui' as ui;
 import 'support/gallery_fonts.dart';
 
 import 'package:animal_island_ui/animal_island_ui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:island_gallery/main.dart';
 import 'package:island_gallery/pages/gallery.dart';
+import 'package:island_gallery/pages/stories/chart/widgets.dart';
 import 'package:island_gallery/shared/catalog.dart';
+import 'package:island_gallery/shared/palette.dart';
+import 'package:island_gallery/shared/story.dart';
 import 'package:island_gallery/shared/theme.dart';
 
 final chartEntries = galleryGroups['图表统计']!;
+
+double contrast(Color a, Color b) {
+  final x = a.computeLuminance(), y = b.computeLuminance();
+  return x > y ? (x + .05) / (y + .05) : (y + .05) / (x + .05);
+}
 
 Future<void> pumpRoute(WidgetTester t, String id, double width) async {
   final size = Size(width, width == 375 ? 812 : 1000);
@@ -153,7 +163,7 @@ void main() {
             4 + 1 + 1 + (boundary ? 1 : 0) + (type == 'mount' ? 2 : 0),
           ),
         );
-        expect(find.text('▶ 查看配置'), findsNWidgets(4));
+        expect(find.text('查看配置'), findsNWidgets(4));
         for (final chart in find.byType(IslandChart).evaluate()) {
           final rect = t.getRect(find.byWidget(chart.widget));
           expect(rect.left, greaterThanOrEqualTo(0), reason: '$width');
@@ -256,8 +266,16 @@ void main() {
   });
 
   testWidgets('查看配置 reveals Dart for the drawn configuration', (t) async {
+    final semantics = t.ensureSemantics();
     await pumpRoute(t, 'chart-column', 1440);
-    final summary = find.text('▶ 查看配置').first;
+    final summary = find.text('查看配置').first;
+    expect(
+      t
+          .getSemantics(find.bySemanticsLabel('查看配置').first)
+          .flagsCollection
+          .isExpanded,
+      ui.Tristate.isFalse,
+    );
     await reveal(t, summary);
     await t.tap(summary);
     await t.pumpAndSettle();
@@ -273,7 +291,200 @@ void main() {
     );
     expect(code, contains('legend: false'));
     expect(code, contains('showLabels: true'));
-    expect(find.text('▼ 查看配置'), findsOneWidget);
+    expect(
+      t
+          .getSemantics(find.bySemanticsLabel('查看配置').first)
+          .flagsCollection
+          .isExpanded,
+      ui.Tristate.isTrue,
+    );
+    // Reference `.code[open] summary { margin-bottom: 8px }` collapsed with
+    // the library CodeBlock `margin: 1em 0` at 12px: 12 above and below.
+    final block = find.byWidgetPredicate(
+      (w) => w is IslandCodeBlock && w.code.contains('彩色单柱 · 果园收成'),
+    );
+    expect(
+      t.widget<IslandCodeBlock>(block).margin,
+      const EdgeInsets.symmetric(vertical: 12),
+    );
+    semantics.dispose();
+  });
+
+  testWidgets('type page blocks collapse their CSS margins as the reference '
+      'does', (t) async {
+    await pumpRoute(t, 'chart-column', 1440);
+    double top(Finder f) => t.getRect(f).top;
+    double bottom(Finder f) => t.getRect(f).bottom;
+    // .note (margin-bottom 20) -> .gallery (margin-top 24): 24.
+    expect(
+      top(find.text('样式与场景')) - bottom(find.textContaining('以下为虚构演示数据。')),
+      moreOrLessEquals(24, epsilon: 0.01),
+    );
+    // Status .note (20) -> label (marginTop 20): 20.
+    expect(
+      top(find.text('边界示例：负值、零值与缺测')) -
+          bottom(find.text('点击图形查看数据；点击图例隐藏或恢复系列。')),
+      moreOrLessEquals(20, epsilon: 0.01),
+    );
+    // Boundary chart -> demo CodeBlock (marginTop 36): 36 above the 使用示例
+    // tab (6px label padding).
+    final tabs = find.text('使用示例');
+    expect(tabs, findsNWidgets(2));
+    expect(
+      top(tabs.first) - 6 - bottom(find.widgetWithText(IslandChart, '盈余与支出')),
+      moreOrLessEquals(36, epsilon: 0.01),
+    );
+    // CodeBlock 1em bottom -> .interaction-demo (margin 32, border 1,
+    // padding-top 24).
+    final blocks = find.descendant(
+      of: find.byType(StoryCode),
+      matching: find.byType(IslandCodeBlock),
+    );
+    expect(
+      top(find.text('新增示例：悬浮对比与锁定读数')) - bottom(blocks.first),
+      moreOrLessEquals(32 + 1 + 24, epsilon: 0.01),
+    );
+    // Interaction CodeBlock (1em) -> section end (32) -> ApiTable (24): 32.
+    expect(
+      top(find.text('API')) - 6 - bottom(blocks.last),
+      moreOrLessEquals(32, epsilon: 0.01),
+    );
+
+    // Without a boundary demo the status note precedes the code block.
+    await pumpRoute(t, 'chart-pie', 1440);
+    expect(
+      top(find.text('使用示例').first) -
+          6 -
+          bottom(find.text('点击图形查看数据；点击图例隐藏或恢复系列。')),
+      moreOrLessEquals(36, epsilon: 0.01),
+    );
+
+    // Mount: the MountCurve gallery (margin-bottom 32) -> the style gallery
+    // (margin-top 24): 32 below its rule, which sits 28px under the actions.
+    await pumpRoute(t, 'chart-mount', 1440);
+    expect(
+      top(find.text('样式与场景')) -
+          bottom(
+            find.ancestor(
+              of: find.text('查看圆润山峰配置'),
+              matching: find.byType(ChartPressable),
+            ),
+          ),
+      moreOrLessEquals(28 + 1 + 32, epsilon: 0.01),
+    );
+    expect(
+      top(find.text('新增示例：圆润山峰')) - bottom(find.textContaining('以下为虚构演示数据。')),
+      moreOrLessEquals(24, epsilon: 0.01),
+    );
+  });
+
+  testWidgets('gallery inks are the reference theme variables, deepened to '
+      '4.5:1 where they fail', (t) async {
+    await pumpRoute(t, 'charts', 1440);
+    Color ink(Finder f) =>
+        (t.renderObject<RenderParagraph>(f).text as TextSpan).style!.color!;
+    const white = GalleryPalette.demoSurface;
+    final body = ink(find.textContaining('从趋势、构成到分布与转化。'));
+    expect(body, GalleryPalette.chartGalleryBody);
+    expect(contrast(body, white), greaterThanOrEqualTo(4.5));
+    final link = ink(find.text('更多柱状图示例'));
+    expect(link, GalleryPalette.chartActionInk);
+    for (final surface in [white, GalleryPalette.chartActionHover]) {
+      expect(contrast(link, surface), greaterThanOrEqualTo(4.5));
+    }
+    // `<details class="animal-code">` takes `--animal-text-color` #794f27.
+    expect(ink(find.text('查看配置').first), GalleryPalette.demoStrongInk);
+    expect(ink(find.text('选择图表类型')), GalleryPalette.demoStrongInk);
+    final card = ink(find.text(chartEntries[1].description));
+    expect(card, GalleryPalette.chartCatalogBody);
+    for (final surface in [
+      IslandTokens.light.paper,
+      GalleryPalette.chartCatalogHover,
+    ]) {
+      expect(contrast(card, surface), greaterThanOrEqualTo(4.5));
+    }
+  });
+
+  for (final width in [1440.0, 375.0]) {
+    testWidgets('catalog rows are all as tall as the tallest at $width', (
+      t,
+    ) async {
+      await pumpRoute(t, 'charts', width);
+      final cards = find.byType(ChartCatalogCard);
+      expect(cards, findsNWidgets(19));
+      final heights = {
+        for (final card in cards.evaluate())
+          t.getSize(find.byWidget(card.widget)).height,
+      };
+      expect(heights, hasLength(1));
+      // At one column the two-line cards set the height of the one-line ones.
+      if (width == 375) expect(heights.single, greaterThan(110));
+    });
+  }
+
+  testWidgets('a line mixing Latin and CJK is as tall as an all-CJK line', (
+    t,
+  ) async {
+    await pumpRoute(t, 'chart-radar', 1440);
+    expect(
+      t.getSize(find.text('将量程设为 0–5，适配同单位的评分数据。')).height,
+      t.getSize(find.text('三个分区共用六个维度，可通过图例单独观察。')).height,
+    );
+    expect(
+      t.getSize(find.textContaining('4 种独立示例')).height,
+      moreOrLessEquals(13 * 1.8, epsilon: 0.5),
+    );
+  });
+
+  testWidgets('a hovered catalog card lifts 2px; a press drops the lift', (
+    t,
+  ) async {
+    var opened = 0;
+    // A desktop host: hover highlights show in the traditional mode.
+    FocusManager.instance.highlightStrategy =
+        FocusHighlightStrategy.alwaysTraditional;
+    addTearDown(
+      () => FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.automatic,
+    );
+    await t.pumpWidget(
+      MaterialApp(
+        theme: galleryTheme(),
+        home: Center(
+          child: SizedBox(
+            width: 300,
+            child: ChartCatalogCard(
+              label: '雷达图',
+              desc: '多维指标对比。',
+              onPressed: () => opened++,
+            ),
+          ),
+        ),
+      ),
+    );
+    final title = find.text('雷达图');
+    final rest = t.getRect(title).top;
+    final pointer = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await pointer.addPointer(location: Offset.zero);
+    addTearDown(pointer.removePointer);
+    await pointer.moveTo(t.getCenter(title));
+    await t.pumpAndSettle();
+    expect(t.getRect(title).top, moreOrLessEquals(rest - 2, epsilon: 0.01));
+    // Reference `a:active { transform: translateY(0) }`.
+    await pointer.down(t.getCenter(title));
+    await t.pumpAndSettle();
+    expect(t.getRect(title).top, moreOrLessEquals(rest, epsilon: 0.01));
+    await pointer.up();
+    await t.pumpAndSettle();
+    expect(opened, 1);
+    expect(t.getRect(title).top, moreOrLessEquals(rest - 2, epsilon: 0.01));
+  });
+
+  testWidgets('a map region without data reads 星沙岛：暂无数据', (t) async {
+    final semantics = t.ensureSemantics();
+    await pumpRoute(t, 'chart-map', 1440);
+    expect(find.bySemanticsLabel('星沙岛：暂无数据'), findsWidgets);
+    semantics.dispose();
   });
 
   testWidgets('catalog cards and showcase links open their type page', (
@@ -299,7 +510,25 @@ void main() {
     await push('/charts');
     final card = find.bySemanticsLabel(RegExp('^雷达图 '));
     await reveal(t, card);
+
     await t.tap(card);
+    await t.pumpAndSettle();
+    expect(find.text('雷达图 · 海岛统计'), findsOneWidget);
+
+    // Keyboard: Space on a focused link does not follow it; Enter does.
+    await push('/charts');
+    final keyCard = find.bySemanticsLabel(RegExp('^雷达图 '));
+    await reveal(t, keyCard);
+    Focus.of(
+      t.element(
+        find.descendant(of: keyCard, matching: find.byType(ExcludeSemantics)),
+      ),
+    ).requestFocus();
+    await t.pumpAndSettle();
+    await t.sendKeyEvent(LogicalKeyboardKey.space);
+    await t.pumpAndSettle();
+    expect(find.text('雷达图 · 海岛统计'), findsNothing);
+    await t.sendKeyEvent(LogicalKeyboardKey.enter);
     await t.pumpAndSettle();
     expect(find.text('雷达图 · 海岛统计'), findsOneWidget);
 

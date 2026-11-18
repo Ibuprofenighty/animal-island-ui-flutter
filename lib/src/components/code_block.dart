@@ -88,7 +88,9 @@ class IslandCodeBlock extends StatefulWidget {
   final ValueChanged<Object>? onCopyError;
   final IslandCodeBlockStyle? style;
 
-  /// Explicit content padding; null retains the default copy-action reserve.
+  /// Explicit content padding inside the horizontal scroll region, as the
+  /// reference `<pre>` padding; null retains the default copy-action reserve
+  /// at the scroll end, so code at rest runs under the copy button.
   final EdgeInsetsGeometry? padding;
   final BorderRadius? borderRadius;
 
@@ -165,31 +167,32 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
       ),
       child: Stack(
         children: [
-          Padding(
-            padding:
-                widget.padding ??
-                EdgeInsets.fromLTRB(24, 20, widget.copyable ? 96 : 24, 20),
-            child: SizedBox(
-              width: double.infinity,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SelectableText.rich(
-                  _highlight(widget.code, widget.language, roles.syntax),
-                  style:
-                      TextStyle(
-                            fontFamily: IslandTheme.codeFontFamily,
-                            fontFamilyFallback: DefaultTextStyle.of(context)
-                                .style
-                                .fontFamilyFallback,
-                            letterSpacing: 0,
-                            fontSize: 14,
-                            height: 1.7,
-                            fontWeight: FontWeight.w600,
-                          )
-                          .merge(themed?.textStyle)
-                          .merge(local?.textStyle)
-                          .copyWith(color: roles.foreground),
-                ),
+          // Reference `<pre>` padding sits inside its `overflow: auto` box:
+          // at rest the code runs under the copy button to the block edge,
+          // and the copy reserve only shows at the end of the scroll.
+          SizedBox(
+            width: double.infinity,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding:
+                  widget.padding ??
+                  EdgeInsets.fromLTRB(24, 20, widget.copyable ? 96 : 24, 20),
+              child: SelectableText.rich(
+                _highlight(widget.code, widget.language, roles.syntax),
+                style:
+                    TextStyle(
+                          fontFamily: IslandTheme.codeFontFamily,
+                          fontFamilyFallback: DefaultTextStyle.of(context)
+                              .style
+                              .fontFamilyFallback,
+                          letterSpacing: 0,
+                          fontSize: 14,
+                          height: 1.7,
+                          fontWeight: FontWeight.w600,
+                        )
+                        .merge(themed?.textStyle)
+                        .merge(local?.textStyle)
+                        .copyWith(color: roles.foreground),
               ),
             ),
           ),

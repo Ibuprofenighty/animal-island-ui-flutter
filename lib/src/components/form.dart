@@ -177,9 +177,11 @@ class IslandFormItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Reference `.island-form-item-control-input`: a flex row of at
+        // least 32px whose child fills the width and is vertically centred.
         ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 32),
-          child: child,
+          child: Row(children: [Expanded(child: child)]),
         ),
         if (error != null || help != null)
           Padding(

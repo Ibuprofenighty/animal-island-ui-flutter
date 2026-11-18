@@ -484,10 +484,16 @@ class _Scene {
     this.background = const [],
     this.marks = const [],
     this.layers = const [],
+    this.emptyRegions = const [],
     this.plot,
     this.polarPlot,
   });
   final List<_Shape> background;
+
+  /// Map regions without data, by outline and name: the reference wraps each
+  /// in a `<g>` with `<title>{name}：暂无数据</title>` (hover text and
+  /// accessible name).
+  final List<(Path, String)> emptyRegions;
   final List<_Mark> marks;
   final List<_Layer> layers;
   final _Plot? plot;

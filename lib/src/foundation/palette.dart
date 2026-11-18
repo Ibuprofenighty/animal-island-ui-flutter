@@ -262,4 +262,15 @@ abstract final class Primitive {
   static const red945 = Color(0xffffe7de);
   static const red948 = Color(0xfffde8e8);
   static const red961 = Color(0xfffdeeee);
+  // Upload row/card actions and Progress track boundary (parity 4.0.0).
+  static const neutral0A45 = Color(0x73000000);
+  static const neutral0A65 = Color(0xa6000000);
+  static const teal533 = Color(0xff007e72);
+  static const red567 = Color(0xffc64245);
+  static const sand651 = Color(0xff9a8e77);
+  // Loading sailboat water line (reference Sailboat.tsx #2A9D8F).
+  static const teal630 = Color(0xff2a9d8f);
+  // Drawer close glyph: reference rgba(114, 93, 66, .6) on #f7f3df deepened
+  // in hue to 3:1.
+  static const sand642 = Color(0xff988b73);
 }

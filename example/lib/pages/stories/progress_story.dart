@@ -324,6 +324,7 @@ class _ProgressAppearanceDemoState extends State<_ProgressAppearanceDemo> {
           ),
         ]),
         const StoryCode(
+          spaceAfter: 0,
           "IslandProgress(\n"
           "  percent: 45,\n"
           "  color: IslandColorway.teal.accent,\n"

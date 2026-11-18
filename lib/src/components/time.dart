@@ -191,6 +191,40 @@ class _IslandTimeState extends State<IslandTime>
       padding: style?.padding,
       capsuleFontSize: style?.capsuleFontSize,
     );
+    final gameDateStyle = TextStyle(
+      color: roles.date,
+      fontSize: 22,
+      fontWeight: FontWeight.w800,
+      letterSpacing: 2,
+    );
+    final gameWeekdayStyle = TextStyle(
+      color: roles.weekday,
+      fontSize: roles.capsuleFontSize,
+      fontWeight: FontWeight.w900,
+      height: 1,
+      letterSpacing: 0,
+    );
+    const gameWeekdayPadding = EdgeInsets.fromLTRB(16, 7, 16, 5);
+    // CSS flex-shrink: an overflowing row shrinks each item in proportion to
+    // its natural width; Flexible shares the row the same way when weighted
+    // by that width, and leaves fitting items at their natural width.
+    int shrinkWeight(String text, TextStyle textStyle, {double padding = 0}) {
+      final painter = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: DefaultTextStyle.of(context).style
+              .merge(TextStyle(fontFamily: style?.fontFamily))
+              .merge(textStyle),
+        ),
+        textDirection: Directionality.of(context),
+        textScaler: MediaQuery.textScalerOf(context),
+        locale: Localizations.maybeLocaleOf(context),
+      )..layout();
+      final width = painter.width + padding;
+      painter.dispose();
+      return (width * 10).round().clamp(1, 1 << 20);
+    }
+
     Widget clockRow({
       required double fontSize,
       required double letterSpacing,
@@ -246,37 +280,29 @@ class _IslandTimeState extends State<IslandTime>
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Reference flex item: under a narrow parent the
-                    // month-day wraps; the capsule keeps its width.
+                    // Reference flex items: under a narrow parent both
+                    // shrink in proportion to their natural widths, so the
+                    // month-day and the capsule text wrap (星期 / 二).
                     Flexible(
-                      child: Text(
-                        date,
-                        style: TextStyle(
-                          color: roles.date,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 2,
-                        ),
-                      ),
+                      flex: shrinkWeight(date, gameDateStyle),
+                      child: Text(date, style: gameDateStyle),
                     ),
                     const SizedBox(width: 20),
-                    Container(
-                      // 7 + 15 + 5 = 27px; the extra top pixel lands
-                      // CJK ink on the optical centre.
-                      padding: const EdgeInsets.fromLTRB(16, 7, 16, 5),
-                      decoration: BoxDecoration(
-                        color: roles.capsule,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
+                    Flexible(
+                      flex: shrinkWeight(
                         weekday,
-                        style: TextStyle(
-                          color: roles.weekday,
-                          fontSize: roles.capsuleFontSize,
-                          fontWeight: FontWeight.w900,
-                          height: 1,
-                          letterSpacing: 0,
+                        gameWeekdayStyle,
+                        padding: gameWeekdayPadding.horizontal,
+                      ),
+                      child: Container(
+                        // 7 + 15 + 5 = 27px; the extra top pixel lands
+                        // CJK ink on the optical centre.
+                        padding: gameWeekdayPadding,
+                        decoration: BoxDecoration(
+                          color: roles.capsule,
+                          borderRadius: BorderRadius.circular(999),
                         ),
+                        child: Text(weekday, style: gameWeekdayStyle),
                       ),
                     ),
                   ],
@@ -306,7 +332,9 @@ class _IslandTimeState extends State<IslandTime>
                 child: DefaultTextStyle.merge(
                   style: TextStyle(
                     fontSize: roles.capsuleFontSize,
-                    height: 1.5,
+                    // Reference `line-height: normal`: the fonts' own
+                    // metrics (24px capsule for Latin text at 12px).
+                    height: kTextHeightNone,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0,
                     color: roles.date,

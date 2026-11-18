@@ -24,14 +24,17 @@ class CursorStory extends StatelessWidget {
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: const RoundedRectangleBorder(),
-            side: const BorderSide(
-              color: GalleryPalette.nativeControlBorder,
-              width: 2,
+            // Chrome UA buttons paint a 1px border; disabled ones use the
+            // pale UA composites measured on the demo box.
+            side: BorderSide(
+              color: enabled
+                  ? GalleryPalette.nativeControlBorder
+                  : GalleryPalette.nativeDisabledBorder,
             ),
             backgroundColor: GalleryPalette.nativeControlFill,
-            disabledBackgroundColor: GalleryPalette.nativeControlFill,
-            foregroundColor: IslandTokens.light.ink,
-            disabledForegroundColor: IslandTokens.light.muted,
+            disabledBackgroundColor: GalleryPalette.nativeDisabledFill,
+            foregroundColor: GalleryPalette.nativeButtonText,
+            disabledForegroundColor: GalleryPalette.nativeDisabledText,
             // Bundled metric-compatible Arimo stands in for the UA Arial.
             // It must be the primary family: an unbundled 'Arial' resolves to
             // the host default face before any fallback (test-font boxes in
@@ -89,12 +92,20 @@ class CursorStory extends StatelessWidget {
   }
 
   // Reference section root is a `demo-raindrop-zone`: the panel shows the
-  // raindrop cursor; each preview IslandCursor keeps its own cursor.
+  // raindrop cursor; each preview IslandCursor keeps its own cursor. The zone
+  // only changes `cursor:`, so the page's selection style continues inside
+  // it; only the raindrop preview box resets selection, as `.animal-cursor`.
   @override
-  Widget build(BuildContext context) => IslandCursor(
-    variant: IslandCursorVariant.raindrop,
-    child: panel(context),
-  );
+  Widget build(BuildContext context) {
+    final page = DefaultSelectionStyle.of(context);
+    return IslandCursor(
+      variant: IslandCursorVariant.raindrop,
+      child: DefaultSelectionStyle.merge(
+        selectionColor: page.selectionColor,
+        child: panel(context),
+      ),
+    );
+  }
 
   Widget panel(BuildContext context) => StoryPanel(
     title: 'Cursor',
@@ -201,14 +212,12 @@ class CursorStory extends StatelessWidget {
                           borderRadius: BorderRadius.zero,
                           borderSide: BorderSide(
                             color: GalleryPalette.nativeControlBorder,
-                            width: 2,
                           ),
                         ),
                         enabledBorder: const OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
                           borderSide: BorderSide(
                             color: GalleryPalette.nativeControlBorder,
-                            width: 2,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(

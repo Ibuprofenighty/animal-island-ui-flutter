@@ -73,10 +73,12 @@ class _NoDataStoryState extends State<NoDataStory> {
           const SizedBox(height: 12),
           Semantics(
             liveRegion: true,
+            // Reference status line and list inherit the page's 16px.
             child: Text(
               islands.isNotEmpty
                   ? '找到 ${islands.length} 个岛屿'
                   : '没有找到“$query”相关的岛屿',
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           if (islands.isNotEmpty)
@@ -88,7 +90,10 @@ class _NoDataStoryState extends State<NoDataStory> {
                 padding: const EdgeInsetsDirectional.fromSTEB(40, 16, 0, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [for (final name in islands) Text('•  $name')],
+                  children: [
+                    for (final name in islands)
+                      Text('•  $name', style: const TextStyle(fontSize: 16)),
+                  ],
                 ),
               ),
             )

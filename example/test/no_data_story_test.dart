@@ -110,10 +110,21 @@ void main() {
     t,
   ) async {
     await pumpStory(t, 1440);
+    double fontSize(String text) => t
+        .widget<RichText>(
+          find.descendant(of: find.text(text), matching: find.byType(RichText)),
+        )
+        .text
+        .style!
+        .fontSize!;
+    // Reference status line and `<li>` items inherit the page's 16px.
+    expect(fontSize('没有找到“星星”相关的岛屿'), 16);
     await tapText(t, '清除搜索');
     expect(find.text('找到 3 个岛屿'), findsOneWidget);
+    expect(fontSize('找到 3 个岛屿'), 16);
     for (final name in ['薄荷岛', '蜜桃岛', '珊瑚岛']) {
       expect(find.text('•  $name'), findsOneWidget);
+      expect(fontSize('•  $name'), 16);
     }
     expect(find.text('清除搜索'), findsNothing);
     await t.enterText(
@@ -141,6 +152,16 @@ void main() {
   ) async {
     await pumpStory(t, 1440);
     expect(find.text('写下今天的第一件小事。'), findsOneWidget);
+    // Reference Table keeps its 48px empty icon above custom emptyText.
+    final table = find.byType(IslandTable<String>);
+    final noData = find.descendant(
+      of: table,
+      matching: find.byType(IslandNoData),
+    );
+    expect(
+      t.getTopLeft(noData).dy - t.getTopLeft(table).dy,
+      greaterThan(48 + 16 + 60),
+    );
     await tapText(t, '新建手账');
     expect(find.text('第一篇海岛手账'), findsOneWidget);
     expect(find.text('写下今天的第一件小事。'), findsNothing);

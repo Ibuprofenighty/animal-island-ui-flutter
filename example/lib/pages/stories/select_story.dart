@@ -185,7 +185,7 @@ class _SelectStoryState extends State<SelectStory> {
         trailingSpace: false,
       ),
       const StoryCode(
-        "IslandSelect<String>(\n  options: options,\n  value: value,\n  onChanged: (v) => setState(() => value = v),\n  allowClear: true,\n  showSearch: true,\n)\n// 弹出方式：dropdown 常规正下方（默认）/ game 贴触发区侧边\nIslandSelect<String>(\n  options: options,\n  value: value,\n  onChanged: (v) => setState(() => value = v),\n  variant: IslandSelectVariant.game,\n)",
+        "IslandSelect<String>(\n  options: options,\n  value: value,\n  onChanged: (v) => setState(() => value = v),\n  allowClear: true,\n  showSearch: true,\n)\n// 弹出方式：normal 常规正下方（默认）/ game 贴触发区侧边\nIslandSelect<String>(\n  options: options,\n  value: value,\n  onChanged: (v) => setState(() => value = v),\n  variant: IslandSelectVariant.game,\n)",
       ),
       const StoryApi(
         rows: [

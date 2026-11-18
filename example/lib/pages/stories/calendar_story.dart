@@ -98,7 +98,7 @@ class _CalendarStoryState extends State<CalendarStory> {
         ),
       ),
       const StoryLabel(
-        '拖拽跨日期创建事项（onCreateEvent）',
+        '拖拽跨日期创建事项（draggableEvents）',
         strutStyle: storyCaptionStrut,
       ),
       status(
@@ -157,6 +157,7 @@ class _CalendarStoryState extends State<CalendarStory> {
       const StoryApi(
         title: 'Calendar API',
         rows: [
+          ('width', '面板宽度，默认铺满父容器（数值按 px 处理）', 'double?', 'null'),
           (
             'value / initialValue',
             '选中日期（受控 / uncontrolled 构造器的初始值）',

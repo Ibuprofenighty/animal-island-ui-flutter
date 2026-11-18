@@ -91,9 +91,27 @@ class StoryPanel extends StatelessWidget {
             );
           },
         ),
-      ...children,
+      ..._collapseMargins(children),
     ],
   );
+
+  /// CSS margin collapsing between adjacent blocks of the panel body: a code
+  /// block's trailing 16px margin and the next block's leading margin give
+  /// the larger of the two, not their sum (24 before an API table, 16 before
+  /// a section title without a margin, 16 inside the panel padding when the
+  /// code block is last).
+  static List<Widget> _collapseMargins(List<Widget> blocks) => [
+    for (final (index, block) in blocks.indexed)
+      if (block is StoryCode && index + 1 < blocks.length)
+        switch (blocks[index + 1]) {
+          StoryApi() => block._withSpaceAfter(StoryApi.spaceBefore),
+          StoryLabel(:final spaceBefore) ||
+          StoryCode(:final spaceBefore) => block._withSpaceAfter(spaceBefore),
+          _ => block,
+        }
+      else
+        block,
+  ];
 }
 
 const storyCaptionStrut = StrutStyle(
@@ -421,12 +439,28 @@ class StoryCode extends StatelessWidget {
     super.key,
     this.label = '使用示例',
     this.spaceBefore = 36,
+    this.spaceAfter = 16,
   });
   final double spaceBefore;
+
+  /// Reference CodeBlock `.wrapper` bottom margin (`1em`). Inside one
+  /// [StoryPanel] it collapses with the next block's leading margin; pass 0
+  /// where the reference margin collapses through a parent into a following
+  /// API table.
+  final double spaceAfter;
   final String code, label;
+
+  StoryCode _withSpaceAfter(double following) => StoryCode(
+    code,
+    key: key,
+    label: label,
+    spaceBefore: spaceBefore,
+    spaceAfter: math.max(0, spaceAfter - following),
+  );
+
   @override
   Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.only(top: spaceBefore),
+    padding: EdgeInsets.only(top: spaceBefore, bottom: spaceAfter),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -457,6 +491,9 @@ class StoryApi extends StatelessWidget {
 
   /// Code-tab label above the table, e.g. `Form API`.
   final String title;
+
+  /// Reference `ApiTable` `marginTop`.
+  static const double spaceBefore = 24;
   static const _headings = ['属性', '说明', '类型', '默认值'];
   static final _minContentToken = RegExp(r'[⺀-鿿豈-﫿＀-￯]|[^\s⺀-鿿豈-﫿＀-￯]+');
 
@@ -507,7 +544,7 @@ class StoryApi extends StatelessWidget {
   Widget build(BuildContext context) {
     final mins = _minWidths(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.only(top: spaceBefore),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -557,7 +594,7 @@ class StoryApi extends StatelessWidget {
                         for (final row in rows)
                           TableRow(
                             children: [
-                              _cell(row.$1, color: GalleryPalette.apiTableName),
+                              _propCell(row.$1),
                               _cell(row.$2),
                               _cell(row.$3, color: GalleryPalette.apiTableType),
                               _cell(
@@ -583,6 +620,35 @@ class StoryApi extends StatelessWidget {
     height: 1.5,
     fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
   );
+
+  /// Reference prop cell: the name in its colour, then each required mark
+  /// as a separate `*` in [GalleryPalette.apiTableRequired], 4px after it.
+  Widget _propCell(String prop) {
+    final parts = prop.split(' *');
+    if (parts.length == 1) {
+      return _cell(prop, color: GalleryPalette.apiTableName);
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      child: Text.rich(
+        TextSpan(
+          children: [
+            for (final (index, part) in parts.indexed) ...[
+              if (index > 0) ...[
+                const WidgetSpan(child: SizedBox(width: 4)),
+                const TextSpan(
+                  text: '*',
+                  style: TextStyle(color: GalleryPalette.apiTableRequired),
+                ),
+              ],
+              if (part.isNotEmpty) TextSpan(text: part),
+            ],
+          ],
+        ),
+        style: _cellStyle(false).copyWith(color: GalleryPalette.apiTableName),
+      ),
+    );
+  }
 
   Widget _cell(
     String text, {

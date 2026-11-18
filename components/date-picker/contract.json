@@ -50,7 +50,7 @@
       "id": "date-picker.format",
       "given": "A format pattern in reference 4.0.0 core date tokens",
       "when": "The trigger shows a committed, pending or range value",
-      "then": "YYYY/YY/M/MM/MMM/MMMM/D/DD/d/dd/ddd/dddd/H/HH/h/hh/a/A/m/mm/s/ss/SSS/Z/ZZ expand with English names on the local-midnight date (e.g. 'ddd, YYYY/MM/DD HH:mm' shows 'Mon, 2026/08/10 00:00'); [text] renders literally; plugin tokens such as Q stay literal. The default YYYY-MM-DD shows YYYY-MM in month mode."
+      "then": "YYYY/YY/M/MM/MMM/MMMM/D/DD/d/dd/ddd/dddd/H/HH/h/hh/a/A/m/mm/s/ss/SSS/Z/ZZ expand with English names on the local-midnight date (e.g. 'ddd, YYYY/MM/DD HH:mm' shows 'Mon, 2026/08/10 00:00'); [text] renders literally; plugin tokens such as Q stay literal. An omitted format (null) shows YYYY-MM in month mode and YYYY-MM-DD otherwise; an explicit format, YYYY-MM-DD included, applies in every mode (reference default `picker === 'month' ? 'YYYY-MM' : 'YYYY-MM-DD'` applies only when format is omitted)."
     },
     {
       "id": "date-picker.focus-exit",

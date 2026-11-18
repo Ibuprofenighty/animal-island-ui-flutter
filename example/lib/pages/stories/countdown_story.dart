@@ -23,10 +23,119 @@ class _CountdownStoryState extends State<CountdownStory> {
     super.dispose();
   }
 
+  /// Reference demo `textStyle`: 13px at the page's weight 400; its
+  /// `#8a7b66` takes the muted role, as the other demo text.
+  Widget demoText(String text, {double top = 0, double bottom = 0}) => Padding(
+    padding: EdgeInsets.only(top: top, bottom: bottom),
+    child: Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w400,
+        height: kTextHeightNone,
+        color: IslandTokens.light.muted,
+      ),
+    ),
+  );
+
   Widget captioned(Widget countdown, String caption) => Column(
     mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [countdown, StoryLabel(caption, spaceBefore: 6, spaceAfter: 0)],
+    children: [countdown, demoText(caption, top: 6)],
+  );
+
+  /// Reference `CountdownReminderDemo`: one `<section aria-label>` with each
+  /// countdown named by its own label.
+  Widget reminderDemo() => Semantics(
+    container: true,
+    explicitChildNodes: true,
+    label: '倒计时颜色提醒演示',
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const StoryLabel('颜色提醒'),
+        demoText('剩余 60 秒转橙、10 秒转红；最后 5 秒数字轻抖。', bottom: 20),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            for (final seconds in const [60, 10, 5])
+              IslandButton(
+                size: IslandSize.small,
+                onPressed: () => setState(
+                  () => reminderDeadline = DateTime.now().add(
+                    Duration(seconds: seconds),
+                  ),
+                ),
+                child: Text('重置为 $seconds 秒'),
+              ),
+            IslandButton(
+              size: IslandSize.small,
+              onPressed: () =>
+                  setState(() => reminderDeadline = DateTime.now()),
+              child: const Text('归零'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 32),
+        Wrap(
+          spacing: 40,
+          runSpacing: 40,
+          children: [
+            captioned(
+              IslandCountdown(
+                value: reminderDeadline,
+                format: 'mm:ss',
+                reminders: IslandCountdownReminder.defaults,
+                bordered: true,
+                semanticLabel: '默认提醒倒计时',
+              ),
+              '默认提醒：60 秒橙 / 10 秒红',
+            ),
+            captioned(
+              IslandCountdown(
+                value: reminderDeadline,
+                format: 'mm:ss',
+                semanticLabel: '无提醒倒计时',
+              ),
+              '关闭提醒：保留原配色',
+            ),
+            captioned(
+              IslandCountdown(
+                value: reminderDeadline,
+                format: 'mm:ss',
+                variant: IslandCountdownVariant.island,
+                reminders: const [
+                  IslandCountdownReminder(
+                    threshold: Duration(seconds: 5),
+                    color: GalleryPalette.countdownReminderBerry,
+                  ),
+                  IslandCountdownReminder(
+                    threshold: Duration(seconds: 20),
+                    color: GalleryPalette.countdownReminderBrown,
+                  ),
+                ],
+                bordered: true,
+                semanticLabel: '自定义提醒倒计时',
+              ),
+              '自定义提醒：20 秒暖棕 / 5 秒莓红',
+            ),
+            captioned(
+              IslandCountdown(
+                value: reminderDeadline,
+                format: 'mm:ss',
+                variant: IslandCountdownVariant.island,
+                reminders: IslandCountdownReminder.defaults,
+                shake: const IslandCountdownShake(),
+                bordered: true,
+                semanticLabel: '抖动提醒倒计时',
+              ),
+              '抖动提醒：最后 5 秒轻抖',
+            ),
+          ],
+        ),
+      ],
+    ),
   );
 
   @override
@@ -95,79 +204,7 @@ class _CountdownStoryState extends State<CountdownStory> {
           }),
         ),
       ),
-      const StoryLabel('颜色提醒'),
-      const StoryLabel('剩余 60 秒转橙、10 秒转红；最后 5 秒数字轻抖。', spaceBefore: 0),
-      Wrap(
-        spacing: 12,
-        runSpacing: 12,
-        children: [
-          for (final seconds in const [60, 10, 5])
-            IslandButton(
-              size: IslandSize.small,
-              onPressed: () => setState(
-                () => reminderDeadline = DateTime.now().add(
-                  Duration(seconds: seconds),
-                ),
-              ),
-              child: Text('重置为 $seconds 秒'),
-            ),
-          IslandButton(
-            size: IslandSize.small,
-            onPressed: () => setState(() => reminderDeadline = DateTime.now()),
-            child: const Text('归零'),
-          ),
-        ],
-      ),
-      const SizedBox(height: 32),
-      Wrap(
-        spacing: 40,
-        runSpacing: 40,
-        children: [
-          captioned(
-            IslandCountdown(
-              value: reminderDeadline,
-              format: 'mm:ss',
-              reminders: IslandCountdownReminder.defaults,
-              bordered: true,
-            ),
-            '默认提醒：60 秒橙 / 10 秒红',
-          ),
-          captioned(
-            IslandCountdown(value: reminderDeadline, format: 'mm:ss'),
-            '关闭提醒：保留原配色',
-          ),
-          captioned(
-            IslandCountdown(
-              value: reminderDeadline,
-              format: 'mm:ss',
-              variant: IslandCountdownVariant.island,
-              reminders: const [
-                IslandCountdownReminder(
-                  threshold: Duration(seconds: 5),
-                  color: GalleryPalette.countdownReminderBerry,
-                ),
-                IslandCountdownReminder(
-                  threshold: Duration(seconds: 20),
-                  color: GalleryPalette.countdownReminderBrown,
-                ),
-              ],
-              bordered: true,
-            ),
-            '自定义提醒：20 秒暖棕 / 5 秒莓红',
-          ),
-          captioned(
-            IslandCountdown(
-              value: reminderDeadline,
-              format: 'mm:ss',
-              variant: IslandCountdownVariant.island,
-              reminders: IslandCountdownReminder.defaults,
-              shake: const IslandCountdownShake(),
-              bordered: true,
-            ),
-            '抖动提醒：最后 5 秒轻抖',
-          ),
-        ],
-      ),
+      reminderDemo(),
       const StoryLabel('尺寸', strutStyle: storyCaptionStrut),
       storyRow(align: WrapCrossAlignment.center, spacing: 14, runSpacing: 14, [
         for (final size in IslandSize.values)

@@ -45,4 +45,28 @@ abstract final class UploadColors {
   /// unfilled surface; the edge is 3:1 on the row, its hover tint and the
   /// card mask over any thumbnail pixel.
   static const backgroundFillEdge = Primitive.teal581;
+
+  /// Row preview/remove buttons: transparent at rest; hover adds the
+  /// reference rgba(0,0,0,.08) and tints the icon. The reference teal
+  /// #19c8b9 and red #e05a5a icons (1.3-3.0:1 over the hovered row, the
+  /// error row and the background fill) deepen in their own hue to 3:1.
+  static const actionHover = Primitive.neutral0A8;
+  static const previewHoverIcon = Primitive.teal533;
+  static const removeHoverIcon = Primitive.red567;
+
+  /// Picture-card overlay buttons: the reference preview disc
+  /// rgba(0,0,0,.45) (.65 on hover) under a white icon, 3.4:1 or more over
+  /// any thumbnail pixel. The reference remove icon is white on a
+  /// transparent ground (1:1 over a white pixel), so it takes the same disc.
+  static const cardAction = Primitive.neutral0A45;
+  static const cardActionHover = Primitive.neutral0A65;
+  static const cardActionIcon = Primitive.neutral1000;
+
+  /// Failed card mark: reference CloseIcon 22 in #e05a5a (3.6:1 on the
+  /// status backing).
+  static const cardErrorIcon = Primitive.red641;
+
+  /// Finished card border (reference `.cardDone` #c4b89e, decorative like
+  /// the rest [border]).
+  static const doneBorder = Primitive.sand786;
 }

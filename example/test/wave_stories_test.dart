@@ -133,6 +133,16 @@ void main() {
         find.descendant(of: uploads, matching: find.byType(IslandProgress)),
         findsNWidgets(3),
       );
+      // The demo files have no size, so the rows show none (reference).
+      expect(
+        find.descendant(of: uploads, matching: find.text('0 B')),
+        findsNothing,
+      );
+      // The paragraph's 20px bottom margin collapses with the first mode
+      // label's 20px top margin.
+      final note = t.getRect(find.textContaining('预置文件为固定进度预览'));
+      final mode = t.getRect(find.textContaining('背景进度：'));
+      expect(mode.top - note.bottom, 20);
       expect(t.takeException(), isNull);
     });
   }

@@ -11,7 +11,8 @@ import '../shared/reference_source_link.dart';
 
 /// Reference Home wallpaper text colours (demo/HomePage.tsx). Text over the
 /// Home wallpaper is the reference-priority contrast exception in
-/// docs/DESIGN.md#home-host-and-photo-gradient; card text keeps product roles.
+/// docs/DESIGN.md#home-host-and-photo-gradient. Card text uses the reference
+/// values, which pass on the card paper (GalleryPalette.homeCardTitle/Body).
 abstract final class HomeWallpaperInk {
   /// Hero title and scroll hint (`#FFF9E6`).
   static const cream = GalleryPalette.homeCream;
@@ -558,19 +559,26 @@ class _GalleryHomeState extends State<GalleryHome>
                                 height: 20 / 15,
                                 forceStrutHeight: true,
                               ),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
-                                color: IslandTokens.light.onCanvas,
+                                color: GalleryPalette.homeCardTitle,
                               ),
                             ),
                             const SizedBox(height: 4),
+                            // Reference `.compDesc` `line-height: 1.5`: a
+                            // fixed 18px line box for mixed Latin/CJK runs.
                             Text(
                               summary,
-                              style: TextStyle(
+                              strutStyle: const StrutStyle(
                                 fontSize: 12,
                                 height: 1.5,
-                                color: IslandTokens.light.onCanvas,
+                                forceStrutHeight: true,
+                              ),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                height: 1.5,
+                                color: GalleryPalette.homeCardBody,
                               ),
                             ),
                           ],
@@ -805,18 +813,18 @@ class _FeatureState extends State<_Feature>
                 height: 22 / 15,
                 forceStrutHeight: true,
               ),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
-                color: IslandTokens.light.onCanvas,
+                color: GalleryPalette.homeCardTitle,
               ),
             ),
             const SizedBox(height: 6),
             DefaultTextStyle.merge(
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 13,
                 height: 1.6,
-                color: IslandTokens.light.onCanvas,
+                color: GalleryPalette.homeCardBody,
               ),
               child: StoryText(
                 widget.description,

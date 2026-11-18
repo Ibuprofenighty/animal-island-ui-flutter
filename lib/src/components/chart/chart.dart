@@ -13,6 +13,7 @@ import '../../internal/action_surface.dart';
 import '../../internal/focus_outline.dart';
 import '../actions.dart';
 import '../no_data.dart';
+import '../tooltip.dart';
 
 part 'cartesian.dart';
 part 'geometry.dart';
@@ -762,6 +763,17 @@ class _IslandChartState extends State<IslandChart>
       child: Stack(
         children: [
           canvas,
+          for (final (path, name) in scene.emptyRegions)
+            if (path.getBounds() case final bounds)
+              Positioned.fromRect(
+                rect: bounds,
+                child: _EmptyRegion(
+                  outline: path.shift(-bounds.topLeft),
+                  label: strings.chartRegionNoData(name),
+                  // Empty plot space, as on the reference SVG background.
+                  onTap: () => setState(_clearActive),
+                ),
+              ),
           for (var i = 0; i < marks.length; i++)
             Positioned.fromRect(
               rect: marks[i].bounds,
@@ -800,35 +812,54 @@ class _IslandChartState extends State<IslandChart>
           : Stack(
               children: [
                 Positioned.fill(
-                  child: SingleChildScrollView(
+                  // Reference `.viewport`: `overflow: auto` with a thin
+                  // scrollbar over a transparent track, shown only while
+                  // the 280px minimum plot overflows a narrower parent.
+                  child: RawScrollbar(
                     controller: _scroll,
-                    scrollDirection: Axis.horizontal,
-                    child: SizedBox(
-                      width: width,
-                      height: chartHeight,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          FadeTransition(opacity: _fadeCurve, child: plotGroup),
-                          if (tooltipVisible)
-                            Positioned.fill(
-                              child: CustomSingleChildLayout(
-                                delegate: _TooltipLayout(
-                                  anchor: Offset(active.x, active.y),
-                                  height: chartHeight,
-                                  viewportWidth: viewportWidth,
-                                  scrollLeft: _scroll.hasClients
-                                      ? _scroll.offset
-                                      : 0,
-                                ),
-                                child: _TooltipPanel(
-                                  colors: colors,
-                                  locked: selected != null,
-                                  child: tooltipContent,
-                                ),
+                    thumbVisibility: true,
+                    thickness: 4,
+                    radius: Radius.zero,
+                    crossAxisMargin: 0,
+                    mainAxisMargin: 0,
+                    thumbColor: colors.scrollbar,
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context)
+                          .copyWith(scrollbars: false),
+                      child: SingleChildScrollView(
+                        controller: _scroll,
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: width,
+                          height: chartHeight,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              FadeTransition(
+                                opacity: _fadeCurve,
+                                child: plotGroup,
                               ),
-                            ),
-                        ],
+                              if (tooltipVisible)
+                                Positioned.fill(
+                                  child: CustomSingleChildLayout(
+                                    delegate: _TooltipLayout(
+                                      anchor: Offset(active.x, active.y),
+                                      height: chartHeight,
+                                      viewportWidth: viewportWidth,
+                                      scrollLeft: _scroll.hasClients
+                                          ? _scroll.offset
+                                          : 0,
+                                    ),
+                                    child: _TooltipPanel(
+                                      colors: colors,
+                                      locked: selected != null,
+                                      child: tooltipContent,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -879,6 +910,14 @@ class _IslandChartState extends State<IslandChart>
       fontSize: 12,
       height: 1.7,
     );
+    // Reference `.title` inherits `line-height: normal`: each font keeps its
+    // own metrics and the primary font is the line's minimum (CSS strut), so
+    // a title mixing Latin and CJK runs is as tall as an all-CJK one.
+    final titleStyle = text.copyWith(
+      fontSize: 17,
+      fontWeight: FontWeight.w800,
+      height: kTextHeightNone,
+    );
     final title = widget.title, description = widget.description;
     return DefaultTextStyle(
       style: text,
@@ -895,15 +934,23 @@ class _IslandChartState extends State<IslandChart>
                   if (title != null)
                     Text(
                       title,
-                      style: text.copyWith(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style: titleStyle,
+                      strutStyle: StrutStyle.fromTextStyle(titleStyle),
                     ),
                   if (description != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      child: Text(description, style: secondary),
+                      // Reference `.description` `line-height: 1.7`: a fixed
+                      // line box placed by the primary font, whatever
+                      // fallback font a run uses.
+                      child: Text(
+                        description,
+                        style: secondary,
+                        strutStyle: StrutStyle.fromTextStyle(
+                          secondary,
+                          forceStrutHeight: true,
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -1052,6 +1099,47 @@ class _IslandChartState extends State<IslandChart>
       ),
     );
   }
+}
+
+/// A map region without data: hit-tested inside its own outline only, it
+/// shows the reference `<title>` text on hover and names the region for
+/// assistive technology. It is not a reading and takes no focus.
+class _EmptyRegion extends StatelessWidget {
+  const _EmptyRegion({
+    required this.outline,
+    required this.label,
+    required this.onTap,
+  });
+  final Path outline;
+  final String label;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) => ClipPath(
+    clipper: _OutlineClipper(outline),
+    child: IslandTooltip(
+      message: label,
+      excludeFromSemantics: true,
+      child: Semantics(
+        container: true,
+        label: label,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          excludeFromSemantics: true,
+          onTap: onTap,
+          child: const SizedBox.expand(),
+        ),
+      ),
+    ),
+  );
+}
+
+class _OutlineClipper extends CustomClipper<Path> {
+  const _OutlineClipper(this.outline);
+  final Path outline;
+  @override
+  Path getClip(Size size) => outline;
+  @override
+  bool shouldReclip(_OutlineClipper old) => old.outline != outline;
 }
 
 /// Places the tooltip beside its reading, inside the visible plot.

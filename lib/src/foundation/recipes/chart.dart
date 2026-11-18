@@ -29,6 +29,7 @@ final class ChartColors {
     required this.needle,
     required this.candleRise,
     required this.candleFall,
+    required this.scrollbar,
     required this.series,
   });
 
@@ -77,6 +78,11 @@ final class ChartColors {
   /// Falling candle (reference mint #3b9d85).
   final Color candleFall;
 
+  /// Plot viewport scrollbar thumb on a transparent track (reference
+  /// `.viewport` `scrollbar-color: var(--animal-text-color-disabled)`,
+  /// #c4b89e; a decorative scroll affordance).
+  final Color scrollbar;
+
   /// Default series/item palette in reference order: mint, peach, green,
   /// purple, yellow, blue, pink, brown. Light deepens the seven values below
   /// 3:1 on #f8f8f0; dark keeps the reference (all ≥ 3.2:1).
@@ -112,6 +118,7 @@ final class ChartColors {
     needle: Primitive.brown492,
     candleRise: Primitive.red667,
     candleFall: Primitive.teal632,
+    scrollbar: Primitive.sand786,
     series: [
       Primitive.teal637,
       Primitive.orange661,
@@ -139,6 +146,7 @@ final class ChartColors {
     needle: Primitive.brown603,
     candleRise: Primitive.red673,
     candleFall: Primitive.teal632,
+    scrollbar: Primitive.green730,
     series: [
       Primitive.teal702,
       Primitive.orange736,

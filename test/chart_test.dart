@@ -877,6 +877,127 @@ void main() {
     );
     semantics.dispose();
   });
+
+  testWidgets('a plot wider than its parent shows the reference thin '
+      'scrollbar; a fitting plot shows none', (t) async {
+    final chart = IslandChart(
+      data: IslandChartData.column(
+        series: [
+          IslandChartSeries.values('甲', [10, 20]),
+        ],
+      ),
+    );
+    // Reference `.viewport` thumb `--animal-text-color-disabled` #c4b89e,
+    // 4px thick over a transparent track at the bottom of the plot.
+    const thumb = Color(0xffc4b89e);
+    final scrollbar = find.descendant(
+      of: find.byType(IslandChart),
+      matching: find.byType(RawScrollbar),
+    );
+    await t.pumpWidget(chartHost(chart, width: 260));
+    await t.pumpAndSettle();
+    final viewport = t.getRect(scrollbar);
+    expect(viewport.width, lessThan(280));
+    expect(
+      t.renderObject(scrollbar),
+      paints..rrect(
+        rrect: RRect.fromRectAndRadius(
+          Rect.fromLTWH(
+            0,
+            viewport.height - 4,
+            viewport.width * viewport.width / 280,
+            4,
+          ),
+          Radius.zero,
+        ),
+        color: thumb,
+      ),
+    );
+    await t.pumpWidget(chartHost(chart));
+    await t.pumpAndSettle();
+    expect(t.renderObject(scrollbar), isNot(paints..rrect(color: thumb)));
+  });
+
+  testWidgets('a title or description mixing Latin and CJK keeps the line '
+      'height of an all-CJK one', (t) async {
+    Future<Size> header(String title, String description) async {
+      await t.pumpWidget(
+        chartHost(
+          IslandChart(
+            title: title,
+            description: description,
+            data: IslandChartData.column(
+              series: [
+                IslandChartSeries.values('甲', [10]),
+              ],
+            ),
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+      return Size(
+        t.getSize(find.text(title)).height,
+        t.getSize(find.text(description)).height,
+      );
+    }
+
+    final cjk = await header('岛屿柱状图', '每种水果独立配色，直接标注采收数量。');
+    final mixed = await header('彩色单柱 · Fruit 2026', '将量程设为 0–5，适配 Latin 数据。');
+    expect(mixed, cjk);
+    // Reference `.description` fixed `line-height: 1.7` at 12px.
+    expect(cjk.height, closeTo(12 * 1.7, 0.5));
+  });
+
+  testWidgets('a map region without data names itself 暂无数据 on hover and '
+      'for assistive technology; it is not a reading', (t) async {
+    final semantics = t.ensureSemantics();
+    await t.pumpWidget(
+      chartHost(
+        IslandChart(
+          data: IslandChartData.map(
+            series: const IslandChartSeries(
+              name: '人数',
+              data: [IslandChartValue(4, name: '甲')],
+            ),
+            regions: const [
+              IslandChartRegion(
+                name: '甲',
+                polygons: [
+                  [Offset(0, 0), Offset(1, 0), Offset(1, 1), Offset(0, 1)],
+                ],
+              ),
+              IslandChartRegion(
+                name: '星沙岛',
+                polygons: [
+                  [Offset(2, 0), Offset(3, 0), Offset(3, 1), Offset(2, 1)],
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final region = find.bySemanticsLabel('星沙岛：暂无数据');
+    expect(region, findsOneWidget);
+    expect(
+      t
+          .getSemantics(region)
+          .getSemanticsData()
+          .hasAction(ui.SemanticsAction.tap),
+      isFalse,
+    );
+    expect(find.text('星沙岛：暂无数据'), findsNothing);
+    final g = await mouse(t);
+    await g.moveTo(t.getCenter(region));
+    await t.pumpAndSettle();
+    expect(find.text('星沙岛：暂无数据'), findsOneWidget);
+    // The region with data is a reading and shows its own tooltip instead.
+    await g.moveTo(t.getCenter(find.bySemanticsLabel('人数，甲，4')));
+    await t.pumpAndSettle();
+    expect(hasTooltip('星沙岛：暂无数据'), isFalse);
+    semantics.dispose();
+  });
 }
 
 String _seconds(double ms) => '${(ms / 1000).round()}s';
