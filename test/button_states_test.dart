@@ -404,6 +404,99 @@ void main() {
     await mouse.up();
     await t.pump();
   });
+  testWidgets(
+    'primary border takes the fill colour and its width in every state',
+    (t) async {
+      ShapeDecoration surface() => t
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(IslandButton),
+              matching: find.byType(Container),
+            ),
+          )
+          .map((c) => c.decoration)
+          .whereType<ShapeDecoration>()
+          .firstWhere((d) => d.color != null);
+      void expectSameAsFill(String reason) {
+        final d = surface();
+        final side = (d.shape as OutlinedBorder).side;
+        expect(side.color, d.color, reason: reason);
+        expect(side.width, 2, reason: reason);
+      }
+
+      final focus = FocusNode();
+      addTearDown(focus.dispose);
+      for (final brightness in Brightness.values) {
+        for (final danger in [false, true]) {
+          for (final size in IslandSize.values) {
+            for (final enabled in [true, false]) {
+              final label = '$brightness danger=$danger $size enabled=$enabled';
+              await t.pumpWidget(
+                MaterialApp(
+                  theme: IslandTheme.create(brightness: brightness),
+                  home: MediaQuery(
+                    data: const MediaQueryData(disableAnimations: true),
+                    child: Scaffold(
+                      body: Center(
+                        child: IslandButton(
+                          variant: IslandButtonVariant.primary,
+                          danger: danger,
+                          size: size,
+                          block: size == IslandSize.large,
+                          icon: const IslandIcon(IslandGlyph.search),
+                          focusNode: focus,
+                          onPressed: enabled ? () {} : null,
+                          child: const Text('Action'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+              await t.pumpAndSettle();
+              expectSameAsFill('$label rest');
+              if (!enabled) continue;
+              final mouse = await t.createGesture(
+                kind: ui.PointerDeviceKind.mouse,
+              );
+              await mouse.addPointer(location: Offset.zero);
+              await mouse.moveTo(t.getCenter(find.text('Action')));
+              await t.pump();
+              expectSameAsFill('$label hover');
+              await mouse.down(t.getCenter(find.text('Action')));
+              await t.pump();
+              expectSameAsFill('$label pressed');
+              await mouse.up();
+              await mouse.removePointer();
+              focus.requestFocus();
+              await t.pump();
+              expectSameAsFill('$label focus');
+              focus.unfocus();
+              await t.pump();
+            }
+          }
+        }
+      }
+      // Ghost and busy keep their own visible borders.
+      for (final busy in [false, true]) {
+        await t.pumpWidget(
+          host(
+            IslandButton(
+              variant: IslandButtonVariant.primary,
+              ghost: !busy,
+              busy: busy,
+              onPressed: () {},
+              child: const Text('Action'),
+            ),
+            reduced: true,
+          ),
+        );
+        final d = surface();
+        expect((d.shape as OutlinedBorder).side.color, isNot(d.color));
+        expect((d.shape as OutlinedBorder).side.color, IslandTokens.light.link);
+      }
+    },
+  );
 }
 
 class _Child extends StatefulWidget {

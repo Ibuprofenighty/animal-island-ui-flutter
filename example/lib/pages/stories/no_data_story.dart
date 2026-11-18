@@ -44,20 +44,20 @@ class _NoDataStoryState extends State<NoDataStory> {
             children: [
               IslandNoData(
                 bordered: true,
-                title: Text('这里还是空白的一页'),
-                description: Text('记录下一件小事，让海岛的故事慢慢展开。'),
+                title: StoryText('这里还是空白的一页'),
+                description: StoryText('记录下一件小事，让海岛的故事慢慢展开。'),
               ),
               IslandNoData(
                 variant: IslandNoDataVariant.search,
                 bordered: true,
-                title: Text('暂时没有找到'),
-                description: Text('换个关键词试试，也许会有新的发现。'),
+                title: StoryText('暂时没有找到'),
+                description: StoryText('换个关键词试试，也许会有新的发现。'),
               ),
             ],
           ),
         ]),
         section('基础空态', const [
-          IslandNoData(description: Text('这里还没有记录，新的故事可以从现在开始。')),
+          IslandNoData(description: StoryText('这里还没有记录，新的故事可以从现在开始。')),
           StoryCode(
             "const IslandNoData(\n  description: Text('这里还没有记录，新的故事可以从现在开始。'),\n)",
           ),
@@ -100,8 +100,8 @@ class _NoDataStoryState extends State<NoDataStory> {
           else
             IslandNoData(
               variant: IslandNoDataVariant.search,
-              title: Text('没有找到“$query”'),
-              description: const Text('试试其他名称，或清除条件查看全部岛屿。'),
+              title: StoryText('没有找到“$query”'),
+              description: const StoryText('试试其他名称，或清除条件查看全部岛屿。'),
               actions: [
                 IslandButton(
                   onPressed: () => setState(search.clear),
@@ -128,7 +128,7 @@ class _NoDataStoryState extends State<NoDataStory> {
               variant: IslandNoDataVariant.simple,
               size: IslandSize.small,
               showIcon: false,
-              description: const Text('写下今天的第一件小事。'),
+              description: const StoryText('写下今天的第一件小事。'),
               actions: [
                 IslandButton(
                   size: IslandSize.small,
@@ -162,33 +162,33 @@ class _NoDataStoryState extends State<NoDataStory> {
               IslandNoData(
                 size: IslandSize.small,
                 bordered: true,
-                title: Text('小尺寸'),
-                description: Text('适合列表与卡片内部'),
+                title: StoryText('小尺寸'),
+                description: StoryText('适合列表与卡片内部'),
               ),
               IslandNoData(
                 bordered: true,
-                title: Text('标准尺寸'),
-                description: Text('适合常规内容区'),
+                title: StoryText('标准尺寸'),
+                description: StoryText('适合常规内容区'),
               ),
               IslandNoData(
                 size: IslandSize.large,
                 bordered: true,
-                title: Text('大尺寸'),
-                description: Text('适合整页空态'),
+                title: StoryText('大尺寸'),
+                description: StoryText('适合整页空态'),
               ),
             ],
           ),
           SizedBox(height: 24),
           IslandNoData(
             icon: IslandIcon(IslandGlyph.folder),
-            title: Text('收藏夹还是空的'),
-            description: Text('遇到喜欢的内容时，记得收藏到这里。'),
+            title: StoryText('收藏夹还是空的'),
+            description: StoryText('遇到喜欢的内容时，记得收藏到这里。'),
           ),
           SizedBox(height: 24),
           IslandNoData(
             showIcon: false,
-            title: Text('仅文字提示'),
-            description: Text('图标、标题、说明和操作区都可以单独配置。'),
+            title: StoryText('仅文字提示'),
+            description: StoryText('图标、标题、说明和操作区都可以单独配置。'),
           ),
           StoryCode(
             "const IslandNoData(\n  size: IslandSize.large,\n  bordered: true,\n  icon: IslandIcon(IslandGlyph.folder),\n  title: Text('收藏夹还是空的'),\n  description: Text('遇到喜欢的内容时，记得收藏到这里。'),\n)\nconst IslandNoData(showIcon: false, title: Text('仅文字提示'))",

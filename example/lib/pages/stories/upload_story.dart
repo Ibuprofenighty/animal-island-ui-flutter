@@ -40,7 +40,8 @@ class _UploadStoryState extends State<UploadStory> {
   }
 
   Widget block(Widget child) => SizedBox(width: 720, child: child);
-  Widget tip(String value) => Text(value);
+  // A CSS line box: Flutter's own line grows with the CJK fallback font.
+  Widget tip(String value) => StoryText(value);
   Future<IslandUploadSource?> guard(
     IslandUploadSource file,
     List<IslandUploadSource> batch,

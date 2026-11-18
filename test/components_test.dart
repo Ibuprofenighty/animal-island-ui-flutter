@@ -499,6 +499,87 @@ void main() {
       },
     );
 
+    testWidgets(
+      'shell comments are italic at weight 400 without changing line metrics',
+      (t) async {
+        TextSpan span(String text) {
+          TextSpan? found;
+          void visit(InlineSpan s) {
+            if (s is TextSpan && s.text == text) found = s;
+            if (s is TextSpan) s.children?.forEach(visit);
+          }
+
+          visit(
+            t
+                .state<EditableTextState>(find.byType(EditableText))
+                .renderEditable
+                .text!,
+          );
+          return found!;
+        }
+
+        // Equal-length lines: the comment line and a plain source line.
+        const code = '# abcdefgh\n// abcdefg\nabcdefghij';
+        await t.pumpWidget(
+          host(
+            const IslandCodeBlock(
+              code: code,
+              language: IslandCodeLanguage.shell,
+              copyable: false,
+            ),
+          ),
+        );
+        for (final text in ['# abcdefgh', '// abcdefg']) {
+          expect(span(text).style!.fontStyle, FontStyle.italic);
+          expect(span(text).style!.fontWeight, FontWeight.w400);
+          expect(span(text).style!.color, const Color(0xff9d8f7e));
+        }
+        expect(span('abcdefghij').style?.fontStyle, isNull);
+        List<TextBox> rows() {
+          final editable = t
+              .state<EditableTextState>(find.byType(EditableText))
+              .renderEditable;
+          return [
+            for (final start in [0, 11, 22])
+              ...editable.getBoxesForSelection(
+                TextSelection(baseOffset: start, extentOffset: start + 10),
+              ),
+          ];
+        }
+
+        final slanted = rows();
+        final height = t.getSize(find.byType(IslandCodeBlock)).height;
+        // Plain language draws the same source with no span styles.
+        await t.pumpWidget(
+          host(
+            const IslandCodeBlock(
+              code: code,
+              language: IslandCodeLanguage.plain,
+              copyable: false,
+            ),
+          ),
+        );
+        final upright = rows();
+        expect(slanted, hasLength(3));
+        expect(upright, hasLength(3));
+        // One pitch and one line box whether the line is slanted or not.
+        for (var i = 0; i < 3; i++) {
+          expect(slanted[i].left, closeTo(upright[i].left, .01));
+          expect(slanted[i].right, closeTo(upright[i].right, .01));
+          expect(slanted[i].top, closeTo(upright[i].top, .01));
+          expect(slanted[i].bottom, closeTo(upright[i].bottom, .01));
+        }
+        expect(t.getSize(find.byType(IslandCodeBlock)).height, height);
+
+        // Dart and JavaScript comments stay upright as reference highlightJSX.
+        await t.pumpWidget(
+          host(const IslandCodeBlock(code: '// note\nfinal a = 1;')),
+        );
+        expect(span('// note').style!.fontStyle, isNull);
+        expect(span('// note').style!.fontWeight, isNull);
+      },
+    );
+
     testWidgets('copy button lifts 1px on hover and rings focus outside', (
       t,
     ) async {

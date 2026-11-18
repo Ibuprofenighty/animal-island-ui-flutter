@@ -620,10 +620,19 @@ TextSpan _highlight(
         : token.length == 1 && !RegExp(r'\w').hasMatch(token)
         ? IslandCodeToken.punctuation
         : null;
+    // Reference highlightShell marks its comments italic at weight 400;
+    // highlightJSX leaves comments upright (owner decision 2026-11-18).
+    final slanted = shell && role == IslandCodeToken.comment;
     spans.add(
       TextSpan(
         text: token,
-        style: role == null ? null : TextStyle(color: colors[role]),
+        style: role == null
+            ? null
+            : TextStyle(
+                color: colors[role],
+                fontStyle: slanted ? FontStyle.italic : null,
+                fontWeight: slanted ? FontWeight.w400 : null,
+              ),
       ),
     );
     offset = match.end;

@@ -97,10 +97,9 @@ class IslandButton extends StatelessWidget {
         var background = plain
             ? tokens.paper.withValues(alpha: 0)
             : tokens.paper;
+        // A filled primary draws its border in its own resolved fill (below).
         var outline = plain
             ? Colors.transparent
-            : primary
-            ? tokens.outline
             : hover || pressed
             ? activeColor
             : tokens.outline;
@@ -119,17 +118,17 @@ class IslandButton extends StatelessWidget {
               : tokens.danger;
           ink = primary ? tokens.onDanger : tokens.dangerText;
           // Default/dashed danger boundaries follow the recipe (reference
-          // values reach 3:1 on the owned fill); the primary and ghost
-          // recipes keep the dangerText boundary.
-          if (!plain) {
-            outline = !primary && !ghost
-                ? ButtonColors.dangerBoundary(
+          // values reach 3:1 on the owned fill); ghost keeps the dangerText
+          // boundary.
+          if (!plain && !primary) {
+            outline = ghost
+                ? tokens.dangerText
+                : ButtonColors.dangerBoundary(
                     context,
                     tokens,
                     pressed: pressed,
                     hover: hover,
-                  )
-                : tokens.dangerText;
+                  );
           }
           if (primary) background = dangerState;
         }
@@ -171,7 +170,14 @@ class IslandButton extends StatelessWidget {
           states,
           style?.side,
           themed?.side,
-          BorderSide(color: outline, width: busy ? 4 : 2),
+          // Reference `.btn-primary` and `.btn-danger.btn-primary` set
+          // border-color to the fill in every state, so the border still
+          // takes its width but no ring shows; the bottom shadow carries the
+          // shape (owner decision 2026-11-18). Ghost and busy keep their own.
+          BorderSide(
+            color: primary && !ghost && !busy ? fill : outline,
+            width: busy ? 4 : 2,
+          ),
         );
         final shape = ActionSurface.resolveStyleValue<OutlinedBorder>(
           states,
