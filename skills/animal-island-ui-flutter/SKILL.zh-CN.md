@@ -23,7 +23,7 @@
 
 ## 图表、日历与图标
 
-图表种类通过对应的 `IslandChartData` 具名构造函数选择，数据形状和无效数据规则见 [API](../../docs/API.md#reference-400-additions)；地图须由调用方提供区域轮廓，空状态使用 `IslandNoData`。Calendar、Chart、NoData 的界面文案取自 `IslandLocalizations`，没有其 `zh` 语言时显示英文。`IslandGlyph`（709 个，naive-icons v1.14.0）只能通过运行 `python -B tool/import_icons.py` 改动，不得手改 `assets/icons`；配色结果视为仅经实测、未目视审查（`docs/icon-paint-roles.json` 中 `import_v1_14.settled` 所列按所有者规则 O7 保留的 15 项角色不在对比度矩阵认证范围内）。
+图表种类通过对应的 `IslandChartData` 具名构造函数选择，数据形状和无效数据规则见 [API](../../docs/API.md#reference-400-additions)；地图须由调用方提供区域轮廓，空状态使用 `IslandNoData`。Calendar、Chart、NoData 的界面文案取自 `IslandLocalizations`，没有其 `zh` 语言时显示英文。`IslandGlyph`（709 个，naive-icons v1.14.0）只能通过运行 `python -B tool/import_icons.py` 改动，不得手改 `assets/icons`；配色结果经实测并由所有者整体接受，未逐个审查（`docs/icon-paint-roles.json` 中 `import_v1_14.settled` 所列按所有者规则 O7 保留的 15 项角色不在对比度矩阵认证范围内）。
 
 ## 原子扩展
 

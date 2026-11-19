@@ -22,7 +22,7 @@ English · [简体中文](README.zh-CN.md)
 ## ✨ What’s inside
 
 - **43 component families** for forms, navigation, data, feedback, charts and island decoration, exposed through one public import.
-- **709 SVG glyphs** through `IslandIcon` and `IslandGlyph`; multicolor artwork retains its own paint roles; every paint role is settled by the importer rules, and paint outcomes are measured, not visually reviewed ([maintenance](docs/MAINTENANCE.md)).
+- **709 SVG glyphs** through `IslandIcon` and `IslandGlyph`; multicolor artwork retains its own paint roles; every paint role is settled by the importer rules, and paint outcomes are measured and accepted by the owner as a set, not glyph by glyph ([maintenance](docs/MAINTENANCE.md)).
 - **Light and dark theme presets**, semantic tokens and component styles with explicit, documented customization boundaries.
 - **Composable interactions**: controlled values, caller-owned controllers, keyboard/focus behavior and reduced-motion contracts.
 - **A live and local Gallery** with the component catalog, homepage and usage guide. English and Chinese defaults are available through `IslandLocalizations`; application copy remains yours.

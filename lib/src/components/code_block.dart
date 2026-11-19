@@ -620,9 +620,11 @@ TextSpan _highlight(
         : token.length == 1 && !RegExp(r'\w').hasMatch(token)
         ? IslandCodeToken.punctuation
         : null;
-    // Reference highlightShell marks its comments italic at weight 400;
-    // highlightJSX leaves comments upright (owner decision 2026-11-18).
-    final slanted = shell && role == IslandCodeToken.comment;
+    // Reference highlightShell marks its `//` comments italic at weight 400.
+    // It has no `#` comment, and the reference Skill page draws `#` comments
+    // upright, as highlightJSX does every comment (owner decisions
+    // 2026-11-18 and 2026-11-19).
+    final slanted = shell && token.startsWith('//');
     spans.add(
       TextSpan(
         text: token,

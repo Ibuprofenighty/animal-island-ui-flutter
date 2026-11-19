@@ -500,7 +500,7 @@ void main() {
     );
 
     testWidgets(
-      'shell comments are italic at weight 400 without changing line metrics',
+      'shell // comments are italic at weight 400 without changing line metrics',
       (t) async {
         TextSpan span(String text) {
           TextSpan? found;
@@ -529,11 +529,13 @@ void main() {
             ),
           ),
         );
-        for (final text in ['# abcdefgh', '// abcdefg']) {
-          expect(span(text).style!.fontStyle, FontStyle.italic);
-          expect(span(text).style!.fontWeight, FontWeight.w400);
-          expect(span(text).style!.color, const Color(0xff9d8f7e));
-        }
+        expect(span('// abcdefg').style!.fontStyle, FontStyle.italic);
+        expect(span('// abcdefg').style!.fontWeight, FontWeight.w400);
+        expect(span('// abcdefg').style!.color, const Color(0xff9d8f7e));
+        // `#` comments keep the comment colour and stay upright.
+        expect(span('# abcdefgh').style!.fontStyle, isNull);
+        expect(span('# abcdefgh').style!.fontWeight, isNull);
+        expect(span('# abcdefgh').style!.color, const Color(0xff9d8f7e));
         expect(span('abcdefghij').style?.fontStyle, isNull);
         List<TextBox> rows() {
           final editable = t
