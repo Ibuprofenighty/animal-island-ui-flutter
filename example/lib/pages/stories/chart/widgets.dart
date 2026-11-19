@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../../shared/palette.dart';
+import '../../../shared/story.dart';
 import 'example.dart';
 
 const _ease = Cubic(0.4, 0, 0.2, 1);
@@ -34,20 +35,17 @@ void openGalleryRoute(BuildContext context, String id) {
 
 /// Reference demo text with a fixed CSS `line-height`: every line box has
 /// that height and is placed by the primary font, so a line mixing Latin and
-/// CJK runs is as tall as an all-CJK one.
+/// CJK runs is as tall as an all-CJK one. [StoryText] keeps the fractional
+/// line pitch (13px / 1.8 is 23.4px a line, not Flutter's whole 23px) and
+/// the browser's baseline, so wrapped notes and descriptions do not pull the
+/// following blocks up.
 class ChartLineText extends StatelessWidget {
   const ChartLineText(this.text, {super.key, required this.style});
   final String text;
   final TextStyle style;
   @override
-  Widget build(BuildContext context) => Text(
-    text,
-    style: style,
-    strutStyle: StrutStyle.fromTextStyle(
-      DefaultTextStyle.of(context).style.merge(style),
-      forceStrutHeight: true,
-    ),
-  );
+  Widget build(BuildContext context) =>
+      DefaultTextStyle.merge(style: style, child: StoryText(text));
 }
 
 /// Reference demo.module.less `.note` (margin 12 0 20, 13px / 1.8).

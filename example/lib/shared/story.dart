@@ -328,6 +328,16 @@ typedef _StoryMetrics = ({
 
 // An explicit plain-text leaf can report intrinsic widths to Table while keeping
 // Chromium's fractional line boxes. It never examines caller-owned widgets.
+//
+// Blink sets a block with an explicit `line-height` L as lines of exactly L
+// (in 1/64px) and puts each baseline at the primary font's ascent A plus
+// floor((L - A - D) / 2), with A and descent D rounded to whole pixels: only
+// the ascent half of the leading is floored (CalculateLeadingSpace in
+// Blink's inline layout). Flutter's paragraph rounds every line to whole
+// pixels (a 13px / 1.8 line is 23, not 23.4) and splits the leading over the
+// fractional metrics, so its first baseline sits up to 1px lower and each
+// further line drifts by L - round(L). This box puts the first baseline where
+// Blink does and paints every further line at its own CSS offset.
 class _StoryLineBox extends SingleChildRenderObjectWidget {
   const _StoryLineBox({required this.metrics, required super.child});
   final _StoryMetrics metrics;
@@ -349,7 +359,16 @@ class _RenderStoryLineBox extends RenderShiftedBox {
     markNeedsLayout();
   }
 
-  double lineHeight(double width) {
+  int _lines = 1;
+  final _clips = <LayerHandle<ClipRectLayer>>[];
+
+  double get line {
+    final m = _metrics;
+    return (m.scaler.scale(m.style.fontSize!) * m.style.height! * 64).floor() /
+        64;
+  }
+
+  int lineCount(double width) {
     final m = _metrics;
     final painter =
         TextPainter(
@@ -365,9 +384,29 @@ class _RenderStoryLineBox extends RenderShiftedBox {
           ..layout(maxWidth: width);
     final count = painter.computeLineMetrics().length;
     painter.dispose();
-    return (m.scaler.scale(m.style.fontSize!) * m.style.height! * 64).floor() /
-        64 *
-        count;
+    return count;
+  }
+
+  double lineHeight(double width) => line * lineCount(width);
+
+  /// Blink's first baseline below the top of the box.
+  double get baseline {
+    final m = _metrics;
+    // A digit is set in the first family of the stack, the primary font.
+    final painter = TextPainter(
+      text: TextSpan(
+        text: '0',
+        style: m.style.copyWith(height: kTextHeightNone),
+      ),
+      textDirection: m.direction,
+      textScaler: m.scaler,
+      locale: m.locale,
+    )..layout();
+    final metrics = painter.computeLineMetrics().first;
+    painter.dispose();
+    final ascent = metrics.ascent.roundToDouble();
+    final descent = metrics.descent.roundToDouble();
+    return ascent + ((line - ascent - descent) / 2).floorToDouble();
   }
 
   BoxConstraints textConstraints(BoxConstraints value) =>
@@ -388,23 +427,74 @@ class _RenderStoryLineBox extends RenderShiftedBox {
     TextBaseline baseline,
   ) {
     final textBox = textConstraints(constraints);
-    final actual = child!.getDryLayout(textBox);
     final result = child!.getDryBaseline(textBox, baseline);
-    return result == null
+    final alphabetic = child!.getDryBaseline(textBox, TextBaseline.alphabetic);
+    return result == null || alphabetic == null
         ? null
-        : result + (computeDryLayout(constraints).height - actual.height) / 2;
+        : result + this.baseline - alphabetic;
   }
 
   @override
   void performLayout() {
-    child!.layout(textConstraints(constraints), parentUsesSize: true);
-    size = constraints.constrain(
-      Size(child!.size.width, lineHeight(child!.size.width)),
+    final child = this.child!;
+    child.layout(textConstraints(constraints), parentUsesSize: true);
+    _lines = lineCount(child.size.width);
+    size = constraints.constrain(Size(child.size.width, line * _lines));
+    final first = child.getDistanceToBaseline(
+      TextBaseline.alphabetic,
+      onlyReal: true,
     );
-    (child!.parentData! as BoxParentData).offset = Offset(
+    (child.parentData! as BoxParentData).offset = Offset(
       0,
-      (size.height - child!.size.height) / 2,
+      first == null ? (size.height - child.size.height) / 2 : baseline - first,
     );
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    final child = this.child!;
+    final origin = (child.parentData! as BoxParentData).offset;
+    if (_lines < 2) {
+      _disposeClips(0);
+      context.paintChild(child, offset + origin);
+      return;
+    }
+    // Flutter's whole-pixel line, as every line of a forced strut is equal.
+    final pitch = child.size.height / _lines;
+    const far = 1e5;
+    _disposeClips(_lines);
+    while (_clips.length < _lines) {
+      _clips.add(LayerHandle<ClipRectLayer>());
+    }
+    for (var i = 0; i < _lines; i++) {
+      final drift = i * (line - pitch);
+      final top = origin.dy + i * pitch + drift;
+      _clips[i].layer = context.pushClipRect(
+        needsCompositing,
+        offset,
+        Rect.fromLTRB(
+          -far,
+          i == 0 ? -far : top,
+          far,
+          i == _lines - 1 ? far : top + pitch,
+        ),
+        (context, offset) =>
+            context.paintChild(child, offset + origin + Offset(0, drift)),
+        oldLayer: _clips[i].layer,
+      );
+    }
+  }
+
+  void _disposeClips(int keep) {
+    while (_clips.length > keep) {
+      _clips.removeLast().layer = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _disposeClips(0);
+    super.dispose();
   }
 }
 

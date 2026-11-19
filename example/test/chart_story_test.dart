@@ -313,8 +313,15 @@ void main() {
   testWidgets('type page blocks collapse their CSS margins as the reference '
       'does', (t) async {
     await pumpRoute(t, 'chart-column', 1440);
-    double top(Finder f) => t.getRect(f).top;
-    double bottom(Finder f) => t.getRect(f).bottom;
+    // A StoryText line box is the CSS block; its paragraph is placed by the
+    // browser baseline inside it and may overhang it, as inline content does.
+    Finder block(Finder f) {
+      final box = find.ancestor(of: f, matching: find.byType(StoryText));
+      return box.evaluate().isEmpty ? f : box.first;
+    }
+
+    double top(Finder f) => t.getRect(block(f)).top;
+    double bottom(Finder f) => t.getRect(block(f)).bottom;
     // .note (margin-bottom 20) -> .gallery (margin-top 24): 24.
     expect(
       top(find.text('样式与场景')) - bottom(find.textContaining('以下为虚构演示数据。')),
@@ -441,7 +448,9 @@ void main() {
   ) async {
     await pumpRoute(t, 'charts', 1440);
     final card = find.byType(ChartCatalogCard).first;
-    final lines = find.descendant(of: card, matching: find.byType(RichText));
+    // The StoryText line boxes; each paragraph sits on the browser baseline
+    // inside its box and may overhang it, as CSS inline content does.
+    final lines = find.descendant(of: card, matching: find.byType(StoryText));
     final top = t.getRect(card).top;
     // Reference `border: 1.5px` + `padding: 24px`: at 1x the browser floors
     // the border to 1px, so the title line starts 25px below the card top;

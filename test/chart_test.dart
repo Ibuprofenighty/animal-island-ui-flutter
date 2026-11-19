@@ -477,6 +477,37 @@ void main() {
     expect(find.text('查看数据（1）'), findsOneWidget);
   });
 
+  testWidgets('the data summary is a Blink line-height: normal line box', (
+    t,
+  ) async {
+    // Reference `.data summary`: 12px, `padding: 4px`, inheriting
+    // `line-height: normal` like `.title`, at the bottom of the 20px
+    // `.chart` padding. At 1.3x the test font is 15.6px: ascent 11.7 -> 12,
+    // descent 3.9 -> 4, a 16px line box, not the 1.5 ambient line (23.4).
+    await t.pumpWidget(
+      chartHost(
+        Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(1.3)),
+            child: IslandChart(
+              title: '到访统计',
+              data: IslandChartData.column(series: [basicSeries]),
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final chart = find.byType(IslandChart);
+    final border = IslandTheme.borderWidth(t.element(chart), 1.5);
+    final summary = t.getRect(find.text('查看数据（2）'));
+    expect(
+      t.getRect(chart).bottom - summary.center.dy,
+      moreOrLessEquals(16 / 2 + 4 + 20 + border, epsilon: 0.01),
+    );
+  });
+
   testWidgets('scatter readings keep both coordinates and formatters', (
     t,
   ) async {

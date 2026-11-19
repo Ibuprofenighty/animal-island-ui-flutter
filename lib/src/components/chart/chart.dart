@@ -10,6 +10,7 @@ import '../../foundation/recipes/chart.dart';
 import '../../foundation/size.dart';
 import '../../foundation/theme.dart';
 import '../../internal/action_surface.dart';
+import '../../internal/css_line_box.dart';
 import '../../internal/focus_outline.dart';
 import '../actions.dart';
 import '../no_data.dart';
@@ -1478,6 +1479,12 @@ class _DataDetails extends StatelessWidget {
     final rule = BoxDecoration(
       border: Border(bottom: BorderSide(color: colors.border)),
     );
+    final summary = IslandLocalizations.of(context).chartViewData(rows.length);
+    final summaryStyle = style.copyWith(
+      fontSize: 12,
+      height: kTextHeightNone,
+      color: colors.secondaryInk,
+    );
     Widget pad(String text, {bool header = false}) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Text(
@@ -1511,12 +1518,13 @@ class _DataDetails extends StatelessWidget {
                   painter: _DisclosurePainter(colors.secondaryInk, open),
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  IslandLocalizations.of(context).chartViewData(rows.length),
-                  style: style.copyWith(
-                    fontSize: 12,
-                    color: colors.secondaryInk,
-                  ),
+                // Reference `.data summary` is 12px and, like `.title`,
+                // inherits `line-height: normal`: the label mixing digits and
+                // CJK is an 18px line (Nunito 12/4, Noto Sans SC 14/3
+                // rounded), where Flutter's own line is 19.
+                CssLineBox(
+                  height: cssNormalLineHeight(context, summary, summaryStyle),
+                  child: Text(summary, style: summaryStyle),
                 ),
               ],
             ),

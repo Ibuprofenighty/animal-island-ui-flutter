@@ -8,6 +8,7 @@ import '../shared/version.g.dart';
 import '../shared/palette.dart';
 import '../shared/story.dart';
 import '../shared/reference_source_link.dart';
+import '../shared/theme.dart';
 
 /// Reference Home wallpaper text colours (demo/HomePage.tsx). Text over the
 /// Home wallpaper is the reference-priority contrast exception in
@@ -24,22 +25,12 @@ abstract final class HomeWallpaperInk {
   static const body = GalleryPalette.homeBody;
 }
 
-/// Browser `line-height: normal` for 14px Gallery text whose stack is
-/// Nunito with the CJK fallback (reference Home section descriptions and the
-/// component page description). The browser rounds each used font's ascent
-/// and descent and takes the maxima: Nunito 14/5, CJK 16/4, so a 21px line
-/// with its baseline 16px below the top. The previous forced Nunito struts
-/// put it at 15.1 (21px, even leading) and 14.8 (20px), about 1px high.
-/// With even half-leading the baseline is 21/2 + size * (ascent - descent)/2;
-/// the Nunito strut size below solves it for 16 (hhea 1011/353 per 1000).
-const galleryNormalLine14 = StrutStyle(
-  fontFamily: 'Nunito',
-  fontSize: _normalLineStrutSize,
-  height: 21 / _normalLineStrutSize,
-  leadingDistribution: TextLeadingDistribution.even,
-  forceStrutHeight: true,
-);
-const double _normalLineStrutSize = 2 * (16 - 21 / 2) / ((1011 - 353) / 1000);
+/// Browser `line-height: normal` for 14px Gallery text (reference Home
+/// section descriptions and the component page description): Nunito 14/5,
+/// CJK 16/4, so a 21px line with its baseline 16px below the top. The
+/// previous forced Nunito struts put it at 15.1 (21px, even leading) and
+/// 14.8 (20px), about 1px high.
+final galleryNormalLine14 = galleryNormalLine(14);
 
 /// A Gallery page or sidebar scroller with the reference hidden scrollbar
 /// (`*::-webkit-scrollbar { display: none; }` in demo/main.tsx). Wheel,

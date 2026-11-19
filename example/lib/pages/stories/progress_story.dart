@@ -5,6 +5,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
 import '../../shared/palette.dart';
+import '../../shared/theme.dart';
 
 class ProgressStory extends StatefulWidget {
   const ProgressStory({super.key});
@@ -53,10 +54,13 @@ class _ProgressStoryState extends State<ProgressStory> {
       ],
     ),
   );
+  // Reference caption: 12px with `line-height: normal`, an 18px line for the
+  // mixed Latin and CJK caption too.
   Widget caption(String text) => Padding(
     padding: const EdgeInsets.only(bottom: 4),
     child: Text(
       text,
+      strutStyle: galleryNormalLine(12),
       style: TextStyle(
         fontSize: 12,
         color: IslandTokens.light.muted,
