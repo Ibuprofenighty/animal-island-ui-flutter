@@ -1,7 +1,40 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'presentation_focus.dart';
+
+/// Whether the latest input was a pointer press, for CSS `:focus-visible`:
+/// focus that follows a pointer press (the pressed control, or a control
+/// focused by the action it started) draws no focus indicator.
+///
+/// Listens only while an [ActionSurface] is mounted.
+abstract final class _InputModality {
+  static bool pointer = false;
+  static int _users = 0;
+
+  static void _onPointer(PointerEvent event) {
+    if (event is PointerDownEvent) pointer = true;
+  }
+
+  static bool _onKey(KeyEvent event) {
+    if (event is KeyDownEvent) pointer = false;
+    return false;
+  }
+
+  static void attach() {
+    if (_users++ > 0) return;
+    pointer = false;
+    GestureBinding.instance.pointerRouter.addGlobalRoute(_onPointer);
+    HardwareKeyboard.instance.addHandler(_onKey);
+  }
+
+  static void detach() {
+    if (--_users > 0) return;
+    GestureBinding.instance.pointerRouter.removeGlobalRoute(_onPointer);
+    HardwareKeyboard.instance.removeHandler(_onKey);
+  }
+}
 
 /// Common activation behavior. Appearance stays with the owning component.
 class ActionSurface extends StatefulWidget {
@@ -55,20 +88,43 @@ class ActionSurface extends StatefulWidget {
 
 class _ActionSurfaceState extends State<ActionSurface> {
   bool _hover = false, _focus = false, _press = false;
+
+  /// CSS `:focus-visible`: focus taken by a pointer press draws no focus
+  /// indicator until a key is used or focus leaves and returns.
+  bool _pointerFocus = false;
   FocusNode? _ownedFocus;
   int _presentationGeneration = 0;
   FocusNode get node => widget.focusNode ?? _ownedFocus!;
   @override
   void initState() {
     super.initState();
+    _InputModality.attach();
     if (widget.focusNode == null) _ownedFocus = FocusNode();
   }
 
   @override
   void dispose() {
+    _pointerFocused(false);
+    _InputModality.detach();
     _presentationGeneration++;
     _ownedFocus?.dispose();
     super.dispose();
+  }
+
+  bool _keyUsed(KeyEvent event) {
+    if (event is! KeyDownEvent) return false;
+    if (mounted) setState(() => _pointerFocused(false));
+    return false;
+  }
+
+  void _pointerFocused(bool value) {
+    if (_pointerFocus == value) return;
+    _pointerFocus = value;
+    if (value) {
+      HardwareKeyboard.instance.addHandler(_keyUsed);
+    } else {
+      HardwareKeyboard.instance.removeHandler(_keyUsed);
+    }
   }
 
   void _dispatch({bool keyboard = false}) {
@@ -133,7 +189,7 @@ class _ActionSurfaceState extends State<ActionSurface> {
     final states = <WidgetState>{
       if (!enabled) WidgetState.disabled,
       if (_hover && (enabled || widget.passiveHover)) WidgetState.hovered,
-      if (_focus) WidgetState.focused,
+      if (_focus && !_pointerFocus) WidgetState.focused,
       if (_press && enabled) WidgetState.pressed,
       if (widget.selected == true) WidgetState.selected,
     };
@@ -161,6 +217,12 @@ class _ActionSurfaceState extends State<ActionSurface> {
           focusNode: node,
           autofocus: widget.autofocus,
           onShowFocusHighlight: (v) => setState(() => _focus = v),
+          onFocusChange: (focused) {
+            final pointer = focused && _InputModality.pointer;
+            if (pointer != _pointerFocus) {
+              setState(() => _pointerFocused(pointer));
+            }
+          },
           shortcuts: const {
             SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
             SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),

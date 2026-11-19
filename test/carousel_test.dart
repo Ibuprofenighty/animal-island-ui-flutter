@@ -308,6 +308,9 @@ void main() {
           final control = button(name);
           final box = t.getRect(control);
           await t.tap(control);
+          // A pointer press takes focus without a focus indicator; a key
+          // shows it, as CSS `:focus-visible`.
+          await t.sendKeyEvent(LogicalKeyboardKey.shiftLeft);
           await t.pumpAndSettle();
           final ink = await pixel(t, key, box.topCenter - const Offset(0, 3));
           final backing = await pixel(

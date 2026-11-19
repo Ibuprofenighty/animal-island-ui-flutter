@@ -355,7 +355,14 @@ class _GalleryPageState extends State<GalleryPage> {
               ),
             ),
             const SizedBox(height: 20),
-            if (storyBuilders[id] != null) storyBuilders[id]!(context),
+            // Each reference route mounts its own page, so an opened
+            // disclosure or an edited field never carries over to the next
+            // route's widgets of the same type.
+            if (storyBuilders[id] != null)
+              KeyedSubtree(
+                key: ValueKey(id),
+                child: storyBuilders[id]!(context),
+              ),
           ],
         ),
       );
@@ -692,38 +699,49 @@ class _MenuItemState extends State<_MenuItem> {
           color: fill,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: TextButton(
-          onPressed: widget.onPressed,
-          onHover: (hovered) => setState(() => _hovered = hovered),
-          style:
-              TextButton.styleFrom(
-                alignment: Alignment.centerLeft,
-                minimumSize: const Size(0, 40),
-                visualDensity: VisualDensity.standard,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                padding: const EdgeInsets.fromLTRB(26, 0, 12, 0),
-                backgroundColor: Colors.transparent,
-                foregroundColor: ink,
-                splashFactory: NoSplash.splashFactory,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+        // A browser drops `:focus-visible` on a pointer press. The keyboard
+        // highlight left on another row would otherwise stay beside the
+        // newly selected one.
+        child: Listener(
+          onPointerDown: (_) {
+            final focus = FocusManager.instance.primaryFocus;
+            final owner = focus?.context
+                ?.findAncestorStateOfType<_MenuItemState>();
+            if (owner != null && owner != this) focus!.unfocus();
+          },
+          child: TextButton(
+            onPressed: widget.onPressed,
+            onHover: (hovered) => setState(() => _hovered = hovered),
+            style:
+                TextButton.styleFrom(
+                  alignment: Alignment.centerLeft,
+                  minimumSize: const Size(0, 40),
+                  visualDensity: VisualDensity.standard,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: const EdgeInsets.fromLTRB(26, 0, 12, 0),
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: ink,
+                  splashFactory: NoSplash.splashFactory,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontFamilyFallback: ['IslandGallerySans'],
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ).copyWith(
+                  // Keyboard focus keeps a visible highlight; hover and press
+                  // paint through the animated fill above.
+                  overlayColor: WidgetStateProperty.resolveWith(
+                    (states) => states.contains(WidgetState.focused)
+                        ? IslandTokens.light.onCanvas.withValues(alpha: .12)
+                        : Colors.transparent,
+                  ),
                 ),
-                textStyle: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontFamilyFallback: ['IslandGallerySans'],
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ).copyWith(
-                // Keyboard focus keeps a visible highlight; hover and press
-                // paint through the animated fill above.
-                overlayColor: WidgetStateProperty.resolveWith(
-                  (states) => states.contains(WidgetState.focused)
-                      ? IslandTokens.light.onCanvas.withValues(alpha: .12)
-                      : Colors.transparent,
-                ),
-              ),
-          child: child!,
+            child: child!,
+          ),
         ),
       ),
       child: Row(

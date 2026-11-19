@@ -337,6 +337,9 @@ void main() {
       await t.pump();
       expect(_copyDecoration(t).color, Colors.white);
       await mouse.up();
+      // A pointer press takes focus without a focus indicator; a key
+      // shows it, as CSS `:focus-visible`.
+      await t.sendKeyEvent(LogicalKeyboardKey.shiftLeft);
       await t.pumpAndSettle();
       expect(find.text('复制失败'), findsOneWidget);
       expect(
@@ -437,6 +440,9 @@ void main() {
         );
         await t.pumpAndSettle();
         await t.tap(find.text('Paired content'));
+        // A pointer press takes focus without a focus indicator; a key
+        // shows it, as CSS `:focus-visible`.
+        await t.sendKeyEvent(LogicalKeyboardKey.shiftLeft);
         await t.pumpAndSettle();
         expect(
           t
@@ -804,6 +810,9 @@ void main() {
       );
       await t.pumpAndSettle();
       await t.tap(find.text('State roles'));
+      // A pointer press takes focus without a focus indicator; a key
+      // shows it, as CSS `:focus-visible`.
+      await t.sendKeyEvent(LogicalKeyboardKey.shiftLeft);
       await t.pumpAndSettle();
       Color stroke() => t
           .widgetList<DecoratedBox>(

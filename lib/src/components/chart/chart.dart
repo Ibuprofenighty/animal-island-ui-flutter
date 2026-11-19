@@ -1469,6 +1469,52 @@ class _DataDetails extends StatelessWidget {
   final TextStyle style;
   final List<(String, String, String)> rows;
 
+  /// Reference `.data table { width: 100% }` under automatic table layout:
+  /// every column is at least as wide as its widest cell, and a table
+  /// narrower than the chart shares the spare width between the columns in
+  /// proportion to those widths. A wider table keeps its content widths and
+  /// scrolls in `.tableScroll`.
+  Map<int, TableColumnWidth> _columnWidths(
+    BuildContext context,
+    double available,
+    TextStyle cell,
+  ) {
+    final headers = IslandLocalizations.of(context).chartTableHeaders;
+    final scaler = MediaQuery.textScalerOf(context);
+    final direction = Directionality.of(context);
+    final base = DefaultTextStyle.of(context).style.merge(cell);
+    final bold = base.copyWith(fontWeight: FontWeight.w700);
+    double measure(String text, TextStyle style) {
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: direction,
+        textScaler: scaler,
+        maxLines: 1,
+      )..layout();
+      final width = painter.width;
+      painter.dispose();
+      return width.ceilToDouble() + 24;
+    }
+
+    final widths = [
+      for (var i = 0; i < 3; i++)
+        [
+          if (i < headers.length) measure(headers[i], bold),
+          for (final row in rows)
+            measure(switch (i) {
+              0 => row.$1,
+              1 => row.$2,
+              _ => row.$3,
+            }, base),
+        ].fold<double>(24, math.max),
+    ];
+    final total = widths.fold<double>(0, (sum, width) => sum + width);
+    final scale = available.isFinite && available > total
+        ? available / total
+        : 1.0;
+    return {for (var i = 0; i < 3; i++) i: FixedColumnWidth(widths[i] * scale)};
+  }
+
   @override
   Widget build(BuildContext context) {
     final cell = style.copyWith(
@@ -1543,8 +1589,11 @@ class _DataDetails extends StatelessWidget {
                     children: [
                       pad(caption),
                       Table(
-                        defaultColumnWidth: const IntrinsicColumnWidth(),
-                        columnWidths: const {2: FlexColumnWidth()},
+                        columnWidths: _columnWidths(
+                          context,
+                          constraints.maxWidth,
+                          cell,
+                        ),
                         children: [
                           TableRow(
                             decoration: rule,

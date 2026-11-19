@@ -220,4 +220,35 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('a pointer press on a sidebar row clears the keyboard highlight '
+      'left on another row', (tester) async {
+    await show(tester, 1440);
+    final entries = galleryGroups.values.expand((group) => group).toList();
+    await tab(tester);
+    await tab(tester);
+    final first = find.widgetWithText(TextButton, entries[0].label);
+    expect(
+      FocusManager.instance.primaryFocus?.context
+          ?.findAncestorWidgetOfExactType<TextButton>(),
+      same(tester.widget(first)),
+    );
+    await tester.tap(find.widgetWithText(TextButton, entries[2].label));
+    await tester.pumpAndSettle();
+    expect(
+      FocusManager.instance.primaryFocus?.context
+          ?.findAncestorWidgetOfExactType<TextButton>(),
+      isNull,
+    );
+    // A press on the focused row itself keeps its focus.
+    await tab(tester);
+    await tab(tester);
+    await tester.tap(first);
+    await tester.pumpAndSettle();
+    expect(
+      FocusManager.instance.primaryFocus?.context
+          ?.findAncestorWidgetOfExactType<TextButton>(),
+      same(tester.widget(first)),
+    );
+    expect(tester.takeException(), isNull);
+  });
 }

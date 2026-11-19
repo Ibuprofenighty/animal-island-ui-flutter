@@ -402,40 +402,49 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
             label: widget._range ? '选择日期范围' : '选择日期',
             child: PickerPanel(
               borderWidth: 1.5,
-              footer: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (widget.showToday && !widget._range) ...[
-                    PickerFooterAction(
-                      '今天',
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      fontSize: 13,
-                      onPressed: () {
-                        final d = today;
-                        setState(() {
-                          view = DateTime(d.year, d.month);
-                          focused = d;
-                          mode = widget.mode == IslandDatePickerMode.month
-                              ? _CalendarView.month
-                              : _CalendarView.date;
-                          if (!blocked(d)) pending = d;
-                        });
-                        focus.requestFocus();
-                      },
+              // Reference: the footer belongs to the day view (and to the
+              // month view of a month picker); the month and year views
+              // reached from the header have none.
+              footer:
+                  !widget._range &&
+                      mode != _CalendarView.date &&
+                      !(widget.mode == IslandDatePickerMode.month &&
+                          mode == _CalendarView.month)
+                  ? null
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (widget.showToday && !widget._range) ...[
+                          PickerFooterAction(
+                            '今天',
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            fontSize: 13,
+                            onPressed: () {
+                              final d = today;
+                              setState(() {
+                                view = DateTime(d.year, d.month);
+                                focused = d;
+                                mode = widget.mode == IslandDatePickerMode.month
+                                    ? _CalendarView.month
+                                    : _CalendarView.date;
+                                if (!blocked(d)) pending = d;
+                              });
+                              focus.requestFocus();
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                        PickerFooterAction(
+                          '确定',
+                          primary: true,
+                          primaryHoverColor: PickerColors.confirmHover,
+                          onPressed: confirm,
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                  ],
-                  PickerFooterAction(
-                    '确定',
-                    primary: true,
-                    primaryHoverColor: PickerColors.confirmHover,
-                    onPressed: confirm,
-                  ),
-                ],
-              ),
               child: widget._range
                   ? LayoutBuilder(
                       builder: (context, c) => SingleChildScrollView(
@@ -624,6 +633,21 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
     );
   }
 
+  static const _monthNames = [
+    '一月',
+    '二月',
+    '三月',
+    '四月',
+    '五月',
+    '六月',
+    '七月',
+    '八月',
+    '九月',
+    '十月',
+    '十一月',
+    '十二月',
+  ];
+
   Widget periodCell(int index, int decade) {
     final year = mode == _CalendarView.year;
     final number = year ? decade + index - 1 : index + 1;
@@ -633,7 +657,8 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
               (pending ?? current)?.month == number;
     return cell(
       label: year ? '${number}年' : '${number}月',
-      text: year ? '${number}' : '${number}月',
+      // Reference MONTHS: the cell reads 一月…十二月 and is named `N月`.
+      text: year ? '${number}' : _monthNames[index],
       selected: selected,
       round: false,
       onPressed: () {

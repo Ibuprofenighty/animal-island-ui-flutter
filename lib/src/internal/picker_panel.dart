@@ -13,7 +13,10 @@ class PickerPanel extends StatelessWidget {
     required this.footer,
     this.borderWidth = 1,
   });
-  final Widget child, footer;
+  final Widget child;
+
+  /// Null draws the panel without the footer and its divider.
+  final Widget? footer;
   final double borderWidth;
   @override
   Widget build(BuildContext context) => Container(
@@ -37,14 +40,17 @@ class PickerPanel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         child,
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          padding: const EdgeInsets.only(top: 10),
-          decoration: const BoxDecoration(
-            border: Border(top: BorderSide(color: PickerColors.footerDivider)),
+        if (footer != null)
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 10),
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: PickerColors.footerDivider),
+              ),
+            ),
+            child: footer,
           ),
-          child: footer,
-        ),
       ],
     ),
   );
