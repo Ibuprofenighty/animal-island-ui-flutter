@@ -5,7 +5,28 @@ description: Use and extend the Animal Island Flutter component library with exp
 
 # Animal Island Flutter
 
-Read the public declarations in `lib/animal_island_ui.dart` for signatures, the relevant `components/*/contract.json` for behavior, [API](../../docs/API.md) for composition, and [DESIGN](../../docs/DESIGN.md) for visual policy. [library.json](../../library.json) owns scope. This file's Chinese translation is not another implementation.
+`lib/animal_island_ui.dart` lists what is public. Signatures and defaults are in the file that declares each symbol; the `interface.inputs` entry of the relevant `components/*/contract.json` links it, and several classes share a file (`IslandButton` in `actions.dart`, `IslandSwitch` and `IslandTextField` in `inputs.dart`, the chart data types in `chart/model.dart`). Read that contract for behavior, [API](../../docs/API.md) for composition, and [DESIGN](../../docs/DESIGN.md) for visual policy. [library.json](../../library.json) owns scope. This file's Chinese translation is not another implementation.
+
+## Use in an app
+
+Applies when building an application with the library; skip to the later sections when changing the library or its Gallery.
+
+1. Depend on the package by path and import only `package:animal_island_ui/animal_island_ui.dart`; the [README](../../README.md) has the install steps and a complete starter. `flutter_localizations` is not needed as a separate dependency.
+2. Wire `MaterialApp(theme: IslandTheme.create(), darkTheme: IslandTheme.create(brightness: Brightness.dark), localizationsDelegates: IslandLocalizations.delegates, supportedLocales: IslandLocalizations.supportedLocales)`. For a runtime light/dark switch, also wrap the content inside `Scaffold.body` in `IslandThemeHost(data: resolvedTargetTheme, child: ...)` as [API](../../docs/API.md) describes.
+3. Take colors from `IslandTheme.of(context)` tokens or an `IslandColorway`; write no color literal.
+4. Card, Title, Modal, Drawer, Notification, Tooltip and Table are fixed pale surfaces: `Theme.of(context)` below them stays light in a dark app. Read or assert the app theme from a context outside them.
+5. Only Calendar, Chart and NoData follow `IslandLocalizations`. Every other placeholder, empty text and close label is a Chinese constructor default (Select, DatePicker, TimePicker, Drawer, Notification, the Form optional mark, the default Modal actions): pass your own text, and pass `actions:` to `showIslandModal`.
+
+| Need | Use |
+|---|---|
+| Validated form | `IslandForm` with `IslandFormTextField` and `IslandFormField<T>`; the builder's `IslandFormBinding` (`value`, `onChanged`) connects Select, Switch and the pickers. `required: true` only draws the mark; write the rule as an `IslandFormValidator` (`FutureOr<String?> Function(T? value, Map<String, Object?> values)`). Validation runs on edit and on submit |
+| Submit from outside the fields | Create an `IslandFormController`, pass it as `controller:` (not together with `initialValues:`), call `controller.submit()`; `onFinish` fires when valid, `onFinishFailed` otherwise. Dispose the controller yourself |
+| Notification | Wrap content in `IslandNotifications(controller:, child:)` with a controller you create and dispose; call `controller.show(IslandNotification(...))`. The default duration is 4.5 s |
+| Confirm dialog | `showIslandModal(actions: (ctx) => [...])`; the default actions only close. Close from a custom action with `Navigator.of(ctx, rootNavigator: true).pop(result)` |
+| Buttons | `IslandButtonVariant.primary` for the main action; `normal` is the default variant |
+| Icon names | `IslandGlyph` values in `lib/src/foundation/icon_names.dart`, or the Gallery Icon page |
+
+Widget tests of an app: give the test view a desktop-sized surface, use `pumpAndSettle` after edits and submit because validation is asynchronous, and pump past the notification duration before the test ends.
 
 ## Choose the owner
 
