@@ -44,6 +44,23 @@ IslandTimePicker uses IslandTimeValue(hour, minute, second), independent of date
 
 IslandProgress uses percent in 0–100, not the superseded 0–1 draft API. IslandBadge uses count/text/indicator, not the former tone label. IslandAvatar uses child/icon/image and size/dimension, not initials. All local consumers are updated together.
 
+## Slot layout constraints / 插槽布局约束
+
+Slot widgets keep their styles and actions, but these components lay them out in a fixed way. Each statement is also in the component contract.
+
+- **Select `notFound`:** with no visible option the panel is as wide as the `notFound` content plus 28 (14px each side), limited to the viewport width less 16, so a custom widget keeps its own width. With options the panel is the widest label plus 60, at least 80.
+- **Form `IslandFormItem.child` / `IslandFormField.builder`:** fills the control column width in a row at least 32px high, vertically centred; the control's own width is overridden. Wrap it in `Align` to keep its own width.
+- **Avatar `child` / `icon`:** centred in the fixed square, inset by `gap`, scaled down (never up) to fit, and clipped by the square.
+- **Tooltip `content`:** the bubble is content-width up to 240 (normal) / 280 (island) including padding; wider content wraps. Content is measured with `IntrinsicWidth`, so a `LayoutBuilder` or other constraint-dependent widget needs a fixed width around it.
+- **Notification `icon`:** centred in the 32px type disc and constrained to at most 32×32; icons default to size 18 and the type ink.
+- **Upload `child`:** centred in the 84×84 add tile in picture-card mode; centred in a full-width zone with 30/22px inset in drag mode; otherwise it replaces the default button unchanged.
+- **Drawer `child` / `footer`:** `child` sits at its own width at the top-left of the scrolling body, `footer` is aligned right. Both are physical left/right and do not follow RTL directionality.
+- **Tag `child`:** unflexed with unbounded width, as the reference `white-space: nowrap`; long text neither wraps nor ellipsizes. Give it a finite width (for example a `SizedBox` around a single-line `Text` with ellipsis) to bound it.
+- **Badge `indicator`:** centred in a pill of fixed height 20 (medium) / 16 (small) including its 2px border, so it is at most 16 / 12 high; the width follows the indicator plus 6 / 4px side padding.
+- **Chart tooltip `builder`:** the panel is a fixed min(260, viewport width − 16) wide with 16/14px padding, so the content is laid out at that width less 32 and constrained to it; taller content scrolls vertically.
+
+插槽组件保留自身样式与操作，但以下组件按固定方式布局插槽，每条也写在组件契约中：Select 无可见选项时面板宽度为 `notFound` 内容宽度加 28（受视口宽度减 16 限制），有选项时为最宽标签加 60、至少 80；Form 控件铺满控件列宽度（行高至少 32、垂直居中），用 `Align` 包裹可保留自身宽度；Avatar 的 `child`/`icon` 在固定方形内按 `gap` 内缩并只缩小不放大，超出部分被裁切；Tooltip 气泡随内容宽度、最大 240（普通）/280（island），内容以 `IntrinsicWidth` 测量，依赖约束的组件需外包固定宽度；Notification `icon` 居中于 32px 圆底内、最大 32×32，图标默认 18；Upload 图片卡片模式居中于 84×84，拖拽模式居中于铺满宽度的区域，其他模式直接替换默认按钮；Drawer 的 `child` 位于主体左上、`footer` 靠右，均为物理方向，不随 RTL 翻转；Tag `child` 不伸缩、宽度不受限，长文本不换行也不省略，需由调用方给出有限宽度；Badge `indicator` 居中于高 20/16（含 2px 边框）的胶囊内，最高 16/12；Chart 提示框固定宽 min(260, 视口宽度 − 16)，`builder` 内容按该宽度减 32 布局，更高的内容纵向滚动。
+
 ## Evidence / 证据
 
 Component contracts live under `components/`. Composition and lifecycle tests exercise rejection, nested actions, defaults, reorder and disposal. Gallery tests check real fonts and layout at registered widths. Exact visuals, all interaction states and release acceptance remain pending; screen-reader execution is excluded by the current user scope.

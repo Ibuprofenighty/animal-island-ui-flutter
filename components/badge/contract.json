@@ -12,7 +12,7 @@
     "outputs": "User intent callbacks; host decides whether to commit controlled state.",
     "state_model": "Count/text/dot determine the indicator only. Wrapped child retains the same Stack slot through hidden/visible changes. Opaque indicator/backing pulse1 to1.08 to1; small text never shrinks below its declared size.",
     "events": "A child action dispatches once and does not activate its ancestor.",
-    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
+    "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win. Slot layout: a custom indicator is centred in the pill, whose height is fixed at 20 (medium) / 16 (small) including its 2px border, so the indicator is constrained to at most 16 / 12 high; the pill width follows the indicator plus 6 / 4 px side padding and is at least the pill height.",
     "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
     "localization": "Reference Chinese Gallery; host content and inherited directionality.",
     "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",

@@ -410,14 +410,16 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       fontWeight: FontWeight.w600,
       color: SelectColors.option,
     );
-    var panelWidth = 80.0;
+    // An empty panel takes the width of the caller's `notFound` content plus
+    // its padding, as the reference shrink-to-fit `.dropdown` does.
+    double? panelWidth = visible.isEmpty ? null : 80.0;
     for (final option in visible) {
       final painter = TextPainter(
         text: TextSpan(text: option.label, style: style),
         textDirection: Directionality.of(context),
         textScaler: MediaQuery.textScalerOf(context),
       )..layout();
-      panelWidth = math.max(panelWidth, painter.width + 60);
+      panelWidth = math.max(panelWidth!, painter.width + 60);
       painter.dispose();
     }
     final panel = Container(
