@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../internal/light_surface_scope.dart';
 import '../foundation/recipes/drawer.dart';
 import '../foundation/theme.dart';
@@ -115,7 +116,7 @@ class IslandDrawer extends StatefulWidget {
     this.height = 300,
     this.maskClosable = true,
     this.pushBackground = true,
-    this.closeLabel = '关闭',
+    this.closeLabel,
     this.semanticLabel,
   });
   final bool open, maskClosable, pushBackground;
@@ -124,7 +125,9 @@ class IslandDrawer extends StatefulWidget {
   final Widget? title, footer;
   final IslandDrawerPlacement placement;
   final double width, height;
-  final String closeLabel;
+
+  /// Name of the close button; null uses [IslandLocalizations.close].
+  final String? closeLabel;
   final String? semanticLabel;
   @override
   State<IslandDrawer> createState() => _IslandDrawerState();
@@ -388,7 +391,9 @@ class _IslandDrawerState extends State<IslandDrawer>
                                   ),
                                 ),
                                 ActionSurface(
-                                  label: widget.closeLabel,
+                                  label:
+                                      widget.closeLabel ??
+                                      IslandLocalizations.of(context).close,
                                   focusNode: closeFocus,
                                   onActivate: widget.onClose,
                                   // Reference `.close` `transition: all 0.2s`
@@ -466,7 +471,7 @@ class _IslandDrawerState extends State<IslandDrawer>
                                 color: IslandTokens.light.muted,
                               ),
                               child: Align(
-                                alignment: Alignment.topLeft,
+                                alignment: AlignmentDirectional.topStart,
                                 child: widget.child,
                               ),
                             ),
@@ -476,7 +481,7 @@ class _IslandDrawerState extends State<IslandDrawer>
                           Padding(
                             padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                             child: Align(
-                              alignment: Alignment.centerRight,
+                              alignment: AlignmentDirectional.centerEnd,
                               child: widget.footer,
                             ),
                           ),

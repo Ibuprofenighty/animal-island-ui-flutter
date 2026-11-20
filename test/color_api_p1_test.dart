@@ -42,6 +42,9 @@ Widget _host(
 }) => RepaintBoundary(
   key: boundary,
   child: MaterialApp(
+    locale: const Locale('zh'),
+    localizationsDelegates: IslandLocalizations.delegates,
+    supportedLocales: IslandLocalizations.supportedLocales,
     theme: IslandTheme.create(brightness: brightness, fontFamily: 'P1Nunito')
         .copyWith(
           extensions: [

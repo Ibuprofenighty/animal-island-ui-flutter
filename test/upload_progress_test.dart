@@ -4,6 +4,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget host(Widget child, {bool reduced = false}) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   theme: IslandTheme.create(),
   home: Builder(
     builder: (context) => MediaQuery(

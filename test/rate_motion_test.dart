@@ -35,6 +35,9 @@ void main() {
   ) async {
     await t.pumpWidget(
       const MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Scaffold(body: Center(child: IslandRate(initialValue: 2))),
       ),
     );
@@ -77,6 +80,9 @@ void main() {
     final proposals = <int>[];
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Scaffold(
           body: Column(
             children: [
@@ -122,6 +128,9 @@ void main() {
     (t) async {
       await t.pumpWidget(
         const MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: Scaffold(body: Center(child: IslandRate(initialValue: 3))),
         ),
       );

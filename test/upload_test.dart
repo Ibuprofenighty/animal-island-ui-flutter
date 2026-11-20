@@ -12,6 +12,9 @@ IslandUploadSource source(String name) => IslandUploadSource(
   openRead: () => Stream.value([1, 2, 3]),
 );
 Widget host(Widget child) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   home: Scaffold(body: SizedBox(width: 500, child: child)),
 );
 Future<void> frames(WidgetTester t, [int count = 8]) async {

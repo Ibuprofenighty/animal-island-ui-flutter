@@ -56,9 +56,8 @@ class IslandLocalizations {
   String get nextYear => _zh ? '下一年' : 'Next year';
 
   /// Calendar month title, `2026年8月` / `August 2026`.
-  String monthTitle(int year, int month) => _zh
-      ? '$year年$month月'
-      : '${const ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][month - 1]} $year';
+  String monthTitle(int year, int month) =>
+      _zh ? '$year年$month月' : '${_months[month - 1]} $year';
 
   /// Calendar weekday header from Sunday to Saturday.
   List<String> get weekdaysFromSunday => _zh
@@ -169,6 +168,137 @@ class IslandLocalizations {
   String get chartWordsOmitted => _zh
       ? '部分词条未能放入当前绘图区，完整数值可展开查看数据。'
       : 'Some words do not fit in the plot; open the data table for every value.';
+
+  /// Default confirming action of Modal and the picker footers.
+  String get ok => _zh ? '确定' : 'OK';
+
+  /// Name of a clear button (Input, Select).
+  String get clear => _zh ? '清除' : 'Clear';
+
+  /// BackTop button name.
+  String get backToTop => _zh ? '返回顶部' : 'Back to top';
+
+  /// Name of a Badge dot without text.
+  String get newMessage => _zh ? '有新消息' : 'New message';
+
+  /// CodeBlock copy button text in its idle, copied and failed states.
+  String get copy => _zh ? '复制' : 'Copy';
+  String get copied => _zh ? '已复制' : 'Copied';
+  String get copyFailed => _zh ? '复制失败' : 'Copy failed';
+
+  /// CodeBlock copy button name in its idle, copied and failed states.
+  String get copyCode => _zh ? '复制代码' : 'Copy code';
+  String get codeCopied => _zh ? '代码已复制' : 'Code copied';
+  String get codeCopyFailed => _zh ? '代码复制失败' : 'Failed to copy code';
+
+  /// DatePicker placeholder, name, range panel name and clear button name.
+  String get datePlaceholder => _zh ? '请选择日期' : 'Select date';
+  String get dateLabel => _zh ? '选择日期' : 'Choose date';
+  String get dateRangeLabel => _zh ? '选择日期范围' : 'Choose date range';
+  String get clearDate => _zh ? '清除日期' : 'Clear date';
+
+  /// DatePicker month title, `2026年8月` / `Aug 2026`; the abbreviated month
+  /// keeps the panel header as narrow as the Chinese one.
+  String monthTitleShort(int year, int month) =>
+      _zh ? '$year年$month月' : '${_months[month - 1].substring(0, 3)} $year';
+
+  /// DatePicker year title, `2026年` / `2026`.
+  String yearTitle(int year) => _zh ? '$year年' : '$year';
+
+  /// DatePicker decade title from its first year, `2020 - 2029年`.
+  String decadeTitle(int start) =>
+      _zh ? '$start - ${start + 9}年' : '$start - ${start + 9}';
+
+  /// DatePicker month cell text, `一月` / `Jan`.
+  String monthName(int month) => _zh
+      ? const [
+          '一月',
+          '二月',
+          '三月',
+          '四月',
+          '五月',
+          '六月',
+          '七月',
+          '八月',
+          '九月',
+          '十月',
+          '十一月',
+          '十二月',
+        ][month - 1]
+      : _months[month - 1].substring(0, 3);
+
+  /// DatePicker month cell name, `8月` / `August`.
+  String monthLabel(int month) => _zh ? '$month月' : _months[month - 1];
+
+  /// DatePicker weekday header from Sunday to Saturday.
+  List<String> get weekdaysMin => _zh
+      ? const ['日', '一', '二', '三', '四', '五', '六']
+      : const ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+  /// DatePicker day cell name, `2026年8月5日` / `August 5, 2026`.
+  String fullDate(int year, int month, int day) =>
+      _zh ? '$year年$month月$day日' : '${_months[month - 1]} $day, $year';
+
+  /// TimePicker placeholder, name and clear button name.
+  String get timePlaceholder => _zh ? '请选择时间' : 'Select time';
+  String get timeLabel => _zh ? '选择时间' : 'Choose time';
+  String get clearTime => _zh ? '清除时间' : 'Clear time';
+
+  /// TimePicker column headers.
+  String get hour => _zh ? '时' : 'Hour';
+  String get minute => _zh ? '分' : 'Min';
+  String get second => _zh ? '秒' : 'Sec';
+
+  /// TimePicker shortcut to the current time.
+  String get now => _zh ? '此刻' : 'Now';
+
+  /// Select accessible name and placeholder.
+  String get select => _zh ? '选择' : 'Select';
+  String get selectPlaceholder => _zh ? '请选择' : 'Please select';
+
+  /// Rate group name and the name of the [count]-star choice.
+  String get rating => _zh ? '评分' : 'Rating';
+  String stars(int count) =>
+      _zh ? '$count 星' : '$count ${count == 1 ? 'star' : 'stars'}';
+
+  /// Form marker after the label of an optional item.
+  String get optionalMark => _zh ? '（选填）' : ' (optional)';
+
+  /// Form error shown when a validator throws.
+  String get validationFailed =>
+      _zh ? '暂时无法完成校验' : 'Validation could not be completed';
+
+  /// Upload name, drop-zone hint and button text.
+  String get upload => _zh ? '上传文件' : 'Upload file';
+  String get uploadDragHint => _zh ? '点击或拖拽文件到这里' : 'Click or drag files here';
+  String get uploadClick => _zh ? '点击上传' : 'Click to upload';
+
+  /// Upload file actions and progress names for the file [name].
+  String previewFile(String name) => _zh ? '预览 $name' : 'Preview $name';
+  String removeFile(String name) => _zh ? '删除 $name' : 'Remove $name';
+  String uploadProgress(String name) =>
+      _zh ? '$name 上传进度' : '$name upload progress';
+
+  /// Upload file status names.
+  String get uploadDone => _zh ? '上传完成' : 'Uploaded';
+  String get uploadFailed => _zh ? '上传失败' : 'Upload failed';
+  String uploading(int percent) =>
+      _zh ? '上传中 $percent%' : 'Uploading $percent%';
+
+  static const _months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
   static IslandLocalizations of(BuildContext context) =>
       Localizations.of<IslandLocalizations>(context, IslandLocalizations) ??

@@ -7,6 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 Widget host(Widget child) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   home: IslandDrawerHost(child: Scaffold(body: child)),
 );
 void main() {
@@ -22,6 +25,9 @@ void main() {
     addTearDown(outside.dispose);
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Column(
           children: [
             Focus(focusNode: outside, child: const SizedBox(height: 1)),
@@ -191,6 +197,9 @@ void main() {
         RepaintBoundary(
           key: boundaryKey,
           child: MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             home: MediaQuery(
               data: const MediaQueryData(size: Size(400, 300)),
               child: IslandDrawerHost(
@@ -419,6 +428,9 @@ void main() {
     late StateSetter update;
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(disableAnimations: true),
           child: child!,

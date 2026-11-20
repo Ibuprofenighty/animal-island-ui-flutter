@@ -44,7 +44,7 @@ Finder trigger(String kind) => switch (kind) {
   'date' => namedButton('Date'),
   'range' => namedButton('Range'),
   'time' => namedButton('Time'),
-  'pagination' => namedButton('10 / page'),
+  'pagination' => namedButton('10 条/页'),
   _ => find.text('Tooltip anchor'),
 };
 
@@ -74,7 +74,7 @@ Finder marker(String kind) => switch (kind) {
     (w) =>
         w is Semantics &&
         w.container == true &&
-        w.properties.label == 'Items per page',
+        w.properties.label == '选择每页条数',
   ),
   _ =>
     find
@@ -115,6 +115,9 @@ void registerAnchoredViewportTests({
       addTearDown(t.view.resetDevicePixelRatio);
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           theme: IslandTheme.create(),
           home: Scaffold(
             body: Stack(
@@ -166,7 +169,7 @@ void registerAnchoredViewportTests({
           MaterialApp(
             key: UniqueKey(),
             theme: IslandTheme.create(),
-            locale: const Locale('en'),
+            locale: const Locale('zh'),
             localizationsDelegates: IslandLocalizations.delegates,
             supportedLocales: IslandLocalizations.supportedLocales,
             home: Scaffold(
@@ -189,7 +192,7 @@ void registerAnchoredViewportTests({
         final anchor = t.getRect(
           kind == 'date'
               ? find.byType(IslandDatePicker)
-              : namedButton('10 / page'),
+              : namedButton('10 条/页'),
         );
         if (kind == 'date') {
           expect(rect.top - anchor.bottom, 6);
@@ -215,6 +218,9 @@ void registerAnchoredViewportTests({
       addTearDown(t.view.resetDevicePixelRatio);
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           theme: IslandTheme.create(),
           home: Scaffold(
             body: Stack(
@@ -256,6 +262,9 @@ void registerAnchoredViewportTests({
   testWidgets('fitting viewport-edge attachment stays unchanged', (t) async {
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         theme: IslandTheme.create(),
         home: Scaffold(
           body: Align(
@@ -302,6 +311,9 @@ void registerAnchoredViewportTests({
       try {
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             theme: IslandTheme.create(),
             home: Scaffold(
               body: Padding(
@@ -347,6 +359,9 @@ void registerAnchoredViewportTests({
       for (final kind in ['time', 'date']) {
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             key: UniqueKey(),
             theme: IslandTheme.create(),
             home: Scaffold(
@@ -385,6 +400,9 @@ void registerAnchoredViewportTests({
       final contentKey = GlobalKey();
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           theme: IslandTheme.create(),
           home: Scaffold(
             body: Center(
@@ -463,7 +481,7 @@ void registerAnchoredViewportTests({
               MaterialApp(
                 key: UniqueKey(),
                 theme: IslandTheme.create(),
-                locale: const Locale('en'),
+                locale: const Locale('zh'),
                 localizationsDelegates: IslandLocalizations.delegates,
                 supportedLocales: IslandLocalizations.supportedLocales,
                 home: Scaffold(
@@ -515,6 +533,9 @@ void registerAnchoredViewportTests({
       addTearDown(t.view.resetDevicePixelRatio);
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           theme: IslandTheme.create(),
           home: Scaffold(
             body: Stack(
@@ -561,6 +582,9 @@ void registerAnchoredViewportTests({
       try {
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             theme: IslandTheme.create(),
             home: Scaffold(
               body: SingleChildScrollView(

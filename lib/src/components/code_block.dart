@@ -1,3 +1,5 @@
+import '../foundation/localizations.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -103,8 +105,11 @@ class IslandCodeBlock extends StatefulWidget {
   State<IslandCodeBlock> createState() => _IslandCodeBlockState();
 }
 
+enum _CopyStatus { idle, copied, failed }
+
 class _IslandCodeBlockState extends State<IslandCodeBlock> {
-  String status = '复制';
+  IslandLocalizations get strings => IslandLocalizations.of(context);
+  _CopyStatus status = _CopyStatus.idle;
   bool copying = false;
   Timer? reset;
 
@@ -124,18 +129,18 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
     try {
       await Clipboard.setData(ClipboardData(text: code));
       if (!mounted) return;
-      setState(() => status = '已复制');
+      setState(() => status = _CopyStatus.copied);
       widget.onCopied?.call(code);
     } catch (error) {
       if (!mounted) return;
-      setState(() => status = '复制失败');
+      setState(() => status = _CopyStatus.failed);
       widget.onCopyError?.call(error);
     } finally {
       if (mounted) {
         setState(() => copying = false);
         reset?.cancel();
         reset = Timer(const Duration(seconds: 2), () {
-          if (mounted) setState(() => status = '复制');
+          if (mounted) setState(() => status = _CopyStatus.idle);
         });
       }
     }
@@ -245,16 +250,16 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
               top: 12,
               right: 12,
               child: ActionSurface(
-                label: status == '复制'
-                    ? '复制代码'
-                    : status == '已复制'
-                    ? '代码已复制'
-                    : '代码复制失败',
+                label: switch (status) {
+                  _CopyStatus.idle => strings.copyCode,
+                  _CopyStatus.copied => strings.codeCopied,
+                  _CopyStatus.failed => strings.codeCopyFailed,
+                },
                 onActivate: copying ? null : copy,
                 builder: (_, actionStates) {
                   final states = <WidgetState>{
                     ...actionStates,
-                    if (status == '复制失败') WidgetState.error,
+                    if (status == _CopyStatus.failed) WidgetState.error,
                   };
                   final copyRoles = (
                     foreground: ActionSurface.resolveStyleValue(
@@ -323,7 +328,11 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
                       ),
                       child: ExcludeSemantics(
                         child: Text(
-                          status,
+                          switch (status) {
+                            _CopyStatus.idle => strings.copy,
+                            _CopyStatus.copied => strings.copied,
+                            _CopyStatus.failed => strings.copyFailed,
+                          },
                           style: TextStyle(
                             color: copyRoles.foreground,
                             fontSize: 12,

@@ -1,3 +1,5 @@
+import '../foundation/localizations.dart';
+
 import 'package:flutter/rendering.dart' show OverflowBoxFit;
 
 import '../foundation/recipes/rate.dart';
@@ -25,7 +27,7 @@ class IslandRate extends StatefulWidget {
     this.readOnly = false,
     this.allowClear = true,
     this.onChanged,
-    this.semanticLabel = '评分',
+    this.semanticLabel,
   }) : assert(count > 0),
        assert(initialValue >= 0 && initialValue <= count),
        assert(value == null || value >= 0 && value <= count);
@@ -34,7 +36,9 @@ class IslandRate extends StatefulWidget {
   final IslandSize size;
   final bool readOnly, allowClear;
   final ValueChanged<int>? onChanged;
-  final String semanticLabel;
+
+  /// Group name; null uses [IslandLocalizations.rating].
+  final String? semanticLabel;
   @override
   State<IslandRate> createState() => _IslandRateState();
 }
@@ -174,7 +178,7 @@ class _IslandRateState extends State<IslandRate>
         ? Duration.zero
         : const Duration(milliseconds: 250);
     return Semantics(
-      label: widget.semanticLabel,
+      label: widget.semanticLabel ?? IslandLocalizations.of(context).rating,
       role: SemanticsRole.radioGroup,
       container: true,
       explicitChildNodes: true,
@@ -201,7 +205,7 @@ class _IslandRateState extends State<IslandRate>
                       inMutuallyExclusiveGroup: true,
                       button: false,
                       checked: value == i + 1,
-                      label: '${i + 1} 星',
+                      label: IslandLocalizations.of(context).stars(i + 1),
                       focusNode: _nodes[i],
                       onActivate: widget.readOnly
                           ? null

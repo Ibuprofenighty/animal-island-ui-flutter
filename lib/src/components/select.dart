@@ -1,3 +1,5 @@
+import '../foundation/localizations.dart';
+
 import 'dart:async';
 
 import '../internal/content_scope.dart';
@@ -41,11 +43,11 @@ enum IslandSelectVariant {
 class IslandSelect<T> extends StatefulWidget {
   IslandSelect({
     super.key,
-    this.label = '选择',
+    this.label,
     required List<IslandOption<T>> options,
     required this.value,
     required this.onChanged,
-    this.placeholder = '请选择',
+    this.placeholder,
     this.disabled = false,
     this.variant = IslandSelectVariant.normal,
     this.allowClear = false,
@@ -54,15 +56,19 @@ class IslandSelect<T> extends StatefulWidget {
     this.onSearch,
     this.filter,
     this.filterLocally = true,
-    this.notFound = const Text('暂无数据'),
-    this.clearLabel = '清除',
+    this.notFound,
+    this.clearLabel,
     this.width,
     this.focusNode,
   }) : options = List.unmodifiable(options) {
     if (options.map((e) => e.value).toSet().length != options.length)
       throw ArgumentError('Option values must be unique.');
   }
-  final String label, placeholder, clearLabel;
+
+  /// Accessible name, placeholder and clear-button name; null uses
+  /// [IslandLocalizations.select], [IslandLocalizations.selectPlaceholder]
+  /// and [IslandLocalizations.clear].
+  final String? label, placeholder, clearLabel;
   final List<IslandOption<T>> options;
   final T? value;
   final ValueChanged<T?>? onChanged;
@@ -73,7 +79,7 @@ class IslandSelect<T> extends StatefulWidget {
   final VoidCallback? onClear;
   final ValueChanged<String>? onSearch;
   final bool Function(String query, IslandOption<T> option)? filter;
-  final Widget notFound;
+  final Widget? notFound;
   final double? width;
   final FocusNode? focusNode;
   @override
@@ -81,6 +87,10 @@ class IslandSelect<T> extends StatefulWidget {
 }
 
 class _IslandSelectState<T> extends State<IslandSelect<T>> {
+  IslandLocalizations get strings => IslandLocalizations.of(context);
+  String get selectLabel => widget.label ?? strings.select;
+  String get placeholder => widget.placeholder ?? strings.selectPlaceholder;
+  String get clearLabel => widget.clearLabel ?? strings.clear;
   late final ownedFocus = FocusNode();
   FocusNode get focus => widget.focusNode ?? ownedFocus;
   final text = TextEditingController();
@@ -442,7 +452,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
                 ),
                 child: ContentScope(
                   textStyle: style.copyWith(color: IslandTokens.light.muted),
-                  child: widget.notFound,
+                  child: widget.notFound ?? Text(strings.noData),
                 ),
               ),
             for (final option in visible) _option(option, style),
@@ -489,7 +499,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
               disabledBorder: InputBorder.none,
               filled: false,
               contentPadding: EdgeInsets.zero,
-              hintText: widget.placeholder,
+              hintText: placeholder,
               hintStyle: style.copyWith(
                 height: 19 / 14,
                 color: IslandTokens.light.muted,
@@ -498,7 +508,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
             ),
           )
         : Text(
-            label.isEmpty ? widget.placeholder : label,
+            label.isEmpty ? placeholder : label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: label.isEmpty
@@ -546,16 +556,16 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
               onFocus: !widget.showSearch && enabled
                   ? focus.requestFocus
                   : null,
-              label: widget.showSearch ? null : widget.label,
+              label: widget.showSearch ? null : selectLabel,
               value: widget.showSearch
                   ? null
-                  : (label.isEmpty ? widget.placeholder : label),
+                  : (label.isEmpty ? placeholder : label),
               expanded: open,
               enabled: enabled,
               controlsNodes: open ? {panelId} : null,
               onTap: !widget.showSearch && enabled ? toggle : null,
               child: widget.showSearch
-                  ? Semantics(label: widget.label, child: field)
+                  ? Semantics(label: selectLabel, child: field)
                   : ExcludeSemantics(child: field),
             ),
           ),
@@ -564,7 +574,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
               enabled &&
               (hovered || focus.hasFocus || completingPresentation))
             ActionSurface(
-              label: widget.clearLabel,
+              label: clearLabel,
               onActivate: clear,
               // Reference `.clear`: 20px circle with 6px trailing margin;
               // hover adds rgba(114,93,66,.1) and darkens the glyph over the
@@ -673,7 +683,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
           explicitChildNodes: true,
           identifier: panelId,
           role: SemanticsRole.list,
-          label: widget.label,
+          label: selectLabel,
           child: LightSurfaceScope(child: panel),
         ),
       ),

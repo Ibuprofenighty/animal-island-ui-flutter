@@ -220,6 +220,19 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Chart arc end cap and map low values / 圆弧端帽与地图低值 | Keep the reference geometry: the arcbar and gauge value arc stays about 2.5:1 against its `#eae2ce` track at the end cap, and choropleth low values (fill opacity from 0.3) stay under 3:1 on the surface | Each reading is also in the tooltip and the data table |
 | Caller-owned line boxes (Upload tip, NoData title and description) / 调用方文本行高 | The library does not force line boxes on caller-owned slot widgets; the Gallery Upload and NoData stories pass `StoryText`, so the Gallery's own text gets the CSS line box ([difference row](#behaviour-differences-400)) / 库不强制调用方插槽的行高；Gallery 故事改用 `StoryText` 以获得 CSS 行高 | Measured on a Windows-engine capture at 1440 (2026-11-18): section positions on the Upload page and the NoData title match the reference; the Upload tip and the NoData description were 1px low, without accumulating. Traced on 2026-11-19 to the baseline, not the line box: Blink puts it at the primary font's rounded ascent plus the floored ascent half of the leading over the rounded ascent and descent (Upload tip 12px / 1.6: 12 + floor(1.59) = 13; NoData description 13px / 1.8: 13 + floor(2.70) = 15), where Flutter split the leading evenly over fractional metrics (13.64 and 15.98). `StoryText` now uses the Blink baseline and paints wrapped lines at the fractional CSS pitch; host widget tests assert the geometry, a Windows-engine comparison with the reference is still owed / 1440 宽度 Windows 引擎截图实测：Upload 提示行与 NoData 描述曾低 1px；2026-11-19 查明为基线位置差异，`StoryText` 已按 Blink 规则放置基线并按 CSS 行距绘制折行，尚待 Windows 引擎截图复核 |
 
+<a id="owner-decisions-2026-11-19"></a>
+## Owner decisions / 所有者决定（2026-11-19）
+
+| Item | Decision | Reason |
+|---|---|---|
+| Built-in copy / 内置文案 | Localized in Chinese and English through `IslandLocalizations`; parameters that defaulted to Chinese are nullable and null means the localized default. Chinese equals the reference / 中英文本地化，中文与参考一致 | An English app no longer shows Chinese defaults |
+| Drawer in right-to-left text / Drawer 的从右到左 | Body aligns to the start and footer to the end of the text direction; `placement` stays physical as in the reference / 正文与页脚跟随文字方向 | The reference footer follows the direction; ours was fixed |
+| Avatar content / Avatar 内容 | Keep scaling the content down to fit; the reference scale code never takes effect and clips oversized content / 保持缩小适配 | Clipped initials or icons are unreadable |
+| Table row hover shape / Table 行悬停形状 | Keep the declared 30px rounded fill ([table](#behaviour-differences-400)) / 保持 30px 圆角 | The declared design, consistent with the rounded shapes of the theme |
+| Cursor demo raindrop zone / Cursor 示例雨滴区域 | Keep the raindrop over the section ([table](#behaviour-differences-400)) / 保持雨滴 | The demo exists to show that cursor; the live arrow is a selector side effect |
+| Focus indicator colours / 焦点指示颜色 | Keep the single `focus` role per theme ([table](#behaviour-differences-400)) / 保持统一的 focus 角色 | Reference yellow and the browser default ring fall under 3:1 on light surfaces |
+| Form error text / Form 错误文字 | Keep the theme `dangerText`; the reference `#ff4d4f` is 3.3:1 on white, under the 4.5:1 text rule / 保持达标的 dangerText | The [measured colour rule](#measured-color-differences) |
+
 <a id="behaviour-differences-400"></a>
 ## Deliberate behaviour differences (4.0.0 components) / 有意行为差异（4.0.0 新组件）
 
@@ -255,7 +268,8 @@ The 4.0.0 ports and new components keep the reference values below, or the state
 
 | Item | Measured facts | Current state |
 |---|---|---|
-| None open / 目前没有待决项 | — | — |
+| Chart tooltip `tooltipBuilder` width / 图表提示框自定义内容宽度 | The reference tooltip is 260px wide and scrolls horizontally when custom content is wider | Custom content is laid out in the 228px content width and wraps |
+| Oversized Notification icon and Badge content / 超大通知图标与徽标内容 | The reference lets them overflow their box | Constrained to the box |
 
 <a id="notification-type"></a>
 ## Notification type / 通知类型

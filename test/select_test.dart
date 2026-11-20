@@ -5,6 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 Widget host(Widget child) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   home: Scaffold(
     body: Padding(padding: const EdgeInsets.all(20), child: child),
   ),

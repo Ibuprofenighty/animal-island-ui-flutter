@@ -35,16 +35,20 @@ String _trimmed(double value) {
   return trimmed == '-0' ? '0' : trimmed;
 }
 
-/// Reference default: zh-CN, up to two decimals, compact from 10 000. Like
+/// Reference default: up to two decimals, compact from 10 000 with the
+/// units of the locale (万/亿/万亿 in Chinese, K/M/B/T otherwise). Like
 /// `Intl.NumberFormat` the unit follows the rounded value, so 99 999 999
 /// reads 1亿, not 10000万.
-String _defaultFormat(double value) {
+String _defaultFormat(double value, {required bool zh}) {
   final magnitude = value.abs();
   if (magnitude >= 10000) {
-    const units = [(1e4, '万'), (1e8, '亿'), (1e12, '万亿')];
+    final units = zh
+        ? const [(1e4, '万'), (1e8, '亿'), (1e12, '万亿')]
+        : const [(1e3, 'K'), (1e6, 'M'), (1e9, 'B'), (1e12, 'T')];
     var unit = units.lastIndexWhere((u) => magnitude >= u.$1);
     var scaled = _trimmed(value / units[unit].$1);
-    if (unit < units.length - 1 && double.parse(scaled).abs() >= 10000) {
+    if (unit < units.length - 1 &&
+        double.parse(scaled).abs() >= units[unit + 1].$1 / units[unit].$1) {
       unit++;
       scaled = _trimmed(value / units[unit].$1);
     }
@@ -478,7 +482,10 @@ class _IslandChartState extends State<IslandChart>
     final data = widget.data;
     final type = data.type;
     final strings = IslandLocalizations.of(context);
-    final format = widget.valueFormatter ?? _defaultFormat;
+    final zh = strings.locale.languageCode == 'zh';
+    final format =
+        widget.valueFormatter ??
+        (double value) => _defaultFormat(value, zh: zh);
     final palette = widget.colors?.isNotEmpty == true
         ? widget.colors!
         : colors.series;
@@ -1322,7 +1329,10 @@ class _TooltipContent extends StatelessWidget {
                             (funnel
                                 ? strings.chartOfFirstStage
                                 : strings.chartShare)(
-                              _defaultFormat(item.percentage!),
+                              _defaultFormat(
+                                item.percentage!,
+                                zh: strings.locale.languageCode == 'zh',
+                              ),
                             ),
                             style: const TextStyle(fontSize: 11),
                           ),
@@ -1332,7 +1342,10 @@ class _TooltipContent extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 3),
                           child: Text(
                             strings.chartOfPreviousStage(
-                              _defaultFormat(item.conversion!),
+                              _defaultFormat(
+                                item.conversion!,
+                                zh: strings.locale.languageCode == 'zh',
+                              ),
                             ),
                             style: const TextStyle(fontSize: 11),
                           ),

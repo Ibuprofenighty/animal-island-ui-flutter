@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../foundation/dialog_route.dart';
 import '../foundation/recipes/upload.dart';
 import '../foundation/theme.dart';
@@ -41,7 +42,7 @@ class IslandUpload extends StatefulWidget {
     this.onPreview,
     this.onExceed,
     this.onSelectionError,
-    this.label = '上传文件',
+    this.label,
   }) : initialFiles = const [],
        controlled = true,
        assert(maxCount == null || maxCount > 0);
@@ -69,7 +70,7 @@ class IslandUpload extends StatefulWidget {
     this.onPreview,
     this.onExceed,
     this.onSelectionError,
-    this.label = '上传文件',
+    this.label,
   }) : files = const [],
        controlled = false,
        assert(maxCount == null || maxCount > 0);
@@ -78,7 +79,10 @@ class IslandUpload extends StatefulWidget {
   final IslandUploadPicker pickFiles;
   final IslandUploadRequest request;
   final IslandUploadDropBuilder? dropBuilder;
-  final String accept, label;
+  final String accept;
+
+  /// Accessible name; null uses [IslandLocalizations.upload].
+  final String? label;
   final bool multiple,
       disabled,
       drag,
@@ -107,6 +111,7 @@ class IslandUpload extends StatefulWidget {
 }
 
 class _IslandUploadState extends State<IslandUpload> {
+  IslandLocalizations get strings => IslandLocalizations.of(context);
   late List<IslandUploadFile> inner = List.of(widget.initialFiles);
   final jobs = <String, _UploadJob>{}, removing = <String>{};
   final focus = FocusNode();
@@ -402,7 +407,7 @@ class _IslandUploadState extends State<IslandUpload> {
     route = IslandDialogRoute<void>(
       context: context,
       barrierColor: UploadColors.previewBarrier,
-      barrierLabel: '关闭预览',
+      barrierLabel: IslandLocalizations.of(context).closePreview,
       builder: (context) => Stack(
         children: [
           Center(
@@ -430,7 +435,7 @@ class _IslandUploadState extends State<IslandUpload> {
             top: 16,
             right: 16,
             child: ActionSurface(
-              label: '关闭预览',
+              label: IslandLocalizations.of(context).closePreview,
               autofocus: true,
               onActivate: () => navigator.removeRoute(route),
               builder: (_, states) => Container(
@@ -481,7 +486,7 @@ class _IslandUploadState extends State<IslandUpload> {
     final cards = widget.listType == IslandUploadListType.pictureCard;
     Widget trigger = ActionSurface(
       focusNode: focus,
-      label: widget.label,
+      label: widget.label ?? strings.upload,
       onActivate: widget.disabled ? null : pick,
       builder: (context, states) {
         final hover = states.contains(WidgetState.hovered),
@@ -551,9 +556,9 @@ class _IslandUploadState extends State<IslandUpload> {
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    const Text(
-                                      '点击或拖拽文件到这里',
-                                      style: TextStyle(
+                                    Text(
+                                      strings.uploadDragHint,
+                                      style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -602,14 +607,14 @@ class _IslandUploadState extends State<IslandUpload> {
                 ),
               ],
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IslandIcon(IslandGlyph.upload, size: 18),
-                SizedBox(width: 8),
+                const IslandIcon(IslandGlyph.upload, size: 18),
+                const SizedBox(width: 8),
                 Text(
-                  '点击上传',
-                  style: TextStyle(
+                  strings.uploadClick,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: UploadColors.buttonLabel,
@@ -854,7 +859,7 @@ class _IslandUploadState extends State<IslandUpload> {
                     // Reference li gap 8 plus the button's 4px margin.
                     const SizedBox(width: 12),
                     iconAction(
-                      '预览 ${file.name}',
+                      IslandLocalizations.of(context).previewFile(file.name),
                       IslandGlyph.eye,
                       () => preview(file),
                       hoverIcon: UploadColors.previewHoverIcon,
@@ -863,7 +868,7 @@ class _IslandUploadState extends State<IslandUpload> {
                   if (widget.showRemove) ...[
                     const SizedBox(width: 12),
                     iconAction(
-                      '删除 ${file.name}',
+                      IslandLocalizations.of(context).removeFile(file.name),
                       IslandGlyph.close,
                       () => remove(file),
                       hoverIcon: UploadColors.removeHoverIcon,
@@ -894,7 +899,7 @@ class _IslandUploadState extends State<IslandUpload> {
     required bool showInfo,
   }) => IslandProgress(
     percent: percentOf(file).toDouble(),
-    label: '${file.name} 上传进度',
+    label: IslandLocalizations.of(context).uploadProgress(file.name),
     size: IslandSize.small,
     color: progress.color,
     wave: progress.wave,
@@ -922,7 +927,7 @@ class _IslandUploadState extends State<IslandUpload> {
     return Positioned.fill(
       child: Semantics(
         container: true,
-        label: '${file.name} 上传进度',
+        label: IslandLocalizations.of(context).uploadProgress(file.name),
         value: '$percent%',
         child: IgnorePointer(
           child: ClipRRect(
@@ -1008,9 +1013,11 @@ class _IslandUploadState extends State<IslandUpload> {
           : null;
     return Semantics(
       label: switch (file.status) {
-        IslandUploadStatus.done => '上传完成',
-        IslandUploadStatus.error => '上传失败',
-        _ => '上传中 ${percentOf(file)}%',
+        IslandUploadStatus.done => IslandLocalizations.of(context).uploadDone,
+        IslandUploadStatus.error => IslandLocalizations.of(
+          context,
+        ).uploadFailed,
+        _ => IslandLocalizations.of(context).uploading(percentOf(file)),
       },
       child: file.status == IslandUploadStatus.uploading
           ? Flex(
@@ -1130,7 +1137,7 @@ class _IslandUploadState extends State<IslandUpload> {
                 child: Opacity(
                   opacity: hover ? 1 : 0,
                   child: cardAction(
-                    '预览 ${file.name}',
+                    IslandLocalizations.of(context).previewFile(file.name),
                     IslandGlyph.eye,
                     () => preview(file),
                     iconSize: 18,
@@ -1148,7 +1155,7 @@ class _IslandUploadState extends State<IslandUpload> {
                 child: Opacity(
                   opacity: hover ? 1 : 0,
                   child: cardAction(
-                    '删除 ${file.name}',
+                    IslandLocalizations.of(context).removeFile(file.name),
                     IslandGlyph.close,
                     () => remove(file),
                     iconSize: 16,

@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../internal/viewport_overlay.dart';
 import '../internal/light_surface_scope.dart';
 import '../foundation/theme.dart';
@@ -189,6 +190,7 @@ Future<T?> showIslandModal<T>({
   }
 
   route = _IslandModalRoute<T>(
+    barrierLabel: IslandLocalizations.of(context).close,
     dismissible: dismissible,
     color: barrierColor,
     reduced: reduced,
@@ -206,12 +208,12 @@ Future<T?> showIslandModal<T>({
                 IslandButton(
                   variant: IslandButtonVariant.primary,
                   onPressed: close,
-                  child: const Text('取消'),
+                  child: Text(IslandLocalizations.of(ctx).cancel),
                 ),
                 IslandButton(
                   variant: IslandButtonVariant.primary,
                   onPressed: close,
-                  child: const Text('确定'),
+                  child: Text(IslandLocalizations.of(ctx).ok),
                 ),
               ],
           child: builder(ctx),
@@ -225,6 +227,7 @@ Future<T?> showIslandModal<T>({
 class _IslandModalRoute<T> extends RawDialogRoute<T> {
   _IslandModalRoute({
     required WidgetBuilder page,
+    required String barrierLabel,
     required bool dismissible,
     required Color color,
     required this.reduced,
@@ -233,7 +236,7 @@ class _IslandModalRoute<T> extends RawDialogRoute<T> {
              ClosedLoopTraversal(child: page(context)),
          barrierDismissible: dismissible,
          barrierColor: color,
-         barrierLabel: '关闭',
+         barrierLabel: barrierLabel,
          transitionDuration: const Duration(milliseconds: 300),
          traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
        );

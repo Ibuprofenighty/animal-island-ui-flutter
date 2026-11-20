@@ -592,7 +592,7 @@ void main() {
             FocusHighlightStrategy.automatic,
       );
       await t.pumpWidget(host(const IslandCodeBlock(code: 'final a = 1;')));
-      final copy = find.text('复制');
+      final copy = find.text('Copy');
       final rest = t.getRect(copy);
       final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
       await mouse.addPointer(location: Offset.zero);
@@ -637,7 +637,7 @@ void main() {
       await t.pumpWidget(
         host(const IslandCodeBlock(code: 'final a = 1;'), reduced: true),
       );
-      final copy = find.text('复制');
+      final copy = find.text('Copy');
       final rest = t.getRect(copy);
       final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
       await mouse.addPointer(location: Offset.zero);

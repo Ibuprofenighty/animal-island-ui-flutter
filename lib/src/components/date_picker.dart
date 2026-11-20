@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../foundation/recipes/picker.dart';
 import '../foundation/theme.dart';
 import '../internal/focus_outline.dart';
@@ -25,8 +26,8 @@ class IslandDatePicker extends StatefulWidget {
     required this.value,
     required this.onChanged,
     this.mode = IslandDatePickerMode.date,
-    this.placeholder = '请选择日期',
-    this.label = '选择日期',
+    this.placeholder,
+    this.label,
     this.disabled = false,
     this.allowClear = false,
     this.size = IslandSize.middle,
@@ -49,8 +50,8 @@ class IslandDatePicker extends StatefulWidget {
     this.initialValue,
     this.onChanged,
     this.mode = IslandDatePickerMode.date,
-    this.placeholder = '请选择日期',
-    this.label = '选择日期',
+    this.placeholder,
+    this.label,
     this.disabled = false,
     this.allowClear = false,
     this.size = IslandSize.middle,
@@ -72,8 +73,8 @@ class IslandDatePicker extends StatefulWidget {
     super.key,
     required DateTimeRange? value,
     required ValueChanged<DateTimeRange?>? onChanged,
-    this.placeholder = '请选择日期',
-    this.label = '选择日期',
+    this.placeholder,
+    this.label,
     this.disabled = false,
     this.allowClear = false,
     this.size = IslandSize.middle,
@@ -98,8 +99,8 @@ class IslandDatePicker extends StatefulWidget {
     super.key,
     DateTimeRange? initialValue,
     ValueChanged<DateTimeRange?>? onChanged,
-    this.placeholder = '请选择日期',
-    this.label = '选择日期',
+    this.placeholder,
+    this.label,
     this.disabled = false,
     this.allowClear = false,
     this.size = IslandSize.middle,
@@ -126,7 +127,10 @@ class IslandDatePicker extends StatefulWidget {
   final ValueChanged<DateTimeRange?>? _onRangeChanged;
   final bool _range, controlled, disabled, allowClear, showToday;
   final IslandDatePickerMode mode;
-  final String placeholder, label;
+
+  /// Placeholder and accessible name; null uses
+  /// [IslandLocalizations.datePlaceholder] and [IslandLocalizations.dateLabel].
+  final String? placeholder, label;
 
   /// Trigger text pattern in core date tokens (`YYYY`, `MM`, `DD`, `M`, `D`,
   /// `ddd`, `HH`, `mm`, …, English names); `[text]` renders literally. Null
@@ -146,6 +150,8 @@ class IslandDatePicker extends StatefulWidget {
 }
 
 class _IslandDatePickerState extends State<IslandDatePicker> {
+  IslandLocalizations get strings => IslandLocalizations.of(context);
+  String get placeholder => widget.placeholder ?? strings.datePlaceholder;
   late DateTime? inner = widget.initialValue;
   late DateTimeRange? innerRange = widget._initialRange;
   DateTime? pending, start, end, hover;
@@ -343,7 +349,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
         width: widget._range ? 600 : 280,
         estimatedHeight: 360,
         anchor: PickerTrigger(
-          text: shown == null ? widget.placeholder : format(shown),
+          text: shown == null ? placeholder : format(shown),
           valueContent: widget._range
               ? Row(
                   mainAxisSize: MainAxisSize.min,
@@ -352,7 +358,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                     // the free width equally.
                     Expanded(
                       child: Text(
-                        first == null ? widget.placeholder : format(first),
+                        first == null ? placeholder : format(first),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -364,7 +370,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                     ),
                     Expanded(
                       child: Text(
-                        last == null ? widget.placeholder : format(last),
+                        last == null ? placeholder : format(last),
                         overflow: TextOverflow.ellipsis,
                         style: last == null
                             ? TextStyle(
@@ -379,7 +385,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                   ],
                 )
               : null,
-          label: widget.label,
+          label: widget.label ?? strings.dateLabel,
           hasValue: widget._range ? first != null : shown != null,
           open: open,
           disabled: widget.disabled,
@@ -389,7 +395,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
           focusNode: focus,
           onActivate: () => request(!open),
           onKeyboardActivate: () => open ? keyboardSelect() : request(true),
-          clearLabel: '清除日期',
+          clearLabel: strings.clearDate,
           onClear: widget.allowClear
               ? (() {
                   commit(clear: true);
@@ -399,7 +405,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
         ),
         panel: SingleChildScrollView(
           child: Semantics(
-            label: widget._range ? '选择日期范围' : '选择日期',
+            label: widget._range ? strings.dateRangeLabel : strings.dateLabel,
             child: PickerPanel(
               borderWidth: 1.5,
               // Reference: the footer belongs to the day view (and to the
@@ -416,7 +422,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                       children: [
                         if (widget.showToday && !widget._range) ...[
                           PickerFooterAction(
-                            '今天',
+                            strings.today,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 4,
@@ -438,7 +444,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                           const SizedBox(width: 8),
                         ],
                         PickerFooterAction(
-                          '确定',
+                          strings.ok,
                           primary: true,
                           primaryHoverColor: PickerColors.confirmHover,
                           onPressed: confirm,
@@ -482,7 +488,9 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
     final range = widget._range;
     final decade = (view.year ~/ 10) * 10;
     Widget nav(bool forward, bool year) => ActionSurface(
-      label: year ? (forward ? '下一年' : '上一年') : (forward ? '下个月' : '上个月'),
+      label: year
+          ? (forward ? strings.nextYear : strings.previousYear)
+          : (forward ? strings.nextMonth : strings.previousMonth),
       onActivate: () {
         shift(
           year ? (forward ? 1 : -1) * (mode == _CalendarView.year ? 10 : 1) : 0,
@@ -548,8 +556,8 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                   ),
                   child: Text(
                     range
-                        ? '${date.year}年${date.month}月'
-                        : '${decade} - ${decade + 9}年',
+                        ? strings.monthTitleShort(date.year, date.month)
+                        : strings.decadeTitle(decade),
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -583,8 +591,8 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                     ),
                     child: Text(
                       mode == _CalendarView.date
-                          ? '${date.year}年${date.month}月'
-                          : '${date.year}年',
+                          ? strings.monthTitleShort(date.year, date.month)
+                          : strings.yearTitle(date.year),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -633,21 +641,6 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
     );
   }
 
-  static const _monthNames = [
-    '一月',
-    '二月',
-    '三月',
-    '四月',
-    '五月',
-    '六月',
-    '七月',
-    '八月',
-    '九月',
-    '十月',
-    '十一月',
-    '十二月',
-  ];
-
   Widget periodCell(int index, int decade) {
     final year = mode == _CalendarView.year;
     final number = year ? decade + index - 1 : index + 1;
@@ -656,9 +649,9 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
         : (pending ?? current)?.year == view.year &&
               (pending ?? current)?.month == number;
     return cell(
-      label: year ? '${number}年' : '${number}月',
+      label: year ? strings.yearTitle(number) : strings.monthLabel(number),
       // Reference MONTHS: the cell reads 一月…十二月 and is named `N月`.
-      text: year ? '${number}' : _monthNames[index],
+      text: year ? '${number}' : strings.monthName(number),
       selected: selected,
       round: false,
       onPressed: () {
@@ -692,7 +685,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
           padding: const EdgeInsets.only(bottom: 4),
           child: Row(
             children: [
-              for (final name in ['日', '一', '二', '三', '四', '五', '六'])
+              for (final name in strings.weekdaysMin)
                 Expanded(
                   child: SizedBox(
                     height: 24,
@@ -743,7 +736,7 @@ class _IslandDatePickerState extends State<IslandDatePicker> {
                               if (hover != null) setState(() => hover = null);
                             },
                             child: cell(
-                              label: '${d.year}年${d.month}月${d.day}日',
+                              label: strings.fullDate(d.year, d.month, d.day),
                               text: '${d.day}',
                               selected: selected,
                               edge: widget._range && (same(d, a) || same(d, b)),

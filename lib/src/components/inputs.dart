@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../foundation/recipes/input.dart';
 import '../foundation/theme.dart';
 
@@ -274,7 +275,7 @@ class _IslandTextFieldState extends State<IslandTextField> {
                         Padding(
                           padding: const EdgeInsetsDirectional.only(start: 4),
                           child: ActionSurface(
-                            label: '清除',
+                            label: IslandLocalizations.of(context).clear,
                             onActivate: () {
                               editing.clear();
                               widget.onChanged?.call('');

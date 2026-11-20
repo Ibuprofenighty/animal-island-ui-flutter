@@ -10,7 +10,7 @@
 2. 配置 `MaterialApp(theme: IslandTheme.create(), darkTheme: IslandTheme.create(brightness: Brightness.dark), localizationsDelegates: IslandLocalizations.delegates, supportedLocales: IslandLocalizations.supportedLocales)`。运行时切换明暗主题时，再按 [API](../../docs/API.md) 在 `Scaffold.body` 内用 `IslandThemeHost(data: 已解析的目标主题, child: ...)` 包住内容。
 3. 颜色取自 `IslandTheme.of(context)` 的 Token 或 `IslandColorway`，不写颜色字面量。
 4. Card、Title、Modal、Drawer、Notification、Tooltip 与 Table 是固定浅色表面：深色应用中它们内部的 `Theme.of(context)` 仍是浅色。读取或断言应用主题时使用它们外部的 context。
-5. 只有 Calendar、Chart 与 NoData 跟随 `IslandLocalizations`。其余占位文字、空状态文字和关闭标签都是中文的构造函数默认值（Select、DatePicker、TimePicker、Drawer、Notification、Form 选填标记、Modal 默认按钮）：需要其他语言时自行传入文字，并给 `showIslandModal` 传 `actions:`。
+5. 内置文案（占位文字、空状态文字、关闭与清除名称、选择器页脚、Modal 默认按钮）跟随 `IslandLocalizations`，支持中文和英文：注册 delegates 且语言为 `zh` 时为中文，否则为英文。只有想改文案时才传入自己的文字；其他语言需逐项传入字符串，并给 `showIslandModal` 传 `actions:`。`IslandTime` 使用自身的 `locale`。
 
 | 需求 | 用法 |
 |---|---|

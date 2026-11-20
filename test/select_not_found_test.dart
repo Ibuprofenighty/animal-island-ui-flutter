@@ -28,6 +28,9 @@ Future<Rect> openEmpty(
   addTearDown(t.view.resetDevicePixelRatio);
   await t.pumpWidget(
     MaterialApp(
+      locale: const Locale('zh'),
+      localizationsDelegates: IslandLocalizations.delegates,
+      supportedLocales: IslandLocalizations.supportedLocales,
       theme: IslandTheme.create(),
       home: Scaffold(
         body: Stack(

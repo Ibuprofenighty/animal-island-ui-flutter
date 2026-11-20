@@ -6,6 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 // Reference 4.0.0 `Upload.tsx` / `upload.module.less` list and card details.
 
 Widget host(Widget child) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   theme: IslandTheme.create(),
   home: Scaffold(
     body: Align(

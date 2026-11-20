@@ -21,6 +21,9 @@ class _CounterState extends State<_Counter> {
 void main() {
   WidgetController.hitTestWarningShouldBeFatal = true;
   Widget app(Widget Function(BuildContext) body) => MaterialApp(
+    locale: const Locale('zh'),
+    localizationsDelegates: IslandLocalizations.delegates,
+    supportedLocales: IslandLocalizations.supportedLocales,
     home: IslandDrawerHost(
       child: Scaffold(body: Builder(builder: body)),
     ),
@@ -164,6 +167,9 @@ void main() {
     late BuildContext page;
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Scaffold(
           body: Builder(
             builder: (context) {

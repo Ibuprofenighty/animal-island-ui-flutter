@@ -6,6 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 Widget host(IslandNotificationsController controller) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   home: Scaffold(
     body: IslandNotifications(
       controller: controller,

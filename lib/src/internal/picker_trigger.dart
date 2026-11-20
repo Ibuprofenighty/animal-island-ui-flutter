@@ -24,7 +24,7 @@ class PickerTrigger extends StatelessWidget {
     this.onClear,
     this.valueContent,
     this.onKeyboardActivate,
-    this.clearLabel = '清除',
+    required this.clearLabel,
     this.focusNode,
   });
   final String text, label, clearLabel;

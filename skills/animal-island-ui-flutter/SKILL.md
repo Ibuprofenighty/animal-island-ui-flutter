@@ -15,7 +15,7 @@ Applies when building an application with the library; skip to the later section
 2. Wire `MaterialApp(theme: IslandTheme.create(), darkTheme: IslandTheme.create(brightness: Brightness.dark), localizationsDelegates: IslandLocalizations.delegates, supportedLocales: IslandLocalizations.supportedLocales)`. For a runtime light/dark switch, also wrap the content inside `Scaffold.body` in `IslandThemeHost(data: resolvedTargetTheme, child: ...)` as [API](../../docs/API.md) describes.
 3. Take colors from `IslandTheme.of(context)` tokens or an `IslandColorway`; write no color literal.
 4. Card, Title, Modal, Drawer, Notification, Tooltip and Table are fixed pale surfaces: `Theme.of(context)` below them stays light in a dark app. Read or assert the app theme from a context outside them.
-5. Only Calendar, Chart and NoData follow `IslandLocalizations`. Every other placeholder, empty text and close label is a Chinese constructor default (Select, DatePicker, TimePicker, Drawer, Notification, the Form optional mark, the default Modal actions): pass your own text, and pass `actions:` to `showIslandModal`.
+5. Built-in copy (placeholders, empty text, close and clear names, picker footers, the default Modal actions) follows `IslandLocalizations` in Chinese and English: Chinese under a `zh` locale with the delegates registered, English otherwise. Pass your own text only to change it; for another language pass every string and `actions:` to `showIslandModal`. `IslandTime` takes its own `locale`.
 
 | Need | Use |
 |---|---|

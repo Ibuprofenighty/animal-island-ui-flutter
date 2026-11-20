@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../internal/light_surface_scope.dart';
 import '../foundation/theme.dart';
 
@@ -37,7 +38,7 @@ class IslandNotification {
     this.onPressed,
     this.onDismiss,
     this.onClose,
-    this.closeLabel = '关闭',
+    this.closeLabel,
   });
   final Widget message;
   final Widget? description, icon, action, closeIcon;
@@ -47,7 +48,9 @@ class IslandNotification {
   /// Zero keeps the notification until explicit dismissal.
   final Duration duration;
   final VoidCallback? onPressed, onDismiss, onClose;
-  final String closeLabel;
+
+  /// Name of the close button; null uses [IslandLocalizations.close].
+  final String? closeLabel;
 }
 
 class IslandNotificationHandle {
@@ -562,7 +565,7 @@ class _NotificationCardState extends State<_NotificationCard>
           Padding(
             padding: const EdgeInsets.only(left: 4),
             child: ActionSurface(
-              label: n.closeLabel,
+              label: n.closeLabel ?? IslandLocalizations.of(context).close,
               onActivate: widget.onClose,
               // Reference .close: `transition: all .15s ease` for the
               // hover disc; focus-visible outline 2px offset 2px.

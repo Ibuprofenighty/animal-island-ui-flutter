@@ -45,18 +45,20 @@ void main() {
     return seen;
   }
 
-  double viewportWidth(WidgetTester t) => t.getSize(
-    find
-        .descendant(
-          of: find.byType(IslandChart),
-          matching: find.byWidgetPredicate(
-            (w) =>
-                w is SingleChildScrollView &&
-                w.scrollDirection == Axis.horizontal,
-          ),
-        )
-        .first,
-  ).width;
+  double viewportWidth(WidgetTester t) => t
+      .getSize(
+        find
+            .descendant(
+              of: find.byType(IslandChart),
+              matching: find.byWidgetPredicate(
+                (w) =>
+                    w is SingleChildScrollView &&
+                    w.scrollDirection == Axis.horizontal,
+              ),
+            )
+            .first,
+      )
+      .width;
 
   testWidgets('builder content gets the reference 260px tooltip width', (
     t,
