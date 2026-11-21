@@ -859,6 +859,7 @@ class _IslandChartState extends State<IslandChart>
                                       scrollLeft: _scroll.hasClients
                                           ? _scroll.offset
                                           : 0,
+                                      grows: options?.builder != null,
                                     ),
                                     child: _TooltipPanel(
                                       colors: colors,
@@ -1159,17 +1160,21 @@ class _TooltipLayout extends SingleChildLayoutDelegate {
     required this.height,
     required this.viewportWidth,
     required this.scrollLeft,
+    required this.grows,
   });
   final Offset anchor;
   final double height, viewportWidth, scrollLeft;
 
-  double get _width => math.min(260, math.max(1, viewportWidth - 16));
+  /// Builder content may widen the panel from 260 up to 400.
+  final bool grows;
+
+  double _fit(double width) => math.min(width, math.max(1, viewportWidth - 16));
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
       BoxConstraints(
-        minWidth: _width,
-        maxWidth: _width,
+        minWidth: _fit(260),
+        maxWidth: _fit(grows ? 400 : 260),
         maxHeight: math.max(0, height - 16),
       );
 
@@ -1196,7 +1201,8 @@ class _TooltipLayout extends SingleChildLayoutDelegate {
       anchor != old.anchor ||
       height != old.height ||
       viewportWidth != old.viewportWidth ||
-      scrollLeft != old.scrollLeft;
+      scrollLeft != old.scrollLeft ||
+      grows != old.grows;
 }
 
 /// The tooltip surface; hover panels let clicks through, locked panels

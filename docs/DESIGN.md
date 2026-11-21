@@ -231,6 +231,8 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Table row hover shape / Table 行悬停形状 | Keep the declared 30px rounded fill ([table](#behaviour-differences-400)) / 保持 30px 圆角 | The declared design, consistent with the rounded shapes of the theme |
 | Cursor demo raindrop zone / Cursor 示例雨滴区域 | Keep the raindrop over the section ([table](#behaviour-differences-400)) / 保持雨滴 | The demo exists to show that cursor; the live arrow is a selector side effect |
 | Focus indicator colours / 焦点指示颜色 | Keep the single `focus` role per theme ([table](#behaviour-differences-400)) / 保持统一的 focus 角色 | Reference yellow and the browser default ring fall under 3:1 on light surfaces |
+| Chart tooltip builder width / 图表提示框自定义内容宽度 | Decided 2026-11-20: builder content wider than the 260px panel widens it up to min(400, viewport − 16) and wraps beyond; the default content keeps 260 / 自定义内容可把提示框撑宽到 400，超出换行 | The reference keeps 260 and scrolls horizontally, but a tooltip that follows the pointer cannot be scrolled |
+| Oversized Notification icon and Badge content / 超大通知图标与徽标内容 | Decided 2026-11-20: keep them constrained to their box; Badge numbers above `overflowCount` (99) read `99+` as in the reference / 保持限制在框内，数字超过上限显示 99+ | The reference overflow covers neighbouring content |
 | Form error text / Form 错误文字 | Keep the theme `dangerText`; the reference `#ff4d4f` is 3.3:1 on white, under the 4.5:1 text rule / 保持达标的 dangerText | The [measured colour rule](#measured-color-differences) |
 
 <a id="behaviour-differences-400"></a>
@@ -266,10 +268,7 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 
 The 4.0.0 ports and new components keep the reference values below, or the stated current behavior, until the owner decides. Colour items that the [measured colour rule](#measured-color-differences) settles are registered in its table; only items it does not settle remain here. Contrast figures are measured on the composited surfaces named and are not acceptance evidence. 4.0.0 版本既有组件移植与新组件暂保留下列参考值或所述现状，待所有者裁决；实测配色规则可裁定的颜色项已登记于其表格，此处仅保留该规则无法裁定的项目。对比度为在所列合成表面上的实测值，不构成验收证据。
 
-| Item | Measured facts | Current state |
-|---|---|---|
-| Chart tooltip `tooltipBuilder` width / 图表提示框自定义内容宽度 | The reference tooltip is 260px wide and scrolls horizontally when custom content is wider | Custom content is laid out in the 228px content width and wraps |
-| Oversized Notification icon and Badge content / 超大通知图标与徽标内容 | The reference lets them overflow their box | Constrained to the box |
+None at present; the last two items were decided on 2026-11-20 and moved to the [owner decisions](#owner-decisions-2026-11-19). 目前没有待决项；最后两项已于 2026-11-20 裁决并移入所有者决定。
 
 <a id="notification-type"></a>
 ## Notification type / 通知类型
