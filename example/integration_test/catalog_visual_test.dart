@@ -30,7 +30,9 @@ void main() {
         key: boundaryKey,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          locale: const Locale('zh'),
+          locale: const Locale(
+            String.fromEnvironment('ISLAND_GALLERY_LOCALE', defaultValue: 'zh'),
+          ),
           localizationsDelegates: IslandLocalizations.delegates,
           supportedLocales: IslandLocalizations.supportedLocales,
           theme: galleryTheme(),
@@ -192,7 +194,10 @@ void main() {
               (w) =>
                   w is Semantics &&
                   w.properties.button == true &&
-                  w.properties.label == '转到第 1 张',
+                  w.properties.label ==
+                      IslandLocalizations.of(
+                        t.element(find.byType(GalleryPage)),
+                      ).goToSlide(1),
             );
             await t.tap(first);
             await t.pump();
