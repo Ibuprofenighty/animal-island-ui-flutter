@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased — reference 4.0.0 port
+## 0.1.0 — reference 4.0.0 port (2026-11-21)
 
-The reference is re-pinned from 2.2.1 to 4.0.0 (`docs/reference-gallery.json`). Widget tests cover the ports and new components below; no Windows-engine or browser run, no build and no reference comparison exists for them, and every status stays `NOT_ACCEPTED` (see `docs/ACCEPTANCE.md`). Open measurements and owner decisions are in `docs/DESIGN.md#pending-owner-decisions-400`.
+The reference is re-pinned from 2.2.1 to 4.0.0 (`docs/reference-gallery.json`). Experimental: widget tests cover the ports and new components below, and the Web and Windows builds, the Windows-engine entries and the reference comparisons recorded in `docs/ACCEPTANCE.md` were run with the limits stated there; every status stays `NOT_ACCEPTED`. Open measurements and owner decisions are in `docs/DESIGN.md#pending-owner-decisions-400`.
 
 - **Behaviour change, Select:** new `variant` (`IslandSelectVariant`). `normal` is the new default: the panel opens centred below the trigger, flips above when below is short and above is larger, and aligns to the trigger edge on an overflowing side. `game` is the previous side popover (beside the trigger, vertically centred). Existing callers get `dropdown`; pass `variant: IslandSelectVariant.game` to keep the old placement. Panel styling, width, focus and selection are identical in both.
 - **Behaviour change, formats:** `IslandDatePicker.format`, `IslandTimePicker.format` and `IslandTimeValue.format` now expand the dayjs-style core tokens (`YYYY`, `YY`, `M`–`MMMM`, `D`, `DD`, `d`–`dddd`, `H`, `HH`, `h`, `hh`, `a`, `A`, `m`, `mm`, `s`, `ss`, `SSS`, `Z`, `ZZ`; English names) and `[text]` renders literally. Previously only `YYYY`/`MM`/`DD`/`M`/`D` (date) and `HH`/`mm`/`ss` (time) were replaced, so any other token letter in an existing pattern, such as the `a` in `at`, now renders; escape literal text as `[at]`. `IslandTimePicker` shows the seconds column when an unescaped `ss` is present. New `IslandTimeLocale` (`en`, `zhCn`) selects the language of month, weekday and meridiem names.

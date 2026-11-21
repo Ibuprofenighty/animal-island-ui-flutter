@@ -6,7 +6,7 @@
 
 A fresh Flutter implementation of the [Animal Island UI design language](https://github.com/guokaigdg/animal-island-ui).
 
-<img src="https://img.shields.io/badge/version-0.0.1-blue?style=flat-square" alt="Version 0.0.1">
+<img src="https://img.shields.io/badge/version-0.1.0-blue?style=flat-square" alt="Version 0.1.0">
 <img src="https://img.shields.io/badge/status-experimental-orange?style=flat-square" alt="Experimental">
 <img src="https://img.shields.io/badge/components-43-4b8b63?style=flat-square" alt="43 component families">
 <img src="https://img.shields.io/badge/SVG_glyphs-709-b88746?style=flat-square" alt="709 SVG glyphs">
@@ -27,7 +27,7 @@ English · [简体中文](README.zh-CN.md)
 - **Composable interactions**: controlled values, caller-owned controllers, keyboard/focus behavior and reduced-motion contracts.
 - **A live and local Gallery** with the component catalog, homepage and usage guide. English and Chinese defaults are available through `IslandLocalizations`; application copy remains yours.
 
-This is **experimental 0.0.1**. It has not completed all-platform visual or production acceptance. See [verification status](#-verification-status) before adopting it.
+This is **experimental 0.1.0**. It has not completed all-platform visual or production acceptance. See [verification status](#-verification-status) before adopting it.
 
 ## 🏝️ Explore the island
 

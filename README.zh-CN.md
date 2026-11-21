@@ -6,7 +6,7 @@
 
 [Animal Island UI 设计语言](https://github.com/guokaigdg/animal-island-ui)的全新 Flutter 实现。
 
-<img src="https://img.shields.io/badge/version-0.0.1-blue?style=flat-square" alt="版本 0.0.1">
+<img src="https://img.shields.io/badge/version-0.1.0-blue?style=flat-square" alt="版本 0.1.0">
 <img src="https://img.shields.io/badge/status-experimental-orange?style=flat-square" alt="实验版本">
 <img src="https://img.shields.io/badge/components-43-4b8b63?style=flat-square" alt="43 个组件族">
 <img src="https://img.shields.io/badge/SVG_glyphs-709-b88746?style=flat-square" alt="709 个 SVG 图标">
@@ -27,7 +27,7 @@
 - **可组合交互**：受控值、调用方自有控制器、键盘／焦点行为及减少动态效果契约。
 - **在线与本地 Gallery**：组件目录、首页与使用指南。`IslandLocalizations` 提供中英文默认文案，应用自己的内容由应用管理。
 
-当前为**实验版本 0.0.1**，尚未完成全部平台视觉与生产验收。使用前请阅读[验证状态](#-验证状态)。
+当前为**实验版本 0.1.0**，尚未完成全部平台视觉与生产验收。使用前请阅读[验证状态](#-验证状态)。
 
 ## 🏝️ 在线体验
 
