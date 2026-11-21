@@ -291,6 +291,7 @@ class StoryText extends StatelessWidget {
         style: style,
         strut: strut,
         scaler: MediaQuery.textScalerOf(context),
+        pixelRatio: MediaQuery.devicePixelRatioOf(context),
         direction: Directionality.of(context),
         locale: Localizations.maybeLocaleOf(context),
         placeholders: inlinePadding == 0
@@ -322,6 +323,7 @@ typedef _StoryMetrics = ({
   TextStyle style,
   StrutStyle strut,
   TextScaler scaler,
+  double pixelRatio,
   TextDirection direction,
   Locale? locale,
 });
@@ -337,7 +339,9 @@ typedef _StoryMetrics = ({
 // pixels (a 13px / 1.8 line is 23, not 23.4) and splits the leading over the
 // fractional metrics, so its first baseline sits up to 1px lower and each
 // further line drifts by L - round(L). This box puts the first baseline where
-// Blink does and paints every further line at its own CSS offset.
+// Blink does and paints every further line at its own CSS offset. Blink also
+// paints each line with its baseline on a whole device pixel, wherever the
+// fractional boxes above have pushed the block; so does this box.
 class _StoryLineBox extends SingleChildRenderObjectWidget {
   const _StoryLineBox({required this.metrics, required super.child});
   final _StoryMetrics metrics;
@@ -454,9 +458,23 @@ class _RenderStoryLineBox extends RenderShiftedBox {
   void paint(PaintingContext context, Offset offset) {
     final child = this.child!;
     final origin = (child.parentData! as BoxParentData).offset;
+    // The box's own top in the view; line i has its baseline at
+    // top + baseline + i * line, which Blink rounds to a device pixel.
+    final top = localToGlobal(Offset.zero).dy;
+    final ratio = _metrics.pixelRatio;
+    double snap(int i) {
+      final y = top + baseline + i * line;
+      return (y * ratio).roundToDouble() / ratio - y;
+    }
+
+    // To 1/1024px, so that equal targets get equal paint offsets whatever
+    // floating-point path led to them.
+    Offset exact(Offset value) =>
+        Offset(value.dx, (value.dy * 1024).roundToDouble() / 1024);
+
     if (_lines < 2) {
       _disposeClips(0);
-      context.paintChild(child, offset + origin);
+      context.paintChild(child, exact(offset + origin + Offset(0, snap(0))));
       return;
     }
     // Flutter's whole-pixel line, as every line of a forced strut is equal.
@@ -467,7 +485,7 @@ class _RenderStoryLineBox extends RenderShiftedBox {
       _clips.add(LayerHandle<ClipRectLayer>());
     }
     for (var i = 0; i < _lines; i++) {
-      final drift = i * (line - pitch);
+      final drift = i * (line - pitch) + snap(i);
       final top = origin.dy + i * pitch + drift;
       _clips[i].layer = context.pushClipRect(
         needsCompositing,
@@ -478,8 +496,10 @@ class _RenderStoryLineBox extends RenderShiftedBox {
           far,
           i == _lines - 1 ? far : top + pitch,
         ),
-        (context, offset) =>
-            context.paintChild(child, offset + origin + Offset(0, drift)),
+        (context, offset) => context.paintChild(
+          child,
+          exact(offset + origin + Offset(0, drift)),
+        ),
         oldLayer: _clips[i].layer,
       );
     }

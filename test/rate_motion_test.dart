@@ -55,13 +55,18 @@ void main() {
     await t.pump();
     expect(scale(1), 1);
     expect(scale(2), 1);
-    expect(scale(3), 1.0);
+    // Reference keyframes: .55 at the start of a star's own step, 1.15 at
+    // 60% (210ms), 1 at the end; stars 4 and 5 wait 60ms and 120ms.
+    expect(scale(3), closeTo(.55, .0001));
     expect(scale(4), 1.0);
     expect(scale(5), 1.0);
     await t.pump(const Duration(milliseconds: 60));
-    expect(scale(3), greaterThan(1.0));
-    expect(scale(4), 1.0);
-    await t.pump(const Duration(milliseconds: 290));
+    expect(scale(3), inExclusiveRange(.55, 1.15));
+    expect(scale(4), closeTo(.55, .0001));
+    expect(scale(5), 1.0);
+    await t.pump(const Duration(milliseconds: 150));
+    expect(scale(3), closeTo(1.15, .0001));
+    await t.pump(const Duration(milliseconds: 140));
     expect(scale(3), closeTo(1, .0001));
     expect(scale(4), greaterThan(1));
     await t.pump(const Duration(milliseconds: 120));

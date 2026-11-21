@@ -202,4 +202,88 @@ void main() {
       );
     }
   });
+
+  testWidgets('a line under fractional boxes is painted on whole pixels', (
+    t,
+  ) async {
+    // Blink rounds each text origin to a device pixel: the second Upload tip
+    // sits 0.1875px down (one 19.1875px tip above it) and is drawn exactly as
+    // the first is.
+    const key = ValueKey('text');
+    t.view.devicePixelRatio = 1;
+    Future<List<int>> pixels(double top) async {
+      await t.pumpWidget(
+        MaterialApp(
+          theme: galleryTheme(),
+          home: Align(
+            alignment: Alignment.topLeft,
+            child: RepaintBoundary(
+              key: key,
+              child: Container(
+                color: const Color(0xFFFFFFFF),
+                width: 120,
+                height: 40,
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.only(top: top),
+                child: const DefaultTextStyle(
+                  style: TextStyle(
+                    fontFamily: 'Nunito',
+                    fontFamilyFallback: ['IslandGallerySans'],
+                    fontSize: 12,
+                    height: 1.6,
+                    color: Color(0xFF000000),
+                  ),
+                  child: StoryText('支持 accept'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+      final boundary = t.renderObject<RenderRepaintBoundary>(find.byKey(key));
+      final image = await t.runAsync(() => boundary.toImage());
+      final data = await t.runAsync(
+        () => image!.toByteData(format: ui.ImageByteFormat.rawRgba),
+      );
+      image!.dispose();
+      return data!.buffer.asUint8List().toList();
+    }
+
+    final whole = await pixels(4);
+    expect(await pixels(4.1875), whole);
+    expect(await pixels(4.4), whole);
+    // Past the half pixel the line moves one row down.
+    final next = await pixels(5);
+    expect(next, isNot(whole));
+    expect(await pixels(4.6), next);
+  });
+
+  testWidgets('NoData default title and balanced description follow the '
+      'reference', (t) async {
+    await pumpPage(t, '/no-data', 1440);
+    // Library-owned default title, 16px / 1.5: baseline 17 in its 24px box,
+    // then the 8px gap to the description.
+    const description = '这里还没有记录，新的故事可以从现在开始。';
+    final title = find.descendant(
+      of: find.widgetWithText(IslandNoData, description),
+      matching: find.text('暂无数据'),
+    );
+    final paragraph = t.renderObject<RenderParagraph>(
+      find.descendant(of: title, matching: find.byType(RichText)),
+    );
+    final baseline =
+        t.getTopLeft(title).dy +
+        paragraph.getDryBaseline(
+          paragraph.constraints,
+          TextBaseline.alphabetic,
+        )!;
+    expect(
+      t.getTopLeft(storyBox(description)).dy - baseline,
+      moreOrLessEquals(24 - 17 + 8, epsilon: .01),
+    );
+    // `text-wrap: balance`: two lines of ten 13px characters, as the
+    // reference breaks them, not eighteen and two.
+    expect(t.getSize(storyBox(description)), Size(130, 2 * cssLine(13, 1.8)));
+  });
 }

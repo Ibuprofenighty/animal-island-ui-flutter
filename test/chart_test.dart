@@ -192,11 +192,68 @@ void main() {
           .isFocused,
       ui.Tristate.isTrue,
     );
+    final focusRing =
+        (paints..rect(
+              color: const Color(0xff04a195),
+              style: PaintingStyle.stroke,
+              strokeWidth: 2,
+            ))
+            as Matcher;
+    bool ring() => find
+        .descendant(
+          of: find.byType(IslandChart),
+          matching: find.byType(CustomPaint),
+        )
+        .evaluate()
+        .any((e) => focusRing.matches(e.renderObject, {}));
+    expect(ring(), isTrue);
     await t.sendKeyEvent(LogicalKeyboardKey.escape);
     await t.pumpAndSettle();
     expect(find.text('周二'), findsNothing);
     expect(find.text('点击锁定读数'), findsNothing);
+    // Reference: Escape closes the reading; the mark keeps focus and its
+    // focus-visible ring, and the next arrow goes on from it.
+    expect(ring(), isTrue);
+    expect(
+      t
+          .getSemantics(find.bySemanticsLabel('本周，周二，20'))
+          .flagsCollection
+          .isFocused,
+      ui.Tristate.isTrue,
+    );
+    await t.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await t.pumpAndSettle();
+    expect(find.text('周一'), findsOneWidget);
+    expect(ring(), isTrue);
     semantics.dispose();
+  });
+
+  testWidgets('a pointer press on the restore control leaves no legend '
+      'entry focused', (t) async {
+    await t.pumpWidget(
+      chartHost(
+        IslandChart(
+          data: IslandChartData.column(
+            categories: const ['周一', '周二'],
+            series: [
+              IslandChartSeries.values('本周', [10, 20]),
+              IslandChartSeries.values('上周', [8, 16]),
+            ],
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    await t.tap(find.text('上周'));
+    await t.pumpAndSettle();
+    expect(FocusManager.instance.primaryFocus, isNot(isA<FocusScopeNode>()));
+    await t.tap(find.text('恢复全部图例'));
+    await t.pumpAndSettle();
+    expect(find.text('恢复全部图例'), findsNothing);
+    // The reference leaves focus on the document: no entry stays focused, so
+    // no series stays highlighted once the pointer has left.
+    expect(FocusManager.instance.primaryFocus, isA<FocusScopeNode>());
+    expect(t.takeException(), isNull);
   });
 
   testWidgets('ring shares follow visible items; legends restore; custom '
@@ -975,8 +1032,53 @@ void main() {
     final cjk = await header('岛屿柱状图', '每种水果独立配色，直接标注采收数量。');
     final mixed = await header('彩色单柱 · Fruit 2026', '将量程设为 0–5，适配 Latin 数据。');
     expect(mixed, cjk);
-    // Reference `.description` fixed `line-height: 1.7` at 12px.
+    // Reference `.description` fixed `line-height: 1.7` at 12px: the
+    // paragraph's own strut line; its CSS box is checked below.
     expect(cjk.height, closeTo(12 * 1.7, 0.5));
+  });
+
+  testWidgets('a wrapped description keeps the CSS 20.390625px line pitch', (
+    t,
+  ) async {
+    final description = List.filled(40, 'island').join(' ');
+    Future<double> height(double width) async {
+      await t.pumpWidget(
+        chartHost(
+          IslandChart(
+            description: description,
+            data: IslandChartData.column(
+              series: [
+                IslandChartSeries.values('a', [10]),
+              ],
+            ),
+          ),
+          width: width,
+        ),
+      );
+      await t.pumpAndSettle();
+      return t.getSize(find.text(description)).height;
+    }
+
+    final lines = <int>{};
+    for (final width in [683.0, 420.0, 300.0]) {
+      final paragraph = await height(width);
+      // The paragraph itself keeps whole 20px lines; its box is CSS lines.
+      expect(paragraph % 20, 0, reason: '$width');
+      final count = paragraph ~/ 20;
+      lines.add(count);
+      final box = t.getSize(
+        find
+            .ancestor(
+              of: find.text(description),
+              matching: find.byType(Padding),
+            )
+            .first,
+      );
+      expect(box.height, 6 + count * 20.390625, reason: '$width');
+    }
+    expect(lines.length, 3);
+    expect(lines.reduce((a, b) => a < b ? a : b), greaterThan(1));
+    expect(t.takeException(), isNull);
   });
 
   testWidgets('a map region without data names itself 暂无数据 on hover and '

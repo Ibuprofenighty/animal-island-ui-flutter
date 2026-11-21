@@ -179,6 +179,9 @@ class _IslandChartState extends State<IslandChart>
   final _hidden = <String>{};
   String? _activeKey, _focusedKey, _selectedKey, _legendFocus, _focusOwner;
   bool _focusVisible = false, _pointerFocus = false, _overMark = false;
+
+  /// Escape closed the reading of the focused mark; focus and its ring stay.
+  bool _dismissed = false;
   bool _detailsOpen = false;
   final _nodes = <String, FocusNode>{};
   final _scroll = ScrollController();
@@ -286,6 +289,7 @@ class _IslandChartState extends State<IslandChart>
     final key = mark.identity;
     setState(() {
       _activeKey = key;
+      _dismissed = false;
       if (widget.selectable) _selectedKey = _selectedKey == key ? null : key;
     });
     widget.onDataActivate?.call(mark.point.event);
@@ -343,6 +347,7 @@ class _IslandChartState extends State<IslandChart>
       _clearActive();
       _focusedKey = target;
       _focusVisible = true;
+      _dismissed = false;
     });
     _node(target).requestFocus();
     return KeyEventResult.handled;
@@ -440,7 +445,13 @@ class _IslandChartState extends State<IslandChart>
         onKeyEvent: (_, event) {
           if (event is KeyDownEvent &&
               event.logicalKey == LogicalKeyboardKey.escape) {
-            setState(_clearActive);
+            // Reference: the tooltip closes, the mark keeps focus and its
+            // `:focus-visible` ring.
+            setState(() {
+              _activeKey = null;
+              _selectedKey = null;
+              _dismissed = true;
+            });
           }
           return KeyEventResult.ignored;
         },
@@ -550,7 +561,11 @@ class _IslandChartState extends State<IslandChart>
     final active =
         selected ??
         marks
-            .where((m) => m.identity == (_activeKey ?? _focusedKey))
+            .where(
+              (m) =>
+                  m.identity ==
+                  (_activeKey ?? (_dismissed ? null : _focusedKey)),
+            )
             .firstOrNull;
     final related = active == null
         ? const <_Mark>[]
@@ -692,10 +707,28 @@ class _IslandChartState extends State<IslandChart>
         ? marks.where((m) => m.identity == _focusedKey).firstOrNull
         : null;
 
-    void restoreAll() => setState(() {
-      _hidden.clear();
-      _clearActive();
-    });
+    void restoreAll() {
+      // The restore control goes away with the last hidden entry. After a
+      // pointer press focus is dropped with it, as the reference leaves it on
+      // the document: handing it back to the last legend entry would leave
+      // that series highlighted with no visible focus. Keyboard focus keeps
+      // its place in the legend.
+      final focus = FocusManager.instance.primaryFocus;
+      if (FocusManager.instance.highlightMode == FocusHighlightMode.touch &&
+          focus?.context != null) {
+        var inside = false;
+        focus!.context!.visitAncestorElements((element) {
+          inside = element == context;
+          return !inside;
+        });
+        if (inside) focus.unfocus(disposition: UnfocusDisposition.scope);
+      }
+      setState(() {
+        _hidden.clear();
+        _clearActive();
+        _legendFocus = null;
+      });
+    }
 
     final canvas = MouseRegion(
       cursor: _overMark ? SystemMouseCursors.click : MouseCursor.defer,
@@ -951,15 +984,20 @@ class _IslandChartState extends State<IslandChart>
                   if (description != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      // Reference `.description` `line-height: 1.7`: a fixed
-                      // line box placed by the primary font, whatever
+                      // Reference `.description` `line-height: 1.7`: lines
+                      // of 20.390625px placed by the primary font, whatever
                       // fallback font a run uses.
-                      child: Text(
-                        description,
-                        style: secondary,
-                        strutStyle: StrutStyle.fromTextStyle(
-                          secondary,
-                          forceStrutHeight: true,
+                      child: CssLineHeightText(
+                        line: cssLineHeight(context, secondary),
+                        baseline: cssFirstBaseline(context, secondary),
+                        pixelRatio: MediaQuery.devicePixelRatioOf(context),
+                        child: Text(
+                          description,
+                          style: secondary,
+                          strutStyle: StrutStyle.fromTextStyle(
+                            secondary,
+                            forceStrutHeight: true,
+                          ),
                         ),
                       ),
                     ),
@@ -1097,6 +1135,7 @@ class _IslandChartState extends State<IslandChart>
               _focusOwner = identity;
               _activeKey = null;
               _focusedKey = identity;
+              _dismissed = false;
               _focusVisible = !_pointerFocus;
               _pointerFocus = false;
             } else {

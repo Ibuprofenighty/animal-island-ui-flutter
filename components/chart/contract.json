@@ -50,13 +50,13 @@
       "id": "chart.lock",
       "given": "selectable charts",
       "when": "Click or Enter/Space a reading, then hover elsewhere, press an arrow key, Escape, or click empty space",
-      "then": "The lock keeps its reading during hover; activating it again, an arrow key, Escape, empty space or 解除锁定 release it; onDataActivate fires on every activation."
+      "then": "The lock keeps its reading during hover; activating it again, an arrow key, Escape, empty space or 解除锁定 release it; Escape closes the reading and leaves the focused mark its focus ring; onDataActivate fires on every activation."
     },
     {
       "id": "chart.legend",
       "given": "Series legends (Cartesian, radar, gauge) and item legends (pie, ring, rose, funnel, word, map)",
       "when": "Hover/focus or toggle entries",
-      "then": "Hover/focus dims other series or items; toggling hides/shows data and clears readings; hiding everything shows 所有图例已隐藏 with a restore action and keeps the data table."
+      "then": "Hover/focus dims other series or items; toggling hides/shows data and clears readings; hiding everything shows 所有图例已隐藏 with a restore action and keeps the data table; a pointer press on a restore action leaves no legend entry focused."
     },
     {
       "id": "chart.empty",

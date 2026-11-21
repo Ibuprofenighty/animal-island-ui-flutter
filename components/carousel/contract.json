@@ -54,8 +54,8 @@
     },
     {
       "id": "carousel.reference-transparency",
-      "given": "The3 Gallery photos,1440/375, light/dark hosts and normal300ms transitions including wrap",
-      "when": "Capture original reference-gradient rendering at0/16/150/300ms and measure actual caption/control pixels",
+      "given": "The3 Gallery photos,1440/375, light/dark hosts and normal350ms transitions including wrap",
+      "when": "Capture original reference-gradient rendering at0/16/175/350ms and measure actual caption/control pixels",
       "then": "Compare the Gallery scene with the current presentation/contrast authority at docs/DESIGN.md#home-host-and-photo-gradient. Record actual caption/control ratios under its named exception without turning failed ratios intoPASS. Component-owned controls/focus and opaque caller-content ownership retain their separate contracts."
     },
     {

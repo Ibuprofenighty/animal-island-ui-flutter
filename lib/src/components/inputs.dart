@@ -296,6 +296,8 @@ class _IslandTextFieldState extends State<IslandTextField> {
                                 duration: reduced
                                     ? Duration.zero
                                     : const Duration(milliseconds: 150),
+                                // Reference `transition: all .15s`.
+                                curve: Curves.ease,
                                 width: 20,
                                 height: 20,
                                 alignment: Alignment.center,

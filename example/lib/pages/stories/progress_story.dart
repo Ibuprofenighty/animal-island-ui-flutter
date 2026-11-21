@@ -181,6 +181,13 @@ class _ProgressStoryState extends State<ProgressStory> {
                   ),
                 ),
                 child: Slider(
+                  // A native range input has no hover or pressed halo; the
+                  // halo stays as the keyboard focus indicator.
+                  overlayColor: WidgetStateProperty.resolveWith(
+                    (states) => states.contains(WidgetState.focused)
+                        ? null
+                        : Colors.transparent,
+                  ),
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   value: percent,
                   min: 0,

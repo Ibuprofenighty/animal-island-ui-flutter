@@ -7,6 +7,7 @@ import '../foundation/recipes/no_data.dart';
 import '../foundation/size.dart';
 import '../foundation/theme.dart';
 import '../internal/content_scope.dart';
+import '../internal/css_line_box.dart';
 
 /// Built-in empty-state artwork and default title.
 enum IslandNoDataVariant {
@@ -96,13 +97,16 @@ class IslandNoData extends StatelessWidget {
   /// Padding, artwork area and type scale.
   final IslandSize size;
 
-  /// Title slot; null shows the localized default of [variant].
+  /// Title slot; null shows the localized default of [variant]. Wrapped
+  /// lines are balanced: the title takes the narrowest width that keeps its
+  /// line count.
   final Widget? title;
 
   /// Whether the title row is shown; false hides the default title too.
   final bool showTitle;
 
-  /// Secondary explanation below the title; hidden when null.
+  /// Secondary explanation below the title; hidden when null. At most 32
+  /// "0" advances wide; wrapped lines are balanced as the title's are.
   final Widget? description;
 
   /// Custom decorative icon in the compact square area (32/52/64), scaled to
@@ -131,6 +135,13 @@ class IslandNoData extends StatelessWidget {
       leadingDistribution: TextLeadingDistribution.even,
       color: colors.description,
     );
+    final titleStyle = TextStyle(
+      fontSize: m.title,
+      height: 1.5,
+      leadingDistribution: TextLeadingDistribution.even,
+      fontWeight: FontWeight.w700,
+      color: colors.title,
+    );
     final children = <Widget>[
       if (showIcon) ...[
         ExcludeSemantics(child: _artwork(m, colors)),
@@ -142,20 +153,24 @@ class IslandNoData extends StatelessWidget {
       ],
       if (showTitle)
         ContentScope(
-          textStyle: TextStyle(
-            fontSize: m.title,
-            height: 1.5,
-            leadingDistribution: TextLeadingDistribution.even,
-            fontWeight: FontWeight.w700,
-            color: colors.title,
-          ),
-          child: _centred(
-            title ??
-                Text(
-                  variant == IslandNoDataVariant.search
-                      ? strings.noResults
-                      : strings.noData,
-                ),
+          textStyle: titleStyle,
+          child: CssBalancedWidth(
+            child: _centred(
+              title ??
+                  // Library-owned text: the reference line box, where the
+                  // Chinese default would otherwise sit 2px low.
+                  CssBaselineShift(
+                    baseline: cssFirstBaseline(
+                      context,
+                      DefaultTextStyle.of(context).style.merge(titleStyle),
+                    ),
+                    child: Text(
+                      variant == IslandNoDataVariant.search
+                          ? strings.noResults
+                          : strings.noData,
+                    ),
+                  ),
+            ),
           ),
         ),
       if (description != null)
@@ -167,7 +182,7 @@ class IslandNoData extends StatelessWidget {
             ),
             child: ContentScope(
               textStyle: descriptionStyle,
-              child: _centred(description!),
+              child: CssBalancedWidth(child: _centred(description!)),
             ),
           ),
         ),

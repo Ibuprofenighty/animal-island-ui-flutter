@@ -18,7 +18,7 @@
     "async_behavior": "None; no requests, timers or loading logic.",
     "lifecycle": "None owned.",
     "styling": "One foundation-owned recipe (lib/src/foundation/recipes/no_data.dart). Reference palette (default light tokens or a declared light Card paper): title #794f27 (--animal-text-color), description #9f927d deepened in its own OKLCH hue to #7a6d59 (registered difference, 4.5:1 on every light paper), bordered fill #f8f8f0 (--animal-bg-color) and decorative outline #e8e2d6 (--animal-border-color-light). Dark and customized token sets use ink, muted, paper and outline. Built-in artwork keeps the icon library's native palette and #2a2a2a currentColor ink in every theme and is never recoloured (decorative). Static: no motion.",
-    "performance": "One text measurement per build for the 32ch description width. Platform profiling required before release.",
+    "performance": "One text measurement per build for the 32ch description width and one for the default title baseline; a wrapping title or description is laid out about ten times per layout to find its balanced width. Platform profiling required before release.",
     "migration": "New component; no previous Flutter API."
   },
   "scenarios": [

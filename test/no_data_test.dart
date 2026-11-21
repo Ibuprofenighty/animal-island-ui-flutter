@@ -311,6 +311,70 @@ void main() {
     expect(desc.height, greaterThan(13 * 1.8 * 1.5));
   });
 
+  testWidgets('wrapped title and description lines are balanced', (t) async {
+    double lineWidth(String text, String of) {
+      final style =
+          (t.renderObject<RenderParagraph>(find.text(of)).text as TextSpan)
+              .style!;
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      final width = painter.width;
+      painter.dispose();
+      return width;
+    }
+
+    // Reference `text-wrap: balance`: eight 4-letter words pass the 32ch
+    // limit. Greedy lines would be 6 + 2 words; the balanced box is the
+    // narrowest that still takes two lines, 4 + 4 words.
+    final words = List.filled(8, 'aaaa').join(' ');
+    await t.pumpWidget(
+      _host(IslandNoData(description: Text(words)), width: 900),
+    );
+    final root = t.getRect(find.byType(IslandNoData));
+    final desc = t.getRect(find.text(words));
+    final half = lineWidth(List.filled(4, 'aaaa').join(' '), words);
+    expect(lineWidth(words, words), greaterThan(32 * lineWidth('0', words)));
+    expect(desc.width, inInclusiveRange(half, half + 1));
+    expect(desc.center.dx, closeTo(root.center.dx, .5));
+    final single = t.getSize(find.text(words)).height;
+
+    // One line keeps its own width and half the height.
+    await t.pumpWidget(
+      _host(
+        const IslandNoData(
+          title: SizedBox(
+            key: ValueKey('bar'),
+            width: double.infinity,
+            height: 4,
+          ),
+          description: Text('aaaa'),
+        ),
+        width: 900,
+      ),
+    );
+    expect(t.getSize(find.text('aaaa')).width, lineWidth('aaaa', 'aaaa'));
+    expect(t.getSize(find.text('aaaa')).height, single / 2);
+    // A box that does not wrap keeps the content width.
+    expect(
+      t.getSize(find.byKey(const ValueKey('bar'))).width,
+      t.getSize(find.byType(IslandNoData)).width - 48,
+    );
+
+    // The title balances inside the content width (150 - 2 * 24): three
+    // words do not fit on one line, two do.
+    await t.pumpWidget(
+      _host(const IslandNoData(title: Text('aa aa aa aa')), width: 150),
+    );
+    final title = t.getRect(find.text('aa aa aa aa'));
+    final pair = lineWidth('aa aa', 'aa aa aa aa');
+    expect(lineWidth('aa aa aa', 'aa aa aa aa'), greaterThan(150 - 48));
+    expect(title.width, inInclusiveRange(pair, pair + 1));
+    expect(title.height, 2 * 24);
+    expect(t.takeException(), isNull);
+  });
+
   testWidgets('a custom icon follows the title ink; built-in art keeps its '
       'native ink', (t) async {
     await t.pumpWidget(

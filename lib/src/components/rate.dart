@@ -140,14 +140,15 @@ class _IslandRateState extends State<IslandRate>
 
   double _scale(int index) {
     if (_pop.value == 1 || index < _burstFrom || index >= _burstTo) return 1;
-    final elapsed = _pop.value * _pop.duration!.inMilliseconds;
-    final progress = ((elapsed - (index - _burstFrom) * 60) / 350).clamp(
-      0.0,
-      1.0,
-    );
+    // Reference `rate-pop`: scale .55 -> 1.15 at 60% -> 1 over 350ms, each
+    // segment eased; a star keeps its size until its own 60ms step starts.
+    final elapsed =
+        _pop.value * _pop.duration!.inMilliseconds - (index - _burstFrom) * 60;
+    if (elapsed < 0) return 1;
+    final progress = (elapsed / 350).clamp(0.0, 1.0);
     const curve = Cubic(.4, 0, .2, 1);
     return progress < .6
-        ? 1 + .15 * curve.transform(progress / .6)
+        ? .55 + .6 * curve.transform(progress / .6)
         : 1.15 - .15 * curve.transform((progress - .6) / .4);
   }
 

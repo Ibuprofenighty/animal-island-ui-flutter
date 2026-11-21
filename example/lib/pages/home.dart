@@ -78,14 +78,27 @@ class GalleryHome extends StatefulWidget {
   State<GalleryHome> createState() => _GalleryHomeState();
 }
 
+const _cycle = 4290;
+
 class _GalleryHomeState extends State<GalleryHome>
     with SingleTickerProviderStateMixin {
   final scroll = ScrollController();
   late final motion = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 30),
+    // The icons float on 5.5s, 6.5s and 7.5s cycles (reference `iconFloat`)
+    // and the scroll hint bounces every 2s; 4290s is their common period, so
+    // the repeat has no phase jump.
+    duration: const Duration(seconds: _cycle),
   );
   List<_Giant>? giants;
+
+  /// Reference `iconFloat ${5.5 + i % 3}s ease-in-out ${-i * 1.2}s infinite`:
+  /// 0 -> -8px -> 0, each half eased, started `i * 1.2`s into its cycle.
+  static double _float(double value, int i) {
+    final phase = (value * _cycle + i * 1.2) / (5.5 + i % 3) % 1;
+    final half = phase < .5 ? phase * 2 : (1 - phase) * 2;
+    return -8 * Curves.easeInOut.transform(half);
+  }
 
   /// Reference hint lifecycle: visible until the page scrolls past 70px.
   bool showScrollHint = true;
@@ -341,17 +354,7 @@ class _GalleryHomeState extends State<GalleryHome>
                           child: Transform.rotate(
                             angle: giants![i].angle,
                             child: Transform.translate(
-                              offset: Offset(
-                                0,
-                                -4 +
-                                    math.cos(
-                                          (motion.value * 30 - i * 1.2) /
-                                              (5.5 + i % 3) *
-                                              math.pi *
-                                              2,
-                                        ) *
-                                        4,
-                              ),
+                              offset: Offset(0, _float(motion.value, i)),
                               child: Opacity(
                                 opacity: .68,
                                 child: IslandIcon(
@@ -500,7 +503,8 @@ class _GalleryHomeState extends State<GalleryHome>
                                 child: AnimatedBuilder(
                                   animation: motion,
                                   builder: (_, child) {
-                                    final phase = (motion.value * 30 % 2) / 2;
+                                    final phase =
+                                        (motion.value * _cycle % 2) / 2;
                                     final rise = Curves.easeInOut.transform(
                                       phase < .5 ? phase * 2 : 2 - phase * 2,
                                     );
