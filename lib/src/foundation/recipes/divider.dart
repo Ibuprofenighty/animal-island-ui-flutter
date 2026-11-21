@@ -8,6 +8,9 @@ abstract final class DividerColors {
   static const waveYellow = Primitive.yellow867;
   static const squiggle = Primitive.teal750;
 
+  /// Decorative double-layer ocean wave.
+  static const oceanWave = Primitive.teal750;
+
   /// Dash between repeated icons.
   static const iconGap = Primitive.sand786;
 }

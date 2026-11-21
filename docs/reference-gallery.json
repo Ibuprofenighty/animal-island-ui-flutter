@@ -2,11 +2,16 @@
   "schema_version": 1,
   "reference": {
     "url": "https://guokaigdg.github.io/animal-island-ui/#/",
-    "observed_version": "2.2.1",
-    "observed_date": "2026-10-13",
+    "observed_version": "4.0.0",
+    "observed_date": "2026-11-17",
     "observed_framework": "React",
     "target_framework": "Flutter",
-    "pinned_commit": "79810934ee9d08c22044d34e06f8bba40391207b"
+    "pinned_commit": "6ec8614cbfe3aa57c801285e876080487105617b",
+    "newer_upstream": {
+      "version": "4.0.1",
+      "observed_date": "2026-11-17",
+      "note": "Published after the pin. v4.0.0..v4.0.1 changes component logic only (Calendar, Countdown, Drawer, Modal, Notification, Pagination, Select, Time, TimePicker, Upload .tsx; styles/fonts.less) and no demo page. The live site may serve it; for these components the pinned 4.0.0 source is the authority."
+    }
   },
   "authority": "The pinned reference remains the layout, typography, shape, content and interaction baseline. On 2026-10-15 the user authorized documented accessibility color differences within one Animal Crossing product palette; keep the existing 4.5 text and 3.0 necessary-graphic budgets, preserve historical failures, and verify actual state/background pairs on Windows and Web. No parallel palette, runtime contrast guessing or opaque-child rewriting. One readable motion policy: necessary text, numbers, icons, actions and their backing/boundaries stay opaque and contrast-compliant on every entry, exit, reversal and interrupted frame. Atomic paired colors replace unsafe color interpolation. Modest displacement, scale and decorative motion remain; decoration must not invalidate the actual content background. Reduced motion settles the same state machine. One content subtree and lifecycle per owner; no animation clones, opaque-child inspection, parallel variants or transition contrast exemption. See docs/DESIGN.md. Anchored panels share one actual-Overlay layout owner for Select, DatePicker, TimePicker, Pagination and Tooltip. A fitting reference attachment keeps its position, gap, shape, color and content. Only an overflowing result is moved inside the viewport; the existing available-width constraint applies when content cannot fit. The real child is laid out once, with no post-frame size guessing, cloned content, Gallery override or parallel positioning path. Components retain selection, focus, lifetime and scrolling: Select reveals its active keyboard option; a narrow single calendar scrolls horizontally, range calendars retain their existing horizontal scroll, and short time/long tooltip panels scroll vertically. Explicit opaque child styling and state remain authoritative. This is the user-approved limited usability deviation from the reference overflow defect, not a claim of exact parity or complete platform acceptance. Current Gallery parent layout authority: docs/DESIGN.md#gallery-parent-layout. The2026-10-20 user correction supersedes the old deliberate Select parent overflow; pinned-reference overflow measurements remain historical. Current SDK role, screen-reader coverage and performance limitations are documented in docs/ACCEPTANCE.md. Asset redistribution boundaries are documented in docs/RIGHTS.md. Current Gallery Home/Carousel presentation and named contrast exceptions have one authority: docs/DESIGN.md#home-host-and-photo-gradient. Earlier wrong-host, opaque-caption and safe-gradient records are historical audit evidence, not current rendering instructions. Current same-frame surface sampling authority: docs/DESIGN.md#surface-sampling.\nUser decision2026-10-21: retain original Notification/Tooltip and accept the independently reviewed ink-centroid measurement limitation under docs/DESIGN.md#surface-sampling. Preserve0.25 output-image failures; this is not physical presentation, a new calibrated text model, exact Flutter engine cause, or cleared browser hover/Edge375. Select placeholder Wrap is an authorized narrow-layout usability difference from the fixed reference, whose row does not wrap.",
   "platforms": {
@@ -19,7 +24,7 @@
       "ios"
     ]
   },
-  "component_count": 40,
+  "component_count": 43,
   "groups": {
     "基础": [
       "Title",
@@ -38,6 +43,7 @@
       "Select",
       "DatePicker",
       "TimePicker",
+      "Calendar",
       "Checkbox",
       "Radio",
       "Rate",
@@ -52,6 +58,7 @@
       "Tooltip",
       "Progress",
       "Skeleton",
+      "NoData",
       "BackTop"
     ],
     "数据展示": [
@@ -68,6 +75,9 @@
       "Time",
       "Countdown",
       "CountUp"
+    ],
+    "图表统计": [
+      "Chart"
     ]
   },
   "guide_pages": [
@@ -247,7 +257,7 @@
       "typewriter": true
     }
   },
-  "acceptance": "All 40 component pages and reference home/guide must be inventoried. Current code is not visually accepted. Previously passing engineering tests do not establish reference parity.",
+  "acceptance": "All 43 component pages and reference home/guide must be inventoried. Current code is not visually accepted. Previously passing engineering tests do not establish reference parity.",
   "implementation_constraint": "Write new Dart implementation; do not copy the old local Flutter library implementation. Match observed design and behavior; do not substitute generic Material styling.",
   "asset_status": "Reference guide describes MIT and naive-icons. Verify actual asset/font licenses and retain provenance before packaging. Current custom 12-glyph set is not accepted as a visual substitute.",
   "recent_observations": [
@@ -315,6 +325,30 @@
         "selected insect"
       ],
       "notes": "Small tab37px; 16px header padding; selected marker brown while label cream. leafAnimation is a no-op in pinned source."
+    },
+    {
+      "route": "select",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "states": [
+        "initial",
+        "first trigger open"
+      ],
+      "notes": "Live site 2026-11-17. Triggers (x,y,w,h): 313,338,140,41; 501,338; 313,500; 314,635; 1218,635; 313,770; 313,904; 469,904; search 313,1038,213,39 and 542,1038. Normal panel of the first trigger 332,385,102,229; second option 332,438,102,41. The variant demo's normal Select and the basic demo share one value."
+    },
+    {
+      "route": "select",
+      "viewport": [
+        375,
+        812
+      ],
+      "states": [
+        "initial",
+        "first trigger open"
+      ],
+      "notes": "Live site 2026-11-17. Triggers 57,376; 57,499; 57,661; 58,796; 214,796 (overflows its box); 57,931. Normal panel of the first trigger 76,423,102,229."
     }
   ]
 }

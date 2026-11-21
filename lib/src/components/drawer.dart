@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../internal/light_surface_scope.dart';
 import '../foundation/recipes/drawer.dart';
 import '../foundation/theme.dart';
@@ -115,7 +116,7 @@ class IslandDrawer extends StatefulWidget {
     this.height = 300,
     this.maskClosable = true,
     this.pushBackground = true,
-    this.closeLabel = '关闭',
+    this.closeLabel,
     this.semanticLabel,
   });
   final bool open, maskClosable, pushBackground;
@@ -124,7 +125,9 @@ class IslandDrawer extends StatefulWidget {
   final Widget? title, footer;
   final IslandDrawerPlacement placement;
   final double width, height;
-  final String closeLabel;
+
+  /// Name of the close button; null uses [IslandLocalizations.close].
+  final String? closeLabel;
   final String? semanticLabel;
   @override
   State<IslandDrawer> createState() => _IslandDrawerState();
@@ -298,6 +301,7 @@ class _IslandDrawerState extends State<IslandDrawer>
   Widget build(BuildContext context) => ViewportOverlay(
     visible: true,
     decorative: !widget.open,
+    followsRoute: true,
     builder: (context) {
       final size = MediaQuery.sizeOf(context);
       final horizontal =
@@ -387,44 +391,71 @@ class _IslandDrawerState extends State<IslandDrawer>
                                   ),
                                 ),
                                 ActionSurface(
-                                  label: widget.closeLabel,
+                                  label:
+                                      widget.closeLabel ??
+                                      IslandLocalizations.of(context).close,
                                   focusNode: closeFocus,
                                   onActivate: widget.onClose,
-                                  builder: (context, states) => Container(
-                                    width: 32,
-                                    height: 32,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color:
-                                          states.contains(WidgetState.hovered)
-                                          ? DrawerColors.closeHoverFill
-                                          : Colors.transparent,
-                                      border:
-                                          states.contains(WidgetState.focused)
-                                          ? Border.all(
-                                              color: IslandTokens.light.focus,
-                                              width: 2,
+                                  // Reference `.close` `transition: all 0.2s`
+                                  // (CSS ease); reduced motion settles.
+                                  builder: (context, states) =>
+                                      AnimatedContainer(
+                                        duration:
+                                            MediaQuery.disableAnimationsOf(
+                                              context,
                                             )
-                                          : null,
-                                    ),
-                                    child: DefaultTextStyle(
-                                      style: DefaultTextStyle.of(context).style
-                                          .copyWith(
-                                            fontSize: 22,
-                                            height: 1,
-                                            color:
-                                                states.contains(
-                                                  WidgetState.hovered,
+                                            ? Duration.zero
+                                            : const Duration(milliseconds: 200),
+                                        curve: Curves.ease,
+                                        width: 32,
+                                        height: 32,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color:
+                                              states.contains(
+                                                WidgetState.hovered,
+                                              )
+                                              ? DrawerColors.closeHoverFill
+                                              : Colors.transparent,
+                                          border:
+                                              states.contains(
+                                                WidgetState.focused,
+                                              )
+                                              ? Border.all(
+                                                  color:
+                                                      IslandTokens.light.focus,
+                                                  width: 2,
                                                 )
-                                                ? DrawerColors.closeHover
-                                                : IslandTokens.light.ink,
+                                              : null,
+                                        ),
+                                        child: AnimatedDefaultTextStyle(
+                                          duration:
+                                              MediaQuery.disableAnimationsOf(
+                                                context,
+                                              )
+                                              ? Duration.zero
+                                              : const Duration(
+                                                  milliseconds: 200,
+                                                ),
+                                          curve: Curves.ease,
+                                          style: DefaultTextStyle.of(context)
+                                              .style
+                                              .copyWith(
+                                                fontSize: 22,
+                                                height: 1,
+                                                color:
+                                                    states.contains(
+                                                      WidgetState.hovered,
+                                                    )
+                                                    ? DrawerColors.closeHover
+                                                    : DrawerColors.close,
+                                              ),
+                                          child: const ExcludeSemantics(
+                                            child: Text('×'),
                                           ),
-                                      child: const ExcludeSemantics(
-                                        child: Text('×'),
+                                        ),
                                       ),
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -440,7 +471,7 @@ class _IslandDrawerState extends State<IslandDrawer>
                                 color: IslandTokens.light.muted,
                               ),
                               child: Align(
-                                alignment: Alignment.topLeft,
+                                alignment: AlignmentDirectional.topStart,
                                 child: widget.child,
                               ),
                             ),
@@ -450,7 +481,7 @@ class _IslandDrawerState extends State<IslandDrawer>
                           Padding(
                             padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                             child: Align(
-                              alignment: Alignment.centerRight,
+                              alignment: AlignmentDirectional.centerEnd,
                               child: widget.footer,
                             ),
                           ),

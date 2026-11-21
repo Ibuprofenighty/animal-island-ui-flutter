@@ -91,6 +91,11 @@ class IslandTable<T> extends StatefulWidget {
   final List<T> rows;
   final Object Function(T record) rowKey;
   final bool striped, showHeader, loading;
+
+  /// Content under the built-in 48px empty chart icon when [rows] is empty
+  /// (reference `emptyText`, a block container since 3.0.0); null shows the
+  /// localized "no data" text. It spans the row width inside the cell
+  /// padding and inherits centred 14px muted text and icon defaults.
   final Widget? empty;
   final IslandTablePagination? pagination;
   final ValueChanged<T>? onRowPressed;
@@ -148,8 +153,11 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
     final strings = IslandLocalizations.of(context);
     Widget content = LayoutBuilder(
       builder: (context, constraints) {
+        // The scroll viewport spans the wrapper's 6px side padding, which
+        // stays inside the scrolled content: reference `.table` overflows
+        // the wrapper's padding box and is cut only at its outer edge.
         final available = constraints.hasBoundedWidth
-            ? constraints.maxWidth
+            ? math.max(0.0, constraints.maxWidth - 12)
             : math.max(widget.minWidth, 600.0);
         final width = math.max(widget.minWidth, available);
         Widget cells({T? record, int index = 0, bool header = false}) => Row(
@@ -194,8 +202,14 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
                             letterSpacing: header ? .28 : 0,
                             color: TableColors.text,
                           ),
+                          // Reference `.headerCell { white-space: nowrap }`:
+                          // the header's unwrapped width is the column's
+                          // min-content, so an auto column never squeezes or
+                          // clips its title; the table scrolls sideways
+                          // instead. Flutter's min intrinsic width ignores
+                          // `softWrap: false`, so the cell reports its max.
                           child: header
-                              ? column.title
+                              ? IntrinsicWidth(child: column.title)
                               : column.cellBuilder(context, record as T, index),
                         ),
                       ),
@@ -264,27 +278,36 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
                         vertical: 60,
                         horizontal: 20,
                       ),
-                      child:
-                          widget.empty ??
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: 16,
-                            children: [
-                              SvgPicture.string(
-                                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#9f927d" fill-opacity="0.5" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>',
-                                width: 48,
-                                height: 48,
-                                excludeFromSemantics: true,
-                              ),
-                              Text(
-                                strings.noData,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: IslandTokens.light.muted,
-                                ),
-                              ),
-                            ],
+                      // Reference `.emptyContent`: the icon always shows and
+                      // `emptyText` (or the custom block) sits beneath it.
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        spacing: 16,
+                        children: [
+                          Center(
+                            child: SvgPicture.string(
+                              '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#9f927d" fill-opacity="0.5" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>',
+                              width: 48,
+                              height: 48,
+                              excludeFromSemantics: true,
+                            ),
                           ),
+                          IconTheme.merge(
+                            data: IconThemeData(
+                              color: IslandTokens.light.muted,
+                            ),
+                            child: DefaultTextStyle.merge(
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: IslandTokens.light.muted,
+                              ),
+                              textAlign: TextAlign.center,
+                              child: widget.empty ?? Text(strings.noData),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -312,14 +335,20 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
         );
         Widget scroll = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: _IntrinsicColumns(
-            geometry: geometry,
-            minimumWidth: width,
-            fixedWidths: [for (final column in widget.columns) column.width],
-            preferredWidths: [
-              for (final column in widget.columns) column.preferredWidth,
-            ],
-            child: table,
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          // Reference `.thead`/`.tbody` paint the surface on the table box,
+          // so a table wider than the wrapper covers its rounded corner.
+          child: ColoredBox(
+            color: TableColors.surface,
+            child: _IntrinsicColumns(
+              geometry: geometry,
+              minimumWidth: width,
+              fixedWidths: [for (final column in widget.columns) column.width],
+              preferredWidths: [
+                for (final column in widget.columns) column.preferredWidth,
+              ],
+              child: table,
+            ),
           ),
         );
         if (widget.maxHeight != null)
@@ -336,7 +365,7 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
         content,
         if (paging != null)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+            padding: const EdgeInsets.fromLTRB(22, 10, 22, 8),
             child: Align(
               alignment: AlignmentDirectional.centerEnd,
               child: IslandPagination(
@@ -356,11 +385,16 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
       ],
     );
     return LightSurfaceScope(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.all(6),
+      // Reference `.wrapper` rounds its background but does not clip: an
+      // overflowing table is cut square at the wrapper's outer edge by the
+      // scroll viewport, not by the rounded corner.
+      child: DecoratedBox(
+        decoration: BoxDecoration(
           color: TableColors.surface,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
           child: Stack(
             children: [
               ExcludeFocus(
@@ -375,6 +409,8 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
               ),
               if (widget.loading)
                 Positioned.fill(
+                  left: 6,
+                  right: 6,
                   child: Semantics(
                     liveRegion: true,
                     label: strings.loading,
@@ -462,7 +498,7 @@ class _SpinnerPainter extends CustomPainter {
       extent * math.pi,
       false,
       Paint()
-        ..color = IslandTokens.light.link
+        ..color = TableColors.spinner
         ..style = PaintingStyle.stroke
         ..strokeWidth = 4
         ..strokeCap = StrokeCap.round,

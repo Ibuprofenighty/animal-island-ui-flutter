@@ -7,6 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 Widget host(Widget child) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   home: IslandDrawerHost(child: Scaffold(body: child)),
 );
 void main() {
@@ -22,6 +25,9 @@ void main() {
     addTearDown(outside.dispose);
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Column(
           children: [
             Focus(focusNode: outside, child: const SizedBox(height: 1)),
@@ -99,6 +105,43 @@ void main() {
     expect(t.takeException(), isNull);
   });
 
+  testWidgets('the close glyph darkens on hover over the reference 0.2s', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      host(
+        IslandDrawer(
+          open: true,
+          onClose: () {},
+          title: const Text('Title'),
+          child: const Text('Body'),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    Color glyph() => t
+        .widget<RichText>(
+          find.descendant(of: find.text('×'), matching: find.byType(RichText)),
+        )
+        .text
+        .style!
+        .color!;
+    // Reference rgba(114, 93, 66, .6) on the panel (2.5:1) deepened in hue
+    // to 3:1 at rest; hover is the opaque #725d42, darker than rest.
+    expect(glyph(), const Color(0xff988b73));
+    final mouse = await t.createGesture(kind: ui.PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: t.getCenter(find.text('×')));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 100));
+    final midway = glyph();
+    expect(midway, isNot(const Color(0xff988b73)));
+    expect(midway, isNot(const Color(0xff725d42)));
+    await t.pump(const Duration(milliseconds: 120));
+    expect(glyph(), const Color(0xff725d42));
+    await t.pumpWidget(const SizedBox());
+  });
+
   testWidgets(
     'sole drawer action keeps primary focus through forward and reverse Tab and activates once',
     (t) async {
@@ -154,6 +197,9 @@ void main() {
         RepaintBoundary(
           key: boundaryKey,
           child: MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             home: MediaQuery(
               data: const MediaQueryData(size: Size(400, 300)),
               child: IslandDrawerHost(
@@ -382,6 +428,9 @@ void main() {
     late StateSetter update;
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(disableAnimations: true),
           child: child!,

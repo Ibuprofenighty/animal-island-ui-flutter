@@ -1,5 +1,5 @@
 {
-  "scope": "Reference observations and unaccepted implementation notes; interface contracts live under components/. Historical draft interfaces remain in the repair archive.",
+  "scope": "Reference observations and unaccepted implementation notes; interface contracts live under components/. Historical draft interfaces remain in the repair archive. Each component's reference.commit, demo_sources and observed_sections record the 2.2.1 pin; the reference is now pinned to 4.0.0 in docs/reference-gallery.json and these entries are not yet re-observed against it. The tests lists name the public-interface tests of the 4.0.0 ports.",
   "components": {
     "avatar": {
       "reference": {
@@ -308,7 +308,8 @@
       },
       "implementation": {
         "tests": [
-          "test/time_components_test.dart"
+          "test/time_components_test.dart",
+          "test/countdown_reminder_test.dart"
         ],
         "status": "IMPLEMENTED_DRAFT",
         "visual_acceptance": "NOT_ACCEPTED"
@@ -370,7 +371,8 @@
       },
       "implementation": {
         "tests": [
-          "test/cursor_test.dart"
+          "test/cursor_test.dart",
+          "test/cursor_selection_test.dart"
         ],
         "status": "IMPLEMENTED_DRAFT",
         "visual_acceptance": "NOT_ACCEPTED"
@@ -407,7 +409,8 @@
       "implementation": {
         "tests": [
           "test/date_picker_test.dart",
-          "test/time_components_test.dart"
+          "test/time_components_test.dart",
+          "test/date_time_format_test.dart"
         ],
         "status": "IMPLEMENTED_DRAFT",
         "visual_acceptance": "NOT_ACCEPTED"
@@ -631,7 +634,8 @@
       },
       "implementation": {
         "tests": [
-          "test/loading_test.dart"
+          "test/loading_test.dart",
+          "test/loading_circle_test.dart"
         ],
         "status": "IMPLEMENTED_DRAFT",
         "visual_acceptance": "NOT_ACCEPTED"
@@ -754,6 +758,7 @@
       "implementation": {
         "tests": [
           "test/components_test.dart",
+          "test/progress_appearance_test.dart",
           "example/test/widget_test.dart"
         ],
         "status": "IMPLEMENTED_DRAFT",
@@ -850,7 +855,8 @@
       },
       "implementation": {
         "tests": [
-          "test/select_test.dart"
+          "test/select_test.dart",
+          "test/select_variant_test.dart"
         ],
         "status": "IMPLEMENTED_DRAFT",
         "visual_acceptance": "NOT_ACCEPTED"
@@ -1017,7 +1023,8 @@
       },
       "implementation": {
         "tests": [
-          "test/time_components_test.dart"
+          "test/time_components_test.dart",
+          "test/date_time_format_test.dart"
         ],
         "status": "IMPLEMENTED_DRAFT",
         "visual_acceptance": "NOT_ACCEPTED"
@@ -1050,7 +1057,8 @@
       },
       "implementation": {
         "tests": [
-          "test/time_components_test.dart"
+          "test/time_components_test.dart",
+          "test/date_time_format_test.dart"
         ],
         "status": "IMPLEMENTED_DRAFT",
         "visual_acceptance": "NOT_ACCEPTED"
@@ -1173,6 +1181,7 @@
       "implementation": {
         "tests": [
           "test/upload_test.dart",
+          "test/upload_progress_test.dart",
           "test/upload_http_test.dart",
           "test/upload_preview_test.dart"
         ],

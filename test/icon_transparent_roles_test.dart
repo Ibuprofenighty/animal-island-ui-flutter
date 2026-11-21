@@ -9,43 +9,33 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'foundation_test.dart' show contrast;
 
-// All16 assets have no filled internal region. Every geometric stroke is
-// necessary to distinguish the glyph except spinner's pale decorative track.
-// Filled multicolor assets require their own adjacency audit and are excluded.
-const transparentGlyphs = [
-  IslandGlyph.checkCircle,
-  IslandGlyph.checkSquare,
-  IslandGlyph.chevronDown,
-  IslandGlyph.chevronLeft,
-  IslandGlyph.chevronRight,
-  IslandGlyph.chevronUp,
-  IslandGlyph.code,
-  IslandGlyph.externalLink,
-  IslandGlyph.link,
-  IslandGlyph.menu,
-  IslandGlyph.paperclip,
-  IslandGlyph.spinner,
-  IslandGlyph.unlink,
-  IslandGlyph.xCircle,
-  IslandGlyph.zoomIn,
-  IslandGlyph.zoomOut,
-];
+// Membership is every packaged glyph whose SVG source paints no internal fill
+// (50 at naive-icons v1.14.0). Every geometric stroke is necessary to
+// distinguish the glyph except spinner's pale decorative track. Filled
+// multicolor assets require their own adjacency audit and are excluded.
+const transparentGlyphCount = 50;
 
 void main() {
   testWidgets(
-    '512 transparent glyph contexts measure every necessary core stroke on its actual backing',
+    'All transparent glyph contexts measure every necessary core stroke on its actual backing',
     (t) async {
       final failures = <Map<String, Object?>>[],
           observations = <Map<String, Object?>>[];
-      for (final glyph in transparentGlyphs) {
+      final sources = <IslandGlyph, String>{};
+      for (final glyph in IslandGlyph.values) {
         final svg = await rootBundle.loadString(
           'packages/animal_island_ui/assets/icons/${glyph.assetName}.svg',
         );
-        expect(
-          RegExp(r'fill="(?!none|transparent)[^"]+"').hasMatch(svg),
-          isFalse,
-          reason: '${glyph.name} fixture must have no internal painted backing',
-        );
+        if (!RegExp(r'fill="(?!none|transparent)[^"]+"').hasMatch(svg)) {
+          sources[glyph] = svg;
+        }
+      }
+      expect(
+        sources.length,
+        transparentGlyphCount,
+        reason: 'Membership is bound to actual packaged SVG source',
+      );
+      for (final MapEntry(key: glyph, value: svg) in sources.entries) {
         final strokes = <String>{};
         for (final node in RegExp(
           r'<(?:path|rect|circle|line|ellipse|polyline|polygon)\b[^>]*>',
@@ -203,7 +193,7 @@ void main() {
             .map((v) => '${v['glyph']}/${v['context']}/${v['size']}')
             .toSet()
             .length,
-        512,
+        transparentGlyphCount * 32,
       );
       expect(
         failures,

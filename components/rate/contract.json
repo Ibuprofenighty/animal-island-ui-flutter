@@ -14,7 +14,7 @@
     "events": "A child action dispatches once and does not activate its ancestor.",
     "composition": "Parent owns placement and constraints; component owns its surface; each slot defines inherited defaults, explicit child styles win.",
     "accessibility": "Named controls, states and keyboard actions. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17; named semantics and keyboard contracts remain required.",
-    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "localization": "semanticLabel is String? and defaults to IslandLocalizations.rating; each choice is named by IslandLocalizations.stars(n) (N 星 / N stars). Inherited directionality.",
     "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
     "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
@@ -38,7 +38,7 @@
       "id": "rate.motion-keyboard",
       "given": "A committed score and optional hover preview",
       "when": "Increase, decrease, clear, traverse with Tab or use arrow/Home/End keys",
-      "then": "Only newly lit stars pop350ms with60ms delays; only the last new star splashes600ms. Hover/color/eye transitions250ms. One selected-or-first Tab stop; Right/Up increase and Left/Down decrease the committed score without wrapping; same score does not dispatch. Keyboard and clear remove hover preview. Reduced motion settles immediately."
+      "then": "Only newly lit stars pop350ms (scale .55 to1.15 at60% to1) with60ms delays; only the last new star splashes600ms. Hover/color/eye transitions250ms. One selected-or-first Tab stop; Right/Up increase and Left/Down decrease the committed score without wrapping; same score does not dispatch. Keyboard and clear remove hover preview. Reduced motion settles immediately."
     },
     {
       "id": "rate.radio-semantics",

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:island_gallery/pages/gallery.dart';
 import 'package:island_gallery/pages/home.dart';
+import 'package:island_gallery/shared/palette.dart';
 import 'package:island_gallery/shared/theme.dart';
 import 'package:island_gallery/pages/stories/background_story.dart';
 
@@ -59,6 +60,23 @@ void main() {
         loader.addFont(rootBundle.load('assets/fonts/$asset'));
       }
       await loader.load();
+    }
+  });
+
+  test('Countdown demo reminder colours are 4.5:1 on every number surface', () {
+    for (final ink in [
+      GalleryPalette.countdownReminderBerry,
+      GalleryPalette.countdownReminderBrown,
+    ]) {
+      // Plate gradient tops (default, island), shared bottom, island surface.
+      for (final surface in const [
+        Color(0xffffffff),
+        Color(0xfffffdf4),
+        Color(0xfff8f8f0),
+        Color(0xfff7f3df),
+      ]) {
+        expect(contrast(ink, surface), greaterThanOrEqualTo(4.5));
+      }
     }
   });
 
@@ -159,6 +177,37 @@ void main() {
       );
     }
   });
+
+  testWidgets(
+    'Icon demo bulb and tile captions use the measured reference inks',
+    (t) async {
+      await showStory(t, '/icon');
+      final bulb = t.widget<IslandIcon>(
+        find.byWidgetPredicate(
+          (w) => w is IslandIcon && w.glyph == IslandGlyph.bulb && w.size == 32,
+        ),
+      );
+      expect(bulb.color, GalleryPalette.iconDemoBulb);
+      expect(
+        contrast(GalleryPalette.iconDemoBulb, GalleryPalette.demoSurface),
+        greaterThanOrEqualTo(3),
+      );
+      expect(
+        t.widget<Text>(find.text('BulbIcon')).style!.color,
+        GalleryPalette.iconTileName,
+      );
+      for (final tile in [
+        GalleryPalette.iconTile,
+        GalleryPalette.iconTileHover,
+      ]) {
+        expect(
+          contrast(GalleryPalette.iconTileName, tile),
+          greaterThanOrEqualTo(4.5),
+        );
+      }
+      expect(t.takeException(), isNull);
+    },
+  );
 
   testWidgets('Skill swatches and labels project the public product tokens', (
     t,
@@ -597,7 +646,7 @@ void homeWallpaperContrastOracle({
               ],
             );
           }
-          final credit = find.text('Flutter + Dart · Reference Gallery');
+          final credit = find.text('MIT License · Reference Gallery');
           await t.ensureVisible(credit);
           await t.pumpAndSettle();
           final cr = t.renderObject<RenderParagraph>(credit);
@@ -621,6 +670,26 @@ void homeWallpaperContrastOracle({
         observations.every((r) => (r['ratio']! as double).isFinite),
         isTrue,
         reason: 'HOME-REFERENCE-CONTRAST-001 measures actual ratios under the explicit user-approved Home text exception; not4.5PASS.',
+      );
+    },
+  );
+
+  test(
+    'Typewriter emphasis and API required mark keep their measured ratios',
+    () {
+      // Reference #FD9303 reads 2.1:1 on the dashed demo box; the same-hue
+      // value just passes there. The #f0a870 mark passes as the reference.
+      final typed = contrast(
+        GalleryPalette.typewriterEmphasis,
+        GalleryPalette.demoPanelDashed,
+      );
+      expect(typed, inInclusiveRange(4.5, 4.6));
+      expect(
+        contrast(
+          GalleryPalette.apiTableRequired,
+          GalleryPalette.apiTableBackground,
+        ),
+        greaterThanOrEqualTo(4.5),
       );
     },
   );

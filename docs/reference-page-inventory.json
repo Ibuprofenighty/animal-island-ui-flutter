@@ -1,5 +1,5 @@
 {
-  "reference_commit": "79810934ee9d08c22044d34e06f8bba40391207b",
+  "reference_commit": "6ec8614cbfe3aa57c801285e876080487105617b",
   "groups": [
     {
       "label": "指南",
@@ -17,7 +17,7 @@
         {
           "id": "title",
           "label": "Title 标题",
-          "isNew": true
+          "isNew": false
         },
         {
           "id": "button",
@@ -90,6 +90,11 @@
           "isNew": false
         },
         {
+          "id": "calendar",
+          "label": "Calendar 日历",
+          "isNew": true
+        },
+        {
           "id": "checkbox",
           "label": "Checkbox 多选框",
           "isNew": false
@@ -112,7 +117,7 @@
         {
           "id": "upload",
           "label": "Upload 上传",
-          "isNew": true
+          "isNew": false
         }
       ]
     },
@@ -155,6 +160,11 @@
           "isNew": false
         },
         {
+          "id": "no-data",
+          "label": "NoData 空状态",
+          "isNew": true
+        },
+        {
           "id": "backtop",
           "label": "BackTop 返回顶部",
           "isNew": false
@@ -172,7 +182,7 @@
         {
           "id": "avatar",
           "label": "Avatar 头像",
-          "isNew": true
+          "isNew": false
         },
         {
           "id": "badge",
@@ -230,9 +240,122 @@
           "isNew": true
         }
       ]
+    },
+    {
+      "label": "图表统计",
+      "items": [
+        {
+          "id": "charts",
+          "label": "Chart 图表总览",
+          "isNew": true
+        },
+        {
+          "id": "chart-column",
+          "label": "Column 柱状图",
+          "isNew": false
+        },
+        {
+          "id": "chart-bar",
+          "label": "Bar 条状图",
+          "isNew": false
+        },
+        {
+          "id": "chart-line",
+          "label": "Line 折线图",
+          "isNew": false
+        },
+        {
+          "id": "chart-area",
+          "label": "Area 面积图",
+          "isNew": false
+        },
+        {
+          "id": "chart-mount",
+          "label": "Mountain 山峰图",
+          "isNew": false
+        },
+        {
+          "id": "chart-mix",
+          "label": "Mixed 混合图",
+          "isNew": false
+        },
+        {
+          "id": "chart-pie",
+          "label": "Pie 饼图",
+          "isNew": false
+        },
+        {
+          "id": "chart-ring",
+          "label": "Ring 环形图",
+          "isNew": false
+        },
+        {
+          "id": "chart-rose",
+          "label": "Rose 玫瑰图",
+          "isNew": false
+        },
+        {
+          "id": "chart-radar",
+          "label": "Radar 雷达图",
+          "isNew": false
+        },
+        {
+          "id": "chart-scatter",
+          "label": "Scatter 散点图",
+          "isNew": false
+        },
+        {
+          "id": "chart-bubble",
+          "label": "Bubble 气泡图",
+          "isNew": false
+        },
+        {
+          "id": "chart-arcbar",
+          "label": "ArcBar 圆弧进度",
+          "isNew": false
+        },
+        {
+          "id": "chart-gauge",
+          "label": "Gauge 仪表盘",
+          "isNew": false
+        },
+        {
+          "id": "chart-funnel",
+          "label": "Funnel 漏斗图",
+          "isNew": false
+        },
+        {
+          "id": "chart-word",
+          "label": "WordCloud 词云图",
+          "isNew": false
+        },
+        {
+          "id": "chart-candle",
+          "label": "Candlestick K线图",
+          "isNew": false
+        },
+        {
+          "id": "chart-time",
+          "label": "TimeSeries 时序图",
+          "isNew": false
+        },
+        {
+          "id": "chart-map",
+          "label": "Map 地图统计",
+          "isNew": false
+        }
+      ]
     }
   ],
   "pages": {
+    "charts": {
+      "title": "图表统计",
+      "description": "海岛风格图表，覆盖趋势、对比、占比、分布与指标统计。"
+    },
+    "no-data": {
+      "title": "NoData 空状态",
+      "description": "温暖的空数据提示，支持搜索无结果、简洁模式、自定义图标与操作区。"
+    },
     "button": {
       "title": "Button 按钮",
       "description": "按钮组件 — 支持 primary / dashed / text / link 等类型，danger / ghost / loading / disabled 状态，icon 图标，block 块级，三种尺寸"
@@ -283,7 +406,7 @@
     },
     "icon": {
       "title": "Icon 图标",
-      "description": "图标组件 — naive-icons 手绘 SVG 图标库，125 个可爱图标，支持自定义尺寸与描边颜色。全部图标为原创作品，个人与商业项目均可自由使用。"
+      "description": "图标组件 — naive-icons 手绘 SVG 图标库，支持自定义尺寸与描边颜色。全部图标为原创作品，个人与商业项目均可自由使用。"
     },
     "select": {
       "title": "Select 选择器",
@@ -296,6 +419,10 @@
     "time-picker": {
       "title": "TimePicker 时间选择",
       "description": "时间选择组件 — 时/分/秒三列滚选，此刻/确定快捷操作，支持受控/非受控、自定义格式、时/分/秒步进、allowClear 清空与键盘导航"
+    },
+    "calendar": {
+      "title": "Calendar 日历",
+      "description": "日历组件（轻量月面板）— 事项通知与跨日期连续条、拖拽跨日期创建事项、受控/非受控与键盘导航"
     },
     "tabs": {
       "title": "Tabs 标签页",
@@ -347,7 +474,7 @@
     },
     "loading": {
       "title": "Loading 加载",
-      "description": "全屏落雪加载指示器 — 50 片随机雪花旋转飘落 + 暗角夜空，中央提示文字、delay 防闪烁，结束时渐变消失"
+      "description": "全屏加载指示器 — type=\"snow\" 是 50 片随机雪花旋转飘落 + 暗角夜空，type=\"circle\" 关闭时圆形扩散展开、右下角一艘帆船随波逐流"
     },
     "form": {
       "title": "Form 表单",
@@ -395,7 +522,83 @@
     },
     "skill": {
       "title": "Skill 介绍",
-      "description": "项目配套的 animal-island-ui-style 技能 — 可安装到 AI 编码代理（Claude Code / Codex / Cursor），教模型按治愈系海岛风格搭建 React 页面或单文件 HTML"
+      "description": "项目配套的 animal-island-ui-style 技能 — 可安装到 AI 编码代理（Claude Code / Codex / Cursor），教模型按治愈系海岛风格搭建 React 页面或单文件 HTML · 从首页「开始使用」进入时会先盖一层圆形展开 Loading"
+    },
+    "chart-column": {
+      "title": "柱状图",
+      "description": "分类数值对比，支持分组与正负值堆叠。"
+    },
+    "chart-bar": {
+      "title": "条状图",
+      "description": "横向比较与排名，长分类名称更容易阅读。"
+    },
+    "chart-line": {
+      "title": "折线图",
+      "description": "连续趋势与多系列比较，支持曲线和缺测断点。"
+    },
+    "chart-area": {
+      "title": "面积图",
+      "description": "用柔和填充表达趋势与体量。"
+    },
+    "chart-mount": {
+      "title": "山峰图",
+      "description": "海岛山丘形状的分类数值展示。"
+    },
+    "chart-mix": {
+      "title": "混合图",
+      "description": "柱状、折线和面积组合，共用同一数值轴。"
+    },
+    "chart-pie": {
+      "title": "饼图",
+      "description": "用扇区面积表达各项占比。"
+    },
+    "chart-ring": {
+      "title": "环形图",
+      "description": "环形占比与中心合计。"
+    },
+    "chart-rose": {
+      "title": "玫瑰图",
+      "description": "等角度扇区，通过面积表达数值。"
+    },
+    "chart-radar": {
+      "title": "雷达图",
+      "description": "多个维度的共同量纲对比，缺测不自动补零。"
+    },
+    "chart-scatter": {
+      "title": "散点图",
+      "description": "观察两个数值维度的分布与关系。"
+    },
+    "chart-bubble": {
+      "title": "气泡图",
+      "description": "气泡面积表达第三个数值维度。"
+    },
+    "chart-arcbar": {
+      "title": "圆弧进度",
+      "description": "多项指标的目标完成进度。"
+    },
+    "chart-gauge": {
+      "title": "仪表盘",
+      "description": "单个数值的刻度、指针与当前读数。"
+    },
+    "chart-funnel": {
+      "title": "漏斗图",
+      "description": "按业务顺序展示阶段转化，不自动重排数据。"
+    },
+    "chart-word": {
+      "title": "词云图",
+      "description": "按权重排列词条，支持数据查看与点击。"
+    },
+    "chart-candle": {
+      "title": "K线图",
+      "description": "开盘、收盘、最高、最低四个值的区间变化。"
+    },
+    "chart-time": {
+      "title": "时序图",
+      "description": "按真实时间间隔排列的数据趋势。"
+    },
+    "chart-map": {
+      "title": "地图统计",
+      "description": "使用调用方提供的区域轮廓展示空间统计。"
     }
   }
 }

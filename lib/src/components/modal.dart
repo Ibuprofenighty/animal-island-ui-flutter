@@ -1,3 +1,5 @@
+import '../foundation/localizations.dart';
+import '../internal/viewport_overlay.dart';
 import '../internal/light_surface_scope.dart';
 import '../foundation/theme.dart';
 
@@ -51,20 +53,22 @@ class IslandModal extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (title != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: ContentScope(
-                  textStyle: const TextStyle(
-                    fontSize: 28,
-                    // Reference .title sets no line-height (font normal).
-                    height: kTextHeightNone,
-                    fontWeight: FontWeight.w700,
-                    color: ModalColors.title,
-                  ),
-                  child: Semantics(
-                    container: true,
-                    header: true,
-                    child: title!,
+              SelectionContainer.disabled(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: ContentScope(
+                    textStyle: const TextStyle(
+                      fontSize: 28,
+                      // Reference .title sets no line-height (font normal).
+                      height: kTextHeightNone,
+                      fontWeight: FontWeight.w700,
+                      color: ModalColors.title,
+                    ),
+                    child: Semantics(
+                      container: true,
+                      header: true,
+                      child: title!,
+                    ),
                   ),
                 ),
               ),
@@ -83,12 +87,14 @@ class IslandModal extends StatelessWidget {
               ),
             ),
             if (actions.isNotEmpty)
-              Wrap(
-                alignment: WrapAlignment.end,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 12,
-                runSpacing: 12,
-                children: actions,
+              SelectionContainer.disabled(
+                child: Wrap(
+                  alignment: WrapAlignment.end,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: actions,
+                ),
               ),
           ],
         ),
@@ -184,6 +190,7 @@ Future<T?> showIslandModal<T>({
   }
 
   route = _IslandModalRoute<T>(
+    barrierLabel: IslandLocalizations.of(context).close,
     dismissible: dismissible,
     color: barrierColor,
     reduced: reduced,
@@ -201,12 +208,12 @@ Future<T?> showIslandModal<T>({
                 IslandButton(
                   variant: IslandButtonVariant.primary,
                   onPressed: close,
-                  child: const Text('取消'),
+                  child: Text(IslandLocalizations.of(ctx).cancel),
                 ),
                 IslandButton(
                   variant: IslandButtonVariant.primary,
                   onPressed: close,
-                  child: const Text('确定'),
+                  child: Text(IslandLocalizations.of(ctx).ok),
                 ),
               ],
           child: builder(ctx),
@@ -220,6 +227,7 @@ Future<T?> showIslandModal<T>({
 class _IslandModalRoute<T> extends RawDialogRoute<T> {
   _IslandModalRoute({
     required WidgetBuilder page,
+    required String barrierLabel,
     required bool dismissible,
     required Color color,
     required this.reduced,
@@ -228,12 +236,38 @@ class _IslandModalRoute<T> extends RawDialogRoute<T> {
              ClosedLoopTraversal(child: page(context)),
          barrierDismissible: dismissible,
          barrierColor: color,
-         barrierLabel: '关闭',
+         barrierLabel: barrierLabel,
          transitionDuration: const Duration(milliseconds: 300),
          traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
        );
   final bool reduced;
   bool settling = false;
+
+  // Page-level overlay surfaces stay under this route (ViewportOverlay).
+  @override
+  void install() {
+    super.install();
+    ViewportOverlay.routesChanged();
+  }
+
+  @override
+  void didChangeNext(Route<dynamic>? nextRoute) {
+    super.didChangeNext(nextRoute);
+    ViewportOverlay.routesChanged();
+  }
+
+  @override
+  void didPopNext(Route<dynamic> nextRoute) {
+    super.didPopNext(nextRoute);
+    ViewportOverlay.routesChanged();
+  }
+
+  @override
+  void dispose() {
+    ViewportOverlay.routesChanged();
+    super.dispose();
+  }
+
   @override
   Duration get transitionDuration =>
       reduced ? Duration.zero : super.transitionDuration;

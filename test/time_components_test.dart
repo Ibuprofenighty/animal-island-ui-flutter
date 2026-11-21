@@ -5,6 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
 Widget host(Widget child) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   home: Scaffold(
     body: Align(alignment: Alignment.topLeft, child: child),
   ),
@@ -212,6 +215,9 @@ void main() {
   ) async {
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: MediaQuery(
           data: const MediaQueryData(disableAnimations: true),
           child: Scaffold(

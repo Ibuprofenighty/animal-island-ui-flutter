@@ -132,7 +132,7 @@ void main() {
     'Date range placeholder and selected interior hover retain the complete paired surface',
     (t) async {
       await t.pumpWidget(host(const IslandDatePicker.rangeUncontrolled()));
-      for (final element in find.text('请选择日期').evaluate()) {
+      for (final element in find.text('Select date').evaluate()) {
         final p = element.findRenderObject()! as RenderParagraph;
         readable(
           (p.text as TextSpan).style!.color!,
@@ -150,10 +150,10 @@ void main() {
           ),
         ),
       );
-      await t.tap(button('选择日期'));
+      await t.tap(button('Choose date'));
       await t.pumpAndSettle();
       final day = find.descendant(
-        of: button('2026年8月15日'),
+        of: button('August 15, 2026'),
         matching: find.text('15'),
       );
       final mouse = await t.createGesture(kind: ui.PointerDeviceKind.mouse);
@@ -210,17 +210,17 @@ void main() {
           location: t.getCenter(find.byKey(const ValueKey('a'))),
         );
         await t.pump();
-        await t.tap(button('预览 photo'));
+        await t.tap(button('Preview photo'));
         await t.pump();
         for (final ms in [0, 16, 40, 80, 200]) {
           await t.pump(Duration(milliseconds: ms));
-          opaque(t, button('关闭预览'));
+          opaque(t, button('Close preview'));
         }
         await t.sendKeyEvent(LogicalKeyboardKey.escape);
         await t.pump();
         for (final ms in [16, 40, 80]) {
           await t.pump(Duration(milliseconds: ms));
-          if (button('关闭预览').evaluate().isNotEmpty) opaque(t, button('关闭预览'));
+          if (button('Close preview').evaluate().isNotEmpty) opaque(t, button('Close preview'));
         }
         await t.pump(const Duration(milliseconds: 300));
         await mouse.removePointer();
@@ -266,6 +266,9 @@ void main() {
         final previewKey = GlobalKey();
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             home: StatefulBuilder(
               builder: (context, set) {
                 update = set;
@@ -430,7 +433,7 @@ void main() {
       await t.enterText(find.byType(TextField), 'edited');
       await t.pump();
       expect(fieldName(), 'Name');
-      await t.tap(button('清除'));
+      await t.tap(button('Clear'));
       await t.pump();
       expect(fieldName(), 'Name');
       expect(find.text('edited'), findsNothing);

@@ -1,11 +1,15 @@
+import '../foundation/localizations.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../internal/action_surface.dart';
 import '../internal/focus_outline.dart';
 import '../foundation/recipes/code_block.dart';
+import '../foundation/recipes/cursor.dart';
 import '../foundation/theme.dart';
 
 enum IslandCodeLanguage { dart, javascript, shell, plain }
@@ -88,7 +92,9 @@ class IslandCodeBlock extends StatefulWidget {
   final ValueChanged<Object>? onCopyError;
   final IslandCodeBlockStyle? style;
 
-  /// Explicit content padding; null retains the default copy-action reserve.
+  /// Explicit content padding inside the horizontal scroll region, as the
+  /// reference `<pre>` padding; null retains the default copy-action reserve
+  /// at the scroll end, so code at rest runs under the copy button.
   final EdgeInsetsGeometry? padding;
   final BorderRadius? borderRadius;
 
@@ -99,10 +105,23 @@ class IslandCodeBlock extends StatefulWidget {
   State<IslandCodeBlock> createState() => _IslandCodeBlockState();
 }
 
+enum _CopyStatus { idle, copied, failed }
+
 class _IslandCodeBlockState extends State<IslandCodeBlock> {
-  String status = '复制';
+  IslandLocalizations get strings => IslandLocalizations.of(context);
+  _CopyStatus status = _CopyStatus.idle;
   bool copying = false;
   Timer? reset;
+
+  // Selection changes repaint the selected-ink pass; SelectableText owns the
+  // selection itself, so the code span (and its selection) never rebuilds.
+  final selectionChanged = ValueNotifier(0);
+  late final FocusNode focus = FocusNode(skipTraversal: true)
+    ..addListener(() {
+      // SelectableText clears its selection when it loses focus while the
+      // app is resumed; the repaint reads that cleared selection.
+      if (!focus.hasFocus) selectionChanged.value++;
+    });
   Future<void> copy() async {
     if (copying) return;
     final code = widget.code;
@@ -110,26 +129,36 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
     try {
       await Clipboard.setData(ClipboardData(text: code));
       if (!mounted) return;
-      setState(() => status = '已复制');
+      setState(() => status = _CopyStatus.copied);
       widget.onCopied?.call(code);
     } catch (error) {
       if (!mounted) return;
-      setState(() => status = '复制失败');
+      setState(() => status = _CopyStatus.failed);
       widget.onCopyError?.call(error);
     } finally {
       if (mounted) {
         setState(() => copying = false);
         reset?.cancel();
         reset = Timer(const Duration(seconds: 2), () {
-          if (mounted) setState(() => status = '复制');
+          if (mounted) setState(() => status = _CopyStatus.idle);
         });
       }
     }
   }
 
   @override
+  void didUpdateWidget(IslandCodeBlock oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // A new code span resets SelectableText's selection; the selected-ink
+    // pass sits above its repaint boundary, so it repaints explicitly.
+    selectionChanged.value++;
+  }
+
+  @override
   void dispose() {
     reset?.cancel();
+    focus.dispose();
+    selectionChanged.dispose();
     super.dispose();
   }
 
@@ -156,6 +185,20 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
               _syntaxRecipe[role]!,
       },
     );
+    final textStyle =
+        TextStyle(
+              fontFamily: IslandTheme.codeFontFamily,
+              fontFamilyFallback: DefaultTextStyle.of(context)
+                  .style
+                  .fontFamilyFallback,
+              letterSpacing: 0,
+              fontSize: 14,
+              height: 1.7,
+              fontWeight: FontWeight.w600,
+            )
+            .merge(themed?.textStyle)
+            .merge(local?.textStyle)
+            .copyWith(color: roles.foreground);
     return Container(
       margin: widget.margin,
       decoration: BoxDecoration(
@@ -165,30 +208,39 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
       ),
       child: Stack(
         children: [
-          Padding(
-            padding:
-                widget.padding ??
-                EdgeInsets.fromLTRB(24, 20, widget.copyable ? 96 : 24, 20),
-            child: SizedBox(
-              width: double.infinity,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+          // Reference `<pre>` padding sits inside its `overflow: auto` box:
+          // at rest the code runs under the copy button to the block edge,
+          // and the copy reserve only shows at the end of the scroll.
+          SizedBox(
+            width: double.infinity,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding:
+                  widget.padding ??
+                  EdgeInsets.fromLTRB(24, 20, widget.copyable ? 96 : 24, 20),
+              child: _SelectedInk(
+                // Reference `.animal-cursor ::selection` also forces the
+                // selected text to #2b2620; on the light Cursor highlight the
+                // light syntax inks would read 1.1-1.6:1. An explicit caller
+                // foreground Paint keeps owning the ink.
+                enabled:
+                    DefaultSelectionStyle.of(context).selectionColor ==
+                        CursorColors.selection(Brightness.light) &&
+                    textStyle.foreground == null,
+                ink: CodeBlockColors.selectedInk,
+                highlight: CursorColors.selection(Brightness.light),
+                repaint: selectionChanged,
                 child: SelectableText.rich(
                   _highlight(widget.code, widget.language, roles.syntax),
-                  style:
-                      TextStyle(
-                            fontFamily: IslandTheme.codeFontFamily,
-                            fontFamilyFallback: DefaultTextStyle.of(context)
-                                .style
-                                .fontFamilyFallback,
-                            letterSpacing: 0,
-                            fontSize: 14,
-                            height: 1.7,
-                            fontWeight: FontWeight.w600,
-                          )
-                          .merge(themed?.textStyle)
-                          .merge(local?.textStyle)
-                          .copyWith(color: roles.foreground),
+                  focusNode: focus,
+                  onSelectionChanged: (_, _) => selectionChanged.value++,
+                  style: textStyle,
+                  // Reference line-height 1.7 is one line box per line: a
+                  // forced strut keeps CJK fallback runs from growing it.
+                  strutStyle: StrutStyle.fromTextStyle(
+                    textStyle,
+                    forceStrutHeight: true,
+                  ),
                 ),
               ),
             ),
@@ -198,16 +250,16 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
               top: 12,
               right: 12,
               child: ActionSurface(
-                label: status == '复制'
-                    ? '复制代码'
-                    : status == '已复制'
-                    ? '代码已复制'
-                    : '代码复制失败',
+                label: switch (status) {
+                  _CopyStatus.idle => strings.copyCode,
+                  _CopyStatus.copied => strings.codeCopied,
+                  _CopyStatus.failed => strings.codeCopyFailed,
+                },
                 onActivate: copying ? null : copy,
                 builder: (_, actionStates) {
                   final states = <WidgetState>{
                     ...actionStates,
-                    if (status == '复制失败') WidgetState.error,
+                    if (status == _CopyStatus.failed) WidgetState.error,
                   };
                   final copyRoles = (
                     foreground: ActionSurface.resolveStyleValue(
@@ -276,7 +328,11 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
                       ),
                       child: ExcludeSemantics(
                         child: Text(
-                          status,
+                          switch (status) {
+                            _CopyStatus.idle => strings.copy,
+                            _CopyStatus.copied => strings.copied,
+                            _CopyStatus.failed => strings.copyFailed,
+                          },
                           style: TextStyle(
                             color: copyRoles.foreground,
                             fontSize: 12,
@@ -292,6 +348,153 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
         ],
       ),
     );
+  }
+}
+
+/// Paints the selected range of the [SelectableText] below it again in [ink]
+/// over the [highlight], as CSS `::selection { color }` does. It reads the
+/// child's own [RenderEditable] (text, layout inputs, selection boxes), so the
+/// code span and the selection are never rebuilt; nothing is painted while
+/// the selection is collapsed.
+class _SelectedInk extends SingleChildRenderObjectWidget {
+  const _SelectedInk({
+    required this.enabled,
+    required this.ink,
+    required this.highlight,
+    required this.repaint,
+    required super.child,
+  });
+  final bool enabled;
+  final Color ink, highlight;
+  final Listenable repaint;
+  @override
+  _RenderSelectedInk createRenderObject(BuildContext context) =>
+      _RenderSelectedInk(enabled, ink, highlight, repaint);
+  @override
+  void updateRenderObject(BuildContext context, _RenderSelectedInk render) =>
+      render
+        ..enabled = enabled
+        ..ink = ink
+        ..highlight = highlight
+        ..repaint = repaint;
+}
+
+class _RenderSelectedInk extends RenderProxyBox {
+  _RenderSelectedInk(this._enabled, this._ink, this._highlight, this._repaint);
+  bool _enabled;
+  Color _ink, _highlight;
+  Listenable _repaint;
+  set enabled(bool value) {
+    if (value == _enabled) return;
+    _enabled = value;
+    markNeedsPaint();
+  }
+
+  set ink(Color value) {
+    if (value == _ink) return;
+    _ink = value;
+    markNeedsPaint();
+  }
+
+  set highlight(Color value) {
+    if (value == _highlight) return;
+    _highlight = value;
+    markNeedsPaint();
+  }
+
+  set repaint(Listenable value) {
+    if (identical(value, _repaint)) return;
+    if (attached) _repaint.removeListener(markNeedsPaint);
+    _repaint = value;
+    if (attached) _repaint.addListener(markNeedsPaint);
+    markNeedsPaint();
+  }
+
+  @override
+  void attach(PipelineOwner owner) {
+    super.attach(owner);
+    _repaint.addListener(markNeedsPaint);
+  }
+
+  @override
+  void detach() {
+    _repaint.removeListener(markNeedsPaint);
+    super.detach();
+  }
+
+  static RenderEditable? _editable(RenderObject? node) {
+    if (node == null || node is RenderEditable) return node as RenderEditable?;
+    RenderEditable? found;
+    node.visitChildren((child) => found ??= _editable(child));
+    return found;
+  }
+
+  static InlineSpan _inked(InlineSpan span, Color ink) => span is TextSpan
+      ? TextSpan(
+          text: span.text,
+          style: span.style?.foreground != null
+              ? span.style
+              : (span.style ?? const TextStyle()).copyWith(color: ink),
+          children: [
+            for (final child in span.children ?? const <InlineSpan>[])
+              _inked(child, ink),
+          ],
+          semanticsLabel: span.semanticsLabel,
+          locale: span.locale,
+          spellOut: span.spellOut,
+        )
+      : span;
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    super.paint(context, offset);
+    if (!_enabled) return;
+    final editable = _editable(child);
+    final selection = editable?.selection;
+    final text = editable?.text;
+    if (editable == null ||
+        !editable.hasSize ||
+        text == null ||
+        selection == null ||
+        !selection.isValid ||
+        selection.isCollapsed) {
+      return;
+    }
+    final boxes = editable.getBoxesForSelection(selection);
+    if (boxes.isEmpty) return;
+    final painter = TextPainter(
+      text: _inked(text, _ink),
+      textAlign: editable.textAlign,
+      textDirection: editable.textDirection,
+      textScaler: editable.textScaler,
+      locale: editable.locale,
+      strutStyle: editable.strutStyle,
+      textWidthBasis: editable.textWidthBasis,
+      textHeightBehavior: editable.textHeightBehavior,
+    )..layout();
+    // RenderEditable paints its text at its scroll paint offset, which the
+    // selection boxes already include.
+    final scroll = editable.offset.hasPixels ? editable.offset.pixels : 0.0;
+    final paintOffset = editable.maxLines == 1
+        ? Offset(-scroll, 0)
+        : Offset(0, -scroll);
+    final origin = MatrixUtils.transformPoint(
+      editable.getTransformTo(this),
+      Offset.zero,
+    );
+    final bounds = (origin + paintOffset) & painter.size;
+    final clip = Path();
+    for (final box in boxes) {
+      clip.addRect(box.toRect().shift(origin).intersect(bounds));
+    }
+    context.canvas
+      ..save()
+      ..translate(offset.dx, offset.dy)
+      ..clipPath(clip)
+      ..drawPaint(Paint()..color = _highlight);
+    painter.paint(context.canvas, origin + paintOffset);
+    context.canvas.restore();
+    painter.dispose();
   }
 }
 
@@ -426,10 +629,21 @@ TextSpan _highlight(
         : token.length == 1 && !RegExp(r'\w').hasMatch(token)
         ? IslandCodeToken.punctuation
         : null;
+    // Reference highlightShell marks its `//` comments italic at weight 400.
+    // It has no `#` comment, and the reference Skill page draws `#` comments
+    // upright, as highlightJSX does every comment (owner decisions
+    // 2026-11-18 and 2026-11-19).
+    final slanted = shell && token.startsWith('//');
     spans.add(
       TextSpan(
         text: token,
-        style: role == null ? null : TextStyle(color: colors[role]),
+        style: role == null
+            ? null
+            : TextStyle(
+                color: colors[role],
+                fontStyle: slanted ? FontStyle.italic : null,
+                fontWeight: slanted ? FontWeight.w400 : null,
+              ),
       ),
     );
     offset = match.end;

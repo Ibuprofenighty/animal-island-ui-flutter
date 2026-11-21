@@ -15,6 +15,9 @@ void main() {
     addTearDown(focus.dispose);
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Scaffold(
           body: Stack(
             children: [
@@ -86,6 +89,9 @@ void main() {
       late StateSetter update;
       await tester.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: StatefulBuilder(
             builder: (_, set) {
               update = set;

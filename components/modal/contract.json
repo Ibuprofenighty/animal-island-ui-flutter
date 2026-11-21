@@ -12,9 +12,9 @@
     "outputs": "User intent callbacks; host decides whether to commit controlled state.",
     "state_model": "IslandModal is presentation with explicit slots; onClose is an Escape intent only. showIslandModal owns its route and default closing actions. Host-created actions decide whether to close. No synthesized visual close button.",
     "events": "A child action dispatches once and does not activate its ancestor.",
-    "composition": "Modal supplies title 28/700 at the font normal line height (reference .title sets none) and body 20/600/32 defaults. Explicit child styles win. Typewriter owns reveal timing; the Gallery composes visible text without inspecting widget trees. Modal Tab traversal consumes forward and reverse keys even when a closed loop keeps the same target or contains no actions. One shared boundary in the existing action module delegates order to the existing FocusScope, owns one skipped non-semantic target for an otherwise empty scope, and removes its borrowed-scope listener and owned node on disposal. It does not inspect children, add another FocusScope or replace a caller-owned focus target. IslandDialogRoute now defaults explicitly to TraversalEdgeBehavior.closedLoop; an explicitly supplied non-closed-loop policy, including null inheritance from Navigator, remains authoritative. Drawer, Loading, showIslandModal and the shared preview/alert route consume this same behavior. Actual Web keyboard and Windows/AT validation remain separate from widget tests.",
+    "composition": "Modal supplies title 28/700 at the font normal line height (reference .title sets none) and body 20/600/32 defaults. Explicit child styles win. Typewriter owns reveal timing; the Gallery composes visible text without inspecting widget trees. Modal Tab traversal consumes forward and reverse keys even when a closed loop keeps the same target or contains no actions. One shared boundary in the existing action module delegates order to the existing FocusScope, owns one skipped non-semantic target for an otherwise empty scope, and removes its borrowed-scope listener and owned node on disposal. It does not inspect children, add another FocusScope or replace a caller-owned focus target. IslandDialogRoute now defaults explicitly to TraversalEdgeBehavior.closedLoop; an explicitly supplied non-closed-loop policy, including null inheritance from Navigator, remains authoritative. Drawer, Loading, showIslandModal and the shared preview/alert route consume this same behavior. Actual Web keyboard and Windows/AT validation remain separate from widget tests. Chrome is not selectable: the title row and actions sit in SelectionContainer.disabled, so a caller SelectionArea enclosing the root Navigator never selects them; the body remains part of that selection area. Text fields keep their own editing selection. Background scroll/input locking needs no counted lock: the route barrier blocks background pointer and scroll input while open, each stacked modal route keeps its own barrier, and closing an inner modal does not release an outer one.",
     "accessibility": "Explicit surface-sized named dialog, independently readable title heading, closed-loop focus, first enabled action entry, focus restoration and Escape even when barrier dismissal is disabled. Native/Web AT review remains required.",
-    "localization": "Reference Chinese Gallery; host content and inherited directionality.",
+    "localization": "The default actions of showIslandModal read IslandLocalizations.cancel and ok (取消/确定, Cancel/OK) and the barrier is named IslandLocalizations.close; host content and inherited directionality.",
     "async_behavior": "300ms ease scale .92 to1 with opaque content/backing; barrier250ms independently. Immediate exit. Reduced motion settles the same wrapper/timeline without remounting opaque slots. Route-owned closed-loop focus and trigger restoration.",
     "lifecycle": "Borrowed controllers and focus nodes are never disposed by consumers.",
     "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. Owned readable text roles also set default icon roles. Fixed light content surfaces scope light semantic roles for nested public controls; explicit child styles and unrelated ThemeExtensions remain unchanged. Generic previews and Gallery alert callbacks reuse public IslandDialogRoute, the sole owner of opaque displacement and reduced-motion settlement. The creator pushes on the root Navigator and retains exact-route lifetime; builder retains content, semantics and surface. Existing showIslandModal scale entry remains its separate reference contract.",
@@ -51,6 +51,18 @@
       "given": "The component-owned modal boundary, or its registered Gallery alert callback, with zero/one/multiple actions",
       "when": "Forward/reverse Tab, activation, dismissal, rejected close or owner removal occurs",
       "then": "Closed loops consume Tab without leaving the modal; callbacks fire once and accepted close restores origin. Explicit route traversal overrides survive, opaque child identity/styles remain, and owned focus resources are cleaned up."
+    },
+    {
+      "id": "modal.chrome-selection",
+      "given": "An open modal with title, body text and actions under a caller SelectionArea",
+      "when": "The user selects all or double-clicks the title",
+      "then": "Only body text joins the selection; title and action text are never selected."
+    },
+    {
+      "id": "modal.stacked-barrier",
+      "given": "Two stacked modals over a page",
+      "when": "The inner modal closes",
+      "then": "The outer modal barrier still blocks background input."
     }
   ]
 }

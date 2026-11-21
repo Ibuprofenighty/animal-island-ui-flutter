@@ -91,9 +91,27 @@ class StoryPanel extends StatelessWidget {
             );
           },
         ),
-      ...children,
+      ..._collapseMargins(children),
     ],
   );
+
+  /// CSS margin collapsing between adjacent blocks of the panel body: a code
+  /// block's trailing 16px margin and the next block's leading margin give
+  /// the larger of the two, not their sum (24 before an API table, 16 before
+  /// a section title without a margin, 16 inside the panel padding when the
+  /// code block is last).
+  static List<Widget> _collapseMargins(List<Widget> blocks) => [
+    for (final (index, block) in blocks.indexed)
+      if (block is StoryCode && index + 1 < blocks.length)
+        switch (blocks[index + 1]) {
+          StoryApi() => block._withSpaceAfter(StoryApi.spaceBefore),
+          StoryLabel(:final spaceBefore) ||
+          StoryCode(:final spaceBefore) => block._withSpaceAfter(spaceBefore),
+          _ => block,
+        }
+      else
+        block,
+  ];
 }
 
 const storyCaptionStrut = StrutStyle(
@@ -273,6 +291,7 @@ class StoryText extends StatelessWidget {
         style: style,
         strut: strut,
         scaler: MediaQuery.textScalerOf(context),
+        pixelRatio: MediaQuery.devicePixelRatioOf(context),
         direction: Directionality.of(context),
         locale: Localizations.maybeLocaleOf(context),
         placeholders: inlinePadding == 0
@@ -304,12 +323,25 @@ typedef _StoryMetrics = ({
   TextStyle style,
   StrutStyle strut,
   TextScaler scaler,
+  double pixelRatio,
   TextDirection direction,
   Locale? locale,
 });
 
 // An explicit plain-text leaf can report intrinsic widths to Table while keeping
 // Chromium's fractional line boxes. It never examines caller-owned widgets.
+//
+// Blink sets a block with an explicit `line-height` L as lines of exactly L
+// (in 1/64px) and puts each baseline at the primary font's ascent A plus
+// floor((L - A - D) / 2), with A and descent D rounded to whole pixels: only
+// the ascent half of the leading is floored (CalculateLeadingSpace in
+// Blink's inline layout). Flutter's paragraph rounds every line to whole
+// pixels (a 13px / 1.8 line is 23, not 23.4) and splits the leading over the
+// fractional metrics, so its first baseline sits up to 1px lower and each
+// further line drifts by L - round(L). This box puts the first baseline where
+// Blink does and paints every further line at its own CSS offset. Blink also
+// paints each line with its baseline on a whole device pixel, wherever the
+// fractional boxes above have pushed the block; so does this box.
 class _StoryLineBox extends SingleChildRenderObjectWidget {
   const _StoryLineBox({required this.metrics, required super.child});
   final _StoryMetrics metrics;
@@ -331,7 +363,16 @@ class _RenderStoryLineBox extends RenderShiftedBox {
     markNeedsLayout();
   }
 
-  double lineHeight(double width) {
+  int _lines = 1;
+  final _clips = <LayerHandle<ClipRectLayer>>[];
+
+  double get line {
+    final m = _metrics;
+    return (m.scaler.scale(m.style.fontSize!) * m.style.height! * 64).floor() /
+        64;
+  }
+
+  int lineCount(double width) {
     final m = _metrics;
     final painter =
         TextPainter(
@@ -347,9 +388,29 @@ class _RenderStoryLineBox extends RenderShiftedBox {
           ..layout(maxWidth: width);
     final count = painter.computeLineMetrics().length;
     painter.dispose();
-    return (m.scaler.scale(m.style.fontSize!) * m.style.height! * 64).floor() /
-        64 *
-        count;
+    return count;
+  }
+
+  double lineHeight(double width) => line * lineCount(width);
+
+  /// Blink's first baseline below the top of the box.
+  double get baseline {
+    final m = _metrics;
+    // A digit is set in the first family of the stack, the primary font.
+    final painter = TextPainter(
+      text: TextSpan(
+        text: '0',
+        style: m.style.copyWith(height: kTextHeightNone),
+      ),
+      textDirection: m.direction,
+      textScaler: m.scaler,
+      locale: m.locale,
+    )..layout();
+    final metrics = painter.computeLineMetrics().first;
+    painter.dispose();
+    final ascent = metrics.ascent.roundToDouble();
+    final descent = metrics.descent.roundToDouble();
+    return ascent + ((line - ascent - descent) / 2).floorToDouble();
   }
 
   BoxConstraints textConstraints(BoxConstraints value) =>
@@ -370,23 +431,90 @@ class _RenderStoryLineBox extends RenderShiftedBox {
     TextBaseline baseline,
   ) {
     final textBox = textConstraints(constraints);
-    final actual = child!.getDryLayout(textBox);
     final result = child!.getDryBaseline(textBox, baseline);
-    return result == null
+    final alphabetic = child!.getDryBaseline(textBox, TextBaseline.alphabetic);
+    return result == null || alphabetic == null
         ? null
-        : result + (computeDryLayout(constraints).height - actual.height) / 2;
+        : result + this.baseline - alphabetic;
   }
 
   @override
   void performLayout() {
-    child!.layout(textConstraints(constraints), parentUsesSize: true);
-    size = constraints.constrain(
-      Size(child!.size.width, lineHeight(child!.size.width)),
+    final child = this.child!;
+    child.layout(textConstraints(constraints), parentUsesSize: true);
+    _lines = lineCount(child.size.width);
+    size = constraints.constrain(Size(child.size.width, line * _lines));
+    final first = child.getDistanceToBaseline(
+      TextBaseline.alphabetic,
+      onlyReal: true,
     );
-    (child!.parentData! as BoxParentData).offset = Offset(
+    (child.parentData! as BoxParentData).offset = Offset(
       0,
-      (size.height - child!.size.height) / 2,
+      first == null ? (size.height - child.size.height) / 2 : baseline - first,
     );
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    final child = this.child!;
+    final origin = (child.parentData! as BoxParentData).offset;
+    // The box's own top in the view; line i has its baseline at
+    // top + baseline + i * line, which Blink rounds to a device pixel.
+    final top = localToGlobal(Offset.zero).dy;
+    final ratio = _metrics.pixelRatio;
+    double snap(int i) {
+      final y = top + baseline + i * line;
+      return (y * ratio).roundToDouble() / ratio - y;
+    }
+
+    // To 1/1024px, so that equal targets get equal paint offsets whatever
+    // floating-point path led to them.
+    Offset exact(Offset value) =>
+        Offset(value.dx, (value.dy * 1024).roundToDouble() / 1024);
+
+    if (_lines < 2) {
+      _disposeClips(0);
+      context.paintChild(child, exact(offset + origin + Offset(0, snap(0))));
+      return;
+    }
+    // Flutter's whole-pixel line, as every line of a forced strut is equal.
+    final pitch = child.size.height / _lines;
+    const far = 1e5;
+    _disposeClips(_lines);
+    while (_clips.length < _lines) {
+      _clips.add(LayerHandle<ClipRectLayer>());
+    }
+    for (var i = 0; i < _lines; i++) {
+      final drift = i * (line - pitch) + snap(i);
+      final top = origin.dy + i * pitch + drift;
+      _clips[i].layer = context.pushClipRect(
+        needsCompositing,
+        offset,
+        Rect.fromLTRB(
+          -far,
+          i == 0 ? -far : top,
+          far,
+          i == _lines - 1 ? far : top + pitch,
+        ),
+        (context, offset) => context.paintChild(
+          child,
+          exact(offset + origin + Offset(0, drift)),
+        ),
+        oldLayer: _clips[i].layer,
+      );
+    }
+  }
+
+  void _disposeClips(int keep) {
+    while (_clips.length > keep) {
+      _clips.removeLast().layer = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _disposeClips(0);
+    super.dispose();
   }
 }
 
@@ -421,12 +549,28 @@ class StoryCode extends StatelessWidget {
     super.key,
     this.label = '使用示例',
     this.spaceBefore = 36,
+    this.spaceAfter = 16,
   });
   final double spaceBefore;
+
+  /// Reference CodeBlock `.wrapper` bottom margin (`1em`). Inside one
+  /// [StoryPanel] it collapses with the next block's leading margin; pass 0
+  /// where the reference margin collapses through a parent into a following
+  /// API table.
+  final double spaceAfter;
   final String code, label;
+
+  StoryCode _withSpaceAfter(double following) => StoryCode(
+    code,
+    key: key,
+    label: label,
+    spaceBefore: spaceBefore,
+    spaceAfter: math.max(0, spaceAfter - following),
+  );
+
   @override
   Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.only(top: spaceBefore),
+    padding: EdgeInsets.only(top: spaceBefore, bottom: spaceAfter),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -457,6 +601,9 @@ class StoryApi extends StatelessWidget {
 
   /// Code-tab label above the table, e.g. `Form API`.
   final String title;
+
+  /// Reference `ApiTable` `marginTop`.
+  static const double spaceBefore = 24;
   static const _headings = ['属性', '说明', '类型', '默认值'];
   static final _minContentToken = RegExp(r'[⺀-鿿豈-﫿＀-￯]|[^\s⺀-鿿豈-﫿＀-￯]+');
 
@@ -507,7 +654,7 @@ class StoryApi extends StatelessWidget {
   Widget build(BuildContext context) {
     final mins = _minWidths(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.only(top: spaceBefore),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -557,7 +704,7 @@ class StoryApi extends StatelessWidget {
                         for (final row in rows)
                           TableRow(
                             children: [
-                              _cell(row.$1, color: GalleryPalette.apiTableName),
+                              _propCell(row.$1),
                               _cell(row.$2),
                               _cell(row.$3, color: GalleryPalette.apiTableType),
                               _cell(
@@ -583,6 +730,35 @@ class StoryApi extends StatelessWidget {
     height: 1.5,
     fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
   );
+
+  /// Reference prop cell: the name in its colour, then each required mark
+  /// as a separate `*` in [GalleryPalette.apiTableRequired], 4px after it.
+  Widget _propCell(String prop) {
+    final parts = prop.split(' *');
+    if (parts.length == 1) {
+      return _cell(prop, color: GalleryPalette.apiTableName);
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      child: Text.rich(
+        TextSpan(
+          children: [
+            for (final (index, part) in parts.indexed) ...[
+              if (index > 0) ...[
+                const WidgetSpan(child: SizedBox(width: 4)),
+                const TextSpan(
+                  text: '*',
+                  style: TextStyle(color: GalleryPalette.apiTableRequired),
+                ),
+              ],
+              if (part.isNotEmpty) TextSpan(text: part),
+            ],
+          ],
+        ),
+        style: _cellStyle(false).copyWith(color: GalleryPalette.apiTableName),
+      ),
+    );
+  }
 
   Widget _cell(
     String text, {

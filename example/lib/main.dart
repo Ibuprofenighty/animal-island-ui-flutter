@@ -50,7 +50,11 @@ class _IslandGalleryState extends State<IslandGallery> {
     title: 'Animal Island UI',
     debugShowCheckedModeBanner: false,
     theme: galleryTheme(),
-    locale: const Locale('zh'),
+    // The reference Gallery is Chinese; `--dart-define=ISLAND_GALLERY_LOCALE=en`
+    // shows the library's English copy for review.
+    locale: const Locale(
+      String.fromEnvironment('ISLAND_GALLERY_LOCALE', defaultValue: 'zh'),
+    ),
     supportedLocales: IslandLocalizations.supportedLocales,
     localizationsDelegates: IslandLocalizations.delegates,
     routerDelegate: _router,

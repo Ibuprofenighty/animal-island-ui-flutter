@@ -28,6 +28,9 @@ class CountingImage extends XFile {
 }
 
 Widget host(Widget child) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   home: Scaffold(body: SizedBox(width: 500, child: child)),
 );
 void main() {

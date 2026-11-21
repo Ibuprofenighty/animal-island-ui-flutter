@@ -179,6 +179,48 @@ void main() {
     expect(find.text('FormItem API'), findsOneWidget);
   });
 
+  testWidgets('cursor page keeps the page selection outside raindrop boxes', (
+    t,
+  ) async {
+    await showRoute(t, 'cursor', 1440);
+    Color? selection(Finder finder) =>
+        DefaultSelectionStyle.of(t.element(finder)).selectionColor;
+    final arrow = selection(find.text('鼠标移入此区域将显示自定义光标'));
+    final raindrop = selection(find.text('鼠标移入此区域将显示雨滴光标'));
+    // Reference `.demo-raindrop-zone` changes only the cursor: the panel's
+    // code block and API table keep the arrow highlight, and only the
+    // raindrop preview (an `.animal-cursor` raindrop) resets it.
+    expect(arrow, isNot(raindrop));
+    expect(
+      selection(
+        find.descendant(
+          of: find.byType(StoryCode),
+          matching: find.byType(SelectableText),
+        ),
+      ),
+      arrow,
+    );
+    expect(selection(find.text('forceAll')), arrow);
+  });
+
+  testWidgets('backtop code chip flows inline at the UA monospace size', (
+    t,
+  ) async {
+    await showRoute(t, 'backtop', 375);
+    final chip = find.text('visibilityHeight=400');
+    expect(
+      find.ancestor(
+        of: chip,
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w is RichText && w.text.toPlainText().contains('意味着滚动超过 400px'),
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(t.widget<Text>(chip).style!.fontSize, 12 * 13 / 16);
+  });
+
   testWidgets('cursor native-control labels use bundled Arimo and fit', (
     t,
   ) async {

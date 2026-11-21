@@ -1,8 +1,12 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'counter_audit_test.dart' show pixel;
+import 'foundation_test.dart' show contrast;
 import 'palette_contrast_test.dart' show host, foreground, fill, readable;
 
 void main() {
@@ -569,4 +573,396 @@ void registerMeasuredColorOracles() {
     );
     expect(foreground(t, '09:30:00'), const Color(0xffc4b89e));
   });
+
+  registerUpgradeColorOracles();
+}
+
+// Colours introduced by the reference 4.0.0 upgrade, measured under the same
+// rule (docs/DESIGN.md#measured-color-differences).
+const _capsule = Color(0xfffffbe7);
+const _calendarPanel = Color(0xfffffdf7);
+const _calendarCellHover = Color(0xfff4f0e4);
+const _calendarSelectedCell = Color(0xffe6f9f6);
+const _calendarAccent = Color(0xff19c8b9);
+final _calendarDot = Color.alphaBlend(const Color(0x26c4b89e), _calendarPanel);
+final _calendarCells = [
+  _calendarPanel,
+  _calendarDot,
+  _calendarCellHover,
+  _calendarSelectedCell,
+];
+
+Color _paragraphInk(WidgetTester t, Finder text) =>
+    (t.renderObject<RenderParagraph>(text).text as TextSpan).style!.color!;
+
+void registerUpgradeColorOracles() {
+  DateTime june8() => DateTime(2026, 6, 8, 9, 30);
+
+  testWidgets('Time clock ink is 4.5:1 on its card, capsule and host papers', (
+    t,
+  ) async {
+    await t.pumpWidget(host(IslandTime(now: june8)));
+    final card = foreground(t, '09');
+    expect(card, const Color(0xff836b4e));
+    readable(card, fill(t, find.text('09')));
+    for (final brightness in Brightness.values) {
+      await t.pumpWidget(
+        host(
+          IslandTime(now: june8, variant: IslandTimeVariant.game),
+          brightness: brightness,
+        ),
+      );
+      // Let the app theme finish its brightness transition.
+      await t.pump(const Duration(milliseconds: 300));
+      final hud = foreground(t, '09');
+      expect(foreground(t, 'Jun 8'), hud);
+      expect(
+        hud,
+        brightness == Brightness.light ? card : const Color(0xffb59c7c),
+      );
+      for (final paper
+          in brightness == Brightness.light ? _lightPapers : _darkPapers) {
+        readable(hud, paper, reason: 'game HUD on $paper');
+      }
+      expect(fill(t, find.text('Monday')), _capsule);
+      expect(foreground(t, 'Monday'), card);
+      readable(foreground(t, 'Monday'), _capsule);
+    }
+    await t.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('Cursor selection highlight follows the theme inks', (t) async {
+    for (final brightness in Brightness.values) {
+      await t.pumpWidget(
+        host(
+          const IslandCursor(child: SizedBox(key: ValueKey('selected'))),
+          brightness: brightness,
+        ),
+      );
+      // Let the app theme finish its brightness transition.
+      await t.pump(const Duration(milliseconds: 300));
+      final highlight = DefaultSelectionStyle.of(
+        t.element(find.byKey(const ValueKey('selected'))),
+      ).selectionColor!;
+      if (brightness == Brightness.light) {
+        expect(highlight, const Color(0xffe9c46a));
+        readable(IslandTokens.light.ink, highlight);
+        // Owner-accepted registered difference (2026-11-17).
+        expect(
+          contrast(IslandTokens.light.muted, highlight),
+          closeTo(3.27, .01),
+        );
+      } else {
+        expect(highlight, const Color(0xff654c01));
+        readable(IslandTokens.dark.ink, highlight);
+        readable(IslandTokens.dark.muted, highlight);
+        for (final paper in _darkPapers) {
+          expect(contrast(highlight, paper), greaterThanOrEqualTo(1.46));
+        }
+      }
+    }
+    await t.pumpWidget(const SizedBox());
+  });
+
+  test('Countdown default reminders are 4.5:1 on every number surface', () {
+    // Plate gradient tops (default, island), shared bottom, island surface.
+    const surfaces = [
+      Color(0xffffffff),
+      Color(0xfffffdf4),
+      Color(0xfff8f8f0),
+      Color(0xfff7f3df),
+    ];
+    expect(IslandCountdownReminder.defaults.map((r) => r.color), const [
+      Color(0xffa55d05),
+      Color(0xffc44043),
+    ]);
+    for (final reminder in IslandCountdownReminder.defaults) {
+      for (final surface in surfaces) {
+        readable(reminder.color, surface, reason: '${reminder.threshold}');
+      }
+    }
+  });
+
+  testWidgets('Upload background and card progress cues meet the budgets', (
+    t,
+  ) async {
+    Widget upload(
+      IslandUploadProgress progress, {
+      IslandUploadListType listType = IslandUploadListType.text,
+    }) => IslandUpload.uncontrolled(
+      key: UniqueKey(),
+      pickFiles: ({required multiple, required accept}) async => const [],
+      request: (_) async => null,
+      listType: listType,
+      progress: progress,
+      initialFiles: const [
+        IslandUploadFile(
+          id: 'a',
+          name: 'a.png',
+          size: 2048,
+          status: IslandUploadStatus.uploading,
+          percent: 46,
+        ),
+      ],
+    );
+    List<Color> edges() => t
+        .widgetList<DecoratedBox>(
+          find.descendant(
+            of: find.byType(IslandUpload),
+            matching: find.byType(DecoratedBox),
+          ),
+        )
+        .map((b) => b.decoration)
+        .whereType<BoxDecoration>()
+        .map((d) => d.border)
+        .whereType<BorderDirectional>()
+        .map((b) => b.end.color)
+        .toList();
+    const row = Color(0xfffffdf7), rowHover = Color(0xffe6f9f6);
+    Color filled(Color under) =>
+        Color.alphaBlend(_calendarAccent.withValues(alpha: .28), under);
+    // Size text over the .28 fill, at rest and hovered.
+    await t.pumpWidget(
+      host(
+        SizedBox(
+          width: 600,
+          child: upload(
+            const IslandUploadProgress(
+              type: IslandUploadProgressType.background,
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    for (final under in [row, rowHover]) {
+      readable(foreground(t, '2.0 KB'), filled(under));
+      readable(foreground(t, '46%'), filled(under));
+    }
+    expect(edges(), isEmpty, reason: 'the percentage already states it');
+    // Without the percentage the fill is the only cue: a 3:1 end edge.
+    await t.pumpWidget(
+      host(
+        SizedBox(
+          width: 600,
+          child: upload(
+            const IslandUploadProgress(
+              type: IslandUploadProgressType.background,
+              showInfo: false,
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final edge = edges().single;
+    // Unfilled row, its hover tint, and the card mask over a black pixel.
+    final cardMask = Color.alphaBlend(
+      const Color(0xe0fffdf7),
+      const Color(0xff000000),
+    );
+    for (final under in [row, rowHover, cardMask]) {
+      readable(edge, under, minimum: 3, reason: 'edge on $under');
+    }
+    await t.pumpWidget(
+      host(
+        upload(
+          const IslandUploadProgress(
+            type: IslandUploadProgressType.background,
+            showInfo: false,
+          ),
+          listType: IslandUploadListType.pictureCard,
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(edges(), [edge]);
+    // A caller colour owns its own contrast: no library edge.
+    await t.pumpWidget(
+      host(
+        SizedBox(
+          width: 600,
+          child: upload(
+            const IslandUploadProgress(
+              type: IslandUploadProgressType.background,
+              color: Color(0xff7aa0e0),
+              showInfo: false,
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(edges(), isEmpty);
+    // Bar mode on a card: reference white percentage on the dark overlay,
+    // 4.5:1 even over a white thumbnail pixel.
+    await t.pumpWidget(
+      host(
+        upload(
+          const IslandUploadProgress(),
+          listType: IslandUploadListType.pictureCard,
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final overlay = t
+        .widget<ColoredBox>(
+          find
+              .ancestor(of: find.text('46%'), matching: find.byType(ColoredBox))
+              .first,
+        )
+        .color;
+    expect(foreground(t, '46%'), const Color(0xffffffff));
+    for (final pixel in [const Color(0xffffffff), const Color(0xff000000)]) {
+      readable(foreground(t, '46%'), Color.alphaBlend(overlay, pixel));
+    }
+  });
+
+  testWidgets(
+    'Calendar panel and header inks meet the budgets in both themes',
+    (t) async {
+      t.view.physicalSize = const Size(900, 2400);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.reset);
+      final events = [
+        for (final (i, color) in IslandCalendarColor.values.indexed)
+          IslandCalendarEvent(
+            id: color,
+            title: color.name,
+            start: DateTime(2026, 11, 2 + i, 8 + i),
+            color: color,
+            showTime: true,
+          ),
+        for (final title in ['x', 'y', 'z'])
+          IslandCalendarEvent(
+            id: title,
+            title: title,
+            start: DateTime(2026, 11, 25),
+          ),
+      ];
+      for (final brightness in Brightness.values) {
+        await t.pumpWidget(
+          host(
+            Builder(
+              builder: (context) => Localizations.override(
+                context: context,
+                locale: const Locale('zh'),
+                delegates: IslandLocalizations.delegates,
+                child: SizedBox(
+                  width: 750,
+                  child: IslandCalendar(
+                    value: DateTime(2026, 11, 20),
+                    onChanged: (_) {},
+                    now: () => DateTime(2026, 11, 17, 9),
+                    events: events,
+                  ),
+                ),
+              ),
+            ),
+            brightness: brightness,
+          ),
+        );
+        await t.pumpAndSettle();
+        // Fixed light panel in every theme.
+        for (final cell in _calendarCells) {
+          readable(foreground(t, '日'), cell, reason: 'weekday on $cell');
+          // November 2026 starts on Sunday: the trailing 12 is December's.
+          readable(
+            _paragraphInk(t, find.text('12').last),
+            cell,
+            reason: 'neighbouring month',
+          );
+          readable(foreground(t, '17'), cell, reason: 'today on $cell');
+        }
+        final todayRing =
+            t
+                    .widgetList<AnimatedContainer>(
+                      find.ancestor(
+                        of: find.text('17'),
+                        matching: find.byType(AnimatedContainer),
+                      ),
+                    )
+                    .map((c) => c.decoration)
+                    .whereType<BoxDecoration>()
+                    .firstWhere((d) => d.shape == BoxShape.circle)
+                    .border!
+                as Border;
+        for (final cell in _calendarCells) {
+          readable(todayRing.top.color, cell, minimum: 3);
+        }
+        // The selected disc keeps the reference accent; its digit is onLeaf.
+        readable(foreground(t, '20'), _calendarAccent);
+        for (final cell in _calendarCells) {
+          readable(
+            foreground(t, '+1'),
+            Color.alphaBlend(const Color(0x2419c8b9), cell),
+            reason: '+N on $cell',
+          );
+        }
+        for (final (i, color) in IslandCalendarColor.values.indexed) {
+          final bar = fill(t, find.text(color.name));
+          readable(foreground(t, color.name), bar, reason: '$color title');
+          readable(
+            foreground(t, '${8 + i}:00'.padLeft(5, '0')),
+            bar,
+            reason: '$color time',
+          );
+        }
+        // Header on the host paper, at rest and hovered.
+        final papers = brightness == Brightness.light
+            ? _lightPapers
+            : _darkPapers;
+        List<Color> arrows() => t
+            .widgetList<IslandIcon>(
+              find.byWidgetPredicate(
+                (w) =>
+                    w is IslandIcon &&
+                    (w.glyph == IslandGlyph.chevronLeft ||
+                        w.glyph == IslandGlyph.chevronRight),
+              ),
+            )
+            .map((i) => i.color!)
+            .toList();
+        for (final paper in papers) {
+          for (final arrow in arrows()) {
+            readable(arrow, paper, minimum: 3, reason: 'arrow on $paper');
+          }
+          readable(foreground(t, '今天'), paper, reason: '今天 on $paper');
+        }
+        final mouse = await t.createGesture(kind: PointerDeviceKind.mouse);
+        await mouse.addPointer(location: Offset.zero);
+        await mouse.moveTo(t.getCenter(find.text('今天')));
+        await t.pumpAndSettle();
+        for (final paper in papers) {
+          readable(
+            foreground(t, '今天'),
+            Color.alphaBlend(const Color(0x1a725d42), paper),
+            reason: 'hovered 今天 on $paper',
+          );
+        }
+        await mouse.moveTo(
+          t.getCenter(
+            find
+                .byWidgetPredicate(
+                  (w) => w is IslandIcon && w.glyph == IslandGlyph.chevronRight,
+                )
+                .first,
+          ),
+        );
+        await t.pumpAndSettle();
+        expect(arrows().toSet(), hasLength(2), reason: 'one arrow hovered');
+        for (final paper in papers) {
+          for (final arrow in arrows()) {
+            readable(
+              arrow,
+              Color.alphaBlend(const Color(0x1a725d42), paper),
+              minimum: 3,
+              reason: 'hovered arrow on $paper',
+            );
+          }
+        }
+        await mouse.removePointer();
+      }
+    },
+  );
 }

@@ -11,6 +11,9 @@ const options = [
   IslandOption(value: 'b', label: 'Berry'),
 ];
 Widget host(Widget child) => MaterialApp(
+  locale: const Locale('zh'),
+  localizationsDelegates: IslandLocalizations.delegates,
+  supportedLocales: IslandLocalizations.supportedLocales,
   home: Scaffold(body: Center(child: child)),
 );
 void main() {
@@ -880,6 +883,9 @@ void main() {
       try {
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             home: Scaffold(
               body: Center(
                 child: StatefulBuilder(

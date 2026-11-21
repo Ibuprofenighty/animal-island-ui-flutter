@@ -62,7 +62,7 @@ class TooltipStory extends StatelessWidget {
       box(
         Wrap(
           spacing: 24,
-          runSpacing: 16,
+          runSpacing: 24,
           children: [
             sample('default', '标准矩形气泡'),
             sample('default 无边框', '无边框矩形', bordered: false),

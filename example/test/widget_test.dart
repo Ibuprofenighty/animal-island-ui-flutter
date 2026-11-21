@@ -5,6 +5,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:island_gallery/shared/palette.dart';
 import 'package:island_gallery/shared/theme.dart';
 import 'package:island_gallery/shared/story.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -72,7 +73,7 @@ void main() {
         isTrue,
       );
       expect(find.text('v2.2.1'), findsNothing);
-      final credit = find.text('Flutter + Dart · Reference Gallery');
+      final credit = find.text('MIT License · Reference Gallery');
       await t.ensureVisible(credit);
       await t.pumpAndSettle();
       expect(credit, findsOneWidget);
@@ -373,7 +374,7 @@ void main() {
         }
         expect(
           find.text('API'),
-          id == 'skill' || id == 'form'
+          id == 'skill' || id == 'form' || id == 'charts' || id == 'calendar'
               ? findsNothing
               : (id == 'avatar' || id == 'notification'
                     ? findsNWidgets(2)
@@ -383,6 +384,11 @@ void main() {
           // Reference Form demo titles its two tables.
           expect(find.text('Form API'), findsOneWidget);
           expect(find.text('FormItem API'), findsOneWidget);
+        }
+        if (id == 'calendar') {
+          // Reference Calendar demo titles its two tables.
+          expect(find.text('Calendar API'), findsOneWidget);
+          expect(find.text('IslandCalendarEvent'), findsOneWidget);
         }
       });
     }
@@ -459,6 +465,84 @@ void main() {
     await t.pumpAndSettle();
     await t.tap(find.text('开始使用 →'));
     expect(route, 'skill');
+    expect(t.takeException(), isNull);
+  });
+
+  testWidgets('Home 4.0.0 subtitle, overview entries and GitHub mark', (
+    t,
+  ) async {
+    t.view.physicalSize = const Size(1440, 1000);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.resetPhysicalSize);
+    addTearDown(t.view.resetDevicePixelRatio);
+    await t.pumpWidget(
+      MaterialApp(
+        theme: galleryTheme(),
+        home: MediaQuery(
+          data: const MediaQueryData(
+            size: Size(1440, 1000),
+            disableAnimations: true,
+          ),
+          child: Scaffold(
+            body: GalleryHome(wallpaperSeed: 17, onNavigate: (_) {}),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    expect(
+      t
+          .widget<IslandTypewriter>(find.byType(IslandTypewriter))
+          .style!
+          .fontWeight,
+      FontWeight.w500,
+    );
+    final names = [
+      for (final card in t.widgetList<IslandCard>(
+        find.descendant(
+          of: find.byType(GalleryHome),
+          matching: find.byType(IslandCard),
+        ),
+      ))
+        if (card.padding ==
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16))
+          ((card.child as Column).children.first as Text).data!,
+    ];
+    expect(names.first, 'Chart');
+    expect(names.indexOf('Calendar'), names.indexOf('TimePicker') + 1);
+    expect(names.indexOf('NoData'), names.indexOf('Loading') + 1);
+    expect(names, hasLength(23));
+    final github = find.widgetWithText(TextButton, 'GitHub');
+    final mark = find.descendant(
+      of: github,
+      matching: find.byWidgetPredicate(
+        (w) => w is SizedBox && w.width == 14 && w.height == 14,
+      ),
+    );
+    expect(mark, findsOneWidget);
+    expect(t.getSize(mark), const Size.square(14));
+    final label = find.descendant(of: github, matching: find.text('GitHub'));
+    expect(t.getTopLeft(label).dx - t.getTopRight(mark).dx, 4);
+    expect(t.getCenter(mark).dy, closeTo(t.getCenter(label).dy - 1, .01));
+    expect(find.text('MIT License · Reference Gallery'), findsOneWidget);
+  });
+
+  testWidgets('Skill page opens under a circle Loading for 2s', (t) async {
+    final mounted = t.binding.clock.now();
+    await _showVisualStory(t, '/skill', const Size(1440, 1000));
+    IslandLoading loading() => t.widget(find.byType(IslandLoading));
+    expect(loading().type, IslandLoadingType.circle);
+    expect(loading().active, isTrue);
+    expect(find.text('快速开始').hitTestable(), findsNothing);
+    await t.pump(
+      const Duration(milliseconds: 1999) -
+          t.binding.clock.now().difference(mounted),
+    );
+    expect(loading().active, isTrue);
+    await t.pump(const Duration(milliseconds: 1));
+    expect(loading().active, isFalse);
+    await t.pumpAndSettle();
+    expect(find.text('快速开始').hitTestable(), findsOneWidget);
     expect(t.takeException(), isNull);
   });
 
@@ -709,7 +793,7 @@ void main() {
       expect(colorOf(t, '向下滑动'), HomeWallpaperInk.cream);
       expect(colorOf(t, '特性'), HomeWallpaperInk.title);
       expect(colorOf(t, '为什么选择'), HomeWallpaperInk.body);
-      expect(colorOf(t, 'Flutter + Dart'), HomeWallpaperInk.body);
+      expect(colorOf(t, 'MIT License · Reference'), HomeWallpaperInk.body);
       final footer = t.widget<RichText>(
         find.descendant(
           of: find.widgetWithText(TextButton, '组件文档'),
@@ -722,6 +806,42 @@ void main() {
         contains('IslandGallerySans'),
         reason: 'the footer label must resolve CJK glyphs',
       );
+      expect(t.takeException(), isNull);
+    });
+
+    testWidgets('cards use the reference inks and an 18px description pitch', (
+      t,
+    ) async {
+      await showHome(t);
+      expect(colorOf(t, '治愈系风格'), GalleryPalette.homeCardTitle);
+      expect(
+        colorOf(t, 'SVG 有机形状裁切'),
+        GalleryPalette.homeCardBody,
+        reason: 'feature description',
+      );
+      final cards = [
+        for (final card in t.widgetList<IslandCard>(
+          find.descendant(
+            of: find.byType(GalleryHome),
+            matching: find.byType(IslandCard),
+          ),
+        ))
+          if (card.padding ==
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 16))
+            card,
+      ];
+      expect(cards, isNotEmpty);
+      var wrapped = 0;
+      for (final card in cards) {
+        final children = (card.child as Column).children;
+        final name = children.first as Text, summary = children.last as Text;
+        expect(name.style!.color, const Color(0xff725d42));
+        expect(summary.style!.color, const Color(0xff7c5734));
+        final height = t.getSize(find.text(summary.data!)).height;
+        expect(height % 18, 0, reason: summary.data);
+        if (height > 18) wrapped++;
+      }
+      expect(wrapped, greaterThan(0), reason: 'a wrapped summary is measured');
       expect(t.takeException(), isNull);
     });
 
@@ -898,6 +1018,86 @@ void main() {
       expect(viewport.width, 375 - 40);
     });
 
+    testWidgets('StoryCode keeps the reference 16px margin, collapsed', (
+      t,
+    ) async {
+      await showStory(
+        t,
+        const StoryPanel(
+          title: 'T',
+          children: [
+            StoryCode('a'),
+            StoryApi(rows: [('p', 'd', 't', '-')]),
+            StoryCode('b'),
+            SizedBox(key: ValueKey('block'), height: 10),
+            StoryCode('c'),
+            StoryLabel('label'),
+            StoryCode('d', spaceAfter: 0),
+            StoryApi(rows: [('q', 'd', 't', '-')]),
+            StoryCode('e'),
+          ],
+        ),
+        800,
+      );
+      double bottom(int i) =>
+          t.getRect(find.byType(IslandCodeBlock).at(i)).bottom;
+      // The 16px margin and the API table's 24 collapse to 24.
+      expect(t.getTopLeft(find.byType(StoryApi).first).dy - bottom(0), 24 - 24);
+      // A following block without a margin keeps the 16px.
+      expect(
+        t.getTopLeft(find.byKey(const ValueKey('block'))).dy - bottom(1),
+        16,
+      );
+      // A label's 20px margin absorbs it.
+      expect(t.getTopLeft(find.byType(StoryLabel)).dy - bottom(2), 0);
+      // A caller-collapsed margin adds nothing before the API table's 24.
+      expect(t.getTopLeft(find.byType(StoryApi).last).dy - bottom(3), 0);
+      // The last block keeps its margin inside the 1px border and 24px
+      // padding of the panel.
+      final panel = t.getRect(find.byType(StoryPanel));
+      expect(panel.bottom - 36 - 1 - 24 - bottom(4), 16);
+    });
+
+    testWidgets('StoryApi draws each required mark as a separate span', (
+      t,
+    ) async {
+      await showStory(
+        t,
+        const StoryApi(
+          rows: [
+            ('items *', '列表', 'List', '—'),
+            ('end * / start', '数值', 'double', '0'),
+            ('plain', '说明', 'int', '0'),
+          ],
+        ),
+        800,
+      );
+      List<TextSpan> spans(String text) {
+        final result = <TextSpan>[];
+        final rich = t.widget<RichText>(
+          find.byWidgetPredicate(
+            (w) => w is RichText && w.text.toPlainText().contains(text),
+          ),
+        );
+        rich.text.visitChildren((span) {
+          if (span is TextSpan && span.text != null) result.add(span);
+          return true;
+        });
+        return result;
+      }
+
+      // Reference: the name in its colour, then `*` in #f0a870 4px after it.
+      final items = spans('items');
+      expect(items.map((s) => s.text), ['items', '*']);
+      expect(items.last.style!.color, GalleryPalette.apiTableRequired);
+      expect(
+        find.byWidgetPredicate((w) => w is SizedBox && w.width == 4),
+        findsNWidgets(2),
+      );
+      expect(spans('end').map((s) => s.text), ['end', '*', ' / start']);
+      expect(find.text('plain'), findsOneWidget);
+    });
+
     testWidgets('StoryLabel inline code uses the UA monospace 13/16 size', (
       t,
     ) async {
@@ -1029,6 +1229,38 @@ void main() {
         semantics.dispose();
       }
     });
+  });
+
+  testWidgets('Skill prose keeps the reference fixed CSS line boxes', (
+    t,
+  ) async {
+    await _showVisualStory(t, '/skill', const Size(375, 812));
+    await t.pump(const Duration(seconds: 2));
+    await t.pumpAndSettle();
+    final prose = t
+        .widgetList<Text>(
+          find.byWidgetPredicate(
+            (w) =>
+                w is Text &&
+                w.style?.fontSize == 12 &&
+                (w.style?.height == 1.8 || w.style?.height == 1.7),
+          ),
+        )
+        .toList();
+    expect(prose, isNotEmpty);
+    var wrapped = 0;
+    for (final text in prose) {
+      expect(text.strutStyle?.forceStrutHeight, isTrue, reason: text.data);
+      // One uniform pitch per paragraph: the CSS line box (12 x 1.8 = 21.6,
+      // 12 x 1.7 = 20.4) as the text engine rounds it to whole pixels.
+      final line = (12 * text.style!.height!).roundToDouble();
+      final height = t.getSize(find.byWidget(text)).height;
+      final lines = (height / line).round();
+      expect(height, closeTo(lines * line, .01), reason: text.data);
+      if (lines > 1) wrapped++;
+    }
+    expect(wrapped, greaterThan(0), reason: 'wrapped prose is measured');
+    expect(t.takeException(), isNull);
   });
 
   testWidgets('Skill License is dashed and catalog categories are centred', (

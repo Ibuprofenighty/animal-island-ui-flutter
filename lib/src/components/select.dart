@@ -1,3 +1,5 @@
+import '../foundation/localizations.dart';
+
 import 'dart:async';
 
 import '../internal/content_scope.dart';
@@ -23,38 +25,61 @@ import '../internal/anchored_panel.dart';
 
 int _nextSelectId = 0;
 
+/// Where the option panel opens relative to the trigger. Both variants share
+/// the same panel styling and content-sized width.
+enum IslandSelectVariant {
+  /// Conventional dropdown: directly below the trigger and centred on it,
+  /// flipping directly above when the space below is too short and the space
+  /// above is larger. A centred panel that would cross a viewport edge aligns
+  /// with the trigger's edge on that side.
+  normal,
+
+  /// Playful side popover: beside the trigger (right, or left when the right
+  /// has no room) and vertically centred, falling back to below or above the
+  /// trigger when the vertical space is short.
+  game,
+}
+
 class IslandSelect<T> extends StatefulWidget {
   IslandSelect({
     super.key,
-    this.label = '选择',
+    this.label,
     required List<IslandOption<T>> options,
     required this.value,
     required this.onChanged,
-    this.placeholder = '请选择',
+    this.placeholder,
     this.disabled = false,
+    this.variant = IslandSelectVariant.normal,
     this.allowClear = false,
     this.showSearch = false,
     this.onClear,
     this.onSearch,
     this.filter,
     this.filterLocally = true,
-    this.notFound = const Text('暂无数据'),
-    this.clearLabel = '清除',
+    this.notFound,
+    this.clearLabel,
     this.width,
     this.focusNode,
   }) : options = List.unmodifiable(options) {
     if (options.map((e) => e.value).toSet().length != options.length)
       throw ArgumentError('Option values must be unique.');
   }
-  final String label, placeholder, clearLabel;
+
+  /// Accessible name, placeholder and clear-button name; null uses
+  /// [IslandLocalizations.select], [IslandLocalizations.selectPlaceholder]
+  /// and [IslandLocalizations.clear].
+  final String? label, placeholder, clearLabel;
   final List<IslandOption<T>> options;
   final T? value;
   final ValueChanged<T?>? onChanged;
   final bool disabled, allowClear, showSearch, filterLocally;
+
+  /// Panel placement; see [IslandSelectVariant].
+  final IslandSelectVariant variant;
   final VoidCallback? onClear;
   final ValueChanged<String>? onSearch;
   final bool Function(String query, IslandOption<T> option)? filter;
-  final Widget notFound;
+  final Widget? notFound;
   final double? width;
   final FocusNode? focusNode;
   @override
@@ -62,6 +87,10 @@ class IslandSelect<T> extends StatefulWidget {
 }
 
 class _IslandSelectState<T> extends State<IslandSelect<T>> {
+  IslandLocalizations get strings => IslandLocalizations.of(context);
+  String get selectLabel => widget.label ?? strings.select;
+  String get placeholder => widget.placeholder ?? strings.selectPlaceholder;
+  String get clearLabel => widget.clearLabel ?? strings.clear;
   late final ownedFocus = FocusNode();
   FocusNode get focus => widget.focusNode ?? ownedFocus;
   final text = TextEditingController();
@@ -391,14 +420,16 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       fontWeight: FontWeight.w600,
       color: SelectColors.option,
     );
-    var panelWidth = 80.0;
+    // An empty panel takes the width of the caller's `notFound` content plus
+    // its padding, as the reference shrink-to-fit `.dropdown` does.
+    double? panelWidth = visible.isEmpty ? null : 80.0;
     for (final option in visible) {
       final painter = TextPainter(
         text: TextSpan(text: option.label, style: style),
         textDirection: Directionality.of(context),
         textScaler: MediaQuery.textScalerOf(context),
       )..layout();
-      panelWidth = math.max(panelWidth, painter.width + 60);
+      panelWidth = math.max(panelWidth!, painter.width + 60);
       painter.dispose();
     }
     final panel = Container(
@@ -421,7 +452,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
                 ),
                 child: ContentScope(
                   textStyle: style.copyWith(color: IslandTokens.light.muted),
-                  child: widget.notFound,
+                  child: widget.notFound ?? Text(strings.noData),
                 ),
               ),
             for (final option in visible) _option(option, style),
@@ -468,7 +499,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
               disabledBorder: InputBorder.none,
               filled: false,
               contentPadding: EdgeInsets.zero,
-              hintText: widget.placeholder,
+              hintText: placeholder,
               hintStyle: style.copyWith(
                 height: 19 / 14,
                 color: IslandTokens.light.muted,
@@ -477,7 +508,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
             ),
           )
         : Text(
-            label.isEmpty ? widget.placeholder : label,
+            label.isEmpty ? placeholder : label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: label.isEmpty
@@ -525,16 +556,16 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
               onFocus: !widget.showSearch && enabled
                   ? focus.requestFocus
                   : null,
-              label: widget.showSearch ? null : widget.label,
+              label: widget.showSearch ? null : selectLabel,
               value: widget.showSearch
                   ? null
-                  : (label.isEmpty ? widget.placeholder : label),
+                  : (label.isEmpty ? placeholder : label),
               expanded: open,
               enabled: enabled,
               controlsNodes: open ? {panelId} : null,
               onTap: !widget.showSearch && enabled ? toggle : null,
               child: widget.showSearch
-                  ? Semantics(label: widget.label, child: field)
+                  ? Semantics(label: selectLabel, child: field)
                   : ExcludeSemantics(child: field),
             ),
           ),
@@ -543,7 +574,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
               enabled &&
               (hovered || focus.hasFocus || completingPresentation))
             ActionSurface(
-              label: widget.clearLabel,
+              label: clearLabel,
               onActivate: clear,
               // Reference `.clear`: 20px circle with 6px trailing margin;
               // hover adds rgba(114,93,66,.1) and darkens the glyph over the
@@ -638,16 +669,21 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
         transitionCurve: Curves.ease,
         transitionOffset: Offset.zero,
         onDismiss: close,
-        placement: PanelPlacement.beside,
+        placement: switch (widget.variant) {
+          IslandSelectVariant.normal => PanelPlacement.belowCentered,
+          IslandSelectVariant.game => PanelPlacement.beside,
+        },
         width: panelWidth,
-        estimatedHeight: visible.length * 44 + 24,
+        // Reference Select.tsx counts every option, not the filtered list,
+        // so typing a search does not move a flipped panel.
+        estimatedHeight: widget.options.length * 44 + 24,
         anchor: anchor,
         panel: Semantics(
           container: true,
           explicitChildNodes: true,
           identifier: panelId,
           role: SemanticsRole.list,
-          label: widget.label,
+          label: selectLabel,
           child: LightSurfaceScope(child: panel),
         ),
       ),

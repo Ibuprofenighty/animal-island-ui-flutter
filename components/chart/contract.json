@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "id": "chart",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Chart 图表: the reference 4.0.0 Chart (added in 3.0.0) — 19 statistical chart kinds sharing a legend, tooltip, keyboard reading, data detail table and empty state, drawn with Flutter painting instead of SVG; no remote data.",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandChart](../../lib/src/components/chart/chart.dart) and the data model in [model.dart](../../lib/src/components/chart/model.dart): IslandChartData (one named constructor per IslandChartType: column, bar, line, area, mount, mix, radar take IslandChartSeries; scatter, bubble, time take IslandChartPointSeries; candle takes IslandChartCandleSeries; pie, ring, rose, funnel, word take one IslandChartSeries; map takes one IslandChartSeries plus IslandChartRegion outlines; arcbar and gauge take IslandChartSeries with min 0 / max 100), IslandChartValue, IslandChartPoint (IslandChartPoint.time takes a DateTime and stores its epoch milliseconds as x), IslandChartCandle, IslandChartSeriesMode, IslandChartTooltip, IslandChartTooltipTrigger. Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list.",
+    "outputs": "onDataActivate(IslandChartDataEvent) on click, Enter or Space with the original series/data indices, names, value (y for points, close for candles) and the caller's datum. A tooltip builder receives IslandChartTooltipContext (name, locked, items with colour, formatted value, share and funnel conversion).",
+    "state_model": "The normalised data, scene geometry, reading names and data table rows are derived from IslandChartData (treated as immutable, compared by identity), the palette and hidden legend keys (by content), the plot size, the value formatter, showAxes/showLabels and the locale, and are reused while those are unchanged (reference useMemo on the scene); hover, focus, legend hover and scrolling repaint without re-laying out. The component owns: hidden legend keys (type + series name, plus index + name for item legends), the hovered reading, the keyboard-focused reading, the locked reading, the hovered/focused legend entry and the data table disclosure. Loading clears hover, focus and lock; a lock whose identity (type, series name, datum name, mark key) disappears is cleared and does not return when the datum comes back; a same-identity update keeps it with the new value. The active reading is the lock, else the hovered, else the focused reading.",
+    "events": "Pointer hits follow the reference SVG: a filled shape hits inside its path, a stroked one within half its stroke width of the path (fill none paths such as gauge arcs, needles and candle wicks hit only on the stroke), the reference 12px transparent halo around line/area/mix/time/scatter/bubble/radar points and zero readings, mark text on its box; value labels never hit (.chart-value-label pointer-events: none). Click or Enter/Space on a reading calls onDataActivate and, when selectable, toggles the lock. Clicking empty plot space, the 解除锁定 pill, Escape anywhere inside the chart, an arrow/Home/End key, toggling a legend or restoring legends clears hover, focus reading and lock.",
+    "composition": "Parent owns width and placement. The container fills the available width with 20px padding (12px when the window is at most 480 wide), 1.5px border, radius 20. The plot is max(280, viewport width) wide (640 when unbounded) and scrolls horizontally inside narrower parents; its height is max(180, height), 300 for non-finite heights. While the plot overflows, a 4px scrollbar thumb overlays the bottom edge of the viewport on a transparent track (reference `.viewport` thin scrollbar; draggable, not a focus stop). Header (title 17/800 at line-height normal with the primary font as minimum line metrics, description 12/1.7 as a fixed line box placed by the primary font, so mixed Latin/CJK lines keep the all-CJK height) above; legend (wrapping 32px pills, 12×8 gaps), selection bar, data table and the word-cloud note below, in reference order. The data table summary (查看数据（N）, 12px in 4px padding) inherits line-height normal like the title: its line box is the largest rounded ascent plus the largest rounded descent of the fonts it uses (18px for the reference stack), whatever the ambient text height. Tooltip layout: the tooltip panel is min(260, max(1, viewport width - 16)) wide, as the reference ChartTooltip inline `width`, with 16px horizontal and 14px vertical padding; the default content always has that width. Builder content wider than it widens the panel up to min(400, max(1, viewport width - 16)) (owner decision of 2026-11-20; the reference keeps 260 and scrolls horizontally), so builder content is laid out between those two widths less 32 and is constrained to the larger; there is no horizontal tooltip scrolling. The panel height is at most the plot height less 16 and taller content scrolls vertically. The expanded data table fills the chart content width; each column is at least as wide as its widest cell (text plus 24px padding) and spare width is shared in proportion to those widths; a table wider than the content scrolls horizontally and no cell wraps.",
+    "accessibility": "The chart is a semantics container named semanticLabel ?? title ?? IslandLocalizations.chart (zh 统计图表), containing a plot group of the same name. Each reading is a focusable button named IslandLocalizations.chartReading: zh '{series}，{name}，{reading}', en '{series}, {name}, {reading}', where the reading is the formatted value, 'x · y' (plus ' · 权重 w' for bubbles; time x as YYYY-MM-DD HH:mm:ss or xFormatter) or '开 o / 收 c / 低 l / 高 h'; when selectable it carries a toggled state (aria-pressed). One roving Tab stop (the focused reading, else the first); arrows cycle, Home/End jump; Tab leaves to the legend. Keyboard focus draws a 2px outline 4px outside the mark; pointer focus does not (focus-visible). A map region without data is not a reading: hovering inside its outline shows the reference `<title>` text and its semantics node is named the same, zh '{name}：暂无数据', en '{name}: No data'; it takes no focus and a click on it clears like empty plot space. Legend entries are toggle buttons named by their text inside a group named 图例; 恢复全部图例 stays reachable while every entry is hidden. The data table (查看数据（N）, an expandable button) lists every valid datum including hidden ones and omitted words, captioned '{label}数据明细'. Loading and empty states are live regions. The tooltip panel is a live region. Screen-reader execution is excluded by the 2026-10-17 user scope decision.",
+    "localization": "All chrome and semantics labels come from IslandLocalizations; zh output equals the reference strings (正在整理数据…, 暂无数据 (noData), 所有图例已隐藏, 恢复图例后，即可继续查看统计。, 请提供地图区域轮廓, 恢复全部图例, 已锁定, 已锁定：, 解除锁定, 点击锁定读数, 再次点击或按 Esc 解除锁定, 占比, 较首阶段, 较上阶段, 合计, 开/收/低/高, 权重, 查看数据（N）, 系列/项目/数值, 数据明细, 统计图表, 图例, 部分词条未能放入当前绘图区，完整数值可展开查看数据。); en has its own wording. Without an IslandLocalizations delegate the library default (English) applies. The default number format stays the reference zh-CN Intl format in every locale: up to two decimals, grouping, and 万/亿/万亿 compact notation from 10 000 chosen after rounding (99 999 999 reads 1亿); time axes default to local HH:mm and readings to YYYY-MM-DD HH:mm:ss; a tick outside the Date range reads the reference 'Invalid Date'.",
+    "async_behavior": "None; no data is fetched.",
+    "lifecycle": "The component owns and disposes one focus node per reading (stale nodes are disposed after the frame that drops them), the fade and emphasis controllers and the plot scroll controller.",
+    "styling": "One foundation-owned recipe (lib/src/foundation/recipes/chart.dart, ChartColors.of(brightness)) maps the reference theme variables: light = reference default theme (#f8f8f0 surface, #794f27 ink, #e8e2d6 border/grid, #c4b89e zero line, #f0e8d8 legend pill, #e8e2d6 hover); dark = the dark product roles. Measured-colour rule applied (docs/DESIGN.md): secondary text #9f927d → #7d705c (light), focus #19c8b9 → #04a195 (light), hidden legend label (reference 0.5 opacity, 2.2:1) → opaque #7f6a51 over the half-opacity pill, rising candle #dc7367 → #da7166 (light), gauge needle #725d42 → #937d61 (dark), default series palette light mint/peach/green/purple/yellow/blue/pink → #03a193/#cc7b50/#639d64/#a87fc8/#b4890c/#7292b7/#c7798b (brown #9a835a kept); dark keeps the reference palette. Decorative grid, zero line, the viewport scrollbar thumb (#c4b89e light, the dark zero-line role dark), crosshair, separators (#fffdf7), gauge track (#eae2ce) and ticks (#b6a184) and empty map regions keep the reference. Caller series/point colours and the backgroundColor/borderColor overrides are caller-owned. Geometry ports Cartesian.tsx, Polar.tsx, Specialty.tsx and geometry.ts numerically (margins 62/90 left, 24 right, 28 top, 44 bottom; 0.7-slot bars capped at 42 and 0.86 drawn; radius 9 bars, 2 stacked; 3px lines; 0.18 area; 0.55 bubble/funnel; 1/2/2.5/5 automatic ticks). Unrelated marks and layers dim to 0.24 and active readings gain a 0 2 3 drop shadow over 200ms (library easing); the plot fades in over 250ms; legend pills lift 1px on hover over 200ms. Reduced motion settles every state immediately and removes the lift.",
+    "performance": "The scene is rebuilt only when its inputs change (see state_model): O(points); word cloud O(words × 1200) placement attempts per size step. A new IslandChartData object, palette list content, formatter function or hidden-set change re-lays out; pass a stable formatter to keep hover cheap. Hover hit tests walk marks top-down; stroke hits sample the path at 2px. Platform profiling required before release; intended for dashboard-sized data.",
+    "migration": "New component; no previous Flutter API."
+  },
+  "scenarios": [
+    {
+      "id": "chart.reference",
+      "given": "The pinned reference 4.0.0 Chart overview and its 19 type pages",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry and interaction agree; registered accessibility colour differences apply; other differences remain failures."
+    },
+    {
+      "id": "chart.geometry",
+      "given": "A known dataset for each of the 19 kinds at the default height",
+      "when": "The chart paints",
+      "then": "Mark rectangles, centres, sector containment, arc end points, funnel bands, word placement and map projection equal the reference formulas evaluated for the measured plot width."
+    },
+    {
+      "id": "chart.data-validity",
+      "given": "null, NaN, infinite values, time x beyond ±8.64e15 ms (outside the Date range), incomplete coordinates, non-positive bubble weights, inconsistent candles and negative proportions",
+      "when": "The chart normalises its data",
+      "then": "Invalid data is neither drawn nor counted, keeps its index, and zero stays a reading; category lines break at gaps; incomplete radar series draw points without a polygon."
+    },
+    {
+      "id": "chart.tooltip",
+      "given": "Category, time, radar, scatter and item charts",
+      "when": "Hover, focus or activate a reading",
+      "then": "Axis tooltips compare every visible series at the same category, timestamp or dimension; item charts and trigger item show one reading; pie/ring/rose show shares of the drawn total and funnels rates against the first and preceding visible stage; a builder replaces the content and null hides it; tooltip null hides panel and guides."
+    },
+    {
+      "id": "chart.lock",
+      "given": "selectable charts",
+      "when": "Click or Enter/Space a reading, then hover elsewhere, press an arrow key, Escape, or click empty space",
+      "then": "The lock keeps its reading during hover; activating it again, an arrow key, Escape, empty space or 解除锁定 release it; Escape closes the reading and leaves the focused mark its focus ring; onDataActivate fires on every activation."
+    },
+    {
+      "id": "chart.legend",
+      "given": "Series legends (Cartesian, radar, gauge) and item legends (pie, ring, rose, funnel, word, map)",
+      "when": "Hover/focus or toggle entries",
+      "then": "Hover/focus dims other series or items; toggling hides/shows data and clears readings; hiding everything shows 所有图例已隐藏 with a restore action and keeps the data table; a pointer press on a restore action leaves no legend entry focused."
+    },
+    {
+      "id": "chart.empty",
+      "given": "No drawable data, all legends hidden, a map without regions, or loading",
+      "when": "The chart renders",
+      "then": "A small IslandNoData explains 暂无数据, 所有图例已隐藏 or 请提供地图区域轮廓; empty replaces only the plain empty state; loading shows 正在整理数据… without plot or data table."
+    },
+    {
+      "id": "chart.theme",
+      "given": "Light and dark host themes",
+      "when": "The chart renders",
+      "then": "Surface, border, grid, axis text, legend, tooltip, data table and empty state follow the theme; text keeps 4.5:1 and default series colours 3:1 on the surface."
+    },
+    {
+      "id": "chart.reduced-motion",
+      "given": "MediaQuery.disableAnimations",
+      "when": "Mount, hover a legend, focus or lock a reading",
+      "then": "The plot appears at full opacity and emphasis settles in the same frame with the same states."
+    }
+  ]
+}

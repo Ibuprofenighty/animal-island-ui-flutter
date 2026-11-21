@@ -126,7 +126,7 @@ class BackgroundStory extends StatelessWidget {
           ),
         ),
       ),
-      const SizedBox(height: 16),
+      // The preview's 16px bottom margin collapses into the code block's 36.
       const StoryCode(
         "const SizedBox(\n  height: 200,\n  child: IslandBackground(\n    type: IslandBackgroundType.sprinkles,\n    padding: EdgeInsets.all(24),\n    child: Text('内容渲染在图案背景之上'),\n  ),\n)",
       ),

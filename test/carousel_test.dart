@@ -94,6 +94,24 @@ void main() {
       await t.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await t.pump();
       expect(requests, ['c', 'b']);
+      // The region keeps its keys while one of its own controls has focus,
+      // as the reference handles them on the section.
+      Focus.of(
+        t.element(
+          find
+              .descendant(
+                of: button('Go to slide 2'),
+                matching: find.byType(AnimatedContainer),
+              )
+              .first,
+        ),
+      ).requestFocus();
+      await t.pump();
+      expect(focus.hasFocus, isTrue);
+      expect(focus.hasPrimaryFocus, isFalse);
+      await t.sendKeyEvent(LogicalKeyboardKey.end);
+      await t.pump();
+      expect(requests, ['c', 'b', 'c']);
       await t.pumpWidget(const SizedBox());
       focus.requestFocus();
       focus.dispose();
@@ -177,7 +195,7 @@ void main() {
     },
   );
   testWidgets(
-    'Carousel motion follows the reference curves: .3s slide, .2s dots and control hover',
+    'Carousel motion follows the reference curves: .35s slide, .25s dots and control hover',
     (t) async {
       const ease = Cubic(.4, 0, .2, 1);
       await t.pumpWidget(
@@ -204,8 +222,8 @@ void main() {
       await t.pump();
       final settledX = t.getTopLeft(find.text('b:0')).dx - 18;
       await t.pump(const Duration(milliseconds: 100));
-      expect(activeDot(), closeTo(10 + 14 * ease.transform(.5), .01));
-      await t.pump(const Duration(milliseconds: 50));
+      expect(activeDot(), closeTo(10 + 14 * ease.transform(.4), .01));
+      await t.pump(const Duration(milliseconds: 75));
       expect(
         t.getTopLeft(find.text('b:0')).dx - settledX,
         closeTo(18 * (1 - ease.transform(.5)), .01),
@@ -231,7 +249,7 @@ void main() {
         await mouse.moveTo(rest.center);
         await t.pump();
         await t.pump(const Duration(milliseconds: 100));
-        expect(restTop - top(), closeTo(lift * ease.transform(.5), .01));
+        expect(restTop - top(), closeTo(lift * ease.transform(.4), .01));
         await t.pump(const Duration(milliseconds: 150));
         expect(restTop - top(), closeTo(lift, .01));
         await mouse.moveTo(Offset.zero);
@@ -308,6 +326,9 @@ void main() {
           final control = button(name);
           final box = t.getRect(control);
           await t.tap(control);
+          // A pointer press takes focus without a focus indicator; a key
+          // shows it, as CSS `:focus-visible`.
+          await t.sendKeyEvent(LogicalKeyboardKey.shiftLeft);
           await t.pumpAndSettle();
           final ink = await pixel(t, key, box.topCenter - const Offset(0, 3));
           final backing = await pixel(

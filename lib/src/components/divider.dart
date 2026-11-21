@@ -1,22 +1,53 @@
 import 'package:flutter/material.dart';
 
 import '../foundation/recipes/divider.dart';
+import '../internal/wave.dart';
 
-enum IslandDividerVariant { dashedBrown, thin, hairline, waveYellow, squiggle }
+/// Line style of an [IslandDivider] without an icon.
+enum IslandDividerVariant {
+  /// 2px brown dashes on a 12px rhythm (the default).
+  dashedBrown,
 
+  /// 1px solid line.
+  thin,
+
+  /// 1px fine dashes on a 6px rhythm.
+  hairline,
+
+  /// Yellow 40px-period wave line.
+  waveYellow,
+
+  /// Teal 120px-period squiggle.
+  squiggle,
+
+  /// 24px-high double-layer mint ocean wave; [IslandDivider.animated] drifts it.
+  oceanWave,
+}
+
+/// Decorative separator; adds no semantics node.
 class IslandDivider extends StatelessWidget {
   const IslandDivider({
     super.key,
     this.variant = IslandDividerVariant.dashedBrown,
+    this.animated = true,
     this.iconBuilder,
     this.iconSize = 24,
     this.iconGap = 8,
   }) : assert(iconSize > 0),
        assert(iconGap >= 0);
+
+  /// Line style; ignored when [iconBuilder] is set.
   final IslandDividerVariant variant;
+
+  /// Whether the [IslandDividerVariant.oceanWave] wave drifts. It plays only
+  /// while visible and motion is enabled, and otherwise keeps a static wave.
+  /// Other variants ignore it.
+  final bool animated;
 
   /// A builder gives each repeated decorative slot its own widget identity.
   final WidgetBuilder? iconBuilder;
+
+  /// Icon edge length and the connector gap between repeated icons.
   final double iconSize, iconGap;
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
@@ -28,8 +59,11 @@ class IslandDivider extends StatelessWidget {
               IslandDividerVariant.waveYellow => 14,
               IslandDividerVariant.squiggle => 10,
               IslandDividerVariant.dashedBrown => 12,
+              IslandDividerVariant.oceanWave => 24,
             },
-            child: CustomPaint(painter: _DividerPainter(variant)),
+            child: variant == IslandDividerVariant.oceanWave
+                ? OceanWave(color: DividerColors.oceanWave, animated: animated)
+                : CustomPaint(painter: _DividerPainter(variant)),
           )
         : LayoutBuilder(
             builder: (context, constraints) {
@@ -81,6 +115,8 @@ class _DividerPainter extends CustomPainter {
     final paint = Paint()..style = PaintingStyle.stroke;
     final path = Path();
     switch (variant) {
+      case IslandDividerVariant.oceanWave:
+        return;
       case IslandDividerVariant.thin:
         paint
           ..color = DividerColors.thin
@@ -95,10 +131,13 @@ class _DividerPainter extends CustomPainter {
           ..color = thin ? DividerColors.hairline : DividerColors.dashedBrown
           ..strokeWidth = thin ? 1 : 2;
         final step = thin ? 6.0 : 12.0;
-        for (double x = 0; x < size.width; x += step) {
+        // Reference `background-position: center`: one tile is centred, so
+        // the dash phase is symmetric and both ends may show partial dashes.
+        final start = ((size.width - step) / 2) % step - step;
+        for (double x = start; x < size.width; x += step) {
           path
             ..moveTo(x, size.height / 2)
-            ..lineTo((x + step / 2).clamp(0, size.width), size.height / 2);
+            ..lineTo(x + step / 2, size.height / 2);
         }
       case IslandDividerVariant.waveYellow:
         paint

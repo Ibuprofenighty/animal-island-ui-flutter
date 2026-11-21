@@ -1,12 +1,15 @@
+import 'dart:math' as math;
+
 import '../foundation/recipes/progress.dart';
-import '../foundation/theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../foundation/size.dart';
 import '../foundation/scene.dart';
+import '../internal/wave.dart';
 
+/// Pill progress bar with the percentage to its right.
 class IslandProgress extends StatelessWidget {
   const IslandProgress({
     super.key,
@@ -14,19 +17,54 @@ class IslandProgress extends StatelessWidget {
     required this.label,
     this.size = IslandSize.middle,
     this.scene,
+    this.color,
+    this.wave = false,
+    this.animated = true,
     this.showInfo = true,
     this.infoBuilder,
     this.semanticValue,
     this.duration = const Duration(milliseconds: 600),
   });
+
+  /// Current percentage; clamped to 0–100, NaN reads as 0.
   final double percent;
+
+  /// Accessible name of the bar.
   final String label;
+
+  /// Track height: 14, 24 or 32.
   final IslandSize size;
+
+  /// Scene picture revealed from the left; takes precedence over [color].
   final IslandScene? scene;
+
+  /// Solid fill colour under the reference sheen and top highlight; it stays
+  /// the same at 100%. Null keeps the mint gradient. Contrast of a caller
+  /// colour against the track is the caller's responsibility.
+  final Color? color;
+
+  /// Overlays the double-layer ocean wave on the fill; combines with [color]
+  /// or [scene].
+  final bool wave;
+
+  /// Whether the [wave] drifts. It is still at 0% and 100%, and plays only
+  /// while visible and motion is enabled.
+  final bool animated;
+
+  /// Shows the percentage text to the right of the track.
   final bool showInfo;
+
+  /// Replaces the default `N%` text; explicit text styles win.
   final Widget Function(double percent)? infoBuilder;
+
+  /// Semantic value; defaults to `N%`.
   final String Function(double percent)? semanticValue;
+
+  /// Fill width transition; zero disables it. The wave is controlled by
+  /// [animated].
   final Duration duration;
+
+  /// [percent] clamped to 0–100 with NaN as 0.
   double get safePercent => percent.isNaN ? 0 : percent.clamp(0, 100);
   @override
   Widget build(BuildContext context) {
@@ -48,7 +86,7 @@ class IslandProgress extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: ProgressColors.track,
                   border: Border.all(
-                    color: IslandTokens.light.outline,
+                    color: ProgressColors.trackBorder,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(999),
@@ -74,7 +112,19 @@ class IslandProgress extends StatelessWidget {
                               child: Stack(
                                 fit: StackFit.expand,
                                 children: [
-                                  if (scene == null)
+                                  if (scene == null && color != null) ...[
+                                    ColoredBox(color: color!),
+                                    const DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: ProgressColors.customSheen,
+                                          stops: [0, .6, .6, 1],
+                                        ),
+                                      ),
+                                    ),
+                                  ] else if (scene == null)
                                     DecoratedBox(
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
@@ -109,29 +159,45 @@ class IslandProgress extends StatelessWidget {
                                         alignment: Alignment.topLeft,
                                       ),
                                     ),
-                                  const Positioned(
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    height: 2,
-                                    child: ColoredBox(
-                                      color: ProgressColors.highlight,
-                                    ),
-                                  ),
+                                  // Reference `box-shadow: inset 0 2px 0`:
+                                  // a 2px band that follows the pill's
+                                  // rounded ends, painted on the fill itself.
+                                  // Beside the 2px fill edge it sits inside
+                                  // the edge, as a CSS inset shadow sits
+                                  // inside a border, so both stay visible.
                                   Positioned.fill(
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          999,
-                                        ),
-                                        // Same-hue 3:1 edge beside the fill.
-                                        border: Border.all(
-                                          color: ProgressColors.fillEdge,
-                                          width: 2,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(
+                                        scene != null || color == null ? 2 : 0,
+                                      ),
+                                      child: const CustomPaint(
+                                        painter: _InsetTopHighlight(
+                                          ProgressColors.highlight,
                                         ),
                                       ),
                                     ),
                                   ),
+                                  if (wave)
+                                    OceanWave(
+                                      color: ProgressColors.wave,
+                                      animated:
+                                          animated && value > 0 && value < 100,
+                                    ),
+                                  if (scene != null || color == null)
+                                    Positioned.fill(
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            999,
+                                          ),
+                                          // Same-hue 3:1 edge beside the fill.
+                                          border: Border.all(
+                                            color: ProgressColors.fillEdge,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -149,7 +215,7 @@ class IslandProgress extends StatelessWidget {
                 constraints: const BoxConstraints(minWidth: 44),
                 child: DefaultTextStyle.merge(
                   style: TextStyle(
-                    color: IslandTheme.of(context).ink,
+                    color: ProgressColors.info(context),
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
                     height: 1,
@@ -165,6 +231,33 @@ class IslandProgress extends StatelessWidget {
       ),
     );
   }
+}
+
+/// CSS `box-shadow: inset 0 2px 0 <color>` on a `border-radius: 999px` box:
+/// the box's rounded shape minus the same shape moved 2px down. CSS scales
+/// the oversized radii to half the shorter side.
+class _InsetTopHighlight extends CustomPainter {
+  const _InsetTopHighlight(this.color);
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final shape = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      Radius.circular(math.min(size.width, size.height) / 2),
+    );
+    canvas.drawPath(
+      Path.combine(
+        PathOperation.difference,
+        Path()..addRRect(shape),
+        Path()..addRRect(shape.shift(const Offset(0, 2))),
+      ),
+      Paint()..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_InsetTopHighlight old) => old.color != color;
 }
 
 class _TrackDots extends CustomPainter {

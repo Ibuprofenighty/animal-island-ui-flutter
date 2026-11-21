@@ -168,7 +168,7 @@ void visualFeedbackOracles({VisualCapture? capture}) {
               );
             }
           });
-          // This oracle samples the real 300ms Carousel motion, so animations
+          // This oracle samples the real 350ms Carousel motion, so animations
           // stay on. The 4s warmup settles the page and the focus-paused
           // Carousel; pumpAndSettle cannot return while the Gallery sidebar
           // NEW badge runs its endless reference pulse.
@@ -228,11 +228,11 @@ void visualFeedbackOracles({VisualCapture? capture}) {
                       0,
                       .2,
                       1,
-                    ).transform(elapsed.clamp(0, 300) / 300));
+                    ).transform(elapsed.clamp(0, 350) / 350));
             expect(
               movement,
               closeTo(expectedMovement, .02),
-              reason: 'Actual controlled-frame geometry must match the normal300ms animation, not screenshot readback wall time',
+              reason: 'Actual controlled-frame geometry must match the normal350ms animation, not screenshot readback wall time',
             );
 
             expect(
@@ -365,7 +365,7 @@ void visualFeedbackOracles({VisualCapture? capture}) {
             image.dispose();
           }
 
-          await inspect(0, 300);
+          await inspect(0, 350);
           for (var turn = 1; turn <= 3; turn++) {
             final slide = turn % 3;
             final wrap = turn == 3;
@@ -384,10 +384,10 @@ void visualFeedbackOracles({VisualCapture? capture}) {
             await inspect(slide, 0, wrap: wrap);
             await step(const Duration(milliseconds: 16));
             await inspect(slide, 16, wrap: wrap);
-            await step(const Duration(milliseconds: 134));
-            await inspect(slide, 150, wrap: wrap);
-            await step(const Duration(milliseconds: 150));
-            await inspect(slide, 300, wrap: wrap);
+            await step(const Duration(milliseconds: 159));
+            await inspect(slide, 175, wrap: wrap);
+            await step(const Duration(milliseconds: 175));
+            await inspect(slide, 350, wrap: wrap);
           }
           final gradients = find
               .byType(DecoratedBox)

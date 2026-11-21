@@ -252,10 +252,10 @@ void main() {
           .map((e) => (e.widget as Text).data!)
           .toList();
       final sorted = [...actual]..sort();
-      expect(actual.length, 163);
+      expect(actual.length, 709);
       expect(actual, sorted);
       expect(t.getSize(names.first).height, 13);
-      expect(t.getSize(find.text('AlertCircle')).height, 18);
+      expect(t.getSize(find.text('Chrome')).height, 18);
       expect(t.getSize(find.text('飞机')).height, 20);
       expect(t.takeException(), isNull);
     },
@@ -357,14 +357,35 @@ void main() {
       for (final width in [1440.0, 375.0]) {
         await page(t, 'home', width);
         final cards = find.byType(IslandCard);
-        expect(cards, findsNWidgets(24));
+        expect(cards, findsNWidgets(27));
         expect(t.getSize(find.text('特性')).height, 33);
-        expect(t.getSize(find.text('为什么选择 animal-island-ui')).height, 20);
+        // Reference section description `line-height: normal`: 21px with
+        // the baseline 16px below the top (Nunito with the CJK fallback).
+        double baseline(String text) {
+          final paragraph = t.renderObject<RenderBox>(
+            find.descendant(
+              of: find.text(text),
+              matching: find.byType(RichText),
+            ),
+          );
+          return paragraph.getDryBaseline(
+            paragraph.constraints,
+            TextBaseline.alphabetic,
+          )!;
+        }
+
+        for (final description in [
+          '为什么选择 animal-island-ui',
+          '详细文档与在线演示请从左侧菜单进入',
+        ]) {
+          expect(t.getSize(find.text(description)).height, 21);
+          expect(baseline(description), closeTo(16, .01));
+        }
         expect(t.getSize(find.text('治愈系风格')).height, 22);
         expect(t.getSize(find.text('Input')).height, 20);
         if (width == 1440) {
-          for (final first in [0, 4, 8, 12, 16, 20]) {
-            for (var i = first + 1; i < first + 4; i++) {
+          for (final first in [0, 4, 8, 12, 16, 20, 24]) {
+            for (var i = first + 1; i < first + 4 && i < 27; i++) {
               expect(
                 t.getSize(cards.at(i)).height,
                 t.getSize(cards.at(first)).height,

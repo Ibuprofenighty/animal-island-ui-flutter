@@ -6,6 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Widget host({bool reduced = false}) => MaterialApp(
+    locale: const Locale('zh'),
+    localizationsDelegates: IslandLocalizations.delegates,
+    supportedLocales: IslandLocalizations.supportedLocales,
     home: MediaQuery(
       data: MediaQueryData(disableAnimations: reduced),
       child: Scaffold(

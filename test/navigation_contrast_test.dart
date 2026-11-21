@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:animal_island_ui/animal_island_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'palette_contrast_test.dart' show host, foreground;
@@ -235,6 +236,9 @@ void main() {
           of: popup,
           matching: find.text('10 / page'),
         );
+        // Focus that follows the pointer press draws no indicator until a
+        // key is used, as CSS `:focus-visible`.
+        await t.sendKeyEvent(LogicalKeyboardKey.shiftLeft);
         focusControl(t, selected);
         await t.pumpAndSettle();
         final focused = find.ancestor(

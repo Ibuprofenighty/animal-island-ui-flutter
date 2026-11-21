@@ -45,9 +45,54 @@ class _GalleryPageState extends State<GalleryPage> {
     }
   }
 
-  final _scaffold = GlobalKey<ScaffoldState>();
+  /// Reference mobile drawer: `{isMobile && drawerOpen && (...)}` mounts the
+  /// overlay and aside with no transition, so it opens and closes at once.
+  /// The drawer keeps a route-local history entry (system back closes it),
+  /// Escape and a scrim tap close it, and its focus scope holds traversal.
+  bool _drawerOpen = false;
+  LocalHistoryEntry? _drawerHistory;
+  final _drawerScope = FocusScopeNode(debugLabel: 'Gallery drawer');
+
+  void _openDrawer() {
+    if (_drawerOpen) return;
+    setState(() => _drawerOpen = true);
+    // Move focus into the drawer scope once it is mounted, as the Material
+    // drawer does, so traversal stays inside it.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _drawerOpen) _drawerScope.requestFocus();
+    });
+    final route = ModalRoute.of(context);
+    if (route != null) {
+      late final LocalHistoryEntry entry;
+      entry = LocalHistoryEntry(
+        onRemove: () => _drawerHistoryRemoved(entry),
+        impliesAppBarDismissal: false,
+      );
+      _drawerHistory = entry;
+      route.addLocalHistoryEntry(entry);
+    }
+  }
+
+  void _closeDrawer() {
+    final entry = _drawerHistory;
+    _drawerHistory = null;
+    entry?.remove();
+    if (_drawerOpen && mounted) setState(() => _drawerOpen = false);
+  }
+
+  void _drawerHistoryRemoved(LocalHistoryEntry entry) {
+    if (_drawerHistory != entry) return;
+    _drawerHistory = null;
+    if (_drawerOpen && mounted) setState(() => _drawerOpen = false);
+  }
+
   @override
   void dispose() {
+    // Detach first so the entry's onRemove callback does not rebuild.
+    final entry = _drawerHistory;
+    _drawerHistory = null;
+    entry?.remove();
+    _drawerScope.dispose();
     _content.dispose();
     _menu.dispose();
     super.dispose();
@@ -57,6 +102,13 @@ class _GalleryPageState extends State<GalleryPage> {
   void didUpdateWidget(covariant GalleryPage old) {
     super.didUpdateWidget(old);
     if (old.path != widget.path) {
+      // Reference: a route change closes the drawer.
+      if (_drawerOpen) {
+        _drawerOpen = false;
+        final entry = _drawerHistory;
+        _drawerHistory = null;
+        WidgetsBinding.instance.addPostFrameCallback((_) => entry?.remove());
+      }
       // Leaving a page fades the wallpaper out (reference fadeOutEgg).
       _previewOn = false;
       if (MediaQuery.disableAnimationsOf(context)) _preview = null;
@@ -75,7 +127,7 @@ class _GalleryPageState extends State<GalleryPage> {
   }
 
   void go(String value) {
-    _scaffold.currentState?.closeDrawer();
+    _closeDrawer();
     widget.onNavigate('/$value');
     if (value == 'background') {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -127,19 +179,23 @@ class _GalleryPageState extends State<GalleryPage> {
               ),
               child: Row(
                 children: [
-                  Image.asset(
-                    'assets/reference/logo.png',
-                    width: 25,
-                    height: 25,
+                  // Reference logo `transform: translateY(-2px)`.
+                  Transform.translate(
+                    offset: const Offset(0, -2),
+                    child: Image.asset(
+                      'assets/reference/logo.png',
+                      width: 25,
+                      height: 25,
+                    ),
                   ),
                   const SizedBox(width: 8),
-                  Text(
+                  const Text(
                     'Animal Island UI',
                     style: TextStyle(
                       fontFamily: 'GROBOLD',
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: IslandTokens.light.onCanvas,
+                      color: GalleryPalette.shellInk,
                     ),
                   ),
                 ],
@@ -147,7 +203,7 @@ class _GalleryPageState extends State<GalleryPage> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
+            child: GalleryScrollView(
               controller: _menu,
               padding: const EdgeInsets.only(top: 8, bottom: 82),
               child: Column(
@@ -156,13 +212,20 @@ class _GalleryPageState extends State<GalleryPage> {
                   for (final group in galleryGroups.entries) ...[
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                      // Reference `line-height: normal` measures a 17px line
+                      // box (the `─` falls back to a system font).
                       child: Text(
                         '── ${group.key} ──',
-                        style: TextStyle(
+                        strutStyle: const StrutStyle(
+                          fontSize: 11,
+                          height: 17 / 11,
+                          forceStrutHeight: true,
+                        ),
+                        style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           letterSpacing: .5,
-                          color: IslandTokens.light.onCanvas,
+                          color: GalleryPalette.navGroupInk,
                         ),
                       ),
                     ),
@@ -191,51 +254,12 @@ class _GalleryPageState extends State<GalleryPage> {
         : Colors.transparent,
   );
 
-  /// Reference S.menuItem: inactive hover paints `#d6dff0` (`all 0.15s`), the
-  /// active item stays `#B7C6E5`, and there is no press ripple. The sidebar
-  /// Cursor item carries the reference raindrop hover cursor.
+  /// The sidebar Cursor item carries the reference raindrop hover cursor.
   Widget _menuItem(GalleryEntry item) {
-    final active = item.id == id;
-    Widget button = TextButton(
+    Widget button = _MenuItem(
+      item: item,
+      active: item.id == id,
       onPressed: () => go(item.id),
-      style:
-          TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            minimumSize: const Size(0, 40),
-            visualDensity: VisualDensity.standard,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: const EdgeInsets.fromLTRB(26, 0, 12, 0),
-            backgroundColor: active
-                ? GalleryPalette.navActive
-                : Colors.transparent,
-            foregroundColor: IslandTokens.light.onCanvas,
-            splashFactory: NoSplash.splashFactory,
-            animationDuration: const Duration(milliseconds: 150),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            textStyle: const TextStyle(
-              fontFamily: 'Nunito',
-              fontFamilyFallback: ['IslandGallerySans'],
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ).copyWith(
-            overlayColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.focused)
-                  ? IslandTokens.light.onCanvas.withValues(alpha: .12)
-                  : !active && states.contains(WidgetState.hovered)
-                  ? GalleryPalette.navHover
-                  : Colors.transparent,
-            ),
-          ),
-      child: Row(
-        spacing: 8,
-        children: [
-          Expanded(child: Text(item.label)),
-          if (item.isNew) _NewBadge(active: active),
-        ],
-      ),
     );
     if (item.id == 'cursor') {
       button = IslandCursor(
@@ -250,6 +274,10 @@ class _GalleryPageState extends State<GalleryPage> {
   Widget build(BuildContext context) {
     final mobile = MediaQuery.sizeOf(context).width < 768;
     final showMobileNavigation = mobile && widget.path != '/';
+    // Reference: widening to the desktop layout closes the drawer.
+    if (_drawerOpen && !showMobileNavigation) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _closeDrawer());
+    }
     final info = entry;
     final colorOrder = [
       IslandPalette.lime,
@@ -276,8 +304,14 @@ class _GalleryPageState extends State<GalleryPage> {
     } else if (info == null) {
       content = const Center(child: Text('页面不存在'));
     } else {
-      content = SingleChildScrollView(
+      // Reference main: `padding: 16` with `paddingTop: 68` on mobile under
+      // the fixed 52px header, so the page starts at 68 and scrolls under
+      // the bar's glass. Here the viewport starts below the bar and paints
+      // unclipped above it: the same pixels and scroll extent, while focus
+      // and ensureVisible reveal targets below the bar, not hidden under it.
+      content = GalleryScrollView(
         controller: _content,
+        clipBehavior: mobile ? Clip.none : Clip.hardEdge,
         padding: EdgeInsets.fromLTRB(
           mobile ? 16 : 40,
           mobile ? 16 : 32,
@@ -308,15 +342,11 @@ class _GalleryPageState extends State<GalleryPage> {
                     RegExp(r'(?<=[a-zA-Z0-9])/(?=[a-zA-Z0-9])'),
                     (_) => '\u2060/\u2060',
                   ),
-                  strutStyle: StrutStyle.fromTextStyle(
-                    Theme.of(context).textTheme.bodyMedium!
-                        .copyWith(fontSize: 14, height: 1.5),
-                    forceStrutHeight: true,
-                  ),
+                  strutStyle: galleryNormalLine14,
                   style: TextStyle(
                     fontSize: 14,
                     height: 1.5,
-                    color: IslandTokens.light.onCanvas,
+                    color: GalleryPalette.pageDescription,
                     backgroundColor: _preview == null
                         ? null
                         : IslandTokens.light.paper,
@@ -325,7 +355,14 @@ class _GalleryPageState extends State<GalleryPage> {
               ),
             ),
             const SizedBox(height: 20),
-            if (storyBuilders[id] != null) storyBuilders[id]!(context),
+            // Each reference route mounts its own page, so an opened
+            // disclosure or an edited field never carries over to the next
+            // route's widgets of the same type.
+            if (storyBuilders[id] != null)
+              KeyedSubtree(
+                key: ValueKey(id),
+                child: storyBuilders[id]!(context),
+              ),
           ],
         ),
       );
@@ -333,82 +370,126 @@ class _GalleryPageState extends State<GalleryPage> {
     // Reference App root: the default arrow Cursor covers the whole Gallery.
     return IslandCursor(
       child: IslandDrawerHost(
-        child: Scaffold(
-          key: _scaffold,
-          backgroundColor: IslandTokens.light.canvas,
-          appBar: showMobileNavigation
-              ? _GalleryMobileHeader(
-                  title: info?.title ?? 'Animal Island UI',
-                  onBack: () => widget.onNavigate('/'),
-                  onMenu: () => _scaffold.currentState!.openDrawer(),
-                )
-              : null,
-          // Reference mobile drawer: the 240px sidebar aside with its 12px
-          // margin over an rgba(0,0,0,.35) overlay. The Material Drawer keeps
-          // its route semantics and focus scope but paints nothing itself.
-          drawerScrimColor: GalleryPalette.drawerScrim,
-          drawer: showMobileNavigation
-              ? Drawer(
-                  width: 252,
-                  backgroundColor: Colors.transparent,
-                  surfaceTintColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  elevation: 0,
-                  shape: const RoundedRectangleBorder(),
-                  child: menu(mobile: true),
-                )
-              : null,
-          body: BackgroundPreview(
-            onPreview: _showPreview,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                const Positioned.fill(
-                  child: CustomPaint(painter: _GalleryDots()),
-                ),
-                if (_preview != null)
-                  Positioned.fill(
-                    // Reference egg overlay: `opacity 0.45s ease` over the
-                    // resident dotted wallpaper; decorative, so it may fade.
-                    child: TweenAnimationBuilder<double>(
-                      // `begin: 0` fades a newly mounted wallpaper in.
-                      tween: Tween(begin: 0, end: _previewOn ? 1 : 0),
-                      duration: MediaQuery.disableAnimationsOf(context)
-                          ? Duration.zero
-                          : const Duration(milliseconds: 450),
-                      curve: Curves.ease,
-                      onEnd: () {
-                        if (mounted && !_previewOn) {
-                          setState(() => _preview = null);
-                        }
-                      },
-                      builder: (_, opacity, child) =>
-                          Opacity(opacity: opacity, child: child),
-                      child: IslandBackground(type: _preview!),
-                    ),
-                  ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Stack(
+          children: [
+            Scaffold(
+              backgroundColor: IslandTokens.light.canvas,
+              // Reference mobile top bar: `position: fixed` over the scrolling
+              // main, so the page shows through its 92% glass and blur.
+              extendBodyBehindAppBar: true,
+              appBar: showMobileNavigation
+                  ? _GalleryMobileHeader(
+                      title: info?.title ?? 'Animal Island UI',
+                      onBack: () => widget.onNavigate('/'),
+                      onMenu: _openDrawer,
+                    )
+                  : null,
+              body: BackgroundPreview(
+                onPreview: _showPreview,
+                child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    if (!mobile && widget.path != '/')
-                      FocusTraversalGroup(child: menu()),
-                    Expanded(
-                      child: FocusTraversalGroup(
-                        child: PrimaryScrollController(
-                          controller: _content,
-                          child: content,
+                    const Positioned.fill(
+                      child: CustomPaint(painter: _GalleryDots()),
+                    ),
+                    if (_preview != null)
+                      Positioned.fill(
+                        // Reference egg overlay: `opacity 0.45s ease` over the
+                        // resident dotted wallpaper; decorative, so it may fade.
+                        child: TweenAnimationBuilder<double>(
+                          // `begin: 0` fades a newly mounted wallpaper in.
+                          tween: Tween(begin: 0, end: _previewOn ? 1 : 0),
+                          duration: MediaQuery.disableAnimationsOf(context)
+                              ? Duration.zero
+                              : const Duration(milliseconds: 450),
+                          curve: Curves.ease,
+                          onEnd: () {
+                            if (mounted && !_previewOn) {
+                              setState(() => _preview = null);
+                            }
+                          },
+                          builder: (_, opacity, child) =>
+                              Opacity(opacity: opacity, child: child),
+                          child: IslandBackground(type: _preview!),
                         ),
                       ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (!mobile && widget.path != '/')
+                          FocusTraversalGroup(child: menu()),
+                        Expanded(
+                          child: FocusTraversalGroup(
+                            child: PrimaryScrollController(
+                              controller: _content,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: showMobileNavigation
+                                      ? _GalleryMobileHeader.height
+                                      : 0,
+                                ),
+                                child: content,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
+            if (showMobileNavigation && _drawerOpen) ..._drawer(context),
+          ],
         ),
       ),
     );
   }
+
+  /// Reference mobile drawer: the 240px sidebar aside with its 12px margin
+  /// over an rgba(0,0,0,.35) overlay that covers the header. The Material
+  /// [Drawer] keeps its route semantics but paints nothing itself.
+  List<Widget> _drawer(BuildContext context) => [
+    Positioned.fill(
+      child: BlockSemantics(
+        child: GestureDetector(
+          onTap: _closeDrawer,
+          child: Semantics(
+            label: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+            child: const ColoredBox(color: GalleryPalette.drawerScrim),
+          ),
+        ),
+      ),
+    ),
+    Positioned(
+      left: 0,
+      top: 0,
+      bottom: 0,
+      width: 252,
+      child: Actions(
+        actions: {
+          DismissIntent: CallbackAction<DismissIntent>(
+            onInvoke: (_) {
+              _closeDrawer();
+              return null;
+            },
+          ),
+        },
+        child: FocusScope(
+          node: _drawerScope,
+          child: Drawer(
+            width: 252,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(),
+            child: menu(mobile: true),
+          ),
+        ),
+      ),
+    ),
+  ];
 }
 
 /// Gallery chrome owns the reference header geometry and its menu artwork.
@@ -423,8 +504,11 @@ class _GalleryMobileHeader extends StatelessWidget
   final String title;
   final VoidCallback onBack, onMenu;
 
+  /// Reference fixed top bar height, border included.
+  static const height = 52.0;
+
   @override
-  Size get preferredSize => const Size.fromHeight(52);
+  Size get preferredSize => const Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context) {
@@ -432,7 +516,7 @@ class _GalleryMobileHeader extends StatelessWidget
       fontSize: 15,
       height: 22 / 15,
       fontWeight: FontWeight.w700,
-      color: IslandTokens.light.onCanvas,
+      color: GalleryPalette.shellInk,
     );
     return ClipRect(
       child: BackdropFilter(
@@ -451,7 +535,7 @@ class _GalleryMobileHeader extends StatelessWidget
                 _GalleryHeaderAction(
                   onPressed: onBack,
                   label: '返回首页',
-                  glyph: ExcludeSemantics(
+                  glyph: const ExcludeSemantics(
                     child: SizedBox(
                       width: 20,
                       height: 20,
@@ -460,7 +544,7 @@ class _GalleryMobileHeader extends StatelessWidget
                         style: TextStyle(
                           fontSize: 20,
                           height: 1,
-                          color: IslandTokens.light.onCanvas,
+                          color: GalleryPalette.shellInk,
                         ),
                       ),
                     ),
@@ -516,7 +600,7 @@ class _GalleryHeaderAction extends StatelessWidget {
       style: IconButton.styleFrom(
         minimumSize: Size.zero,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        foregroundColor: IslandTokens.light.onCanvas,
+        foregroundColor: GalleryPalette.shellInk,
         visualDensity: VisualDensity.standard,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -534,7 +618,7 @@ class _GalleryMenuGlyph extends CustomPainter {
     // Reference Arial ink: equal 14x2px bars, a 6px pitch and a 3.5px
     // first-bar inset within the 20px line box. This is Gallery artwork.
     final paint = Paint()
-      ..color = IslandTokens.light.onCanvas
+      ..color = GalleryPalette.shellInk
       ..isAntiAlias = false;
     final left = (size.width - 14) / 2;
     for (var row = 0; row < 3; row++) {
@@ -567,6 +651,108 @@ class _MenuWave extends CustomPainter {
 
   @override
   bool shouldRepaint(_MenuWave old) => false;
+}
+
+/// Reference S.menuItem: inactive hover paints `#d6dff0`, the active item
+/// `#B7C6E5`, and `transition: all 0.15s` (CSS `ease`) moves the fill and the
+/// text colour together on hover and navigation; there is no press ripple.
+/// Both inks stay readable on every intermediate fill. Reduced motion
+/// settles at once.
+class _MenuItem extends StatefulWidget {
+  const _MenuItem({
+    required this.item,
+    required this.active,
+    required this.onPressed,
+  });
+  final GalleryEntry item;
+  final bool active;
+  final VoidCallback onPressed;
+  @override
+  State<_MenuItem> createState() => _MenuItemState();
+}
+
+class _MenuItemState extends State<_MenuItem> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = widget.active;
+    final duration = MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : const Duration(milliseconds: 150);
+    // CSS fades from `transparent` without passing through black.
+    final fill = active
+        ? GalleryPalette.navActive
+        : _hovered
+        ? GalleryPalette.navHover
+        : GalleryPalette.navHover.withValues(alpha: 0);
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(
+        end: active ? GalleryPalette.navActiveInk : GalleryPalette.navInk,
+      ),
+      duration: duration,
+      curve: Curves.ease,
+      builder: (context, ink, child) => AnimatedContainer(
+        duration: duration,
+        curve: Curves.ease,
+        decoration: BoxDecoration(
+          color: fill,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        // A browser drops `:focus-visible` on a pointer press. The keyboard
+        // highlight left on another row would otherwise stay beside the
+        // newly selected one.
+        child: Listener(
+          onPointerDown: (_) {
+            final focus = FocusManager.instance.primaryFocus;
+            final owner = focus?.context
+                ?.findAncestorStateOfType<_MenuItemState>();
+            if (owner != null && owner != this) focus!.unfocus();
+          },
+          child: TextButton(
+            onPressed: widget.onPressed,
+            onHover: (hovered) => setState(() => _hovered = hovered),
+            style:
+                TextButton.styleFrom(
+                  alignment: Alignment.centerLeft,
+                  minimumSize: const Size(0, 40),
+                  visualDensity: VisualDensity.standard,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: const EdgeInsets.fromLTRB(26, 0, 12, 0),
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: ink,
+                  splashFactory: NoSplash.splashFactory,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontFamilyFallback: ['IslandGallerySans'],
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ).copyWith(
+                  // Keyboard focus keeps a visible highlight; hover and press
+                  // paint through the animated fill above.
+                  overlayColor: WidgetStateProperty.resolveWith(
+                    (states) => states.contains(WidgetState.focused)
+                        ? IslandTokens.light.onCanvas.withValues(alpha: .12)
+                        : Colors.transparent,
+                  ),
+                ),
+            child: child!,
+          ),
+        ),
+      ),
+      child: Row(
+        spacing: 8,
+        children: [
+          Expanded(child: Text(widget.item.label)),
+          if (widget.item.isNew) _NewBadge(active: active),
+        ],
+      ),
+    );
+  }
 }
 
 /// Reference S.menuBadge. Inactive: `linear-gradient(135deg,#fc736d,#f7825a)`

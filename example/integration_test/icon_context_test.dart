@@ -14,7 +14,8 @@ void main() {
   testWidgets('All canonical glyphs on real light dark and Card backplanes', (
     t,
   ) async {
-    const size = Size(1440, 1000);
+    final rows = (IslandGlyph.values.length / 12).ceil();
+    final size = Size(1440, 68.0 * rows + 64);
     t.view.devicePixelRatio = 1;
     t.view.physicalSize = size;
     await binding.setSurfaceSize(size);

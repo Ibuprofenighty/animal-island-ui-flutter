@@ -202,7 +202,6 @@ class _AvatarStoryState extends State<AvatarStory> {
         spaceBefore: 0,
         "const IslandAvatar(child: Text('岛'))\nconst IslandAvatar(icon: IslandIcon(IslandGlyph.user))\nIslandAvatar(image: image, semanticLabel: '岛屿风景')\nIslandAvatarGroup(maxCount: 3, children: [\n  IslandAvatar(image: a), IslandAvatar(image: b),\n  const IslandAvatar(child: Text('C')),\n  const IslandAvatar(child: Text('D')),\n])",
       ),
-      const SizedBox(height: 36),
       const StoryPanel(
         title: 'API — Avatar',
         children: [

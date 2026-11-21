@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../foundation/theme.dart';
 
 import 'dart:ui' as ui;
@@ -20,7 +21,7 @@ class IslandBackTop extends StatefulWidget {
     this.duration = const Duration(milliseconds: 300),
     this.onPressed,
     this.focusNode,
-    this.semanticLabel = '返回顶部',
+    this.semanticLabel,
     this.right = 24,
     this.bottom = 32,
   }) : assert(visibilityHeight >= 0);
@@ -29,7 +30,9 @@ class IslandBackTop extends StatefulWidget {
   final double visibilityHeight, right, bottom;
   final Duration duration;
   final VoidCallback? onPressed;
-  final String semanticLabel;
+
+  /// Name of the button; null uses [IslandLocalizations.backToTop].
+  final String? semanticLabel;
   @override
   State<IslandBackTop> createState() => _IslandBackTopState();
 }
@@ -99,6 +102,7 @@ class _IslandBackTopState extends State<IslandBackTop> {
         : const Duration(milliseconds: 300);
     return ViewportOverlay(
       visible: true,
+      followsRoute: true,
       builder: (_) => Positioned(
         right: widget.right,
         bottom: widget.bottom,
@@ -111,7 +115,9 @@ class _IslandBackTopState extends State<IslandBackTop> {
               child: Opacity(
                 opacity: visible ? 1 : 0,
                 child: ActionSurface(
-                  label: widget.semanticLabel,
+                  label:
+                      widget.semanticLabel ??
+                      IslandLocalizations.of(context).backToTop,
                   focusNode: widget.focusNode,
                   onActivate: visible ? scrollToTop : null,
                   builder: (_, states) {

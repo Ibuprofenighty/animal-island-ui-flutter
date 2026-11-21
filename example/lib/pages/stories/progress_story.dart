@@ -5,6 +5,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 
 import '../../shared/story.dart';
 import '../../shared/palette.dart';
+import '../../shared/theme.dart';
 
 class ProgressStory extends StatefulWidget {
   const ProgressStory({super.key});
@@ -53,10 +54,13 @@ class _ProgressStoryState extends State<ProgressStory> {
       ],
     ),
   );
+  // Reference caption: 12px with `line-height: normal`, an 18px line for the
+  // mixed Latin and CJK caption too.
   Widget caption(String text) => Padding(
     padding: const EdgeInsets.only(bottom: 4),
     child: Text(
       text,
+      strutStyle: galleryNormalLine(12),
       style: TextStyle(
         fontSize: 12,
         color: IslandTokens.light.muted,
@@ -177,6 +181,13 @@ class _ProgressStoryState extends State<ProgressStory> {
                   ),
                 ),
                 child: Slider(
+                  // A native range input has no hover or pressed halo; the
+                  // halo stays as the keyboard focus indicator.
+                  overlayColor: WidgetStateProperty.resolveWith(
+                    (states) => states.contains(WidgetState.focused)
+                        ? null
+                        : Colors.transparent,
+                  ),
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   value: percent,
                   min: 0,
@@ -213,17 +224,132 @@ class _ProgressStoryState extends State<ProgressStory> {
       const StoryCode(
         "IslandProgress(\n  percent: percent,\n  label: '上传进度',\n  scene: IslandScene.forestGrove,\n)\nIslandProgress(\n  percent: 50,\n  label: '任务进度',\n  infoBuilder: (p) => Text('\${(p / 10).round()} / 10'),\n)",
       ),
+      const _ProgressAppearanceDemo(),
       const StoryApi(
         rows: [
           ('percent', '当前百分比，自动限制到 0–100', 'double', 'required'),
           ('label', '辅助技术标签', 'String', 'required'),
           ('size', '尺寸', 'IslandSize', 'middle'),
           ('showInfo', '右侧显示进度文案', 'bool', 'true'),
-          ('scene', '从左揭开的场景图', 'IslandScene?', 'null'),
+          ('color', '填充颜色，保留高光；scene 优先', 'Color?', '薄荷渐变'),
+          ('wave', '叠加双层海浪，可与颜色或场景图组合', 'bool', 'false'),
+          ('animated', '海浪动画；0% / 100% 自动静止', 'bool', 'true'),
+          ('scene', '从左揭开的场景图，优先于 color', 'IslandScene?', 'null'),
           ('infoBuilder / semanticValue', '显示内容 / 读屏值', 'callbacks', 'null'),
-          ('duration', '宽度过渡时长', 'Duration', '600ms'),
+          ('duration', '宽度过渡时长；海浪由 animated 控制', 'Duration', '600ms'),
         ],
       ),
     ],
+  );
+}
+
+/// Separate colour and wave example with its own percent, so the start,
+/// middle and complete states can be compared independently.
+class _ProgressAppearanceDemo extends StatefulWidget {
+  const _ProgressAppearanceDemo();
+  @override
+  State<_ProgressAppearanceDemo> createState() =>
+      _ProgressAppearanceDemoState();
+}
+
+class _ProgressAppearanceDemoState extends State<_ProgressAppearanceDemo> {
+  double percent = 45;
+  bool animated = true;
+  Widget column(List<Widget> children) => ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: 720),
+    child: Column(spacing: 14, children: children),
+  );
+  @override
+  Widget build(BuildContext context) => Semantics(
+    container: true,
+    explicitChildNodes: true,
+    label: '新增颜色与海浪进度演示',
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '新增示例：进度配色与海浪',
+          strutStyle: StrutStyle(
+            fontSize: 18,
+            height: 1.5,
+            forceStrutHeight: true,
+          ),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: GalleryPalette.storyInk,
+          ),
+        ),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            for (final value in [0.0, 45.0, 100.0])
+              IslandButton(
+                size: IslandSize.small,
+                onPressed: () => setState(() => percent = value),
+                child: Text('${value.round()}%'),
+              ),
+            IslandButton(
+              size: IslandSize.small,
+              onPressed: () => setState(() => animated = !animated),
+              child: Text(animated ? '暂停海浪' : '播放海浪'),
+            ),
+          ],
+        ),
+        const StoryLabel('自定义颜色，完成后保持原色'),
+        column([
+          for (final (colorway, label) in [
+            (IslandColorway.orange, '蜜桃色进度'),
+            (IslandColorway.green, '草绿色进度'),
+            (IslandColorway.purple, '紫色进度'),
+          ])
+            IslandProgress(
+              percent: percent,
+              color: colorway.accent,
+              label: label,
+            ),
+        ]),
+        const StoryLabel('海浪三档尺寸，0% / 100% 自动静止'),
+        column([
+          IslandProgress(
+            percent: percent,
+            wave: true,
+            animated: animated,
+            size: IslandSize.small,
+            label: '小号海浪进度',
+          ),
+          IslandProgress(
+            percent: percent,
+            wave: true,
+            animated: animated,
+            label: '海浪进度',
+          ),
+          IslandProgress(
+            percent: percent,
+            wave: true,
+            animated: animated,
+            size: IslandSize.large,
+            color: IslandColorway.teal.accent,
+            label: '大号海浪进度',
+          ),
+        ]),
+        const StoryCode(
+          spaceAfter: 0,
+          "IslandProgress(\n"
+          "  percent: 45,\n"
+          "  color: IslandColorway.teal.accent,\n"
+          "  wave: true,\n"
+          "  label: '薄荷色海浪进度',\n"
+          ")\n"
+          "IslandProgress(\n"
+          "  percent: 45,\n"
+          "  wave: true,\n"
+          "  animated: false,\n"
+          "  label: '静态海浪进度',\n"
+          ")",
+        ),
+      ],
+    ),
   );
 }
