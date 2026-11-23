@@ -47,7 +47,8 @@ Future<void> pump(
 
 Finder cell(String date) => find.bySemanticsLabel(
   RegExp(
-    '^${RegExp.escape(date)}'
+    r'^\d+ 日，'
+    '${RegExp.escape(date)}'
     r'(?: |$)',
   ),
 );
@@ -68,9 +69,10 @@ List<String> selectedCells(WidgetTester t) => [
           .widgetList<Semantics>(find.byType(Semantics))
           .map((w) => w.properties.label)
           .whereType<String>()
-          .where((l) => RegExp(r'^\d{4}-\d{2}-\d{2}').hasMatch(l))
+          .where((l) => RegExp(r'^\d+ 日，\d{4}-\d{2}-\d{2}').hasMatch(l))
           .toSet())
-    if (selected(t, node.substring(0, 10))) node.substring(0, 10),
+    if (selected(t, node.split('，')[1].substring(0, 10)))
+      node.split('，')[1].substring(0, 10),
 ];
 
 /// Tabs from the first header action into the grid; returns the day cell
@@ -143,7 +145,7 @@ void main() {
         expect(find.text(name), findsOneWidget);
       }
       expect(
-        find.bySemanticsLabel(RegExp(r'^\d{4}-\d{2}-\d{2}')),
+        find.bySemanticsLabel(RegExp(r'^\d+ 日，\d{4}-\d{2}-\d{2}')),
         findsNWidgets(42),
       );
       expect(cell('2026-07-26'), findsOneWidget);
@@ -170,7 +172,7 @@ void main() {
       expect(
         t.getRect(cell('2026-03-01')).topLeft,
         t
-            .getRect(find.bySemanticsLabel(RegExp(r'^\d{4}-\d{2}-\d{2}')).first)
+            .getRect(find.bySemanticsLabel(RegExp(r'^\d+ 日，\d{4}-\d{2}-\d{2}')).first)
             .topLeft,
       );
     });
@@ -485,8 +487,8 @@ void main() {
       ]);
       expect(find.text('晨会'), findsOneWidget);
       expect(find.text('评审'), findsOneWidget);
-      expect(label(t, '2026-08-10'), '2026-08-10 2 项事项：晨会，评审');
-      expect(label(t, '2026-08-11'), '2026-08-11');
+      expect(label(t, '2026-08-10'), '10 日，2026-08-10 2 项事项：晨会，评审');
+      expect(label(t, '2026-08-11'), '11 日，2026-08-11');
     });
 
     testWidgets('a multi-day event spans columns with a seam gutter', (
@@ -549,7 +551,7 @@ void main() {
         isTrue,
       );
       expect(find.text('C'), findsNothing);
-      expect(label(t, '2026-08-13'), '2026-08-13 4 项事项：A，B，C，D');
+      expect(label(t, '2026-08-13'), '13 日，2026-08-13 4 项事项：A，B，C，D');
     });
 
     testWidgets('showTime prefixes HH:mm unless showEventTime is false', (
@@ -621,9 +623,9 @@ void main() {
         IslandCalendarEvent(id: 2, title: '周会', start: DateTime(2026, 8, 11)),
         IslandCalendarEvent(id: 3, title: '', start: DateTime(2026, 8, 12)),
       ]);
-      expect(label(t, '2026-08-10'), '2026-08-10 1 项事项：0');
-      expect(label(t, '2026-08-11'), '2026-08-11 2 项事项：周会 等');
-      expect(label(t, '2026-08-12'), '2026-08-12 1 项事项');
+      expect(label(t, '2026-08-10'), '10 日，2026-08-10 1 项事项：0');
+      expect(label(t, '2026-08-11'), '11 日，2026-08-11 2 项事项：周会 等');
+      expect(label(t, '2026-08-12'), '12 日，2026-08-12 1 项事项');
     });
 
     testWidgets('bars keep their identity when an event is inserted first', (
@@ -673,7 +675,7 @@ void main() {
       expect(find.text('上季度总结'), findsNothing);
       expect(find.text('下季度规划'), findsNothing);
       expect(find.text('跨过整月'), findsNWidgets(6));
-      expect(label(t, '2026-07-26'), '2026-07-26 1 项事项：跨过整月');
+      expect(label(t, '2026-07-26'), '26 日，2026-07-26 1 项事项：跨过整月');
       expect(find.textContaining('+'), findsNothing);
     });
 
@@ -687,8 +689,8 @@ void main() {
         ),
       ]);
       expect(find.text('倒置'), findsOneWidget);
-      expect(label(t, '2026-08-12'), '2026-08-12 1 项事项：倒置');
-      expect(label(t, '2026-08-11'), '2026-08-11');
+      expect(label(t, '2026-08-12'), '12 日，2026-08-12 1 项事项：倒置');
+      expect(label(t, '2026-08-11'), '11 日，2026-08-11');
     });
   });
 

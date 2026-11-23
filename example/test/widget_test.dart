@@ -318,7 +318,7 @@ void main() {
           final changer = find.descendant(
             of: totalExample,
             matching: find.byWidgetPredicate(
-              (w) => w is Semantics && w.properties.label == '10 条/页',
+              (w) => w is Semantics && w.properties.label == '每页 10 条，10 条/页',
             ),
           );
           final bounds = t.getRect(totalExample);

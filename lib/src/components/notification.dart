@@ -3,7 +3,9 @@ import '../internal/light_surface_scope.dart';
 import '../foundation/theme.dart';
 
 import 'dart:async';
+import 'dart:ui' show SemanticsRole;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../internal/action_surface.dart';
@@ -462,9 +464,19 @@ class _NotificationCardState extends State<_NotificationCard>
                 child: child,
               );
             },
+            // Reference 4.0.1: `role="status"`, or `role="alert"` for an
+            // error; a pressable notification keeps its button role and is
+            // a live region. Only the Web engine projects these roles and
+            // the framework forbids a role together with the live-region
+            // flag, so the other platforms keep the flag.
             child: Semantics(
-              liveRegion: true,
+              liveRegion: !kIsWeb || n.onPressed != null,
               container: true,
+              role: !kIsWeb || n.onPressed != null
+                  ? null
+                  : n.type == IslandNotificationType.error
+                  ? SemanticsRole.alert
+                  : SemanticsRole.status,
               child: ActionSurface(
                 onActivate: n.onPressed,
                 button: n.onPressed != null,

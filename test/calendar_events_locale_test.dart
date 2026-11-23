@@ -105,9 +105,9 @@ void main() {
         ],
       ),
     );
-    expect(label(t, '2026-08-12'), '2026-08-12 1 项事项：晚班');
-    expect(label(t, '2026-08-13'), '2026-08-13 1 项事项：晚班');
-    expect(label(t, '2026-08-14'), '2026-08-14');
+    expect(label(t, '2026-08-12'), '12 日，2026-08-12 1 项事项：晚班');
+    expect(label(t, '2026-08-13'), '13 日，2026-08-13 1 项事项：晚班');
+    expect(label(t, '2026-08-14'), '14 日，2026-08-14');
     expect(find.text('23:30'), findsOneWidget);
   });
 
@@ -152,12 +152,12 @@ void main() {
       expect(find.bySemanticsLabel(name), findsOneWidget);
     }
     String english(String date) => t
-        .getSemantics(find.bySemanticsLabel(RegExp('^$date(?:,|\$)')))
+        .getSemantics(find.bySemanticsLabel(RegExp('^\\d+, $date(?:,|\$)')))
         .getSemanticsData()
         .label;
-    expect(english('2026-08-12'), '2026-08-12, 2 events: Market and more');
-    expect(english('2026-08-13'), '2026-08-13, 1 event: Swim');
-    expect(english('2026-08-14'), '2026-08-14');
+    expect(english('2026-08-12'), '12, 2026-08-12, 2 events: Market and more');
+    expect(english('2026-08-13'), '13, 2026-08-13, 1 event: Swim');
+    expect(english('2026-08-14'), '14, 2026-08-14');
     expect(find.text('今天'), findsNothing);
     expect(find.text('2026年8月'), findsNothing);
   });

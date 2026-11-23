@@ -81,7 +81,9 @@ class IslandUpload extends StatefulWidget {
   final IslandUploadDropBuilder? dropBuilder;
   final String accept;
 
-  /// Accessible name; null uses [IslandLocalizations.upload].
+  /// Accessible name; null uses [IslandLocalizations.upload] for a custom
+  /// child or the picture-card add button and
+  /// [IslandLocalizations.uploadName] for the built-in trigger.
   final String? label;
   final bool multiple,
       disabled,
@@ -486,7 +488,16 @@ class _IslandUploadState extends State<IslandUpload> {
     final cards = widget.listType == IslandUploadListType.pictureCard;
     Widget trigger = ActionSurface(
       focusNode: focus,
-      label: widget.label ?? strings.upload,
+      // Reference 4.0.1: the built-in trigger is named with its visible
+      // hint; a custom child or the picture-card add button keeps the
+      // plain name.
+      label:
+          widget.label ??
+          (widget.child != null || cards
+              ? strings.upload
+              : strings.uploadName(
+                  widget.drag ? strings.uploadDragHint : strings.uploadClick,
+                )),
       onActivate: widget.disabled ? null : pick,
       builder: (context, states) {
         final hover = states.contains(WidgetState.hovered),

@@ -9,7 +9,8 @@ import 'package:island_gallery/shared/theme.dart';
 
 Finder cell(String date) => find.bySemanticsLabel(
   RegExp(
-    '^${RegExp.escape(date)}'
+    r'^\d+ 日，'
+    '${RegExp.escape(date)}'
     r'(?: |$)',
   ),
 );

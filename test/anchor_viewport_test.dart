@@ -44,7 +44,7 @@ Finder trigger(String kind) => switch (kind) {
   'date' => namedButton('Date'),
   'range' => namedButton('Range'),
   'time' => namedButton('Time'),
-  'pagination' => namedButton('10 条/页'),
+  'pagination' => namedButton('每页 10 条，10 条/页'),
   _ => find.text('Tooltip anchor'),
 };
 
@@ -192,7 +192,7 @@ void registerAnchoredViewportTests({
         final anchor = t.getRect(
           kind == 'date'
               ? find.byType(IslandDatePicker)
-              : namedButton('10 条/页'),
+              : namedButton('每页 10 条，10 条/页'),
         );
         if (kind == 'date') {
           expect(rect.top - anchor.bottom, 6);

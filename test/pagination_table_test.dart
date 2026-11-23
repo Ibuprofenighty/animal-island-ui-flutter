@@ -47,7 +47,7 @@ void main() {
     await t.pump();
     expect(events.last, const IslandPaginationValue(page: 8));
     expect(t.widget<Semantics>(button('Page 9')).properties.selected, isTrue);
-    await t.tap(button('10 / page'));
+    await t.tap(button('10 per page, 10 / page'));
     await t.pumpAndSettle();
     await t.tap(find.text('50 / page'));
     await t.pumpAndSettle();
@@ -90,13 +90,13 @@ void main() {
       await t.pump();
       expect(t.widget<Semantics>(button('Page 2')).properties.selected, isTrue);
       expect(events, isEmpty);
-      await t.tap(button('10 / page'));
+      await t.tap(button('10 per page, 10 / page'));
       await t.pumpAndSettle();
       expect(find.text('50 / page'), findsOneWidget);
       await t.sendKeyEvent(LogicalKeyboardKey.escape);
       await t.pumpAndSettle();
       expect(find.text('50 / page'), findsNothing);
-      await t.tap(button('10 / page'));
+      await t.tap(button('10 per page, 10 / page'));
       await t.pumpAndSettle();
       update(() => disabled = true);
       await t.pumpAndSettle();
@@ -268,10 +268,10 @@ void main() {
             ),
           ),
         );
-        final trigger = t.getRect(button('10 条/页'));
+        final trigger = t.getRect(button('每页 10 条，10 条/页'));
         final label = t.getRect(
           find.descendant(
-            of: button('10 条/页'),
+            of: button('每页 10 条，10 条/页'),
             matching: find.byType(RichText),
           ),
         );

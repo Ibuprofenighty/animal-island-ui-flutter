@@ -41,6 +41,8 @@ enum IslandSelectVariant {
 }
 
 class IslandSelect<T> extends StatefulWidget {
+  /// Host-owned selection: [value] is shown and [onChanged] reports the
+  /// requested value; a null [onChanged] disables the control.
   IslandSelect({
     super.key,
     this.label,
@@ -60,7 +62,38 @@ class IslandSelect<T> extends StatefulWidget {
     this.clearLabel,
     this.width,
     this.focusNode,
-  }) : options = List.unmodifiable(options) {
+  }) : options = List.unmodifiable(options),
+       initialValue = null,
+       controlled = true {
+    if (options.map((e) => e.value).toSet().length != options.length)
+      throw ArgumentError('Option values must be unique.');
+  }
+
+  /// Component-owned selection starting at [initialValue]. Choosing or
+  /// clearing updates the control itself and then reports through the
+  /// optional [onChanged].
+  IslandSelect.uncontrolled({
+    super.key,
+    this.label,
+    required List<IslandOption<T>> options,
+    this.initialValue,
+    this.onChanged,
+    this.placeholder,
+    this.disabled = false,
+    this.variant = IslandSelectVariant.normal,
+    this.allowClear = false,
+    this.showSearch = false,
+    this.onClear,
+    this.onSearch,
+    this.filter,
+    this.filterLocally = true,
+    this.notFound,
+    this.clearLabel,
+    this.width,
+    this.focusNode,
+  }) : options = List.unmodifiable(options),
+       value = null,
+       controlled = false {
     if (options.map((e) => e.value).toSet().length != options.length)
       throw ArgumentError('Option values must be unique.');
   }
@@ -70,7 +103,15 @@ class IslandSelect<T> extends StatefulWidget {
   /// and [IslandLocalizations.clear].
   final String? label, placeholder, clearLabel;
   final List<IslandOption<T>> options;
+
+  /// The selection of the default constructor; null selects nothing.
   final T? value;
+
+  /// The first selection of [IslandSelect.uncontrolled].
+  final T? initialValue;
+
+  /// Whether the host owns the selection (the default constructor).
+  final bool controlled;
   final ValueChanged<T?>? onChanged;
   final bool disabled, allowClear, showSearch, filterLocally;
 
@@ -109,10 +150,12 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
   int presentationGeneration = 0;
   int editingGeneration = 0;
   bool completingPresentation = false;
-  bool get enabled => !widget.disabled && widget.onChanged != null;
+  late T? inner = widget.initialValue;
+  T? get current => widget.controlled ? widget.value : inner;
+  bool get enabled =>
+      !widget.disabled && (!widget.controlled || widget.onChanged != null);
   String get label =>
-      widget.options.where((o) => o.value == widget.value).firstOrNull?.label ??
-      '';
+      widget.options.where((o) => o.value == current).firstOrNull?.label ?? '';
   List<IslandOption<T>> get visible => widget.options
       .where(
         (option) =>
@@ -137,7 +180,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       if (composingPrefix == null &&
           query == null &&
           label.isNotEmpty &&
-          widget.value != null &&
+          current != null &&
           value.text == label) {
         composingPrefix = label;
       }
@@ -231,7 +274,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
       keyboardCursor = keyboard;
       active =
           visible
-              .where((o) => o.value == widget.value && !o.disabled)
+              .where((o) => o.value == current && !o.disabled)
               .firstOrNull
               ?.value ??
           visible.where((o) => !o.disabled).firstOrNull?.value;
@@ -259,12 +302,19 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
 
   void choose(T value) {
     if (!enabled) return;
+    if (!widget.controlled) inner = value;
     widget.onChanged?.call(value);
     if (mounted) close(restore: true);
   }
 
   void clear() {
     if (!enabled) return;
+    if (!widget.controlled) {
+      setState(() {
+        inner = null;
+        if (query == null && composingPrefix == null) text.text = label;
+      });
+    }
     widget.onChanged?.call(null);
     widget.onClear?.call();
     if (mounted) {
@@ -341,7 +391,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
     final candidates = visible.where((o) => !o.disabled);
     if (candidates.any((o) => o.value == active)) return;
     active =
-        candidates.where((o) => o.value == widget.value).firstOrNull?.value ??
+        candidates.where((o) => o.value == current).firstOrNull?.value ??
         candidates.firstOrNull?.value;
   }
 
@@ -354,7 +404,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
     final startsQuery =
         pendingPrefix != null ||
         query == null &&
-            widget.value != null &&
+            current != null &&
             prefix.isNotEmpty &&
             oldValue.text == prefix &&
             next.text.length > prefix.length;
@@ -570,7 +620,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
             ),
           ),
           if (widget.allowClear &&
-              widget.value != null &&
+              current != null &&
               enabled &&
               (hovered || focus.hasFocus || completingPresentation))
             ActionSurface(
@@ -691,7 +741,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
   }
 
   Widget _option(IslandOption<T> option, TextStyle style) {
-    final selected = option.value == widget.value;
+    final selected = option.value == current;
     return MouseRegion(
       key: optionKeys.putIfAbsent(option.value, GlobalKey.new),
       onEnter: option.disabled

@@ -18,6 +18,11 @@ class IslandLocalizations {
   String pageLabel(int page) => _zh ? '第 $page 页' : 'Page $page';
   String totalItems(int total) => _zh ? '共 $total 条' : '$total items';
   String perPage(int size) => _zh ? '$size 条/页' : '$size / page';
+
+  /// Name of the page-size button: the size, then the visible
+  /// [perPage] text.
+  String perPageName(int size) =>
+      _zh ? '每页 $size 条，${perPage(size)}' : '$size per page, ${perPage(size)}';
   String get pageSize => _zh ? '选择每页条数' : 'Items per page';
   String get jumpTo => _zh ? '跳至' : 'Go to';
   String get pageSuffix => _zh ? '页' : 'page';
@@ -64,19 +69,22 @@ class IslandLocalizations {
       ? const ['日', '一', '二', '三', '四', '五', '六']
       : const ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  /// Calendar day cell name: the `YYYY-MM-DD` [date], the number of events
-  /// covering it and their distinct non-empty [titles]; [more] says that
-  /// duplicate titles were collapsed.
+  /// Calendar day cell name. It starts with the visible [day] number, then
+  /// the `YYYY-MM-DD` [date], the number of events covering it and their
+  /// distinct non-empty [titles]; [more] says that duplicate titles were
+  /// collapsed.
   String calendarDay(
+    int day,
     String date,
     int count,
     List<String> titles, {
     bool more = false,
   }) {
-    if (count == 0) return date;
+    final name = _zh ? '$day 日，$date' : '$day, $date';
+    if (count == 0) return name;
     final events = _zh
-        ? '$date $count 项事项'
-        : '$date, $count ${count == 1 ? 'event' : 'events'}';
+        ? '$name $count 项事项'
+        : '$name, $count ${count == 1 ? 'event' : 'events'}';
     if (titles.isEmpty) return events;
     return _zh
         ? '$events：${titles.join('，')}${more ? ' 等' : ''}'
@@ -270,6 +278,11 @@ class IslandLocalizations {
 
   /// Upload name, drop-zone hint and button text.
   String get upload => _zh ? '上传文件' : 'Upload file';
+
+  /// Name of the built-in upload trigger: [upload], then its visible
+  /// [hint] ([uploadClick] or [uploadDragHint]).
+  String uploadName(String hint) =>
+      _zh ? '$upload，$hint' : '$upload, ${hint.toLowerCase()}';
   String get uploadDragHint => _zh ? '点击或拖拽文件到这里' : 'Click or drag files here';
   String get uploadClick => _zh ? '点击上传' : 'Click to upload';
 

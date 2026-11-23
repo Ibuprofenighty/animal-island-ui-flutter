@@ -271,6 +271,10 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Cursor demo native controls when pressed / Cursor 示例原生控件按下 | Drawn by the browser: the link turns the user-agent `:active` red, the button its native pressed look | Gallery stand-ins keep their colour under a Material pressed overlay / Gallery 替代控件保持颜色并显示 Material 按下层 |
 | Chart legend after 恢复全部图例 / 图例恢复后的焦点 | The removed control drops focus to the document | After a pointer press focus is dropped in the same way; after Enter or Space it stays on the last legend entry, so keyboard users keep their place (that series is highlighted, as any focused entry is) / 指针操作后同参考；键盘操作后焦点留在图例内 |
 | Badge number on hover / Badge 数字悬停 | The native `title` tooltip | `IslandTooltip` with the same text / 使用库内 Tooltip |
+| Countdown and Time before mount (4.0.1) / 挂载前的 Countdown 与 Time | Render `--` placeholders until the component has mounted, so that server and client markup agree | No server rendering exists; the first frame shows the real value / 不存在服务端渲染，首帧即显示真实数值 |
+| Notification roles (4.0.1) / 通知的语义角色 | `role="status"` with `aria-live="polite"`, `role="alert"` with `assertive` for an error; a clickable notification stays a button | On the Web the same roles; on the other platforms, whose engines do not project these roles, every notification is a polite live region, an error included. A pressable notification is a live-region button on every platform / Web 上使用相同角色；其他平台的引擎不投射这两个角色，所有通知（含错误）均为礼貌播报的 live region |
+| Select `className` and `style` (4.0.1) / Select 的 className 与 style | Passed to the root element | No counterpart: `width` sizes the trigger and the parent composes everything else / 无对应参数：`width` 决定触发器宽度，其余由父级组合 |
+| Font `unicode-range` subsets (4.0.1) / 字体按 unicode-range 拆分 | Latin and CJK files declare ranges, so characters outside both (arrows such as →, ✓, box-drawing) come from a system font | The Gallery draws them from its bundled font on every platform / Gallery 在各平台均用内置字体绘制这些字符 |
 
 <a id="pending-owner-decisions-400"></a>
 ## Pending owner decisions (4.0.0) / 待所有者裁决（4.0.0）

@@ -596,7 +596,7 @@ void main() {
           (w) =>
               w is Semantics &&
               w.properties.button == true &&
-              w.properties.label == '10 条/页',
+              w.properties.label == '每页 10 条，10 条/页',
         ),
       );
       await advance();
@@ -608,7 +608,7 @@ void main() {
           (w) =>
               w is Semantics &&
               w.properties.button == true &&
-              w.properties.label == '50 条/页',
+              w.properties.label == '每页 50 条，50 条/页',
         ),
         findsOneWidget,
       );

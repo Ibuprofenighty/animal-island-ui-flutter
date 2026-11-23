@@ -430,6 +430,7 @@ class _IslandCalendarState extends State<IslandCalendar> {
         if (event.title.isNotEmpty) event.title,
     };
     return IslandLocalizations.of(context).calendarDay(
+      day.day,
       formatDateTokens(day, 'YYYY-MM-DD'),
       covering.length,
       titles.toList(),
