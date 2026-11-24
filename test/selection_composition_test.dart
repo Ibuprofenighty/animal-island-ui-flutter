@@ -11,6 +11,9 @@ void main() {
     (t) async {
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: Scaffold(
             body: Column(
               children: [
@@ -69,6 +72,9 @@ void main() {
       late StateSetter update;
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: Scaffold(
             body: StatefulBuilder(
               builder: (ctx, set) {
@@ -105,6 +111,9 @@ void main() {
       Set<String>? proposal;
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: Scaffold(
             body: IslandCheckboxGroup(
               options: const [
@@ -144,6 +153,9 @@ void main() {
     late StateSetter update;
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Scaffold(
           body: StatefulBuilder(
             builder: (_, set) {
@@ -214,6 +226,9 @@ void main() {
   testWidgets('Checkbox options stay separate Tab stops', (t) async {
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Scaffold(
           body: IslandCheckboxGroup<String>(
             options: const [

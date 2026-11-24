@@ -53,38 +53,45 @@ class _BackTopStoryState extends State<BackTopStory> {
           color: IslandTokens.light.muted,
         ),
       ),
-      Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-            decoration: BoxDecoration(
-              color: GalleryPalette.codeChip,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            // Reference <code>: monospace in the inherited #9f927d, which
-            // is 2.6:1 on the #f0e8d8 chip; deepened in hue to 4.5:1.
-            child: Text(
-              'visibilityHeight=400',
-              style: TextStyle(
-                fontSize: 12,
-                fontFamily: IslandTheme.codeFontFamily,
-                fontFamilyFallback: DefaultTextStyle.of(context)
-                    .style
-                    .fontFamilyFallback,
-                color: GalleryPalette.backTopCodeInk,
+      // Reference: the <code> chip flows inline with the sentence, which
+      // wraps after it as one paragraph.
+      Text.rich(
+        TextSpan(
+          children: [
+            WidgetSpan(
+              alignment: PlaceholderAlignment.baseline,
+              baseline: TextBaseline.alphabetic,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                decoration: BoxDecoration(
+                  color: GalleryPalette.codeChip,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                // Reference <code>: monospace in the inherited #9f927d, which
+                // is 2.6:1 on the #f0e8d8 chip; deepened in hue to 4.5:1. Its
+                // 12px renders in the browser monospace at 13/16 (measured
+                // 119px text, 16px chip at 1440 and 375), as StoryLabel code.
+                child: Text(
+                  'visibilityHeight=400',
+                  style: TextStyle(
+                    fontSize: 12 * 13 / 16,
+                    fontFamily: IslandTheme.codeFontFamily,
+                    fontFamilyFallback: DefaultTextStyle.of(context)
+                        .style
+                        .fontFamilyFallback,
+                    color: GalleryPalette.backTopCodeInk,
+                  ),
+                ),
               ),
             ),
-          ),
-          Text(
-            ' 意味着滚动超过 400px 后图标出现。',
-            style: TextStyle(
-              fontSize: 14,
-              height: 1.6,
-              color: IslandTokens.light.muted,
-            ),
-          ),
-        ],
+            const TextSpan(text: ' 意味着滚动超过 400px 后图标出现。'),
+          ],
+        ),
+        style: TextStyle(
+          fontSize: 14,
+          height: 1.6,
+          color: IslandTokens.light.muted,
+        ),
       ),
       const SizedBox(height: 16),
       const StoryLabel('动物岛民列表 — 共 50 位'),

@@ -11,7 +11,7 @@
       "Commercial delivery backed by Windows and Web acceptance evidence"
     ],
     "in_scope": [
-      "40 reference components and every Gallery page/state",
+      "43 reference components and every Gallery page/state",
       "Windows + Web first",
       "Physical template, scoped public APIs and synchronized usage Skill"
     ],
@@ -48,7 +48,7 @@
     {
       "id": "core-components",
       "level": "required",
-      "rationale": "All 40 reference components and parent/child composition."
+      "rationale": "All 43 reference components and parent/child composition."
     },
     {
       "id": "advanced-data",
@@ -106,7 +106,10 @@
     "components/carousel/contract.json",
     "components/time/contract.json",
     "components/countdown/contract.json",
-    "components/countup/contract.json"
+    "components/countup/contract.json",
+    "components/calendar/contract.json",
+    "components/no-data/contract.json",
+    "components/chart/contract.json"
   ],
   "source_scope": [
     "library.json",
@@ -344,7 +347,7 @@
         "web"
       ],
       "kind": "automated",
-      "requirement": "All 40 reference component contracts: public behavior, controlled rejection, composition and lifecycle regressions",
+      "requirement": "All 43 reference component contracts: public behavior, controlled rejection, composition and lifecycle regressions",
       "threshold": "No failing or skipped tests",
       "scenario_ids": [
         "title.composition",
@@ -468,7 +471,43 @@
         "tag.dashed-stroke",
         "upload.dashed-stroke",
         "countdown.dashed-stroke",
-        "countup.dashed-stroke"
+        "countup.dashed-stroke",
+        "button.busy-donut-native-ink",
+        "divider.ocean-wave-motion",
+        "cursor.arrow-geometry",
+        "cursor.selection-colour",
+        "select.variant-placement",
+        "date-picker.format",
+        "time-picker.format",
+        "upload.progress-display",
+        "modal.chrome-selection",
+        "modal.stacked-barrier",
+        "loading.circle-reveal",
+        "progress.appearance",
+        "time.variant",
+        "time.format",
+        "countdown.reminders-shake",
+        "calendar.reference",
+        "calendar.grid",
+        "calendar.selection",
+        "calendar.navigation",
+        "calendar.events",
+        "calendar.drag-create",
+        "calendar.reduced-motion",
+        "no-data.reference",
+        "no-data.defaults",
+        "no-data.geometry",
+        "no-data.colour",
+        "no-data.composition",
+        "chart.reference",
+        "chart.geometry",
+        "chart.data-validity",
+        "chart.tooltip",
+        "chart.lock",
+        "chart.legend",
+        "chart.empty",
+        "chart.theme",
+        "chart.reduced-motion"
       ]
     },
     {

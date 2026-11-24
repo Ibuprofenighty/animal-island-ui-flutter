@@ -12,6 +12,9 @@ void main() {
     var open = true, actions = 0, closes = 0;
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: IslandDrawerHost(
           child: StatefulBuilder(
             builder: (context, set) => IslandDrawer(
@@ -56,6 +59,9 @@ void main() {
       try {
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             home: IslandDrawerHost(
               child: IslandDrawer(
                 open: true,
@@ -115,6 +121,9 @@ void main() {
       var open = true;
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: IslandDrawerHost(
             child: StatefulBuilder(
               builder: (context, set) {

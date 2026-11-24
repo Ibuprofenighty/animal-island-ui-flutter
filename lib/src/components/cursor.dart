@@ -12,6 +12,12 @@ enum IslandCursorVariant { arrow, raindrop }
 
 /// MouseTracker owns cursor selection; this widget only paints the chosen shape.
 /// Scoped children retain their native MouseCursor contracts.
+///
+/// The arrow variant also sets the warm text-selection highlight for its
+/// subtree (the reference yellow, or the same hue deepened for light inks
+/// under a dark [Theme]); the raindrop variant restores the selection colour
+/// that applies outside every enclosing cursor, so the innermost cursor
+/// decides.
 class IslandCursor extends StatefulWidget {
   const IslandCursor({
     super.key,
@@ -59,14 +65,27 @@ class _IslandCursorState extends State<IslandCursor> {
   Widget build(BuildContext context) {
     owner.variant = widget.variant;
     final drop = widget.variant == IslandCursorVariant.raindrop;
+    final ambient = DefaultSelectionStyle.of(context);
+    final parent = context.dependOnInheritedWidgetOfExactType<_CursorScope>();
+    final hostSelection = parent == null
+        ? ambient.selectionColor
+        : parent.hostSelection;
     return _CursorScope(
       owner: owner,
+      hostSelection: hostSelection,
       child: Stack(
         children: [
           _CursorRegion(
             owner: owner,
             forceAll: widget.forceAll,
-            child: widget.child,
+            child: DefaultSelectionStyle(
+              selectionColor: drop
+                  ? hostSelection
+                  : CursorColors.selection(Theme.of(context).brightness),
+              cursorColor: ambient.cursorColor,
+              mouseCursor: ambient.mouseCursor,
+              child: widget.child,
+            ),
           ),
           ViewportOverlay(
             decorative: true,
@@ -76,10 +95,10 @@ class _IslandCursorState extends State<IslandCursor> {
                 for (final device in owner.selected)
                   if (owner.positions[device] case final point?)
                     Positioned(
-                      left: point.dx - (drop ? 16 : 6),
-                      top: point.dy - (drop ? 6 : 4),
+                      left: point.dx - (drop ? 16 : 8),
+                      top: point.dy - (drop ? 6 : 5),
                       child: CustomPaint(
-                        size: Size.square(drop ? 32 : 28),
+                        size: const Size.square(32),
                         painter: _CursorPainter(widget.variant),
                       ),
                     ),
@@ -117,10 +136,18 @@ class _CursorOwner {
 }
 
 class _CursorScope extends InheritedWidget {
-  const _CursorScope({required this.owner, required super.child});
+  const _CursorScope({
+    required this.owner,
+    required this.hostSelection,
+    required super.child,
+  });
   final _CursorOwner owner;
+
+  /// Selection colour outside the outermost cursor.
+  final Color? hostSelection;
   @override
-  bool updateShouldNotify(_CursorScope old) => old.owner != owner;
+  bool updateShouldNotify(_CursorScope old) =>
+      old.owner != owner || old.hostSelection != hostSelection;
 }
 
 class _SoftwareCursor extends MouseCursor {
@@ -219,13 +246,21 @@ class _CursorPainter extends CustomPainter {
     final path = Path();
     if (variant == IslandCursorVariant.arrow) {
       path
-        ..moveTo(6, 4)
-        ..lineTo(6, 21)
-        ..lineTo(10.5, 16.5)
-        ..lineTo(13.5, 23)
-        ..lineTo(16.8, 21.5)
-        ..lineTo(13.8, 15.2)
-        ..lineTo(20.5, 15.2)
+        ..moveTo(8.5, 7.9)
+        ..lineTo(9.7, 21.1)
+        ..quadraticBezierTo(10.0, 23.8, 11.6, 21.6)
+        ..lineTo(13.1, 19.8)
+        ..quadraticBezierTo(13.8, 18.8, 14.4, 19.9)
+        ..lineTo(17.0, 24.7)
+        ..quadraticBezierTo(17.8, 26.1, 19.2, 25.3)
+        ..lineTo(19.6, 25.1)
+        ..quadraticBezierTo(21.0, 24.3, 20.2, 22.9)
+        ..lineTo(17.6, 18.1)
+        ..quadraticBezierTo(17.0, 17.1, 18.2, 17.0)
+        ..lineTo(20.5, 16.7)
+        ..quadraticBezierTo(23.3, 16.5, 21.1, 14.8)
+        ..lineTo(10.6, 6.7)
+        ..quadraticBezierTo(8.2, 4.8, 8.5, 7.9)
         ..close();
       canvas.drawPath(path, Paint()..color = CursorColors.arrowFill);
       canvas.drawPath(
@@ -233,8 +268,9 @@ class _CursorPainter extends CustomPainter {
         Paint()
           ..color = CursorColors.arrowStroke
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 2.2
-          ..strokeJoin = StrokeJoin.round,
+          ..strokeWidth = 2.75
+          ..strokeJoin = StrokeJoin.round
+          ..strokeCap = StrokeCap.round,
       );
     } else {
       path

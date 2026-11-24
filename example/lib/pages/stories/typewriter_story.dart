@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animal_island_ui/animal_island_ui.dart';
 
+import '../../shared/palette.dart';
 import '../../shared/story.dart';
 
 const _lines = '第一行：钓到石头了！\n第二行：竟然连这种都能钓起来...\n第三行：继续加油吧！';
@@ -64,7 +65,9 @@ class _TypewriterStoryState extends State<TypewriterStory> {
                     style: TextStyle(
                       fontSize: 16,
                       height: kTextHeightNone,
-                      color: index == 2 ? IslandColorway.orange.ink : null,
+                      color: index == 2
+                          ? GalleryPalette.typewriterEmphasis
+                          : null,
                       fontWeight: index == 2 ? FontWeight.w700 : null,
                     ),
                     strutStyle: const StrutStyle(

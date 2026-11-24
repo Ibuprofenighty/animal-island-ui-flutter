@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../foundation/recipes/form.dart';
 import '../foundation/theme.dart';
 
@@ -177,9 +178,11 @@ class IslandFormItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Reference `.island-form-item-control-input`: a flex row of at
+        // least 32px whose child fills the width and is vertically centred.
         ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 32),
-          child: child,
+          child: Row(children: [Expanded(child: child)]),
         ),
         if (error != null || help != null)
           Padding(
@@ -231,7 +234,7 @@ class IslandFormItem extends StatelessWidget {
                   TextSpan(text: label ?? ''),
                   if (!required && mark == IslandFormRequiredMark.optional)
                     TextSpan(
-                      text: '（选填）',
+                      text: IslandLocalizations.of(context).optionalMark,
                       style: TextStyle(color: IslandTheme.of(context).muted),
                     ),
                   if ((colon ?? form.colon) && label?.isNotEmpty == true)
@@ -383,12 +386,13 @@ class _IslandFormFieldState<T> extends State<IslandFormField<T>> {
   ) async {
     final rules = List<IslandFormValidator<T>>.of(widget.validators);
     final errors = <String>[];
+    final failed = IslandLocalizations.of(context).validationFailed;
     for (final rule in rules) {
       try {
         final message = await rule(raw as T?, values);
         if (message != null && message.isNotEmpty) errors.add(message);
       } catch (_) {
-        errors.add('暂时无法完成校验');
+        errors.add(failed);
       }
     }
     return errors;

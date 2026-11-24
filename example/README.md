@@ -1,6 +1,6 @@
 # Island UI Gallery
 
-Independent Flutter consumer of the public `animal_island_ui` entrypoint, with the reference homepage, Skill guide and 40 component routes. The [reference Gallery](https://guokaigdg.github.io/animal-island-ui/#/) is the visual and interaction authority; see [design baseline](../docs/DESIGN.md).
+Independent Flutter consumer of the public `animal_island_ui` entrypoint, with the reference homepage and the 63 inventory routes: the Skill guide, 42 component pages and 20 chart pages. The [reference Gallery](https://guokaigdg.github.io/animal-island-ui/#/) is the visual and interaction authority; see [design baseline](../docs/DESIGN.md).
 
 Run from this directory:
 

@@ -117,7 +117,8 @@ class _ChoiceControlState extends State<ChoiceControl>
                 duration: reduced
                     ? Duration.zero
                     : const Duration(milliseconds: 250),
-                curve: Curves.ease,
+                // Reference `--animal-motion-ease`.
+                curve: const Cubic(.4, 0, .2, 1),
                 width: extent,
                 height: extent,
                 decoration: BoxDecoration(
@@ -155,6 +156,7 @@ class _ChoiceControlState extends State<ChoiceControl>
                 duration: reduced
                     ? Duration.zero
                     : const Duration(milliseconds: 150),
+                curve: Curves.ease,
                 builder: (context, color, child) => DefaultTextStyle(
                   style: DefaultTextStyle.of(context).style.copyWith(
                     fontSize: font,

@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../internal/content_scope.dart';
 import 'tooltip.dart';
 import '../internal/surface_motion.dart';
@@ -139,7 +140,9 @@ class IslandBadge extends StatelessWidget {
     if (raw != null && !point)
       badge = IslandTooltip(message: raw, child: badge);
     badge = Semantics(
-      label: semanticLabel ?? (point ? '有新消息' : raw),
+      label:
+          semanticLabel ??
+          (point ? IslandLocalizations.of(context).newMessage : raw),
       child: ExcludeSemantics(child: badge),
     );
     badge = TweenAnimationBuilder<double>(

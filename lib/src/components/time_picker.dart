@@ -1,3 +1,4 @@
+import '../foundation/localizations.dart';
 import '../foundation/recipes/picker.dart';
 import '../foundation/theme.dart';
 import '../internal/focus_outline.dart';
@@ -18,8 +19,8 @@ class IslandTimePicker extends StatefulWidget {
     super.key,
     required this.value,
     required this.onChanged,
-    this.placeholder = '请选择时间',
-    this.label = '选择时间',
+    this.placeholder,
+    this.label,
     this.disabled = false,
     this.allowClear = false,
     this.size = IslandSize.middle,
@@ -39,8 +40,8 @@ class IslandTimePicker extends StatefulWidget {
     super.key,
     this.initialValue,
     this.onChanged,
-    this.placeholder = '请选择时间',
-    this.label = '选择时间',
+    this.placeholder,
+    this.label,
     this.disabled = false,
     this.allowClear = false,
     this.size = IslandSize.middle,
@@ -59,7 +60,15 @@ class IslandTimePicker extends StatefulWidget {
   final IslandTimeValue? value, initialValue;
   final ValueChanged<IslandTimeValue?>? onChanged;
   final bool controlled, disabled, allowClear;
-  final String placeholder, label, format;
+
+  /// Placeholder and accessible name; null uses
+  /// [IslandLocalizations.timePlaceholder] and [IslandLocalizations.timeLabel].
+  final String? placeholder, label;
+
+  /// Trigger text pattern in core time tokens (`HH`, `mm`, `ss`, `h`, `A`,
+  /// …); `[text]` renders literally. An unescaped `ss` shows the seconds
+  /// column. See [IslandTimeValue.format].
+  final String format;
   final IslandSize size;
   final IslandFieldStatus status;
   final int hourStep, minuteStep, secondStep;
@@ -72,6 +81,7 @@ class IslandTimePicker extends StatefulWidget {
 }
 
 class _IslandTimePickerState extends State<IslandTimePicker> {
+  IslandLocalizations get strings => IslandLocalizations.of(context);
   late IslandTimeValue? inner = widget.initialValue;
   late IslandTimeValue pending = current ?? const IslandTimeValue(0, 0);
   bool innerOpen = false;
@@ -181,7 +191,9 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
   @override
   Widget build(BuildContext context) {
     final shown = open ? pending : current;
-    final seconds = widget.format.contains('ss');
+    final seconds = widget.format
+        .replaceAll(RegExp(r'\[[^\]]*]'), '')
+        .contains('ss');
     return PickerFocusBoundary(
       onKeyEvent: (_, event) => key(event),
       onFocusExit: () => requestOpen(false),
@@ -192,8 +204,11 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
         estimatedHeight: 336,
         onDismiss: () => requestOpen(false),
         anchor: PickerTrigger(
-          text: shown?.format(widget.format) ?? widget.placeholder,
-          label: widget.label,
+          text:
+              shown?.format(widget.format) ??
+              widget.placeholder ??
+              strings.timePlaceholder,
+          label: widget.label ?? strings.timeLabel,
           hasValue: current != null,
           open: open,
           disabled: widget.disabled,
@@ -209,7 +224,7 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
               requestOpen(true);
             }
           },
-          clearLabel: '清除时间',
+          clearLabel: strings.clearTime,
           onClear: widget.allowClear && current != null
               ? () {
                   commit(null);
@@ -219,7 +234,7 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
         ),
         panel: SingleChildScrollView(
           child: Semantics(
-            label: widget.label,
+            label: widget.label ?? strings.timeLabel,
             scopesRoute: true,
             explicitChildNodes: true,
             child: Focus(
@@ -230,13 +245,19 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: column(0, '时', 24, widget.hourStep, pending.hour),
+                      child: column(
+                        0,
+                        strings.hour,
+                        24,
+                        widget.hourStep,
+                        pending.hour,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: column(
                         1,
-                        '分',
+                        strings.minute,
                         60,
                         widget.minuteStep,
                         pending.minute,
@@ -247,7 +268,7 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                       Expanded(
                         child: column(
                           2,
-                          '秒',
+                          strings.second,
                           60,
                           widget.secondStep,
                           pending.second,
@@ -260,7 +281,7 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     PickerFooterAction(
-                      '此刻',
+                      strings.now,
                       onPressed: () {
                         final now = widget.now?.call() ?? DateTime.now();
                         setState(
@@ -276,7 +297,7 @@ class _IslandTimePickerState extends State<IslandTimePicker> {
                     // Reference hover #8a7b66 gives white text 4.1:1; the
                     // sibling DatePicker reference hover #796c5a passes 4.5:1.
                     PickerFooterAction(
-                      '确定',
+                      strings.ok,
                       primary: true,
                       primaryHoverColor: PickerColors.confirmHover,
                       onPressed: confirm,

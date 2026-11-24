@@ -381,8 +381,10 @@ void main() {
           format: ui.ImageByteFormat.rawRgba,
         );
         final drop = label.contains('雨滴');
-        final x = (point.dx + 2).round();
-        final y = (point.dy + (drop ? 16 : 10)).round();
+        // Inside the fill: the 4.0.0 arrow is drawn on a 32px canvas with
+        // its hotspot at (8, 5).
+        final x = (point.dx + (drop ? 2 : 4)).round();
+        final y = (point.dy + (drop ? 16 : 9)).round();
         final index = (y * raster.width + x) * 4;
         final rgb =
             bytes!.getUint8(index) << 16 |
@@ -594,7 +596,7 @@ void main() {
           (w) =>
               w is Semantics &&
               w.properties.button == true &&
-              w.properties.label == '10 条/页',
+              w.properties.label == '每页 10 条，10 条/页',
         ),
       );
       await advance();
@@ -606,7 +608,7 @@ void main() {
           (w) =>
               w is Semantics &&
               w.properties.button == true &&
-              w.properties.label == '50 条/页',
+              w.properties.label == '每页 50 条，50 条/页',
         ),
         findsOneWidget,
       );
@@ -631,7 +633,7 @@ void main() {
 
       navigate(() => path = '/select');
       await advance();
-      await tester.tap(find.text('鲈鱼'));
+      await tester.tap(find.text('鲈鱼').first);
       await advance();
       expect(find.text('鲷鱼'), findsOneWidget);
       final selectOption = find
@@ -639,7 +641,8 @@ void main() {
           .first;
       expect(
         tester.getRect(selectOption),
-        const Rect.fromLTWH(459, 291, 102, 41),
+        // Measured on the live reference 4.0.0 page.
+        const Rect.fromLTWH(332, 438, 102, 41),
       );
       await capture('select-open');
       final selectMouse = await tester.createGesture(
@@ -652,7 +655,8 @@ void main() {
       await selectMouse.removePointer();
       await tester.tap(find.text('鲷鱼'));
       await advance();
-      expect(find.text('鲷鱼'), findsOneWidget);
+      // The variant demo and the basic demo share one value (reference).
+      expect(find.text('鲷鱼'), findsNWidgets(2));
       expect(tester.takeException(), isNull);
 
       final searchField = find.byType(TextField).first;
@@ -662,7 +666,7 @@ void main() {
       );
       await tester.tap(searchField);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('鲈鱼'));
+      await tester.tap(find.text('鲈鱼').last);
       await tester.pumpAndSettle();
       await tester.enterText(searchField, '无结果');
       await tester.pumpAndSettle();
@@ -892,13 +896,15 @@ void main() {
       }
       navigate(() => path = '/select');
       await tester.pumpAndSettle();
-      await tester.tap(find.text('鲈鱼'));
+      await tester.tap(find.text('鲈鱼').first);
       await tester.pumpAndSettle();
       final narrowList = find.byWidgetPredicate(
         (w) => w is Semantics && w.properties.role == ui.SemanticsRole.list,
       );
       final narrowRect = tester.getRect(narrowList);
-      expect(narrowRect.left, closeTo(203, .1));
+      // Measured on the live reference 4.0.0 page at 375x812.
+      expect(narrowRect.left, closeTo(76, .1));
+      expect(narrowRect.top, closeTo(423, .1));
       expect(narrowRect.width, closeTo(102, .1));
       expect(narrowRect.right, lessThanOrEqualTo(375));
       expect(narrowRect.top, greaterThanOrEqualTo(0));
@@ -906,15 +912,15 @@ void main() {
       debugPrint('SELECT375_GEOMETRY=$narrowRect');
       final narrowFields = find.byType(IslandSelect<String>);
       expect(
-        tester.getRect(narrowFields.at(1)),
-        const Rect.fromLTWH(58, 505, 140, 41),
+        tester.getRect(narrowFields.at(3)),
+        const Rect.fromLTWH(58, 796, 140, 41),
       );
       // DESIGN#gallery-parent-layout: below the pair's combined 296px the
       // second trigger wraps under the first with the 16px gap, inside its
       // dashed demo box (the reference overflows it at this width).
       expect(
-        tester.getRect(narrowFields.at(2)),
-        const Rect.fromLTWH(58, 505 + 41 + 16, 140, 41),
+        tester.getRect(narrowFields.at(4)),
+        const Rect.fromLTWH(58, 796 + 41 + 16, 140, 41),
       );
       await capture('select-375-open');
       expect(tester.takeException(), isNull, reason: 'select-375-open');

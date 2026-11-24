@@ -467,7 +467,7 @@ class _IslandPaginationState extends State<IslandPagination> {
       anchor: ActionSurface(
         expanded: open,
         focusNode: sizeFocus,
-        label: strings.perPage(current.pageSize),
+        label: strings.perPageName(current.pageSize),
         onActivate: widget.disabled ? null : () => setState(() => open = !open),
         builder: (context, states) => _HoverBlend(
           // Reference `.sizeTrigger { transition: all .2s ease }`; only the
@@ -525,6 +525,8 @@ class _IslandPaginationState extends State<IslandPagination> {
             duration: MediaQuery.disableAnimationsOf(context)
                 ? Duration.zero
                 : const Duration(milliseconds: 200),
+            // Reference `transition: transform .2s ease`.
+            curve: Curves.ease,
             child: CustomPaint(
               size: const Size(10, 10),
               painter: _SizeCaret(

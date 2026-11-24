@@ -17,7 +17,7 @@
     "localization": "Reference Chinese Gallery; host content and inherited directionality.",
     "async_behavior": "Host owns business requests. Timers, routes and presentation state are disposed by their creator.",
     "lifecycle": "Owned sessions/positions are local; detach lets Flutter activate the next native cursor. No custom engine or third-party plugin required. Software-pointer latency needs platform profiling.",
-    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets. The arrow is the reference 4.0.0 rounded heavy-outline pointer on a 32px canvas with hotspot (8,5): seven-vertex silhouette scaled 1.12 with straight edges and quadratic rounded corners, #fff7e6 fill and #794f27 2.75px round-joined stroke. The raindrop keeps its 32px artwork and (16,6) hotspot. The arrow scope sets DefaultSelectionStyle.selectionColor for its subtree by the ambient Theme brightness: light keeps the reference #e9c46a (light ink 4.7:1; muted #736857 at 3.27:1 is an owner-accepted registered difference, 2026-11-17), dark uses #654c01, the same OKLCH hue lowered only until the dark ink (7.2:1) and muted (4.5:1) roles pass, 1.5:1 from the dark paper #243c33 and 1.8:1 from the dark canvas #172b26; a raindrop scope restores the selection colour in effect outside its outermost enclosing IslandCursor, so the innermost cursor decides at any nesting depth. Cursor color and mouse cursor of the inherited selection style are preserved. Flutter paints the highlight behind unchanged glyph colours: the reference selected-text colour #2b2620 has no Flutter equivalent and is a registered open owner decision, not a claim of parity.",
     "performance": "Platform profiling required before release.",
     "migration": "Fresh implementation; no old-library compatibility track."
   },
@@ -33,6 +33,18 @@
       "given": "Nested, themed and controlled composition",
       "when": "A child acts or a parent rebuilds/reorders/rejects a proposal",
       "then": "No event bubbling, style overwrite, selection-index substitution or ownership violation."
+    },
+    {
+      "id": "cursor.arrow-geometry",
+      "given": "A forced arrow cursor under a mouse pointer",
+      "when": "The pointer hovers the region",
+      "then": "The 32px arrow is painted with its tip hotspot (8,5) at the pointer and its 2.75px outline and light core visible."
+    },
+    {
+      "id": "cursor.selection-colour",
+      "given": "Text controls inside an arrow cursor, a raindrop nested in an arrow and an arrow nested in that raindrop, and a top-level raindrop, under a light or dark host theme",
+      "when": "Descendants read the default selection style",
+      "then": "Arrow descendants get #e9c46a under a light theme and #654c01 under a dark theme, following a theme change; raindrop descendants get the host selection colour from outside every enclosing cursor (null when the host sets none), never an arrow colour; the innermost cursor decides at any depth."
     }
   ]
 }

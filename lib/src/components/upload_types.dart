@@ -4,6 +4,51 @@ enum IslandUploadStatus { uploading, done, error, removed }
 
 enum IslandUploadListType { text, picture, pictureCard }
 
+/// Where an uploading file shows its [IslandUploadProgress].
+enum IslandUploadProgressType {
+  /// A separate small progress bar: below the file name in a row, under the
+  /// percentage inside a picture card.
+  bar,
+
+  /// The whole row or card backing fills from the left; it takes no layout
+  /// space.
+  background,
+}
+
+/// Appearance of upload progress. The percentage always comes from the file.
+///
+/// Only uploading files show it; done and failed files keep their status
+/// icons.
+@immutable
+class IslandUploadProgress {
+  const IslandUploadProgress({
+    this.type = IslandUploadProgressType.bar,
+    this.color,
+    this.wave = false,
+    this.animated = true,
+    this.showInfo = true,
+    this.duration = const Duration(milliseconds: 600),
+  });
+
+  /// Separate bar or background fill.
+  final IslandUploadProgressType type;
+
+  /// Fill colour; null keeps the mint bar gradient or the mint background.
+  final Color? color;
+
+  /// Overlays the double-layer ocean wave on the fill.
+  final bool wave;
+
+  /// Whether the [wave] drifts; it is still at 0% and 100%.
+  final bool animated;
+
+  /// Shows the percentage text.
+  final bool showInfo;
+
+  /// Fill width transition; zero disables it.
+  final Duration duration;
+}
+
 typedef IslandUploadPreviewBuilder = Widget Function(
   BuildContext context,
   BoxFit fit,
@@ -33,7 +78,7 @@ class IslandUploadFile {
   const IslandUploadFile({
     required this.id,
     required this.name,
-    this.size = 0,
+    this.size,
     this.mimeType = '',
     this.status = IslandUploadStatus.uploading,
     this.percent = 0,
@@ -44,7 +89,9 @@ class IslandUploadFile {
     this.error,
   });
   final String id, name, mimeType;
-  final int size;
+
+  /// File size in bytes; null when unknown, and the list then shows no size.
+  final int? size;
   final IslandUploadStatus status;
   final double percent;
   final IslandUploadSource? source;

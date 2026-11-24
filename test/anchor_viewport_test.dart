@@ -44,7 +44,7 @@ Finder trigger(String kind) => switch (kind) {
   'date' => namedButton('Date'),
   'range' => namedButton('Range'),
   'time' => namedButton('Time'),
-  'pagination' => namedButton('10 / page'),
+  'pagination' => namedButton('每页 10 条，10 条/页'),
   _ => find.text('Tooltip anchor'),
 };
 
@@ -74,7 +74,7 @@ Finder marker(String kind) => switch (kind) {
     (w) =>
         w is Semantics &&
         w.container == true &&
-        w.properties.label == 'Items per page',
+        w.properties.label == '选择每页条数',
   ),
   _ =>
     find
@@ -115,6 +115,9 @@ void registerAnchoredViewportTests({
       addTearDown(t.view.resetDevicePixelRatio);
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           theme: IslandTheme.create(),
           home: Scaffold(
             body: Stack(
@@ -166,7 +169,7 @@ void registerAnchoredViewportTests({
           MaterialApp(
             key: UniqueKey(),
             theme: IslandTheme.create(),
-            locale: const Locale('en'),
+            locale: const Locale('zh'),
             localizationsDelegates: IslandLocalizations.delegates,
             supportedLocales: IslandLocalizations.supportedLocales,
             home: Scaffold(
@@ -189,7 +192,7 @@ void registerAnchoredViewportTests({
         final anchor = t.getRect(
           kind == 'date'
               ? find.byType(IslandDatePicker)
-              : namedButton('10 / page'),
+              : namedButton('每页 10 条，10 条/页'),
         );
         if (kind == 'date') {
           expect(rect.top - anchor.bottom, 6);
@@ -207,7 +210,7 @@ void registerAnchoredViewportTests({
   );
 
   testWidgets(
-    '375px Select flips overflowing side without changing natural width or gap',
+    '375px game Select flips overflowing side without changing natural width or gap',
     (t) async {
       t.view.physicalSize = const Size(375, 812);
       t.view.devicePixelRatio = 1;
@@ -215,6 +218,9 @@ void registerAnchoredViewportTests({
       addTearDown(t.view.resetDevicePixelRatio);
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           theme: IslandTheme.create(),
           home: Scaffold(
             body: Stack(
@@ -226,6 +232,7 @@ void registerAnchoredViewportTests({
                   child: IslandSelect<String>(
                     label: 'Choice',
                     value: 'a',
+                    variant: IslandSelectVariant.game,
                     onChanged: (_) {},
                     options: const [
                       IslandOption(value: 'a', label: '鲈鱼'),
@@ -255,6 +262,9 @@ void registerAnchoredViewportTests({
   testWidgets('fitting viewport-edge attachment stays unchanged', (t) async {
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         theme: IslandTheme.create(),
         home: Scaffold(
           body: Align(
@@ -301,6 +311,9 @@ void registerAnchoredViewportTests({
       try {
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             theme: IslandTheme.create(),
             home: Scaffold(
               body: Padding(
@@ -346,6 +359,9 @@ void registerAnchoredViewportTests({
       for (final kind in ['time', 'date']) {
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             key: UniqueKey(),
             theme: IslandTheme.create(),
             home: Scaffold(
@@ -384,6 +400,9 @@ void registerAnchoredViewportTests({
       final contentKey = GlobalKey();
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           theme: IslandTheme.create(),
           home: Scaffold(
             body: Center(
@@ -462,7 +481,7 @@ void registerAnchoredViewportTests({
               MaterialApp(
                 key: UniqueKey(),
                 theme: IslandTheme.create(),
-                locale: const Locale('en'),
+                locale: const Locale('zh'),
                 localizationsDelegates: IslandLocalizations.delegates,
                 supportedLocales: IslandLocalizations.supportedLocales,
                 home: Scaffold(
@@ -505,41 +524,51 @@ void registerAnchoredViewportTests({
     );
   }
 
-  testWidgets('fitting desktop Select retains reference beside attachment', (
-    t,
-  ) async {
-    t.view.physicalSize = const Size(1440, 1000);
-    t.view.devicePixelRatio = 1;
-    addTearDown(t.view.resetPhysicalSize);
-    addTearDown(t.view.resetDevicePixelRatio);
-    await t.pumpWidget(
-      MaterialApp(
-        theme: IslandTheme.create(),
-        home: Scaffold(
-          body: Stack(
-            children: [
-              Positioned(
-                left: 300,
-                top: 300,
-                width: 140,
-                child: control('select'),
-              ),
-            ],
+  testWidgets(
+    'fitting desktop game Select retains reference beside attachment',
+    (t) async {
+      t.view.physicalSize = const Size(1440, 1000);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.resetPhysicalSize);
+      addTearDown(t.view.resetDevicePixelRatio);
+      await t.pumpWidget(
+        MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
+          theme: IslandTheme.create(),
+          home: Scaffold(
+            body: Stack(
+              children: [
+                Positioned(
+                  left: 300,
+                  top: 300,
+                  width: 140,
+                  child: IslandSelect<String>(
+                    label: 'Choice',
+                    options: choices,
+                    value: 'a',
+                    variant: IslandSelectVariant.game,
+                    onChanged: (_) {},
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-    await t.tap(trigger('select'));
-    await t.pumpAndSettle();
-    final anchor = t.getRect(trigger('select'));
-    final panel = t.getRect(surface('select'));
-    // Trigger semantics occupy the label; the public Select owns the full140px anchor.
-    final fullAnchor = t.getRect(find.byType(IslandSelect<String>));
-    expect(panel.left, closeTo(fullAnchor.right + 6, .01));
-    expect(panel.center.dy, closeTo(fullAnchor.center.dy, .01));
-    expect(panel.center.dy, closeTo(anchor.center.dy, .01));
-    expect(t.takeException(), isNull);
-  });
+      );
+      await t.tap(trigger('select'));
+      await t.pumpAndSettle();
+      final anchor = t.getRect(trigger('select'));
+      final panel = t.getRect(surface('select'));
+      // Trigger semantics occupy the label; the public Select owns the full140px anchor.
+      final fullAnchor = t.getRect(find.byType(IslandSelect<String>));
+      expect(panel.left, closeTo(fullAnchor.right + 6, .01));
+      expect(panel.center.dy, closeTo(fullAnchor.center.dy, .01));
+      expect(panel.center.dy, closeTo(anchor.center.dy, .01));
+      expect(t.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'Select follows scroll resize and dynamic long search without losing commit authority',
@@ -553,6 +582,9 @@ void registerAnchoredViewportTests({
       try {
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             theme: IslandTheme.create(),
             home: Scaffold(
               body: SingleChildScrollView(

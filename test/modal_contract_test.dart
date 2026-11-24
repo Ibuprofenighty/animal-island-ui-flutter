@@ -11,6 +11,9 @@ void main() {
         late BuildContext host;
         await t.pumpWidget(
           MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: IslandLocalizations.delegates,
+            supportedLocales: IslandLocalizations.supportedLocales,
             home: Builder(
               builder: (context) {
                 host = context;
@@ -41,6 +44,9 @@ void main() {
       final semantics = t.ensureSemantics();
       await t.pumpWidget(
         const MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: IslandModal(
             semanticLabel: 'named dialog',
             title: Text('opaque title'),
@@ -60,6 +66,9 @@ void main() {
   testWidgets('Title uses the reference normal line height', (t) async {
     await t.pumpWidget(
       const MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: IslandModal(title: Text('Title'), child: Text('body')),
       ),
     );
@@ -82,6 +91,9 @@ void main() {
     (t) async {
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: IslandModal(
             variant: IslandModalVariant.normal,
             title: const Text('fixed title'),
@@ -107,6 +119,9 @@ void main() {
     late BuildContext host;
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Builder(
           builder: (context) {
             host = context;
@@ -143,6 +158,9 @@ void main() {
       addTearDown(trigger.dispose);
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: Builder(
             builder: (context) => IslandButton(
               focusNode: trigger,
@@ -225,6 +243,9 @@ void main() {
       );
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: StatefulBuilder(
             builder: (_, set) {
               update = set;
@@ -258,6 +279,9 @@ void main() {
   ) async {
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Builder(
           builder: (context) => IslandButton(
             onPressed: () => showIslandModal<void>(
@@ -286,6 +310,9 @@ void main() {
     late BuildContext modalContext;
     await t.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: IslandLocalizations.delegates,
+        supportedLocales: IslandLocalizations.supportedLocales,
         home: Builder(
           builder: (context) {
             host = context;
@@ -327,6 +354,9 @@ void main() {
       late StateSetter update;
       await t.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: IslandLocalizations.delegates,
+          supportedLocales: IslandLocalizations.supportedLocales,
           home: StatefulBuilder(
             builder: (_, set) {
               update = set;

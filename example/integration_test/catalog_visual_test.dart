@@ -30,7 +30,9 @@ void main() {
         key: boundaryKey,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          locale: const Locale('zh'),
+          locale: const Locale(
+            String.fromEnvironment('ISLAND_GALLERY_LOCALE', defaultValue: 'zh'),
+          ),
           localizationsDelegates: IslandLocalizations.delegates,
           supportedLocales: IslandLocalizations.supportedLocales,
           theme: galleryTheme(),
@@ -100,10 +102,9 @@ void main() {
       await t.runAsync(() async {
         for (final e in visibleVectors) {
           if (!e.mounted) continue;
-          final picture = await vg.loadPicture(
-            (e.widget as SvgPicture).bytesLoader,
-            e,
-          );
+          final picture = await vg
+              .loadPicture((e.widget as SvgPicture).bytesLoader, e)
+              .timeout(const Duration(seconds: 30));
           picture.picture.dispose();
         }
         final errors = <Object>[];
@@ -120,7 +121,7 @@ void main() {
             image,
             e,
             onError: (error, stack) => errors.add(error),
-          );
+          ).timeout(const Duration(seconds: 30));
         }
         expect(errors, isEmpty, reason: 'Visible packaged image readiness');
       });
@@ -180,6 +181,8 @@ void main() {
           // BackTop deliberately scrolls after500ms on mount. Finish that known
           // demo timer before applying any reference capture position.
           if (id == 'backtop') await t.pump(const Duration(seconds: 1));
+          // The Skill page shows its own 2s circle Loading on entry.
+          if (id == 'skill') await t.pump(const Duration(seconds: 3));
           if (id == 'countup') {
             await t.pump(const Duration(seconds: 3));
             expect(find.text('1,320'), findsWidgets);
@@ -191,7 +194,10 @@ void main() {
               (w) =>
                   w is Semantics &&
                   w.properties.button == true &&
-                  w.properties.label == '转到第 1 张',
+                  w.properties.label ==
+                      IslandLocalizations.of(
+                        t.element(find.byType(GalleryPage)),
+                      ).goToSlide(1),
             );
             await t.tap(first);
             await t.pump();
@@ -237,5 +243,5 @@ void main() {
     t.view.resetPhysicalSize();
     t.view.resetDevicePixelRatio();
     await binding.setSurfaceSize(null);
-  }, timeout: const Timeout(Duration(minutes: 15)));
+  }, timeout: const Timeout(Duration(minutes: 45)));
 }

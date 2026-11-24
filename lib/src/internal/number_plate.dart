@@ -9,9 +9,14 @@ class NumberPlate extends StatelessWidget {
     required this.child,
     required this.island,
     required this.bordered,
+    this.borderColor,
   });
   final Widget child;
   final bool island, bordered;
+
+  /// Replaces the variant border colour of a bordered plate (Countdown
+  /// reminders); ignored when [bordered] is false.
+  final Color? borderColor;
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -28,9 +33,11 @@ class NumberPlate extends StatelessWidget {
       border: bordered
           // Reference `.bordered .unit/.plate { border: 1.5px solid }`.
           ? Border.all(
-              color: island
-                  ? NumberColors.islandPlateBorder
-                  : NumberColors.plateBorder,
+              color:
+                  borderColor ??
+                  (island
+                      ? NumberColors.islandPlateBorder
+                      : NumberColors.plateBorder),
               width: 1.5,
             )
           : null,

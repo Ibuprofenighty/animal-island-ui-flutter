@@ -13,7 +13,7 @@ void main() {
     ),
     'Date trigger': const IslandDatePicker.uncontrolled(label: 'Date trigger'),
     'Time trigger': const IslandTimePicker.uncontrolled(label: 'Time trigger'),
-    '10 条/页': const IslandPagination.uncontrolled(
+    '每页 10 条，10 条/页': const IslandPagination.uncontrolled(
       total: 50,
       showSizeChanger: true,
     ),

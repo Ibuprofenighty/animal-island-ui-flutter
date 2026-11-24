@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "id": "no-data",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "NoData 空状态: the reference 4.0.0 empty-content presentation (added in 3.0.0, icons per 3.0.1) with default, search and simple variants, three sizes, custom icon, title, description and action area; reference Gallery contract with the registered description colour difference (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandNoData](../../lib/src/components/no_data.dart), [IslandNoDataVariant](../../lib/src/components/no_data.dart), [IslandSize](../../lib/src/foundation/size.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget slots are opaque and must not be inspected or rewritten.",
+    "outputs": "None. Recovery actions are caller widgets with their own callbacks.",
+    "state_model": "Stateless. Content order is artwork, title, description, actions. A null title shows the localized default (search: 没有找到相关结果 / No matching results; normal and simple: 暂无数据 / No data); showTitle false hides the title, showIcon false hides the artwork, a null description and empty actions are absent.",
+    "events": "None of its own. An action dispatches once through its own widget and does not activate an ancestor.",
+    "composition": "Parent owns placement and constraints. The root fills a bounded width and shrink-wraps an unbounded one, centring its column. Geometry per size small/middle/large: padding 18x12 / 32x24 / 40x24; built-in artwork 64/96/120 (simple and custom icon area 32/52/64), scaled down to fit a narrower width; artwork gap 14/22/26 (simple middle 16); title 14/16/18 px weight 700 line height 1.5; description 12/13/14 px line height 1.8, gap 5/8/8, maximum 32ch; actions gap 14/22/22, centred, 12 between and between runs, wrapping. Bordered adds the 1.5px dashed outline (dash 3x, gap 2x its device-snapped width) inside the box, radius 20 and the surface fill. A custom icon is fitted into its square with the title ink as IconTheme colour; explicit icon colours win. Usable as IslandTable.empty.",
+    "accessibility": "The artwork (built-in or custom) is excluded from semantics; title, description and actions stay readable and focusable. The component does not force a live region; hosts wrap it in Semantics (liveRegion, label) when changes must be announced. Screen-reader execution is excluded by the 2026-10-17 user scope decision.",
+    "localization": "Default titles come from the IslandLocalizations locale (zh / en); application copy belongs to the host.",
+    "async_behavior": "None; no requests, timers or loading logic.",
+    "lifecycle": "None owned.",
+    "styling": "One foundation-owned recipe (lib/src/foundation/recipes/no_data.dart). Reference palette (default light tokens or a declared light Card paper): title #794f27 (--animal-text-color), description #9f927d deepened in its own OKLCH hue to #7a6d59 (registered difference, 4.5:1 on every light paper), bordered fill #f8f8f0 (--animal-bg-color) and decorative outline #e8e2d6 (--animal-border-color-light). Dark and customized token sets use ink, muted, paper and outline. Built-in artwork keeps the icon library's native palette and #2a2a2a currentColor ink in every theme and is never recoloured (decorative). Static: no motion.",
+    "performance": "One text measurement per build for the 32ch description width and one for the default title baseline; a wrapping title or description is laid out about ten times per layout to find its balanced width. Platform profiling required before release.",
+    "migration": "New component; no previous Flutter API."
+  },
+  "scenarios": [
+    {
+      "id": "no-data.reference",
+      "given": "The pinned reference 4.0.0 NoData page and its sections",
+      "when": "Capture the same viewport and interaction state",
+      "then": "Layout, typography, geometry, artwork and interaction agree; necessary accessibility color differences are registered against actual states/backgrounds under docs/DESIGN.md, and other differences remain failures."
+    },
+    {
+      "id": "no-data.defaults",
+      "given": "Each variant without a title or icon, then showTitle/showIcon false",
+      "when": "The component renders",
+      "then": "normal and simple show the box glyph and 暂无数据; search shows the magnifier glyph and 没有找到相关结果; hidden parts render nothing while the description remains."
+    },
+    {
+      "id": "no-data.geometry",
+      "given": "Each size and variant with a description and actions, and a custom icon",
+      "when": "The component lays out in a bounded width",
+      "then": "The root fills the width; padding, artwork square, gaps, line boxes, 12px action gap and centring match the composition values."
+    },
+    {
+      "id": "no-data.colour",
+      "given": "Light reference palette and the dark theme, bordered",
+      "when": "Title and description render",
+      "then": "Light title #794f27 and description #7a6d59 reach 4.5:1 on every light paper; dark uses ink and muted at 4.5:1 on dark papers; the bordered fill and dashed outline follow the recipe."
+    },
+    {
+      "id": "no-data.composition",
+      "given": "A host live region with a recovery button, and IslandTable.empty",
+      "when": "Tab to the action and press Enter; render an empty table",
+      "then": "The action fires once; the host semantics label remains; the empty state spans the table width as a block."
+    }
+  ]
+}

@@ -67,6 +67,20 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
   Timer? timer;
   bool hoverPaused = false, focusPaused = false, rotationPaused = false;
   bool withinFocus = false;
+  final _slides = GlobalKey();
+
+  bool _focusInSlides() {
+    final focus = FocusManager.instance.primaryFocus?.context;
+    final slides = _slides.currentContext;
+    if (focus == null || slides == null) return false;
+    var inside = false;
+    focus.visitAncestorElements((element) {
+      inside = element == slides;
+      return !inside;
+    });
+    return inside;
+  }
+
   bool get paused => hoverPaused || focusPaused || rotationPaused;
   int get index {
     final value = widget.controlled ? widget.value : inner;
@@ -147,13 +161,13 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
     final reduced = MediaQuery.disableAnimationsOf(context);
     final duration = reduced
         ? Duration.zero
-        : const Duration(milliseconds: 300);
+        : const Duration(milliseconds: 350);
     final controls = widget.items.length > 1;
-    // Reference --animal-motion-duration-base .2s for arrows, dots and the
-    // rotation control; slides use the slow .3s. Both ease (.4,0,.2,1).
+    // Reference --animal-motion-duration-base .25s for arrows, dots and the
+    // rotation control; slides use the slow .35s. Both ease (.4,0,.2,1).
     final controlDuration = reduced
         ? Duration.zero
-        : const Duration(milliseconds: 200);
+        : const Duration(milliseconds: 250);
     return Semantics(
       container: true,
       label: widget.semanticLabel ?? strings.carousel,
@@ -165,8 +179,12 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
           pause(() => focusPaused = v);
         },
         onKeyEvent: (node, event) {
-          // The region owns its keys; opaque slide children keep theirs.
-          if (!node.hasPrimaryFocus) return KeyEventResult.ignored;
+          // The region owns its keys, also while one of its own controls
+          // has focus (the reference handles them on the section); opaque
+          // slide children keep theirs.
+          if (!node.hasPrimaryFocus && _focusInSlides()) {
+            return KeyEventResult.ignored;
+          }
           if (event is! KeyDownEvent) return KeyEventResult.ignored;
           if (event.logicalKey == LogicalKeyboardKey.arrowRight)
             go(index + direction);
@@ -294,6 +312,7 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: LightSurfaceScope(
+                        key: _slides,
                         child: ActiveStack(
                           index: index,
                           children: [

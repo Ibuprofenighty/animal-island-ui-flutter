@@ -35,6 +35,10 @@ abstract final class ButtonColors {
 
   /// Busy is a Button-owned fixed surface, separate from the brand leaf.
   static const busyFill = Primitive.teal739;
+
+  /// Busy donut contour: the icon's own drawing ink, not the button foreground
+  /// or caller style (6.6:1 on [busyFill]).
+  static const busyGlyphInk = Primitive.neutral285;
   static const depthShadow = Primitive.brown760;
   static const dangerDepthShadow = Primitive.red574;
   static const restShadow = Primitive.brown331A6;
