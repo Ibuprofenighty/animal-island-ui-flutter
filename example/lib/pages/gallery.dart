@@ -6,6 +6,7 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 import '../shared/catalog.dart';
 import '../shared/background_preview.dart';
 import 'stories/registry.dart';
+import 'stories/skill_story.dart';
 import 'home.dart';
 import '../shared/palette.dart';
 
@@ -124,6 +125,20 @@ class _GalleryPageState extends State<GalleryPage> {
       }
     }
     return null;
+  }
+
+  /// Reference `skillIntro`: set only by a navigation from the home page to
+  /// the Skill page; any menu navigation clears it.
+  bool _skillIntro = false;
+
+  void goFromHome(String value) {
+    _skillIntro = value == 'skill';
+    go(value);
+  }
+
+  void goFromMenu(String value) {
+    _skillIntro = false;
+    go(value);
   }
 
   void go(String value) {
@@ -259,7 +274,7 @@ class _GalleryPageState extends State<GalleryPage> {
     Widget button = _MenuItem(
       item: item,
       active: item.id == id,
-      onPressed: () => go(item.id),
+      onPressed: () => goFromMenu(item.id),
     );
     if (item.id == 'cursor') {
       button = IslandCursor(
@@ -298,7 +313,7 @@ class _GalleryPageState extends State<GalleryPage> {
     Widget content;
     if (widget.path == '/') {
       content = GalleryHome(
-        onNavigate: go,
+        onNavigate: goFromHome,
         wallpaperSeed: widget.wallpaperSeed,
       );
     } else if (info == null) {
@@ -361,7 +376,9 @@ class _GalleryPageState extends State<GalleryPage> {
             if (storyBuilders[id] != null)
               KeyedSubtree(
                 key: ValueKey(id),
-                child: storyBuilders[id]!(context),
+                child: id == 'skill'
+                    ? SkillStory(intro: _skillIntro)
+                    : storyBuilders[id]!(context),
               ),
           ],
         ),
@@ -705,8 +722,11 @@ class _MenuItemState extends State<_MenuItem> {
         child: Listener(
           onPointerDown: (_) {
             final focus = FocusManager.instance.primaryFocus;
-            final owner = focus?.context
-                ?.findAncestorStateOfType<_MenuItemState>();
+            // The focused widget may have left the tree with its page (a
+            // home button pressed to come here) before focus moved on.
+            final holder = focus?.context;
+            if (holder == null || !holder.mounted) return;
+            final owner = holder.findAncestorStateOfType<_MenuItemState>();
             if (owner != null && owner != this) focus!.unfocus();
           },
           child: TextButton(

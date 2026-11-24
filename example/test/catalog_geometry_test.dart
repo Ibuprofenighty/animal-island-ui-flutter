@@ -357,7 +357,7 @@ void main() {
       for (final width in [1440.0, 375.0]) {
         await page(t, 'home', width);
         final cards = find.byType(IslandCard);
-        expect(cards, findsNWidgets(27));
+        expect(cards, findsNWidgets(28));
         expect(t.getSize(find.text('特性')).height, 33);
         // Reference section description `line-height: normal`: 21px with
         // the baseline 16px below the top (Nunito with the CJK fallback).
@@ -385,7 +385,7 @@ void main() {
         expect(t.getSize(find.text('Input')).height, 20);
         if (width == 1440) {
           for (final first in [0, 4, 8, 12, 16, 20, 24]) {
-            for (var i = first + 1; i < first + 4 && i < 27; i++) {
+            for (var i = first + 1; i < first + 4 && i < 28; i++) {
               expect(
                 t.getSize(cards.at(i)).height,
                 t.getSize(cards.at(first)).height,

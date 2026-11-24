@@ -172,6 +172,7 @@ User rule: measure each reference value on its actual composited backgrounds in 
 | Gallery Icon tile caption (`GalleryPalette.iconTileName`) / 示例 Icon 名称 | `#a0936e` (3.0:1 on white, 2.8:1 on the `#faf7f0` hover) → `#7e714e` (4.8:1 / 4.5:1) / 同色相加深 |
 | Gallery Chart header and catalog body (`GalleryPalette.chartGalleryBody`, `chartCatalogBody`) / 示例图表页说明 | `#9f927d` (3.05:1 on white; 2.86:1 on `#f8f8f0` and 2.76:1 on the `#f0f5eb` hover) → `#827561` (4.50:1 on white) and `#7a6e5a` (4.68:1 / 4.51:1) / 同色相加深 |
 | Gallery Chart item link (`GalleryPalette.chartActionInk`) / 示例图表条目链接 | `#9f927d` (3.05:1 on white, 2.51:1 on the `#f0e8d8` hover) → `#746753` (5.52:1 / 4.53:1), the BackTop chip value / 采用 BackTop 代码块的值 |
+| Scrollbar thumb (`ScrollbarColors.thumb`) / 滚动条滑块 | `#9f927d` (2.9:1 on the `#faf8f3` demo frame, 3.05:1 on white, 2.5:1 on its own `#f0e8d8` track) → the `outline` role `#8f8474` (3.5:1, 3.7:1, 3.0:1); the hover `#794f27` and the track keep the reference; dark papers use `outline` `#9bae98`, `ink` and `canvas` / 滑块是滚动位置的唯一标记，取 `outline` 角色；悬停色与轨道色保留参考值 |
 
 Transparent per-hue Tag text is validated on the product papers; caller-filled or accent surfaces need a filled variant or an explicit style. 透明 Tag 色相文字仅在产品纸面验证，强调色或调用方表面请用填色变体或显式样式。
 
@@ -275,6 +276,10 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Notification roles (4.0.1) / 通知的语义角色 | `role="status"` with `aria-live="polite"`, `role="alert"` with `assertive` for an error; a clickable notification stays a button | On the Web the same roles; on the other platforms, whose engines do not project these roles, every notification is a polite live region, an error included. A pressable notification is a live-region button on every platform / Web 上使用相同角色；其他平台的引擎不投射这两个角色，所有通知（含错误）均为礼貌播报的 live region |
 | Select `className` and `style` (4.0.1) / Select 的 className 与 style | Passed to the root element | No counterpart: `width` sizes the trigger and the parent composes everything else / 无对应参数：`width` 决定触发器宽度，其余由父级组合 |
 | Font `unicode-range` subsets (4.0.1) / 字体按 unicode-range 拆分 | Latin and CJK files declare ranges, so characters outside both (arrows such as →, ✓, box-drawing) come from a system font | The Gallery draws them from its bundled font on every platform / Gallery 在各平台均用内置字体绘制这些字符 |
+| Scrollbar rendering (upstream main) / Scrollbar 的绘制方式 | Restyles the browser's own scrollbar with `::-webkit-scrollbar` and, in Firefox, `scrollbar-width: thin` with `scrollbar-color` | The framework scrolls and this library paints the thumb and track: the same 8px pill on every platform and browser, always shown while the content overflows, with its thickness taken out of the content. A touch device shows the same thumb instead of the system overlay / 由框架滚动、本库绘制滑块与轨道：各平台与浏览器外观一致，内容溢出时常显并占用自身粗细；触屏设备同样显示该滑块 |
+| Scrollbar `className`, `style` and `ref` (upstream main) / Scrollbar 的 className、style 与 ref | Passed to the scrolling root | No counterpart: `padding` is the space inside the scrolling content, the parent composes the frame, and `verticalController` / `horizontalController` read and write the offsets / 无对应参数：`padding` 为滚动内容内边距，外框由父级组合，偏移经两个控制器读写 |
+| Scrollbar demo wording (upstream main) / Scrollbar 示例文案 | Compares with the browser's native `overflow: auto` scrollbar | Compares with the framework's default scrollbar, and the texts name Flutter terms / 与框架默认滚动条对比，文案改用 Flutter 术语 |
+| Icon set version (upstream main) / 图标集版本 | naive-icons `^1.17.0` (936 glyphs) | The imported 1.14.0 set, 709 glyphs; 228 added, 4 changed and 1 removed upstream glyphs are not imported / 仍为已导入的 1.14.0（709 个）；上游新增 228、修改 4、删除 1 个图标尚未导入 |
 
 <a id="pending-owner-decisions-400"></a>
 ## Pending owner decisions (4.0.0) / 待所有者裁决（4.0.0）

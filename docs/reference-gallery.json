@@ -2,15 +2,15 @@
   "schema_version": 1,
   "reference": {
     "url": "https://guokaigdg.github.io/animal-island-ui/#/",
-    "observed_version": "4.0.1",
-    "observed_date": "2026-11-23",
+    "observed_version": "4.0.1 + main (unreleased)",
+    "observed_date": "2026-11-24",
     "observed_framework": "React",
     "target_framework": "Flutter",
-    "pinned_commit": "99b45f475a783f1af1f1809823ee38c37d71420d",
+    "pinned_commit": "d161f45a58749234777403dbdbd31222e233e81d",
     "previous_pin": {
-      "version": "4.0.0",
-      "commit": "6ec8614cbfe3aa57c801285e876080487105617b",
-      "note": "Re-pinned on 2026-11-23. v4.0.0..v4.0.1 changes no demo page and no component style: packaging, SSR and React-version fixes, font unicode-range subsets, an uncontrolled Select, and accessible names and live-region roles. The earlier page-by-page comparisons were made against the live site and the 4.0.0 source and were not repeated."
+      "version": "4.0.1",
+      "commit": "99b45f475a783f1af1f1809823ee38c37d71420d",
+      "note": "Re-pinned on 2026-11-24 to upstream main, six commits after the v4.0.1 tag and not released: npm latest is 4.0.1 and the live site, last deployed on 2026-11-19, has no Scrollbar page. Taken over: the Scrollbar component and demo page, and the Skill page intro that plays only when entered from the home page. Not taken over: naive-icons 1.17.0 (228 added, 4 changed, 1 removed glyphs against the imported 1.14.0). The Scrollbar page was built from the source and styles alone; no side-by-side capture exists."
     }
   },
   "authority": "The pinned reference remains the layout, typography, shape, content and interaction baseline. On 2026-10-15 the user authorized documented accessibility color differences within one Animal Crossing product palette; keep the existing 4.5 text and 3.0 necessary-graphic budgets, preserve historical failures, and verify actual state/background pairs on Windows and Web. No parallel palette, runtime contrast guessing or opaque-child rewriting. One readable motion policy: necessary text, numbers, icons, actions and their backing/boundaries stay opaque and contrast-compliant on every entry, exit, reversal and interrupted frame. Atomic paired colors replace unsafe color interpolation. Modest displacement, scale and decorative motion remain; decoration must not invalidate the actual content background. Reduced motion settles the same state machine. One content subtree and lifecycle per owner; no animation clones, opaque-child inspection, parallel variants or transition contrast exemption. See docs/DESIGN.md. Anchored panels share one actual-Overlay layout owner for Select, DatePicker, TimePicker, Pagination and Tooltip. A fitting reference attachment keeps its position, gap, shape, color and content. Only an overflowing result is moved inside the viewport; the existing available-width constraint applies when content cannot fit. The real child is laid out once, with no post-frame size guessing, cloned content, Gallery override or parallel positioning path. Components retain selection, focus, lifetime and scrolling: Select reveals its active keyboard option; a narrow single calendar scrolls horizontally, range calendars retain their existing horizontal scroll, and short time/long tooltip panels scroll vertically. Explicit opaque child styling and state remain authoritative. This is the user-approved limited usability deviation from the reference overflow defect, not a claim of exact parity or complete platform acceptance. Current Gallery parent layout authority: docs/DESIGN.md#gallery-parent-layout. The2026-10-20 user correction supersedes the old deliberate Select parent overflow; pinned-reference overflow measurements remain historical. Current SDK role, screen-reader coverage and performance limitations are documented in docs/ACCEPTANCE.md. Asset redistribution boundaries are documented in docs/RIGHTS.md. Current Gallery Home/Carousel presentation and named contrast exceptions have one authority: docs/DESIGN.md#home-host-and-photo-gradient. Earlier wrong-host, opaque-caption and safe-gradient records are historical audit evidence, not current rendering instructions. Current same-frame surface sampling authority: docs/DESIGN.md#surface-sampling.\nUser decision2026-10-21: retain original Notification/Tooltip and accept the independently reviewed ink-centroid measurement limitation under docs/DESIGN.md#surface-sampling. Preserve0.25 output-image failures; this is not physical presentation, a new calibrated text model, exact Flutter engine cause, or cleared browser hover/Edge375. Select placeholder Wrap is an authorized narrow-layout usability difference from the fixed reference, whose row does not wrap.",
@@ -24,7 +24,7 @@
       "ios"
     ]
   },
-  "component_count": 43,
+  "component_count": 44,
   "groups": {
     "基础": [
       "Title",
@@ -33,6 +33,7 @@
       "Icon",
       "Tag",
       "Cursor",
+      "Scrollbar",
       "CodeBlock",
       "Background",
       "Footer"
@@ -257,7 +258,7 @@
       "typewriter": true
     }
   },
-  "acceptance": "All 43 component pages and reference home/guide must be inventoried. Current code is not visually accepted. Previously passing engineering tests do not establish reference parity.",
+  "acceptance": "All 44 component pages and reference home/guide must be inventoried. Current code is not visually accepted. Previously passing engineering tests do not establish reference parity.",
   "implementation_constraint": "Write new Dart implementation; do not copy the old local Flutter library implementation. Match observed design and behavior; do not substitute generic Material styling.",
   "asset_status": "Reference guide describes MIT and naive-icons. Verify actual asset/font licenses and retain provenance before packaging. Current custom 12-glyph set is not accepted as a visual substitute.",
   "recent_observations": [

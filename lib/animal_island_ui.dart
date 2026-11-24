@@ -66,6 +66,8 @@ export 'src/components/time_picker.dart' show IslandTimePicker;
 export 'src/components/progress.dart' show IslandProgress;
 export 'src/foundation/scene.dart' show IslandScene;
 export 'src/components/footer.dart' show IslandFooter;
+export 'src/components/scrollbar.dart'
+    show IslandScrollbar, IslandScrollbarDirection;
 export 'src/components/background.dart' show IslandBackground;
 export 'src/foundation/background_type.dart' show IslandBackgroundType;
 
