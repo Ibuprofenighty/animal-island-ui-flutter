@@ -1,6 +1,6 @@
 # Release status / 发布状态
 
-**Experimental 0.1.0 — complete production acceptance is not claimed.**
+**Experimental 0.2.0 — complete production acceptance is not claimed.**
 
 The package version is owned by [pubspec.yaml](pubspec.yaml), with one generated Gallery projection. This repository provides the Flutter library, Gallery, tests, component contracts, consumer Skill and source-specific notices. It is available as a public Git repository; it is not advertised as a pub.dev release.
 

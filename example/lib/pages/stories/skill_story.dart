@@ -9,21 +9,27 @@ import 'package:animal_island_ui/animal_island_ui.dart';
 import '../../shared/story.dart';
 import '../../shared/palette.dart';
 
-/// Reference SkillDemo: the page mounts under a circle Loading that stays for
-/// 2s, then the opening circle reveals it.
+/// Reference SkillDemo: entered from the home page's 开始使用 ([intro]), the
+/// page mounts under a circle Loading that stays for 2s, then the opening
+/// circle reveals it. Entered from the menu or by its address, it shows at
+/// once.
 class SkillStory extends StatefulWidget {
-  const SkillStory({super.key});
+  const SkillStory({super.key, this.intro = false});
+
+  /// Whether the page plays the circle Loading before it shows.
+  final bool intro;
   @override
   State<SkillStory> createState() => _SkillStoryState();
 }
 
 class _SkillStoryState extends State<SkillStory> {
-  bool loading = true;
+  late bool loading = widget.intro;
   Timer? timer;
 
   @override
   void initState() {
     super.initState();
+    if (!widget.intro) return;
     timer = Timer(const Duration(seconds: 2), () {
       if (mounted) setState(() => loading = false);
     });
@@ -216,7 +222,7 @@ class _SkillPage extends StatelessWidget {
             children: [
               for (final label in [
                 'Flutter + Dart',
-                '43 个组件目标',
+                '44 个组件目标',
                 'Windows + Web',
                 'MIT License',
               ])
@@ -374,7 +380,7 @@ class _SkillPage extends StatelessWidget {
       ),
       section(
         '组件目录',
-        ["43 Components"],
+        ["44 Components"],
         [
           prose(
             '合约位于 components/<id>/contract.json；公共 API 以 Dart 导出声明为准。未通过对照验收的组件保持 experimental。',

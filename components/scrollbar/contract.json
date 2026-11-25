@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "id": "scrollbar",
+  "target_ids": [
+    "windows",
+    "web"
+  ],
+  "maturity": "experimental",
+  "purpose": "Scrollbar 滚动条; reference Gallery contract (upstream main after 4.0.1) with the documented necessary accessibility color exception (docs/DESIGN.md).",
+  "interface": {
+    "inputs": "Signature authority (all public constructors, parameters, types, requiredness and defaults): [IslandScrollbar](../../lib/src/components/scrollbar.dart). Only declarations exported by lib/animal_island_ui.dart are public. This contract defines behavior; it does not maintain a second parameter list. Widget/span slots are opaque and must not be inspected or rewritten.",
+    "outputs": "None of its own; scroll offsets are read and written through the borrowed controllers.",
+    "state_model": "Scroll offsets live in the vertical and horizontal controllers, borrowed when supplied and owned otherwise. The area scrolls on the axes named by direction; the other axis is not scrollable and has no thumb. While an axis overflows its thumb is always shown and its thickness is taken out of the content on that side (the end side for the vertical thumb, the bottom for the horizontal one); content that fits has neither thumb nor gutter. A gutter whose removal brings the overflow back stays until the configuration changes. padding lies inside the scrolling content; the thumb sits outside it at the edge of the area.",
+    "events": "Wheel, drag, touch and keyboard scrolling are the platform's. A wheel event that no scrollable inside the area can consume is claimed by the area and does not reach an outer scrollable. The thumb can be dragged and the track pressed.",
+    "composition": "Parent owns placement and constraints: without width the area follows the parent, without height it takes the child's height up to maxHeight. The child is laid out by a standard single-child scroll view on each scrolling axis and is otherwise opaque.",
+    "accessibility": "The area is one focus stop; the arrow, page, Home and End keys scroll it through the framework's scroll intents, and a keyboard focus shows the theme focus outline inside the area. A pointer press inside focuses the area unless a descendant already has focus. Screen-reader execution and validation are excluded by the user scope decision on 2026-10-17.",
+    "localization": "No built-in copy; the vertical thumb follows the inherited directionality.",
+    "async_behavior": "None. The 200ms thumb colour transition is disposed with the thumb.",
+    "lifecycle": "Borrowed controllers are never disposed; internal controllers and the focus node are disposed with the state.",
+    "styling": "One foundation-owned product palette with component-owned state recipes; documented accessibility color differences under docs/DESIGN.md. Existing contrast thresholds remain. Explicit child styles win; no opaque-child inspection, parallel palette or Gallery-only imitation. Global readable-motion authority: docs/DESIGN.md. Component-specific state and lifecycle rules remain with their owners; every transition retains the existing contrast budgets.",
+    "performance": "Platform profiling required before release.",
+    "migration": "Fresh implementation; no old-library compatibility track."
+  },
+  "scenarios": [
+    {
+      "id": "scrollbar.reference",
+      "given": "The upstream Scrollbar demo source and its styles (not yet on the live site)",
+      "when": "The same sections are rendered",
+      "then": "The thumb is an 8px pill, always shown while the content overflows, darkening under the pointer over 200ms; the track is transparent unless shown; necessary accessibility color differences are registered under docs/DESIGN.md. No side-by-side capture exists until the reference page is published."
+    },
+    {
+      "id": "scrollbar.composition",
+      "given": "A fixed, content-sized or two-axis area, with borrowed or internal controllers, light or dark theme",
+      "when": "Content overflows, fits, is scrolled by wheel or keys, or the pointer crosses the thumb",
+      "then": "The gutter appears only with the thumb; both thumbs leave the corner free; a wheel at the end of the area does not move an outer scrollable; borrowed controllers report the offsets."
+    }
+  ]
+}

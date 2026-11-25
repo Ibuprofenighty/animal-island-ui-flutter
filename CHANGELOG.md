@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — Scrollbar (2026-11-24)
+
+The reference pin moves to upstream main six commits after 4.0.1 (unreleased; `docs/reference-gallery.json`).
+
+- **New, Scrollbar:** `IslandScrollbar` and `IslandScrollbarDirection`. A scroll area with an 8px pill thumb that is always shown while the content overflows, darkens under the pointer and takes its thickness out of the content; vertical, horizontal or both axes; optional track, thumb colour and thickness; `padding` inside the scrolling content; borrowed `verticalController` and `horizontalController`. The area is a focus stop for keyboard scrolling, and a wheel at its end does not move an outer scrollable. Built from the upstream source; the reference page is not published yet, so no side-by-side comparison exists.
+- **Gallery:** new Scrollbar page (64 routes). The Skill page plays its circle Loading only when entered from the home page.
+- Not taken over: naive-icons 1.17.0. The icon set stays at 1.14.0 (709 glyphs).
+
 ## 0.1.0 — reference 4.0.0 port (2026-11-21)
 
 The reference is re-pinned from 2.2.1 to 4.0.0 (`docs/reference-gallery.json`). Experimental: widget tests cover the ports and new components below, and the Web and Windows builds, the Windows-engine entries and the reference comparisons recorded in `docs/ACCEPTANCE.md` were run with the limits stated there; every status stays `NOT_ACCEPTED`. Open measurements and owner decisions are in `docs/DESIGN.md#pending-owner-decisions-400`.

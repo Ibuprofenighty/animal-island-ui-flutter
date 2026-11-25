@@ -65,6 +65,13 @@ const galleryGroups = <String, List<GalleryEntry>>{
       isNew: false,
     ),
     GalleryEntry(
+      "scrollbar",
+      "Scrollbar 滚动条",
+      "Scrollbar 滚动条",
+      "滚动条组件 — 保留原生滚动行为，换一套岛国风的轨道与滑块，支持横向 / 纵向 / 双向",
+      isNew: true,
+    ),
+    GalleryEntry(
       "codeblock",
       "CodeBlock 代码高亮",
       "CodeBlock 代码高亮",

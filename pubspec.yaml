@@ -1,6 +1,6 @@
 name: animal_island_ui
 description: Original island-life Flutter components with scoped themes, accessible controls, and an independent interactive gallery.
-version: 0.1.0
+version: 0.2.0
 environment:
   sdk: '>=3.13.3 <4.0.0'
   flutter: '>=3.47.3'

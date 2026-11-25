@@ -244,6 +244,7 @@ class _GalleryHomeState extends State<GalleryHome>
     "no-data": "海岛空态、搜索无结果、自定义文案与恢复操作",
     "card": "默认/标题两种卡片风格",
     "codeblock": "代码语法高亮组件",
+    "scrollbar": "滚动条的岛国风外观，纵向 / 横向 / 双向，保留平台滚动行为",
     "background": "奶油/深绿波点 + 彩色针糖 + 12 色 Card pattern 底色壁纸",
     "image": "白色衬板图片，支持懒加载 / 点击预览",
     "avatar": "图片/图标/文字头像，圆形方形，头像组叠加与折叠",
@@ -568,7 +569,7 @@ class _GalleryHomeState extends State<GalleryHome>
                     ),
                     const _Feature(
                       IslandGlyph.star,
-                      '43 个组件',
+                      '44 个组件',
                       'Button / Input / Switch / Modal / Form / Table / Title / Tooltip / Typewriter / Card / Collapse / Cursor / Divider / Footer / Icon / Checkbox / Select / DatePicker / TimePicker / Tabs / CodeBlock / Radio / Tag / Notification / Progress / CountUp',
                     ),
                     const _Feature(

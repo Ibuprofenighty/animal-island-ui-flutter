@@ -11,7 +11,7 @@
       "Commercial delivery backed by Windows and Web acceptance evidence"
     ],
     "in_scope": [
-      "43 reference components and every Gallery page/state",
+      "44 reference components and every Gallery page/state",
       "Windows + Web first",
       "Physical template, scoped public APIs and synchronized usage Skill"
     ],
@@ -48,7 +48,7 @@
     {
       "id": "core-components",
       "level": "required",
-      "rationale": "All 43 reference components and parent/child composition."
+      "rationale": "All 44 reference components and parent/child composition."
     },
     {
       "id": "advanced-data",
@@ -73,6 +73,7 @@
     "components/icon/contract.json",
     "components/tag/contract.json",
     "components/cursor/contract.json",
+    "components/scrollbar/contract.json",
     "components/codeblock/contract.json",
     "components/background/contract.json",
     "components/footer/contract.json",
@@ -347,7 +348,7 @@
         "web"
       ],
       "kind": "automated",
-      "requirement": "All 43 reference component contracts: public behavior, controlled rejection, composition and lifecycle regressions",
+      "requirement": "All 44 reference component contracts: public behavior, controlled rejection, composition and lifecycle regressions",
       "threshold": "No failing or skipped tests",
       "scenario_ids": [
         "title.composition",
@@ -362,6 +363,7 @@
         "tag.optional-action",
         "tag.reference-geometry",
         "cursor.composition",
+        "scrollbar.composition",
         "codeblock.composition",
         "background.composition",
         "footer.composition",
@@ -571,6 +573,7 @@
         "tag.reference",
         "tag.reference-geometry",
         "cursor.reference",
+        "scrollbar.reference",
         "codeblock.reference",
         "background.reference",
         "footer.reference",

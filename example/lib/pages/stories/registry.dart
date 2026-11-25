@@ -4,6 +4,7 @@ import 'date_picker_story.dart';
 import 'calendar_story.dart';
 import 'skill_story.dart';
 import 'cursor_story.dart';
+import 'scrollbar_story.dart';
 import 'drawer_story.dart';
 import 'notification_story.dart';
 import 'tooltip_story.dart';
@@ -53,6 +54,7 @@ final storyBuilders = <String, WidgetBuilder>{
   'calendar': (_) => const CalendarStory(),
   'skill': (_) => const SkillStory(),
   'cursor': (_) => const CursorStory(),
+  'scrollbar': (_) => const ScrollbarStory(),
   'drawer': (_) => const DrawerStory(),
   'notification': (_) => const NotificationStory(),
   'tooltip': (_) => const TooltipStory(),

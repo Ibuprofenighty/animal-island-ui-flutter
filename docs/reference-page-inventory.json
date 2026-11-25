@@ -1,5 +1,5 @@
 {
-  "reference_commit": "99b45f475a783f1af1f1809823ee38c37d71420d",
+  "reference_commit": "d161f45a58749234777403dbdbd31222e233e81d",
   "groups": [
     {
       "label": "指南",
@@ -43,6 +43,11 @@
           "id": "cursor",
           "label": "Cursor 光标",
           "isNew": false
+        },
+        {
+          "id": "scrollbar",
+          "label": "Scrollbar 滚动条",
+          "isNew": true
         },
         {
           "id": "codeblock",
@@ -379,6 +384,10 @@
     "cursor": {
       "title": "Cursor 光标",
       "description": "光标组件 — 自定义手指光标，支持自定义尺寸、点击动画"
+    },
+    "scrollbar": {
+      "title": "Scrollbar 滚动条",
+      "description": "滚动条组件 — 保留原生滚动行为，换一套岛国风的轨道与滑块，支持横向 / 纵向 / 双向"
     },
     "footer": {
       "title": "Footer 底部装饰",

@@ -511,7 +511,8 @@ void main() {
     expect(names.first, 'Chart');
     expect(names.indexOf('Calendar'), names.indexOf('TimePicker') + 1);
     expect(names.indexOf('NoData'), names.indexOf('Loading') + 1);
-    expect(names, hasLength(23));
+    expect(names.indexOf('Scrollbar'), names.indexOf('CodeBlock') + 1);
+    expect(names, hasLength(24));
     final github = find.widgetWithText(TextButton, 'GitHub');
     final mark = find.descendant(
       of: github,
@@ -525,25 +526,6 @@ void main() {
     expect(t.getTopLeft(label).dx - t.getTopRight(mark).dx, 4);
     expect(t.getCenter(mark).dy, closeTo(t.getCenter(label).dy - 1, .01));
     expect(find.text('MIT License · Reference Gallery'), findsOneWidget);
-  });
-
-  testWidgets('Skill page opens under a circle Loading for 2s', (t) async {
-    final mounted = t.binding.clock.now();
-    await _showVisualStory(t, '/skill', const Size(1440, 1000));
-    IslandLoading loading() => t.widget(find.byType(IslandLoading));
-    expect(loading().type, IslandLoadingType.circle);
-    expect(loading().active, isTrue);
-    expect(find.text('快速开始').hitTestable(), findsNothing);
-    await t.pump(
-      const Duration(milliseconds: 1999) -
-          t.binding.clock.now().difference(mounted),
-    );
-    expect(loading().active, isTrue);
-    await t.pump(const Duration(milliseconds: 1));
-    expect(loading().active, isFalse);
-    await t.pumpAndSettle();
-    expect(find.text('快速开始').hitTestable(), findsOneWidget);
-    expect(t.takeException(), isNull);
   });
 
   testWidgets(
