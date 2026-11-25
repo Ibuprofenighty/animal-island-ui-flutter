@@ -240,6 +240,48 @@ void main() {
     expect(controller.offset, 400);
   });
 
+  testWidgets('Home and End reach the ends on the Web bindings too, and the '
+      'focus ring shows for keys only', (t) async {
+    final controller = ScrollController();
+    addTearDown(controller.dispose);
+    await t.pumpWidget(
+      MaterialApp(
+        theme: IslandTheme.create(),
+        // The Web's default shortcuts have no Home or End.
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.tab): NextFocusIntent(),
+        },
+        home: Scaffold(
+          body: Align(
+            alignment: Alignment.topLeft,
+            child: IslandScrollbar(
+              width: 240,
+              height: 200,
+              verticalController: controller,
+              child: const SizedBox(height: 600),
+            ),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    final ring = paints..path(color: IslandTokens.light.focus);
+    final area = find.byType(IslandScrollbar);
+    await t.tapAt(const Offset(100, 100));
+    await t.pumpAndSettle();
+    expect(area, isNot(ring));
+    await t.sendKeyEvent(LogicalKeyboardKey.end);
+    await t.pumpAndSettle();
+    expect(controller.offset, 400);
+    expect(area, ring);
+    await t.sendKeyEvent(LogicalKeyboardKey.home);
+    await t.pumpAndSettle();
+    expect(controller.offset, 0);
+    await t.tapAt(const Offset(100, 100));
+    await t.pumpAndSettle();
+    expect(area, isNot(ring));
+  });
+
   testWidgets('a wheel at the end of the area does not move the page', (
     t,
   ) async {

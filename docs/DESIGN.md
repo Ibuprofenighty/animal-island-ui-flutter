@@ -238,6 +238,12 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Form error text / Form 错误文字 | Keep the theme `dangerText`; the reference `#ff4d4f` is 3.3:1 on white, under the 4.5:1 text rule / 保持达标的 dangerText | The [measured colour rule](#measured-color-differences) |
 
 <a id="behaviour-differences-400"></a>
+## Owner decisions / 所有者决定（2026-11-25）
+
+| Item | Decision | Reason |
+|---|---|---|
+| Icon paint roles (228 glyphs added by 1.17.0) / 1.17.0 新增图标的配色角色 | The same rules O1–O5. The 42 roles they left in 23 glyphs (41 inherited interior strokes that stay `currentColor` because fixed ink would fall under 3:1 on the glyph's own dark paint, and the coloured-fill silhouette of `generate`) and the `rope` glyph, whose brown body meets the host at 2.13:1 on dark paper at 24px, keep upstream paint by owner decision of 2026-11-25 (O7) | The same disposition the owner chose for these categories in the 1.14.0 round; kept roles are measured and recorded, not certified / 沿用 O1–O5；规则留下的 23 个图标共 42 项角色与 `rope` 图标按 2026-11-25 的所有者决定保留上游配色（O7），仅记录实测值，未认证 |
+
 ## Deliberate behaviour differences (4.0.0 components) / 有意行为差异（4.0.0 新组件）
 
 | Item | Reference | This library |
@@ -279,7 +285,9 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Scrollbar rendering (upstream main) / Scrollbar 的绘制方式 | Restyles the browser's own scrollbar with `::-webkit-scrollbar` and, in Firefox, `scrollbar-width: thin` with `scrollbar-color` | The framework scrolls and this library paints the thumb and track: the same 8px pill on every platform and browser, always shown while the content overflows, with its thickness taken out of the content. A touch device shows the same thumb instead of the system overlay / 由框架滚动、本库绘制滑块与轨道：各平台与浏览器外观一致，内容溢出时常显并占用自身粗细；触屏设备同样显示该滑块 |
 | Scrollbar `className`, `style` and `ref` (upstream main) / Scrollbar 的 className、style 与 ref | Passed to the scrolling root | No counterpart: `padding` is the space inside the scrolling content, the parent composes the frame, and `verticalController` / `horizontalController` read and write the offsets / 无对应参数：`padding` 为滚动内容内边距，外框由父级组合，偏移经两个控制器读写 |
 | Scrollbar demo wording (upstream main) / Scrollbar 示例文案 | Compares with the browser's native `overflow: auto` scrollbar | Compares with the framework's default scrollbar, and the texts name Flutter terms / 与框架默认滚动条对比，文案改用 Flutter 术语 |
-| Icon set version (upstream main) / 图标集版本 | naive-icons `^1.17.0` (936 glyphs) | The imported 1.14.0 set, 709 glyphs; 228 added, 4 changed and 1 removed upstream glyphs are not imported / 仍为已导入的 1.14.0（709 个）；上游新增 228、修改 4、删除 1 个图标尚未导入 |
+| Scrollbar paging and arrow steps (upstream main) / Scrollbar 翻页与方向键步长 | The browser's: a track click pages by 87.5% of the area and an arrow key moves 40px (measured in Chrome 157) | The framework's: 80% and 50px. Wheel, thumb drag, Home and End end at the same offsets as the reference / 采用框架的步长（80% 与 50px）；滚轮、拖动滑块、Home 与 End 的结果与参考一致 |
+| Scrollbar focus ring (upstream main) / Scrollbar 焦点环 | The browser's `:focus-visible` outline outside the box | The library's focus colour, 2px inside the area so a clipping frame cannot cut it; like the reference it shows for keyboard use only / 使用本库焦点色，画在区域内侧 2px，避免被裁剪外框切掉；与参考一样仅在键盘操作时显示 |
+| Icon names (naive-icons 1.17.0) / 图标名称 | 228 added glyphs have no Chinese label in the demo and show their English name | The same; the stale `BoxingGlove` label, whose glyph upstream removed, is not projected / 相同：新增的 228 个图标显示英文名；上游已移除图标的 `BoxingGlove` 标签不再投影 |
 
 <a id="pending-owner-decisions-400"></a>
 ## Pending owner decisions (4.0.0) / 待所有者裁决（4.0.0）

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 — naive-icons 1.17.0 (2026-11-25)
+
+- **Breaking, icons:** `IslandGlyph.boxingGlove` is removed; upstream replaced the glyph with `boxing` (`IslandGlyph.boxing`).
+- **Icons:** naive-icons 1.17.0: 936 glyphs, 228 added, and archery, skateboard, ski and snowboard show the new artwork. The standing paint rules settle the new roles; 42 roles in 23 added glyphs and the `rope` glyph keep upstream paint by owner decision and are not certified (`docs/icon-paint-roles.json` `import_v1_17.settled`, rule O7).
+- **Scrollbar:** Home and End reach the ends on every platform (the Web had no binding). The focus ring shows for keyboard use only, not after a pointer press.
+- **Gallery:** the Scrollbar page was compared side by side with a local build of the upstream demo: its rows are 16px on a 25px line, as the reference. Added icons show their English name, as the reference does.
+
 ## 0.2.0 — Scrollbar (2026-11-24)
 
 The reference pin moves to upstream main six commits after 4.0.1 (unreleased; `docs/reference-gallery.json`).

@@ -11,7 +11,8 @@ import 'foundation_test.dart' show contrast;
 
 // Membership is every packaged glyph whose SVG source paints a fill; only the
 // glyphs below are held out, each kept with upstream paint by owner rule O7
-// (docs/icon-paint-roles.json import_v1_14.settled gives the measured reason).
+// (docs/icon-paint-roles.json import_v1_14.settled and, for `generate`,
+// import_v1_17.settled give the measured reason). They are not certified.
 // The host contour oracle does not certify interior
 // semantic details: those have separately named actual-backing probes below and
 // in the existing oracle.
@@ -20,8 +21,9 @@ const hostContourHeld = <String, String>{
   'bolt': 'coloured fill silhouette; upstream paint kept by owner rule O7',
   'grip': 'coloured fill silhouette; upstream paint kept by owner rule O7',
   'sparkles': 'coloured fill silhouette; upstream paint kept by owner rule O7',
+  'generate': 'coloured fill silhouette; upstream paint kept by owner rule O7',
 };
-const filledGlyphCount = 659;
+const filledGlyphCount = 875;
 
 // Glyphs per rendered page: below flutter_svg's 100-picture cache, so one
 // frame never evicts pictures it is still drawing.

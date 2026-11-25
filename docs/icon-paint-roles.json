@@ -10879,5 +10879,4571 @@
       }
     },
     "pending": {}
+  },
+  "import_v1_17": {
+    "source": "https://github.com/guokaigdg/naive-icons/tree/55978e414455e69c1997a5c424554699aca7ab34 (v1.17.0, MIT)",
+    "previous_pin": "13103049a6ceee09797bb41d535bc84bb927158a",
+    "previous_import": "import_v1_14: the import that produced the authored baseline. Its settled, repairs and pending entries still describe every glyph listed under kept here.",
+    "authored_baseline": "5357509ad3e5f36e109deb223222007ac67bfc03",
+    "importer": "tool/import_icons.py",
+    "rules": {
+      "R1": "Root drawing ink #2A2A2A -> currentColor. It held for all 163 authored assets of the first round.",
+      "carry": "Authored per-attribute repairs are re-applied to upstream elements whose tag and geometry are unchanged, where upstream left the repaired attribute unchanged. A glyph-wide authored substitution (every element with an explicit paint value got the same new value) is re-applied to redrawn elements of that glyph with that value; those entries carry a reason and need owner confirmation.",
+      "role_carry": "Where upstream kept a glyph's element count and tag sequence, an element at the same position with unchanged paint attributes is the same role on moved geometry: its authored repairs are carried (reason 'role carry'), and when its measured role (stroke kind, host reach) is unchanged too, the previous review settles it (carried.<name>.roles_settled_by_role_carry) and no owner rule is applied to it.",
+      "O1": "colour-on-host: an explicit coloured stroke reaching the host background becomes currentColor (previous round: 28 of 32), unless its colour carries meaning (SEMANTIC_COLOUR).",
+      "O2": "fixed-ink-on-host: an explicit #2A2A2A stroke reaching the host becomes currentColor (previous round: 57 of 64).",
+      "O3": "inherited-interior: an inherited stroke lying only on the glyph's own paint becomes fixed drawing ink #2A2A2A (previous round: 148 of 167), only where #2A2A2A keeps 3:1 on every measured own backing; otherwise it stays currentColor and is held for the owner.",
+      "O4": "fixed-silhouette: a glyph whose contour reaches the host only in fixed paint has its host-reaching contour follow currentColor: O1/O2 on its strokes, and a host-reaching #2A2A2A fill (an ink outline drawn as a filled shape) becomes currentColor.",
+      "O5": "interior-contrast: interior detail under 3:1 on its own backing keeps the upstream paint as decorative interior detail (kept by rule, not certified as necessary).",
+      "O6": "semantic-colour: a SEMANTIC_COLOUR stroke, excluded from O1, keeps its hue and moves along OKLCH lightness (chroma and hue fixed, clipped to sRGB only if needed and recorded) to the first 8-bit colour that reaches 3:1 on light paper #F8F8F0, the least change that passes; it must keep 3:1 on dark paper and dark canvas or the import stops. No fixed colour reaches 3:1 on both the light canvas #88C9A1 and dark paper #243C33, so the light canvas stays under 3:1 (recorded per element with the ratios on the stroke's own backing, which O6 does not change).",
+      "O7": "owner-kept: the roles listed in OWNER_KEPT keep the upstream paint by owner decision (2026-11-18 for the 1.14.0 step, 2026-11-25 for the roles the 1.17.0 step held); each keeps the measurement that stopped O1-O5, and no contrast matrix certifies it.",
+      "semantic_colour": "Excluded from O1 because the colour is the meaning, and settled by O6: cloud-off element 1 (red negation slash); location-off element 2 (red negation slash); mic-off element 3 (red negation slash); phone-off element 1 (red negation slash); video-off element 2 (red negation slash).",
+      "repairs": "Authored repairs on redrawn geometry (REPAIRS in the importer), measured per segment against the own paint under it; each listed under repairs.",
+      "superseded": "Where carried.<name>.repairs_dropped lists a repair, earlier sections of this file describe the previous asset of that glyph, not the current one.",
+      "previous_round": "Audit of the 163 authored assets against their pinned sources: 148 of 167 inherited interior strokes became fixed #2A2A2A, 57 of 64 explicit host-reaching #2A2A2A strokes became currentColor, 28 of 32 coloured host-reaching strokes became currentColor, plus individual recolours and clip splits. The owner adopted this majority practice as O1-O5 on 2026-11-17.",
+      "measurement": "Upstream geometry rasterised at 4 samples per unit; up to 2 samples of host exposure or own backing are edge noise. Held and O7 entries name the measured ratio that stops a rule; host ratios use light paper #F8F8F0, light canvas #88C9A1, dark paper #243C33, dark canvas #172B26."
+    },
+    "counts": {
+      "total": 936,
+      "kept": 704,
+      "carried": 4,
+      "added": 228,
+      "removed": 1,
+      "with_settled": 179,
+      "settled_by_rule": {
+        "O1": 47,
+        "O2": 105,
+        "O3": 56,
+        "O4": 15,
+        "O5": 169,
+        "O6": 0,
+        "O7": 42
+      },
+      "repairs": 0,
+      "with_pending": 0,
+      "pending_elements": 0
+    },
+    "kept": [
+      "acorn",
+      "activity",
+      "air-conditioner",
+      "air-fryer",
+      "airplane",
+      "airport",
+      "alarm-clock",
+      "alert-circle",
+      "alert-triangle",
+      "ambulance",
+      "anchor",
+      "angel",
+      "angry",
+      "anvil",
+      "apartment",
+      "apple",
+      "archive",
+      "arrow-down",
+      "arrow-down-circle",
+      "arrow-down-left",
+      "arrow-down-right",
+      "arrow-jump",
+      "arrow-left",
+      "arrow-left-circle",
+      "arrow-left-right",
+      "arrow-right",
+      "arrow-right-circle",
+      "arrow-up",
+      "arrow-up-circle",
+      "arrow-up-down",
+      "arrow-up-left",
+      "arrow-up-right",
+      "at-sign",
+      "atm",
+      "audio-lines",
+      "audit",
+      "avocado",
+      "axe",
+      "baby-bottle",
+      "backpack",
+      "bacon",
+      "badge-check",
+      "badminton",
+      "balloon",
+      "ban",
+      "bandage",
+      "bank",
+      "banknote",
+      "bar-chart",
+      "barber",
+      "barcode",
+      "barn",
+      "barrier",
+      "baseball",
+      "basket",
+      "basketball",
+      "bat",
+      "bathtub",
+      "battery",
+      "bear",
+      "bed",
+      "bee",
+      "beer",
+      "bell",
+      "bell-off",
+      "bell-ring",
+      "bicycle",
+      "binder",
+      "bird",
+      "blanket",
+      "blender",
+      "bluetooth",
+      "blush",
+      "bold",
+      "bolt",
+      "bone",
+      "book",
+      "book-open",
+      "bookmark",
+      "bowling",
+      "braces",
+      "brain",
+      "bread",
+      "briefcase",
+      "broccoli",
+      "bubble-tea",
+      "bucket",
+      "budget",
+      "building",
+      "bulb",
+      "burger",
+      "bus",
+      "bus-stop",
+      "business-card",
+      "butterfly",
+      "cable-car",
+      "cactus",
+      "cafe",
+      "cake",
+      "calculator",
+      "calendar",
+      "calendar-check",
+      "camera",
+      "candle",
+      "candlestick-chart",
+      "candy",
+      "captions",
+      "car",
+      "cargo-ship",
+      "carrot",
+      "cart",
+      "cash-register",
+      "castle",
+      "cat",
+      "charger",
+      "charging-station",
+      "chat",
+      "check",
+      "check-circle",
+      "check-square",
+      "cherry",
+      "chevron-down",
+      "chevron-left",
+      "chevron-right",
+      "chevron-up",
+      "chicken",
+      "chisel",
+      "chocolate",
+      "chopsticks",
+      "church",
+      "cinema",
+      "circle",
+      "circle-dot",
+      "clamp",
+      "clapperboard",
+      "clipboard",
+      "clipboard-check",
+      "clock",
+      "close",
+      "cloud",
+      "cloud-download",
+      "cloud-lightning",
+      "cloud-off",
+      "cloud-upload",
+      "cocktail",
+      "code",
+      "coffee",
+      "coffee-cup",
+      "coffee-machine",
+      "coin",
+      "command",
+      "compass",
+      "confused",
+      "cookie",
+      "cool",
+      "copy",
+      "cotton-swab",
+      "courthouse",
+      "cow",
+      "cpu",
+      "crab",
+      "crane",
+      "credit-card",
+      "crop",
+      "crosshair",
+      "crown",
+      "crutch",
+      "cry",
+      "cupcake",
+      "currency-dollar",
+      "currency-euro",
+      "currency-pound",
+      "currency-yuan",
+      "cursor",
+      "darts",
+      "database",
+      "defibrillator",
+      "desk",
+      "diamond",
+      "dice",
+      "dishwasher",
+      "dna",
+      "dog",
+      "donation",
+      "donut",
+      "door",
+      "download",
+      "dragonfly",
+      "drill",
+      "drizzle",
+      "drone",
+      "droplet",
+      "duck",
+      "dumbbell",
+      "dumpling",
+      "ear",
+      "eclipse",
+      "edit",
+      "egg",
+      "elephant",
+      "elevator",
+      "ellipsis",
+      "excavator",
+      "exchange",
+      "expand",
+      "external-link",
+      "eye",
+      "eye-chart",
+      "eye-off",
+      "factory",
+      "fan",
+      "fast-forward",
+      "fence",
+      "ferry",
+      "file",
+      "file-audio",
+      "file-cabinet",
+      "file-check",
+      "file-code",
+      "file-image",
+      "file-lock",
+      "file-plus",
+      "file-question",
+      "file-spreadsheet",
+      "file-text",
+      "file-video",
+      "file-x",
+      "files",
+      "film",
+      "filter",
+      "fire-extinguisher",
+      "fire-station",
+      "fire-truck",
+      "first-aid",
+      "fish",
+      "fishing",
+      "flag",
+      "flame",
+      "flashlight",
+      "flask",
+      "flower",
+      "fog",
+      "folder",
+      "folder-check",
+      "folder-minus",
+      "folder-open",
+      "folder-plus",
+      "forest",
+      "fork",
+      "forklift",
+      "forward",
+      "fox",
+      "fried-egg",
+      "fries",
+      "frog",
+      "frown",
+      "gamepad",
+      "gas-station",
+      "gift",
+      "giraffe",
+      "git-branch",
+      "glasses",
+      "globe",
+      "goat",
+      "golf",
+      "google-chrome",
+      "graduation-cap",
+      "grape",
+      "grid",
+      "grip",
+      "gym",
+      "hail",
+      "hair-dryer",
+      "hammer",
+      "hanger",
+      "hard-drive",
+      "hash",
+      "headphones",
+      "hearing-aid",
+      "heart",
+      "heart-eyes",
+      "heart-pulse",
+      "helicopter",
+      "help-circle",
+      "highlighter",
+      "hiking",
+      "hole-punch",
+      "home",
+      "honey",
+      "hospital",
+      "hospital-bed",
+      "hotel",
+      "hotpot",
+      "hourglass",
+      "humidifier",
+      "icecream",
+      "id-card",
+      "image",
+      "inbox",
+      "indent",
+      "info",
+      "invoice",
+      "iron",
+      "italic",
+      "iv-drip",
+      "jackhammer",
+      "jellyfish",
+      "joystick",
+      "juice",
+      "kanban",
+      "kettle",
+      "kettlebell",
+      "key",
+      "keyboard",
+      "kiss",
+      "koala",
+      "label-maker",
+      "ladder",
+      "ladybug",
+      "lamp",
+      "laptop",
+      "laugh",
+      "layers",
+      "layout-dashboard",
+      "leaf",
+      "ledger",
+      "lemon",
+      "level",
+      "library",
+      "lighthouse",
+      "line-chart",
+      "link",
+      "lion",
+      "lipstick",
+      "list",
+      "list-check",
+      "list-plus",
+      "loan",
+      "lobster",
+      "locate",
+      "location",
+      "location-off",
+      "lock",
+      "lock-open",
+      "login",
+      "logout",
+      "lollipop",
+      "luggage",
+      "lungs",
+      "magazine",
+      "magnet",
+      "mail",
+      "mail-check",
+      "mail-lock",
+      "mail-minus",
+      "mail-open",
+      "mail-plus",
+      "mail-question",
+      "map",
+      "map-pin",
+      "marker",
+      "maximize",
+      "medal",
+      "medical-glove",
+      "medical-mask",
+      "medicine-bottle",
+      "megaphone",
+      "menu",
+      "message-circle",
+      "message-square",
+      "message-square-dots",
+      "message-square-plus",
+      "messages",
+      "mic",
+      "mic-off",
+      "microscope",
+      "microwave",
+      "milestone",
+      "milk",
+      "minimize",
+      "minus",
+      "minus-circle",
+      "mirror",
+      "money-mouth",
+      "monitor",
+      "monkey",
+      "moon",
+      "more-vertical",
+      "mosque",
+      "motorcycle",
+      "mountain",
+      "mouse",
+      "move",
+      "museum",
+      "mushroom",
+      "music",
+      "name-tag",
+      "navigation",
+      "nervous",
+      "neutral",
+      "newspaper",
+      "no-data",
+      "no-entry",
+      "noodle",
+      "notebook",
+      "octopus",
+      "office-chair",
+      "outdent",
+      "oven",
+      "owl",
+      "oxygen-tank",
+      "paint-roller",
+      "paintbrush",
+      "palette",
+      "paperclip",
+      "parachute",
+      "park",
+      "parking",
+      "party",
+      "passport",
+      "paste",
+      "pause",
+      "pause-circle",
+      "paw-print",
+      "peacock",
+      "pear",
+      "pedestrian-crossing",
+      "pen-holder",
+      "pencil",
+      "penguin",
+      "percent",
+      "pharmacy",
+      "phone",
+      "phone-incoming",
+      "phone-missed",
+      "phone-off",
+      "phone-outgoing",
+      "pickaxe",
+      "pickup-truck",
+      "picture-in-picture",
+      "pie",
+      "pie-chart",
+      "pig",
+      "piggy-bank",
+      "pill",
+      "pillow",
+      "pin",
+      "pine-tree",
+      "pizza",
+      "plant-pot",
+      "play",
+      "play-circle",
+      "playground",
+      "playing-cards",
+      "playlist",
+      "pleading",
+      "pliers",
+      "plug",
+      "plus",
+      "plus-circle",
+      "podium",
+      "police-station",
+      "popcorn",
+      "port",
+      "post-office",
+      "postcard",
+      "power",
+      "power-bank",
+      "presentation",
+      "printer",
+      "projector",
+      "pulse-oximeter",
+      "qr-code",
+      "quote",
+      "rabbit",
+      "radio",
+      "railway-crossing",
+      "rain",
+      "rainbow",
+      "range-hood",
+      "receipt",
+      "redo",
+      "refresh",
+      "refrigerator",
+      "refund",
+      "relieved",
+      "replace",
+      "reply",
+      "restaurant",
+      "rewind",
+      "rice",
+      "rice-cooker",
+      "rocket",
+      "roll-eyes",
+      "route",
+      "router",
+      "rowing",
+      "rows",
+      "rss",
+      "rubber-stamp",
+      "rugby",
+      "ruler",
+      "running",
+      "sad",
+      "safe",
+      "sailboat",
+      "salad",
+      "sandwich",
+      "satellite",
+      "save",
+      "saw",
+      "scale",
+      "scalpel",
+      "scan",
+      "scanner",
+      "school",
+      "scissors",
+      "scooter",
+      "scoreboard",
+      "screwdriver",
+      "sd-card",
+      "search",
+      "security-camera",
+      "seedling",
+      "segway",
+      "select-all",
+      "send",
+      "server",
+      "settings",
+      "share",
+      "sheep",
+      "shield",
+      "shield-alert",
+      "shield-check",
+      "ship",
+      "shirt",
+      "shopping-bag",
+      "shopping-cart",
+      "shovel",
+      "shower",
+      "shredder",
+      "shuffle",
+      "shush",
+      "shy",
+      "sidebar",
+      "signal",
+      "signpost",
+      "sink",
+      "siren",
+      "skip-back",
+      "skip-forward",
+      "sleepy",
+      "sliders",
+      "smartphone",
+      "smartwatch",
+      "smile",
+      "smirk",
+      "snail",
+      "snake",
+      "snowflake",
+      "soap",
+      "soccer",
+      "sofa",
+      "solar-panel",
+      "sort",
+      "soup",
+      "sparkles",
+      "speaker",
+      "spider",
+      "spinner",
+      "sponge",
+      "spoon",
+      "square",
+      "stadium",
+      "stairs",
+      "stapler",
+      "star",
+      "starfish",
+      "stethoscope",
+      "sticky-note",
+      "stop",
+      "stop-circle",
+      "stop-sign",
+      "stopwatch",
+      "store",
+      "strawberry",
+      "strikethrough",
+      "subway",
+      "suitcase",
+      "sun",
+      "surfboard",
+      "surprised",
+      "swan",
+      "swimming",
+      "swimming-pool",
+      "syringe",
+      "table",
+      "table-tennis",
+      "tablet",
+      "tag",
+      "tape-measure",
+      "tax",
+      "taxi",
+      "tea",
+      "temple",
+      "tennis",
+      "tent",
+      "terminal",
+      "text-align",
+      "thermometer",
+      "thinking",
+      "three-d-printer",
+      "thumbs-down",
+      "thumbs-up",
+      "ticket",
+      "timer",
+      "timesheet",
+      "toaster",
+      "toggle-left",
+      "toggle-right",
+      "toilet",
+      "tomato",
+      "tongue-out",
+      "toolbox",
+      "tooth",
+      "towel",
+      "traffic-cone",
+      "traffic-light",
+      "train",
+      "train-station",
+      "tram",
+      "trash",
+      "treadmill",
+      "tree",
+      "trending-up",
+      "tripod",
+      "trophy",
+      "truck",
+      "tunnel",
+      "turn-left",
+      "turn-right",
+      "tv",
+      "tv-remote",
+      "u-turn",
+      "umbrella",
+      "underline",
+      "undo",
+      "unlink",
+      "upload",
+      "usb",
+      "user",
+      "user-check",
+      "user-circle",
+      "user-minus",
+      "user-plus",
+      "user-x",
+      "users",
+      "utility-knife",
+      "vacuum-cleaner",
+      "van",
+      "video",
+      "video-off",
+      "virus",
+      "voicemail",
+      "volcano",
+      "volleyball",
+      "volume",
+      "volume-1",
+      "volume-2",
+      "volume-x",
+      "vr-headset",
+      "waffle",
+      "walker",
+      "walkie-talkie",
+      "wallet",
+      "warehouse",
+      "washing-machine",
+      "watch",
+      "water-cup",
+      "water-heater",
+      "watering-can",
+      "watermelon",
+      "waypoint",
+      "webcam",
+      "wheelchair",
+      "whisk",
+      "whistle",
+      "whiteboard",
+      "whiteboard-eraser",
+      "wifi",
+      "wifi-off",
+      "wind",
+      "window",
+      "wine",
+      "wink",
+      "worried",
+      "wrench",
+      "x-circle",
+      "x-ray",
+      "yield-sign",
+      "yoga",
+      "zoo",
+      "zoom-in",
+      "zoom-out"
+    ],
+    "carried": {
+      "archery": {
+        "upstream_changed_elements": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "repairs_carried": [
+          {
+            "element": "0",
+            "attribute": "stroke",
+            "upstream": "#8B5E3C",
+            "authored": "currentColor",
+            "reason": "role carry: upstream moved only this element's geometry (same position, tag and paint attributes)"
+          },
+          {
+            "element": "1",
+            "attribute": "stroke",
+            "upstream": "#2A2A2A",
+            "authored": "currentColor",
+            "reason": "role carry: upstream moved only this element's geometry (same position, tag and paint attributes)"
+          },
+          {
+            "element": "2",
+            "attribute": "stroke",
+            "upstream": "#264653",
+            "authored": "currentColor",
+            "reason": "role carry: upstream moved only this element's geometry (same position, tag and paint attributes)"
+          },
+          {
+            "element": "3",
+            "attribute": "stroke",
+            "upstream": "#264653",
+            "authored": "currentColor",
+            "reason": "role carry: upstream moved only this element's geometry (same position, tag and paint attributes)"
+          },
+          {
+            "element": "4",
+            "attribute": "stroke",
+            "upstream": "#E76F51",
+            "authored": "currentColor",
+            "reason": "glyph-wide authored substitution re-applied to a redrawn element"
+          }
+        ],
+        "repairs_dropped": [
+          {
+            "element": "4",
+            "attribute": "stroke",
+            "upstream": "#E76F51",
+            "authored": "currentColor",
+            "reason": "upstream redrew this element"
+          }
+        ],
+        "roles_settled_by_role_carry": [
+          "0",
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "skateboard": {
+        "upstream_changed_elements": [
+          "0",
+          "0/0",
+          "0/1",
+          "0/2",
+          "0/3",
+          "0/4",
+          "0/5",
+          "0/6",
+          "0/7"
+        ],
+        "repairs_carried": [
+          {
+            "element": "0/5",
+            "attribute": "stroke",
+            "upstream": "#2A2A2A",
+            "authored": "currentColor",
+            "reason": "glyph-wide authored substitution re-applied to a redrawn element"
+          }
+        ],
+        "repairs_dropped": [
+          {
+            "element": "0",
+            "attribute": "stroke",
+            "upstream": "#E76F51",
+            "authored": "currentColor",
+            "reason": "upstream redrew this element"
+          },
+          {
+            "element": "1",
+            "attribute": "stroke",
+            "upstream": "#2A2A2A",
+            "authored": "currentColor",
+            "reason": "upstream redrew this element"
+          }
+        ],
+        "roles_settled_by_role_carry": []
+      },
+      "ski": {
+        "upstream_changed_elements": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14"
+        ],
+        "repairs_carried": [
+          {
+            "element": "3",
+            "attribute": "stroke",
+            "upstream": "#264653",
+            "authored": "currentColor",
+            "reason": "glyph-wide authored substitution re-applied to a redrawn element"
+          },
+          {
+            "element": "4",
+            "attribute": "stroke",
+            "upstream": "#264653",
+            "authored": "currentColor",
+            "reason": "glyph-wide authored substitution re-applied to a redrawn element"
+          },
+          {
+            "element": "5",
+            "attribute": "stroke",
+            "upstream": "#E76F51",
+            "authored": "currentColor",
+            "reason": "glyph-wide authored substitution re-applied to a redrawn element"
+          },
+          {
+            "element": "6",
+            "attribute": "stroke",
+            "upstream": "#E76F51",
+            "authored": "currentColor",
+            "reason": "glyph-wide authored substitution re-applied to a redrawn element"
+          },
+          {
+            "element": "7",
+            "attribute": "stroke",
+            "upstream": "#E76F51",
+            "authored": "currentColor",
+            "reason": "glyph-wide authored substitution re-applied to a redrawn element"
+          }
+        ],
+        "repairs_dropped": [
+          {
+            "element": "0",
+            "attribute": "stroke",
+            "upstream": "#264653",
+            "authored": "currentColor",
+            "reason": "upstream redrew this element"
+          },
+          {
+            "element": "1",
+            "attribute": "stroke",
+            "upstream": "#264653",
+            "authored": "currentColor",
+            "reason": "upstream redrew this element"
+          },
+          {
+            "element": "2",
+            "attribute": "stroke",
+            "upstream": "#E76F51",
+            "authored": "currentColor",
+            "reason": "upstream redrew this element"
+          },
+          {
+            "element": "3",
+            "attribute": "stroke",
+            "upstream": "#E76F51",
+            "authored": "currentColor",
+            "reason": "upstream redrew this element"
+          }
+        ],
+        "roles_settled_by_role_carry": []
+      },
+      "snowboard": {
+        "upstream_changed_elements": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        "repairs_carried": [],
+        "repairs_dropped": [],
+        "roles_settled_by_role_carry": []
+      }
+    },
+    "added": [
+      "abacus",
+      "ai-agent",
+      "alien",
+      "align-center",
+      "align-justify",
+      "align-left",
+      "align-right",
+      "amusement-park",
+      "aquarium",
+      "area-chart",
+      "bakery",
+      "bamboo",
+      "banana",
+      "barbell",
+      "bell-pepper",
+      "binder-clip",
+      "binoculars",
+      "bitcoin",
+      "blood-pressure",
+      "bookmark-check",
+      "bookmark-plus",
+      "bookshelf",
+      "boot",
+      "boxing",
+      "bread-maker",
+      "breakpoint",
+      "bridge",
+      "bug",
+      "bulldozer",
+      "cache",
+      "calendar-days",
+      "calendar-plus",
+      "calendar-x",
+      "campfire",
+      "car-wash",
+      "cassette",
+      "cast",
+      "chevrons-down",
+      "chevrons-left",
+      "chevrons-left-right",
+      "chevrons-right",
+      "chevrons-up",
+      "cli",
+      "climbing",
+      "clipboard-list",
+      "cloud-moon",
+      "cloud-rain",
+      "cloud-snow",
+      "cloud-sun",
+      "clover",
+      "clown",
+      "code-review",
+      "coffee-grinder",
+      "coins",
+      "colander",
+      "columns",
+      "component",
+      "config",
+      "container",
+      "context",
+      "corkscrew",
+      "corn",
+      "corner-down-left",
+      "corner-down-right",
+      "corner-up-left",
+      "corner-up-right",
+      "cottage",
+      "coupon",
+      "crayon",
+      "cricket",
+      "crocodile",
+      "cursor-text",
+      "curtain",
+      "cutting-board",
+      "dentist",
+      "dizzy",
+      "domino",
+      "dress",
+      "drum",
+      "earbuds",
+      "eggplant",
+      "feather",
+      "fencing",
+      "fighter-jet",
+      "file-clock",
+      "file-minus",
+      "file-pdf",
+      "file-search",
+      "file-zip",
+      "flag-check",
+      "flag-off",
+      "floppy-disk",
+      "florist",
+      "folder-lock",
+      "folder-x",
+      "food-processor",
+      "fountain-pen",
+      "frying-pan",
+      "gallery",
+      "game-console",
+      "garbage-truck",
+      "gauge",
+      "generate",
+      "ghost",
+      "glucose-meter",
+      "gpu",
+      "grater",
+      "grip-vertical",
+      "guitar",
+      "gymnastic-rings",
+      "hat",
+      "headset",
+      "heart-crack",
+      "helmet",
+      "hot-air-balloon",
+      "hotdog",
+      "ice-skates",
+      "image-off",
+      "image-plus",
+      "images",
+      "ink-bottle",
+      "juicer",
+      "jump-rope",
+      "kebab",
+      "kite",
+      "knife",
+      "lantern",
+      "laundry",
+      "layout-template",
+      "letter-tray",
+      "llm",
+      "localhost",
+      "lunchbox",
+      "macaron",
+      "mail-x",
+      "mango",
+      "map-pin-check",
+      "map-pin-off",
+      "map-pin-plus",
+      "market",
+      "medical-record",
+      "message-circle-plus",
+      "message-square-text",
+      "moon-star",
+      "more-horizontal",
+      "multimeter",
+      "nail",
+      "nerd",
+      "net",
+      "nut-bolt",
+      "orange",
+      "pancake",
+      "panel-bottom",
+      "panel-right",
+      "panel-top",
+      "peach",
+      "perfume",
+      "petri-dish",
+      "plunger",
+      "postage-stamp",
+      "potato",
+      "power-plant",
+      "prompt",
+      "pumpkin",
+      "puzzle",
+      "queue",
+      "radio-tower",
+      "ram",
+      "raspberry",
+      "razor",
+      "robot",
+      "rope",
+      "safety-goggles",
+      "salt-shaker",
+      "sanitizer",
+      "satellite-dish",
+      "scarf",
+      "scatter-chart",
+      "scream",
+      "screen-share",
+      "screw",
+      "service-bell",
+      "sewing-machine",
+      "shield-off",
+      "sick",
+      "signature",
+      "skull",
+      "skyscraper",
+      "sliders-vertical",
+      "snow-globe",
+      "sock",
+      "soda",
+      "sort-asc",
+      "sort-desc",
+      "space-heater",
+      "space-shuttle",
+      "spatula",
+      "squid",
+      "stamp-pad",
+      "star-eyes",
+      "star-half",
+      "steak",
+      "stock-ticker",
+      "sunflower",
+      "sunglasses",
+      "sunrise",
+      "sunset",
+      "tags",
+      "telescope",
+      "test-tube",
+      "thermos",
+      "tissue-box",
+      "trowel",
+      "trumpet",
+      "turtle",
+      "type",
+      "ufo",
+      "university",
+      "vaccine-vial",
+      "video-plus",
+      "vinyl",
+      "voice-prompt",
+      "water-tower",
+      "whale",
+      "wheat",
+      "windmill",
+      "yacht",
+      "yoyo"
+    ],
+    "removed": [
+      "boxing-glove"
+    ],
+    "settled": {
+      "abacus": [
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #8B5E3C 1.80:1, #FAEDCD 2.66:1"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #8B5E3C 1.68:1, #FAEDCD 2.86:1"
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #FAEDCD 1.44:1"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #8B5E3C 1.80:1, #FAEDCD 2.66:1"
+        },
+        {
+          "element": "8",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #8B5E3C 1.68:1, #FAEDCD 2.86:1"
+        },
+        {
+          "element": "9",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #FAEDCD 1.44:1"
+        }
+      ],
+      "align-center": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0"
+        }
+      ],
+      "align-justify": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0"
+        }
+      ],
+      "align-left": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0"
+        }
+      ],
+      "align-right": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0"
+        }
+      ],
+      "amusement-park": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "11",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "12",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "aquarium": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #2A9D8F 1.99:1, #FAEDCD 1.44:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #588157 on own #2A9D8F 1.35:1, #E9C46A 2.68:1"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #588157 on own #2A9D8F 1.35:1, #E9C46A 2.68:1"
+        },
+        {
+          "element": "6",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 4.32:1 on own #2A9D8F, 3.21:1 on own #588157; stays currentColor"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "8",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "9",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "area-chart": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "bakery": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "8",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "9",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "banana": [
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#8B5E3C",
+          "after": "currentColor"
+        }
+      ],
+      "barbell": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "bell-pepper": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E9C46A 1.44:1"
+        }
+      ],
+      "binder-clip": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "binoculars": [
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "blood-pressure": [
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "5",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        }
+      ],
+      "bookshelf": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "6",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "7",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "8",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "9",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "10",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        }
+      ],
+      "boot": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A2A2A on own #8B5E3C 2.57:1"
+        }
+      ],
+      "boxing": [
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "bread-maker": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        }
+      ],
+      "breakpoint": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "bridge": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        }
+      ],
+      "bug": [
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "5",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "cache": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1, #E9C46A 1.44:1"
+        }
+      ],
+      "calendar-days": [
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "calendar-plus": [
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "calendar-x": [
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #FAEDCD 2.66:1"
+        }
+      ],
+      "campfire": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E76F51": 4.64
+          }
+        }
+      ],
+      "car-wash": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "cassette": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "cast": [
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        }
+      ],
+      "chevrons-down": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 1"
+        }
+      ],
+      "chevrons-left": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 1"
+        }
+      ],
+      "chevrons-left-right": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 1"
+        }
+      ],
+      "chevrons-right": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 1"
+        }
+      ],
+      "chevrons-up": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 1"
+        }
+      ],
+      "clipboard-list": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "cloud-snow": [
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        }
+      ],
+      "cloud-sun": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "clover": [
+        {
+          "element": "0",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#588157",
+          "after": "currentColor"
+        }
+      ],
+      "clown": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FFFFFF": 14.35
+          }
+        }
+      ],
+      "code-review": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        }
+      ],
+      "coffee-grinder": [
+        {
+          "element": "8",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "coins": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #FAEDCD 1.44:1"
+        }
+      ],
+      "colander": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "config": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "container": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#2A9D8F": 4.32
+          }
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #2A9D8F 2.86:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "corkscrew": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "corn": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "8",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "9",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "10",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "11",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "12",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        },
+        {
+          "element": "13",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#8B5E3C",
+          "after": "currentColor"
+        },
+        {
+          "element": "14",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#8B5E3C",
+          "after": "currentColor"
+        },
+        {
+          "element": "15",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#8B5E3C",
+          "after": "currentColor"
+        }
+      ],
+      "corner-down-left": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "corner-down-right": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "corner-up-left": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "corner-up-right": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "cottage": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 12.34:1 on own #FAEDCD; stays currentColor"
+        }
+      ],
+      "coupon": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #F4A6A4 1.60:1"
+        }
+      ],
+      "crayon": [
+        {
+          "element": "0/1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "crocodile": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "cursor-text": [
+        {
+          "element": "0",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0"
+        }
+      ],
+      "cutting-board": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C; stays currentColor"
+        },
+        {
+          "element": "2/0",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C; stays currentColor"
+        },
+        {
+          "element": "2/1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 2.57:1 on own #8B5E3C; stays currentColor"
+        }
+      ],
+      "dentist": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#2A9D8F": 4.32
+          }
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #FAEDCD 1.44:1"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #FAEDCD 1.44:1"
+        }
+      ],
+      "domino": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FFFFFF": 14.35
+          }
+        }
+      ],
+      "dress": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#F4A6A4": 7.41
+          }
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E9C46A on own #F4A6A4 1.16:1"
+        }
+      ],
+      "drum": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E9C46A on own #E76F51 1.85:1"
+        }
+      ],
+      "earbuds": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "eggplant": [
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#588157",
+          "after": "currentColor"
+        }
+      ],
+      "feather": [
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "fencing": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "5",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #264653 on own #2A2A2A 1.42:1"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #264653 on own #2A2A2A 1.42:1"
+        }
+      ],
+      "fighter-jet": [
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "file-clock": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        }
+      ],
+      "file-minus": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "file-pdf": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "file-search": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        }
+      ],
+      "file-zip": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        }
+      ],
+      "flag-check": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "flag-off": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "floppy-disk": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "florist": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "6",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        }
+      ],
+      "folder-lock": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E9C46A": 8.59
+          }
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #264653 on own #2A2A2A 1.42:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "folder-x": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #E9C46A 1.85:1"
+        }
+      ],
+      "food-processor": [
+        {
+          "element": "5",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        },
+        {
+          "element": "9",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "frying-pan": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FFFFFF on own #FAEDCD 1.16:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #FFFFFF 1.67:1"
+        },
+        {
+          "element": "4",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #8B5E3C on own #2A2A2A 2.57:1"
+        }
+      ],
+      "gallery": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        }
+      ],
+      "garbage-truck": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "gauge": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#E76F51",
+          "after": "currentColor"
+        }
+      ],
+      "generate": [
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
+        }
+      ],
+      "glucose-meter": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "gpu": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "gymnastic-rings": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#8B5E3C",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#E76F51",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#E76F51",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 1, 2, 3"
+        }
+      ],
+      "hat": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #2A9D8F 1.99:1"
+        }
+      ],
+      "headset": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "helmet": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "hot-air-balloon": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #E76F51 1.85:1"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "hotdog": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "ice-skates": [
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "image-off": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        }
+      ],
+      "image-plus": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #FAEDCD 1.44:1"
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "images": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "juicer": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #FAEDCD 1.44:1"
+        },
+        {
+          "element": "5",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        }
+      ],
+      "jump-rope": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "kebab": [
+        {
+          "element": "0/0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "kite": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "lantern": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E9C46A on own #E76F51 1.85:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E9C46A on own #E76F51 1.85:1"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E9C46A on own #E76F51 1.85:1"
+        }
+      ],
+      "laundry": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "8",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "lunchbox": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#2A9D8F": 4.32,
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "macaron": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FFFFFF on own #F4A6A4 1.94:1"
+        }
+      ],
+      "mango": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E9C46A 1.44:1"
+        }
+      ],
+      "map-pin-check": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E76F51": 4.64
+          }
+        }
+      ],
+      "map-pin-off": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "map-pin-plus": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E76F51": 4.64
+          }
+        }
+      ],
+      "market": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#8B5E3C",
+          "after": "currentColor"
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #588157 on own #E9C46A 2.68:1"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #588157 on own #E9C46A 2.68:1"
+        }
+      ],
+      "medical-record": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "message-circle-plus": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "multimeter": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #E9C46A 1.85:1"
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A2A2A on own #264653 1.42:1"
+        }
+      ],
+      "nerd": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E9C46A": 8.59
+          }
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E9C46A": 8.59
+          }
+        },
+        {
+          "element": "8",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E9C46A": 8.59
+          }
+        }
+      ],
+      "net": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "nut-bolt": [
+        {
+          "element": "0",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#E9C46A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        }
+      ],
+      "orange": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "pancake": [
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E9C46A 1.44:1"
+        }
+      ],
+      "panel-bottom": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "panel-right": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "panel-top": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "peach": [
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#8B5E3C",
+          "after": "currentColor"
+        }
+      ],
+      "perfume": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {}
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #F4A6A4 1.67:1"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        }
+      ],
+      "petri-dish": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        }
+      ],
+      "plunger": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "postage-stamp": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#2A9D8F": 4.32,
+            "#FAEDCD": 12.34
+          }
+        }
+      ],
+      "potato": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A2A2A on own #8B5E3C 2.57:1"
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A2A2A on own #8B5E3C 2.57:1"
+        }
+      ],
+      "prompt": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        }
+      ],
+      "pumpkin": [
+        {
+          "element": "4",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#588157",
+          "after": "currentColor"
+        }
+      ],
+      "queue": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FFFFFF on own #E9C46A 1.67:1"
+        }
+      ],
+      "radio-tower": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 1, 2, 3, 4"
+        }
+      ],
+      "ram": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "raspberry": [
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#588157",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "8",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "9",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "10",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        },
+        {
+          "element": "11",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #F4A6A4 1.60:1"
+        }
+      ],
+      "razor": [
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "robot": [
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "8",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#2A9D8F": 4.32
+          }
+        }
+      ],
+      "rope": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #8B5E3C on own #2A2A2A 2.57:1"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #8B5E3C on own #2A2A2A 2.57:1"
+        },
+        {
+          "element": "4",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #8B5E3C on own #2A2A2A 2.57:1"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 2, 4"
+        }
+      ],
+      "safety-goggles": [
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "salt-shaker": [
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FFFFFF on own #FAEDCD 1.16:1"
+        }
+      ],
+      "sanitizer": [
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#2A9D8F": 4.32
+          }
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "satellite-dish": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        },
+        {
+          "element": "4",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        },
+        {
+          "element": "5",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "6",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "scarf": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "scatter-chart": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0"
+        }
+      ],
+      "screen-share": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "4",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "screw": [
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        }
+      ],
+      "service-bell": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FFFFFF on own #E9C46A 1.67:1"
+        }
+      ],
+      "sewing-machine": [
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "5",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "6",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#F4A6A4",
+          "after": "currentColor"
+        }
+      ],
+      "signature": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #264653 on own #2A2A2A 1.42:1"
+        },
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O4",
+          "after": "host contour follows currentColor through 0, 1"
+        }
+      ],
+      "skateboard": [
+        {
+          "element": "0/1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #8B5E3C on own #264653 1.81:1"
+        },
+        {
+          "element": "0/5",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {}
+        }
+      ],
+      "ski": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #8B5E3C on own #2A9D8F 1.68:1"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 4.32:1 on own #2A9D8F, 2.57:1 on own #8B5E3C; stays currentColor"
+        },
+        {
+          "element": "7",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {}
+        },
+        {
+          "element": "12",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#2A9D8F": 4.32
+          }
+        },
+        {
+          "element": "13",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 4.32:1 on own #2A9D8F, 2.57:1 on own #8B5E3C; stays currentColor"
+        },
+        {
+          "element": "14",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#8B5E3C",
+          "after": "currentColor"
+        }
+      ],
+      "skyscraper": [
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "sliders-vertical": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "snow-globe": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 14.35:1 on own #FFFFFF; stays currentColor"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FFFFFF": 14.35
+          }
+        }
+      ],
+      "snowboard": [
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#FAEDCD",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #2A9D8F on own #F4A6A4 1.72:1"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "8",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        }
+      ],
+      "sock": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E9C46A": 8.59
+          }
+        }
+      ],
+      "soda": [
+        {
+          "element": "0",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#E76F51",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "6",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "sort-asc": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        }
+      ],
+      "sort-desc": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#E76F51",
+          "after": "currentColor"
+        }
+      ],
+      "space-heater": [
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1"
+        }
+      ],
+      "squid": [
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "5",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "12",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #E76F51 2.66:1, #F4A6A4 1.67:1, #FFFFFF 1.16:1"
+        },
+        {
+          "element": "13",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #F4A6A4 on own #E76F51 1.60:1, #FFFFFF 1.94:1"
+        },
+        {
+          "element": "14",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #F4A6A4 on own #E76F51 1.60:1, #FFFFFF 1.94:1"
+        }
+      ],
+      "star-eyes": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #E9C46A 1.85:1"
+        },
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E76F51 on own #E9C46A 1.85:1"
+        }
+      ],
+      "star-half": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FFFFFF": 14.35
+          }
+        }
+      ],
+      "steak": [
+        {
+          "element": "2",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #F4A6A4 on own #8B5E3C 2.88:1, #FAEDCD 1.67:1"
+        }
+      ],
+      "sunglasses": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "sunrise": [
+        {
+          "element": "0",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#264653",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#E76F51",
+          "after": "currentColor"
+        },
+        {
+          "element": "3",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#2A9D8F",
+          "after": "currentColor"
+        }
+      ],
+      "sunset": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "2",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "tags": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #F4A6A4 1.67:1"
+        }
+      ],
+      "telescope": [
+        {
+          "element": "0",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        },
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #264653 on own #2A2A2A 1.42:1"
+        }
+      ],
+      "test-tube": [
+        {
+          "element": "0/1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "thermos": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {}
+        },
+        {
+          "element": "4",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "tissue-box": [
+        {
+          "element": "3",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "ufo": [
+        {
+          "element": "5",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "university": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "6",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "7",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #E76F51 1.85:1"
+        },
+        {
+          "element": "8",
+          "category": "fixed-ink-on-host",
+          "rule": "O2",
+          "before": "#2A2A2A",
+          "after": "currentColor"
+        }
+      ],
+      "vaccine-vial": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "vinyl": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #8B5E3C on own #264653 1.81:1"
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
+      "water-tower": [
+        {
+          "element": "5",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #FAEDCD on own #2A9D8F 2.86:1"
+        }
+      ],
+      "whale": [
+        {
+          "element": "1",
+          "category": "colour-on-host",
+          "rule": "O1",
+          "before": "#FAEDCD",
+          "after": "currentColor"
+        }
+      ],
+      "wheat": [
+        {
+          "element": "8",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #588157 2.68:1"
+        },
+        {
+          "element": "9",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "fill #E9C46A on own #2A9D8F 1.99:1"
+        }
+      ],
+      "windmill": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#FAEDCD": 12.34
+          }
+        },
+        {
+          "element": "6",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#E76F51": 4.64
+          }
+        }
+      ],
+      "yacht": [
+        {
+          "element": "1",
+          "category": "interior-contrast",
+          "rule": "O5",
+          "kept": "stroke #E76F51 on own #FAEDCD 2.66:1"
+        }
+      ],
+      "yoyo": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O3",
+          "before": "currentColor (R1)",
+          "after": "#2A2A2A",
+          "ratios": {
+            "#2A9D8F": 4.32
+          }
+        }
+      ]
+    },
+    "repairs": {},
+    "pending": {}
   }
 }

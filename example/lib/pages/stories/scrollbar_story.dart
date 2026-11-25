@@ -19,6 +19,14 @@ const _islandItems = [
   '椰林 —— 风穿过叶子的声音',
 ];
 
+/// Line box of the 16px demo rows, observed at 25px in the reference built
+/// from upstream main (a 44px row, a 67px horizontal area).
+const _rowStrut = StrutStyle(
+  fontSize: 16,
+  height: 25 / 16,
+  forceStrutHeight: true,
+);
+
 /// Reference ScrollbarDemo (upstream main after 4.0.1, not yet on the live
 /// site): four sections, each followed by its code block, then the API table.
 class ScrollbarStory extends StatelessWidget {
@@ -31,6 +39,12 @@ class ScrollbarStory extends StatelessWidget {
     padding: const EdgeInsets.only(top: 8, bottom: 20),
     child: Text.rich(
       TextSpan(children: spans),
+      // Every reference line is 20px, with or without a code span.
+      strutStyle: const StrutStyle(
+        fontSize: 13,
+        height: 20 / 13,
+        forceStrutHeight: true,
+      ),
       style: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w400,
@@ -48,7 +62,8 @@ class ScrollbarStory extends StatelessWidget {
     ),
   );
 
-  /// Reference `rowStyle`: 9px above and below, a dashed rule underneath.
+  /// Reference `rowStyle`: 9px above and below, a dashed rule underneath; the
+  /// text inherits the page's 16px and `#794f27`. Rows are 44px high.
   Widget rows() => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
@@ -59,8 +74,9 @@ class ScrollbarStory extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0, 9, 0, 10),
             child: Text(
               item,
+              strutStyle: _rowStrut,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
                 height: kTextHeightNone,
                 color: GalleryPalette.demoStrongInk,
@@ -234,10 +250,11 @@ class ScrollbarStory extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 18),
                           child: Text(
                             item,
+                            strutStyle: _rowStrut,
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               height: kTextHeightNone,
-                              color: GalleryPalette.storyInk,
+                              color: GalleryPalette.demoStrongInk,
                             ),
                           ),
                         ),

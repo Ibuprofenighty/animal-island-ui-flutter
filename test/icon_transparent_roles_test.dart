@@ -10,10 +10,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'foundation_test.dart' show contrast;
 
 // Membership is every packaged glyph whose SVG source paints no internal fill
-// (50 at naive-icons v1.14.0). Every geometric stroke is necessary to
+// (61 at naive-icons v1.17.0). Every geometric stroke is necessary to
 // distinguish the glyph except spinner's pale decorative track. Filled
 // multicolor assets require their own adjacency audit and are excluded.
-const transparentGlyphCount = 50;
+const transparentGlyphCount = 61;
+
+// Kept with upstream paint by owner decision (2026-11-25) and not certified
+// here, each with its measurement.
+const transparentHeld = <String, String>{
+  'rope':
+      'added by the 1.17.0 import: the body is a #8B5E3C stroke over a contour '
+      'that shows 1.75 units a side, under one pixel at 24px, so the body '
+      'meets the host: 2.13:1 on dark paper and under 3:1 on the eight '
+      'coloured cards; no importer rule covers a stroke-painted body',
+};
 
 void main() {
   testWidgets(
@@ -35,6 +45,13 @@ void main() {
         transparentGlyphCount,
         reason: 'Membership is bound to actual packaged SVG source',
       );
+      expect(
+        transparentHeld.keys.toSet().difference(
+          sources.keys.map((g) => g.assetName).toSet(),
+        ),
+        isEmpty,
+      );
+      sources.removeWhere((g, _) => transparentHeld.containsKey(g.assetName));
       for (final MapEntry(key: glyph, value: svg) in sources.entries) {
         final strokes = <String>{};
         for (final node in RegExp(
@@ -193,7 +210,7 @@ void main() {
             .map((v) => '${v['glyph']}/${v['context']}/${v['size']}')
             .toSet()
             .length,
-        transparentGlyphCount * 32,
+        (transparentGlyphCount - transparentHeld.length) * 32,
       );
       expect(
         failures,
