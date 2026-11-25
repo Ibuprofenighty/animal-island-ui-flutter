@@ -1,5 +1,5 @@
 // Reference display labels, MIT; not runtime component behavior.
-const iconLabels = <String, String>{
+const iconLabels = <String,String>{
   "acorn": "橡果",
   "activity": "心电",
   "airConditioner": "空调",
@@ -81,7 +81,6 @@ const iconLabels = <String, String>{
   "bookOpen": "打开书本",
   "bookmark": "书签",
   "bowling": "保龄球",
-  "boxingGlove": "拳击手套",
   "braces": "花括号",
   "brain": "大脑",
   "bread": "面包",

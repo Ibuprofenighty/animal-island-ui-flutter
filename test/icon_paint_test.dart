@@ -9,12 +9,12 @@ import 'palette_contrast_test.dart' show host, readable;
 
 void main() {
   test(
-    'all709 public glyphs bijectively map to packaged SVGs and decode strictly',
+    'all936 public glyphs bijectively map to packaged SVGs and decode strictly',
     () async {
       TestWidgetsFlutterBinding.ensureInitialized();
       final names = IslandGlyph.values.map((g) => g.assetName).toSet();
-      expect(IslandGlyph.values.length, 709);
-      expect(names.length, 709);
+      expect(IslandGlyph.values.length, 936);
+      expect(names.length, 936);
       final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
       final actual = manifest
           .listAssets()

@@ -15,11 +15,13 @@ Per glyph exactly one disposition:
            unchanged, plus glyph-wide authored colour substitutions on redrawn elements.
            Other repairs on redrawn elements are dropped and listed.
 - added:   new upstream glyph: upstream PIN source with rule R1.
+A glyph upstream removed at PIN is removed here too and listed under `removed`.
 
 R1 (root drawing ink #2A2A2A -> currentColor) is the only paint rule that held for every
 authored asset. Other paint changes come only from the owner rules O1-O7 and REPAIRS below;
 the importer measures upstream geometry on a raster and records each element role no rule
-settles in docs/icon-paint-roles.json import_v1_14.pending (a held role keeps upstream paint).
+settles in docs/icon-paint-roles.json <SECTION>.pending (a held role keeps upstream paint).
+Each import step keeps its own section; earlier sections describe the glyphs this step kept.
 """
 from __future__ import annotations
 
@@ -36,10 +38,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM = ROOT / "scratch/naive-icons"
-OLD_PIN = "edcc6ddb6aa62b8dcb80b7607a4df6a24fe32559"
-PIN = "13103049a6ceee09797bb41d535bc84bb927158a"
-PIN_TAG = "v1.14.0"
-BASELINE = "ec05573efde4e454c67fbdf09a619d6984d30c0e"
+OLD_PIN = "13103049a6ceee09797bb41d535bc84bb927158a"
+PIN = "55978e414455e69c1997a5c424554699aca7ab34"
+PIN_TAG = "v1.17.0"
+BASELINE = "5357509ad3e5f36e109deb223222007ac67bfc03"
+SECTION = "import_v1_17"
+PREVIOUS_SECTION = "import_v1_14"
 SOURCE_URL = "https://github.com/guokaigdg/naive-icons/blob/{commit}/svg/{name}.svg"
 ASSETS = ROOT / "assets/icons"
 NAMES_DART = ROOT / "lib/src/foundation/icon_names.dart"
@@ -159,6 +163,8 @@ def arc_points(p0, rx, ry, phi, large, sweep, p1):
 def path_subpaths(d: str):
     tokens = re.findall(r"[A-Za-z]|-?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?", d)
     subs, cur, start, pos, i, cmd = [], None, (0.0, 0.0), (0.0, 0.0), 0, None
+    # Last curve's family and final control point, for the smooth commands S and T.
+    smooth: tuple[str, tuple[float, float]] | None = None
 
     def num():
         nonlocal i
@@ -170,8 +176,9 @@ def path_subpaths(d: str):
         if re.fullmatch(r"[A-Za-z]", tokens[i]):
             cmd = tokens[i]
             i += 1
-        if cmd not in "MLHVCQAZ":
+        if cmd not in "MLHVCSQTAZ":
             raise SystemExit(f"Unsupported path command {cmd}")
+        previous, smooth = smooth, None
         if cmd == "M":
             pos = start = (num(), num())
             cur = [pos]
@@ -186,8 +193,15 @@ def path_subpaths(d: str):
         elif cmd == "V":
             pos = (pos[0], num())
             cur.append(pos)
-        elif cmd in "CQ":
-            pts = [(num(), num()) for _ in range(3 if cmd == "C" else 2)]
+        elif cmd in "CSQT":
+            family = "C" if cmd in "CS" else "Q"
+            pts = [(num(), num()) for _ in range({"C": 3, "S": 2, "Q": 2, "T": 1}[cmd])]
+            if cmd in "ST":
+                # The first control point mirrors the previous curve's last one, or is the
+                # current point when the previous command was not a curve of this family.
+                last = previous[1] if previous and previous[0] == family else pos
+                pts.insert(0, (2 * pos[0] - last[0], 2 * pos[1] - last[1]))
+            smooth = (family, pts[-2])
             ctrl = [pos] + pts
             for k in range(1, 17):
                 t = k / 16
@@ -912,10 +926,13 @@ def build():
     listing = project("ls-tree", "--name-only", BASELINE, "assets/icons/").split()
     authored = {Path(p).stem: project("show", f"{BASELINE}:{p}") for p in listing if p.endswith(".svg")}
     names = upstream_names(PIN)
-    if set(authored) - set(names) or set(authored) - set(upstream_names(OLD_PIN)):
-        raise SystemExit("An authored glyph is missing upstream")
+    if set(authored) - set(upstream_names(OLD_PIN)):
+        raise SystemExit("An authored glyph is missing upstream at the previous pin")
     outputs: dict[str, str] = {}
-    record = {"kept": [], "carried": {}, "added": [], "settled": {}, "repairs": {}, "pending": {}}
+    record = {"kept": [], "carried": {}, "added": [], "removed": sorted(set(authored) - set(names)),
+              "settled": {}, "repairs": {}, "pending": {}}
+    # Element scope the owner rules saw per processed glyph (None: every element).
+    scopes: dict[str, set[str] | None] = {}
     for name in names:
         new_up = upstream_svg(PIN, name)
         if name not in authored:
@@ -933,6 +950,7 @@ def build():
                                        "roles_settled_by_role_carry": sorted(role_settled, key=natural)}
             base = edit(new_up, edits)
             scope = None if dropped and not kept else fresh - role_settled
+        scopes[name] = scope
         rule_edits, settled, held = settle(name, base, scope)
         ruled = edit(base, rule_edits)
         output = root_to_current(ruled)
@@ -954,8 +972,10 @@ def build():
             record["pending"][name] = held
     for rule, listed in (("O6", SEMANTIC_COLOUR), ("O7", OWNER_KEPT)):
         applied = {(n, s["element"]) for n, v in record["settled"].items() for s in v if s["rule"] == rule}
-        if set(listed) - applied:
-            raise SystemExit(f"{rule} names roles that no longer arise: {sorted(set(listed) - applied)}")
+        # A kept glyph, or an element outside the scope, keeps the previous import's settlement.
+        due = {(n, e) for n, e in listed if n in scopes and (scopes[n] is None or e in scopes[n])}
+        if due - applied:
+            raise SystemExit(f"{rule} names roles that no longer arise: {sorted(due - applied)}")
     return names, outputs, record
 
 
@@ -970,15 +990,15 @@ def transformation(name: str, record: dict) -> str:
     if rules:
         text += (" Owner rules " + "/".join(rules) + " (" + ", ".join(sorted({RULE_DATES[r] for r in rules}))
                  + ") set the stroke or fill paint of the elements listed in docs/icon-paint-roles.json "
-                 "import_v1_14.settled.")
+                 + SECTION + ".settled.")
     if any(s["rule"] == "O7" for s in record["settled"].get(name, [])):
         text += (f" Owner rule O7 ({RULE_DATES['O7']}) keeps the upstream paint of the element roles it lists "
-                 "in docs/icon-paint-roles.json import_v1_14.settled.")
+                 "in docs/icon-paint-roles.json " + SECTION + ".settled.")
     if name in record["repairs"]:
-        text += " Authored clip split of the mark: docs/icon-paint-roles.json import_v1_14.repairs."
+        text += " Authored clip split of the mark: docs/icon-paint-roles.json " + SECTION + ".repairs."
     text += " Other paint and all geometry are the upstream bytes."
     if name in record["pending"]:
-        text += " Held element roles: docs/icon-paint-roles.json import_v1_14.pending."
+        text += " Held element roles: docs/icon-paint-roles.json " + SECTION + ".pending."
     return text
 
 
@@ -1005,13 +1025,15 @@ def main() -> int:
     write(NAMES_DART, names_dart(names), args.check, changed)
 
     roles = json.loads(ROLES.read_text(encoding="utf-8"))
-    roles["import_v1_14"] = {
+    roles[SECTION] = {
         "source": f"https://github.com/guokaigdg/naive-icons/tree/{PIN} ({PIN_TAG}, MIT)",
         "previous_pin": OLD_PIN,
+        "previous_import": PREVIOUS_SECTION + ": the import that produced the authored baseline. Its settled, "
+                           "repairs and pending entries still describe every glyph listed under kept here.",
         "authored_baseline": BASELINE,
         "importer": "tool/import_icons.py",
         "rules": {
-            "R1": "Root drawing ink #2A2A2A -> currentColor. It held for all 163 authored assets.",
+            "R1": "Root drawing ink #2A2A2A -> currentColor. It held for all 163 authored assets of the first round.",
             "carry": "Authored per-attribute repairs are re-applied to upstream elements whose tag and geometry "
                      "are unchanged, where upstream left the repaired attribute unchanged. A glyph-wide authored "
                      "substitution (every element with an explicit paint value got the same new value) is "
@@ -1039,7 +1061,7 @@ def main() -> int:
                            "ratio that stops a rule; host ratios use " + ", ".join(f"{h} {c}" for h, c in HOSTS.items()) + ".",
         },
         "counts": {"total": len(names), "kept": len(record["kept"]), "carried": len(record["carried"]),
-                   "added": len(record["added"]), "with_settled": len(record["settled"]),
+                   "added": len(record["added"]), "removed": len(record["removed"]), "with_settled": len(record["settled"]),
                    "settled_by_rule": {rule: sum(1 for v in record["settled"].values() for s in v
                                                  if s["rule"] == rule) for rule in sorted(OWNER_RULES)},
                    "repairs": len(record["repairs"]), "with_pending": len(record["pending"]),
@@ -1047,6 +1069,7 @@ def main() -> int:
         "kept": record["kept"],
         "carried": record["carried"],
         "added": record["added"],
+        "removed": record["removed"],
         "settled": record["settled"],
         "repairs": record["repairs"],
         "pending": record["pending"],
@@ -1075,7 +1098,7 @@ def main() -> int:
 
     for line in changed:
         print(("would change " if args.check else "wrote ") + line)
-    print(json.dumps(roles["import_v1_14"]["counts"]))
+    print(json.dumps(roles[SECTION]["counts"]))
     return 1 if args.check and changed else 0
 
 

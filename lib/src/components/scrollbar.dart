@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../foundation/recipes/scrollbar.dart';
 import '../foundation/theme.dart';
@@ -99,6 +100,9 @@ class _IslandScrollbarState extends State<IslandScrollbar> {
   bool verticalKept = false, horizontalKept = false;
   bool verticalDropped = false, horizontalDropped = false;
   bool focusRing = false;
+  // Focus taken by a pointer shows no ring until a key is used, as
+  // `:focus-visible` on the reference's scrolling root.
+  bool pointerFocus = false;
 
   bool get vertical => widget.direction != IslandScrollbarDirection.horizontal;
   bool get horizontal => widget.direction != IslandScrollbarDirection.vertical;
@@ -112,7 +116,6 @@ class _IslandScrollbarState extends State<IslandScrollbar> {
   void initState() {
     super.initState();
     focus.addListener(focusChanged);
-    FocusManager.instance.addHighlightModeListener(highlightChanged);
   }
 
   @override
@@ -126,20 +129,37 @@ class _IslandScrollbarState extends State<IslandScrollbar> {
 
   @override
   void dispose() {
-    FocusManager.instance.removeHighlightModeListener(highlightChanged);
     focus.dispose();
     ownedVertical?.dispose();
     ownedHorizontal?.dispose();
     super.dispose();
   }
 
-  void highlightChanged(FocusHighlightMode _) => focusChanged();
-
   void focusChanged() {
-    final ring =
-        focus.hasPrimaryFocus &&
-        FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
+    if (!focus.hasFocus) pointerFocus = false;
+    final ring = focus.hasPrimaryFocus && !pointerFocus;
     if (ring != focusRing && mounted) setState(() => focusRing = ring);
+  }
+
+  KeyEventResult keyUsed(FocusNode node, KeyEvent event) {
+    if (pointerFocus) {
+      pointerFocus = false;
+      focusChanged();
+    }
+    return KeyEventResult.ignored;
+  }
+
+  /// Home and End reach the ends of the vertical axis, or of the horizontal
+  /// one when it is the only axis. The framework binds them on some
+  /// platforms only; the reference's native scrolling has them everywhere.
+  void toBoundary({required bool end}) {
+    final position =
+        (vertical ? verticalController : horizontalController).position;
+    position.moveTo(
+      end ? position.maxScrollExtent : position.minScrollExtent,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeInOut,
+    );
   }
 
   bool metricsChanged(ScrollMetricsNotification notification) {
@@ -189,6 +209,7 @@ class _IslandScrollbarState extends State<IslandScrollbar> {
 
     Widget area = Focus(
       focusNode: focus,
+      onKeyEvent: keyUsed,
       child: Padding(padding: widget.padding, child: widget.child),
     );
     if (horizontal) {
@@ -257,14 +278,27 @@ class _IslandScrollbarState extends State<IslandScrollbar> {
           child: Listener(
             onPointerSignal: containWheel,
             onPointerDown: (_) {
-              if (!focus.hasFocus) focus.requestFocus();
+              pointerFocus = true;
+              if (focus.hasFocus) {
+                focusChanged();
+              } else {
+                focus.requestFocus();
+              }
             },
-            child: NotificationListener<ScrollMetricsNotification>(
-              onNotification: metricsChanged,
-              child: ScrollConfiguration(
-                behavior: ScrollConfiguration.of(context)
-                    .copyWith(scrollbars: false),
-                child: area,
+            child: CallbackShortcuts(
+              bindings: {
+                const SingleActivator(LogicalKeyboardKey.home): () =>
+                    toBoundary(end: false),
+                const SingleActivator(LogicalKeyboardKey.end): () =>
+                    toBoundary(end: true),
+              },
+              child: NotificationListener<ScrollMetricsNotification>(
+                onNotification: metricsChanged,
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context)
+                      .copyWith(scrollbars: false),
+                  child: area,
+                ),
               ),
             ),
           ),

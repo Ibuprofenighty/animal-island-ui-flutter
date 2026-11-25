@@ -6,10 +6,10 @@
 
 A fresh Flutter implementation of the [Animal Island UI design language](https://github.com/guokaigdg/animal-island-ui).
 
-<img src="https://img.shields.io/badge/version-0.2.0-blue?style=flat-square" alt="Version 0.2.0">
+<img src="https://img.shields.io/badge/version-0.3.0-blue?style=flat-square" alt="Version 0.3.0">
 <img src="https://img.shields.io/badge/status-experimental-orange?style=flat-square" alt="Experimental">
 <img src="https://img.shields.io/badge/components-44-4b8b63?style=flat-square" alt="44 component families">
-<img src="https://img.shields.io/badge/SVG_glyphs-709-b88746?style=flat-square" alt="709 SVG glyphs">
+<img src="https://img.shields.io/badge/SVG_glyphs-936-b88746?style=flat-square" alt="936 SVG glyphs">
 <img src="https://img.shields.io/badge/Flutter-3.47.3%2B-02569B?style=flat-square&logo=flutter" alt="Flutter 3.47.3 or newer">
 <img src="https://img.shields.io/badge/Dart-3.13.3%2B-0175C2?style=flat-square&logo=dart" alt="Dart 3.13.3 or newer">
 
@@ -22,12 +22,12 @@ English · [简体中文](README.zh-CN.md)
 ## ✨ What’s inside
 
 - **44 component families** for forms, navigation, data, feedback, charts and island decoration, exposed through one public import.
-- **709 SVG glyphs** through `IslandIcon` and `IslandGlyph`; multicolor artwork retains its own paint roles; every paint role is settled by the importer rules, and paint outcomes are measured and accepted by the owner as a set, not glyph by glyph ([maintenance](docs/MAINTENANCE.md)).
+- **936 SVG glyphs** through `IslandIcon` and `IslandGlyph`; multicolor artwork retains its own paint roles. Paint roles are settled by the importer rules; for the 709 glyphs of the first import the outcomes are measured and accepted by the owner as a set, not glyph by glyph. The 228 glyphs added from naive-icons 1.17.0 are measured only, and 42 of their roles in 23 glyphs are held for the owner ([maintenance](docs/MAINTENANCE.md)).
 - **Light and dark theme presets**, semantic tokens and component styles with explicit, documented customization boundaries.
 - **Composable interactions**: controlled values, caller-owned controllers, keyboard/focus behavior and reduced-motion contracts.
 - **A live and local Gallery** with the component catalog, homepage and usage guide. English and Chinese defaults are available through `IslandLocalizations`; application copy remains yours.
 
-This is **experimental 0.2.0**. It has not completed all-platform visual or production acceptance. See [verification status](#-verification-status) before adopting it.
+This is **experimental 0.3.0**. It has not completed all-platform visual or production acceptance. See [verification status](#-verification-status) before adopting it.
 
 ## 🏝️ Explore the island
 
