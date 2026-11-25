@@ -488,11 +488,12 @@ OWNER_RULES = {
           "3:1 on dark paper and dark canvas or the import stops. No fixed colour reaches 3:1 on both the "
           "light canvas #88C9A1 and dark paper #243C33, so the light canvas stays under 3:1 (recorded per "
           "element with the ratios on the stroke's own backing, which O6 does not change).",
-    "O7": "owner-kept: the roles listed in OWNER_KEPT keep the upstream paint by owner decision; each "
-          "keeps the measurement that stopped O1-O5, and no contrast matrix certifies it.",
+    "O7": "owner-kept: the roles listed in OWNER_KEPT keep the upstream paint by owner decision (2026-11-18 "
+          "for the 1.14.0 step, 2026-11-25 for the roles the 1.17.0 step held); each keeps the measurement "
+          "that stopped O1-O5, and no contrast matrix certifies it.",
 }
 RULE_DATES = {"O1": "2026-11-17", "O2": "2026-11-17", "O3": "2026-11-17", "O4": "2026-11-17",
-              "O5": "2026-11-17", "O6": "2026-11-18", "O7": "2026-11-18"}
+              "O5": "2026-11-17", "O6": "2026-11-18", "O7": "2026-11-25"}  # O7 of this step; 2026-11-18 in the 1.14.0 step
 # Coloured host-reaching strokes whose hue is the meaning (a red negation slash): O1 would
 # turn the slash into ordinary ink, so they keep their hue and are deepened by O6 instead.
 SEMANTIC_COLOUR = {
@@ -506,7 +507,7 @@ SEMANTIC_COLOUR = {
 HOSTS = {"light paper": "#F8F8F0", "light canvas": "#88C9A1", "dark paper": "#243C33", "dark canvas": "#172B26"}
 O6_TARGET = "light paper"
 O6_KEEP = ("dark paper", "dark canvas")
-# Roles O1-O5 hold that the owner kept with upstream paint (2026-11-18), with the category
+# Roles O1-O5 hold that the owner kept with upstream paint (2026-11-18, 2026-11-25), with the category
 # each must still have; a listed role that no longer arises, or arises differently, stops the import.
 OWNER_KEPT = {
     **{(n, e): "inherited-interior" for n, e in (
@@ -514,6 +515,19 @@ OWNER_KEPT = {
         ("police-station", "2"), ("projector", "1"), ("smartwatch", "1"), ("speaker", "2"),
         ("train-station", "5"), ("waffle", "2"), ("wallet", "2"))},
     **{(n, "*"): "fixed-silhouette" for n in ("barcode", "bolt", "grip", "sparkles")},
+    # Owner decision 2026-11-25 on the roles the 1.17.0 step held: the same two categories, kept as before.
+    **{(n, e): "inherited-interior" for n, e in (
+        ("aquarium", "6"), ("bookshelf", "3"), ("bookshelf", "4"), ("bookshelf", "5"),
+        ("bookshelf", "6"), ("bookshelf", "7"), ("bookshelf", "8"), ("bookshelf", "9"),
+        ("bookshelf", "10"), ("bread-maker", "3"), ("breakpoint", "2"), ("cache", "1"), ("cache", "2"),
+        ("cassette", "4"), ("coffee-grinder", "8"), ("config", "1"), ("cottage", "5"),
+        ("cutting-board", "1"), ("cutting-board", "2/0"), ("cutting-board", "2/1"),
+        ("fighter-jet", "5"), ("floppy-disk", "1"), ("floppy-disk", "3"), ("glucose-meter", "2"),
+        ("gpu", "2"), ("medical-record", "2"), ("multimeter", "1"), ("multimeter", "3"), ("ram", "1"),
+        ("ram", "2"), ("ram", "3"), ("ram", "4"), ("sewing-machine", "3"), ("ski", "4"), ("ski", "13"),
+        ("snow-globe", "2"), ("university", "3"), ("university", "4"), ("university", "5"),
+        ("university", "6"), ("vinyl", "2"))},
+    ("generate", "*"): "fixed-silhouette",
 }
 
 

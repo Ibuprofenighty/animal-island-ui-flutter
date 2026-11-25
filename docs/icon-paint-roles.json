@@ -10896,7 +10896,7 @@
       "O4": "fixed-silhouette: a glyph whose contour reaches the host only in fixed paint has its host-reaching contour follow currentColor: O1/O2 on its strokes, and a host-reaching #2A2A2A fill (an ink outline drawn as a filled shape) becomes currentColor.",
       "O5": "interior-contrast: interior detail under 3:1 on its own backing keeps the upstream paint as decorative interior detail (kept by rule, not certified as necessary).",
       "O6": "semantic-colour: a SEMANTIC_COLOUR stroke, excluded from O1, keeps its hue and moves along OKLCH lightness (chroma and hue fixed, clipped to sRGB only if needed and recorded) to the first 8-bit colour that reaches 3:1 on light paper #F8F8F0, the least change that passes; it must keep 3:1 on dark paper and dark canvas or the import stops. No fixed colour reaches 3:1 on both the light canvas #88C9A1 and dark paper #243C33, so the light canvas stays under 3:1 (recorded per element with the ratios on the stroke's own backing, which O6 does not change).",
-      "O7": "owner-kept: the roles listed in OWNER_KEPT keep the upstream paint by owner decision; each keeps the measurement that stopped O1-O5, and no contrast matrix certifies it.",
+      "O7": "owner-kept: the roles listed in OWNER_KEPT keep the upstream paint by owner decision (2026-11-18 for the 1.14.0 step, 2026-11-25 for the roles the 1.17.0 step held); each keeps the measurement that stopped O1-O5, and no contrast matrix certifies it.",
       "semantic_colour": "Excluded from O1 because the colour is the meaning, and settled by O6: cloud-off element 1 (red negation slash); location-off element 2 (red negation slash); mic-off element 3 (red negation slash); phone-off element 1 (red negation slash); video-off element 2 (red negation slash).",
       "repairs": "Authored repairs on redrawn geometry (REPAIRS in the importer), measured per segment against the own paint under it; each listed under repairs.",
       "superseded": "Where carried.<name>.repairs_dropped lists a repair, earlier sections of this file describe the previous asset of that glyph, not the current one.",
@@ -10909,7 +10909,7 @@
       "carried": 4,
       "added": 228,
       "removed": 1,
-      "with_settled": 169,
+      "with_settled": 179,
       "settled_by_rule": {
         "O1": 47,
         "O2": 105,
@@ -10917,11 +10917,11 @@
         "O4": 15,
         "O5": 169,
         "O6": 0,
-        "O7": 0
+        "O7": 42
       },
       "repairs": 0,
-      "with_pending": 23,
-      "pending_elements": 42
+      "with_pending": 0,
+      "pending_elements": 0
     },
     "kept": [
       "acorn",
@@ -12215,6 +12215,13 @@
           "kept": "fill #588157 on own #2A9D8F 1.35:1, #E9C46A 2.68:1"
         },
         {
+          "element": "6",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 4.32:1 on own #2A9D8F, 3.21:1 on own #588157; stays currentColor"
+        },
+        {
           "element": "7",
           "category": "interior-contrast",
           "rule": "O5",
@@ -12360,6 +12367,64 @@
           "after": "currentColor"
         }
       ],
+      "bookshelf": [
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "6",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "7",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "8",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "9",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        },
+        {
+          "element": "10",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
+        }
+      ],
       "boot": [
         {
           "element": "1",
@@ -12378,10 +12443,26 @@
       ],
       "bread-maker": [
         {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
           "element": "4",
           "category": "interior-contrast",
           "rule": "O5",
           "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        }
+      ],
+      "breakpoint": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "bridge": [
@@ -12438,6 +12519,20 @@
         }
       ],
       "cache": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
         {
           "element": "3",
           "category": "interior-contrast",
@@ -12516,6 +12611,13 @@
           "category": "interior-contrast",
           "rule": "O5",
           "kept": "fill #E76F51 on own #FAEDCD 2.66:1"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "cast": [
@@ -12754,6 +12856,15 @@
           }
         }
       ],
+      "coffee-grinder": [
+        {
+          "element": "8",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
       "coins": [
         {
           "element": "2",
@@ -12783,6 +12894,15 @@
           "rule": "O2",
           "before": "#2A2A2A",
           "after": "currentColor"
+        }
+      ],
+      "config": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "container": [
@@ -12973,6 +13093,13 @@
           "ratios": {
             "#FAEDCD": 12.34
           }
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 12.34:1 on own #FAEDCD; stays currentColor"
         }
       ],
       "coupon": [
@@ -13032,6 +13159,29 @@
           "category": "fixed-silhouette",
           "rule": "O4",
           "after": "host contour follows currentColor through 0"
+        }
+      ],
+      "cutting-board": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C; stays currentColor"
+        },
+        {
+          "element": "2/0",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C; stays currentColor"
+        },
+        {
+          "element": "2/1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 2.57:1 on own #8B5E3C; stays currentColor"
         }
       ],
       "dentist": [
@@ -13193,6 +13343,15 @@
           "kept": "fill #264653 on own #2A2A2A 1.42:1"
         }
       ],
+      "fighter-jet": [
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
       "file-clock": [
         {
           "element": "1",
@@ -13307,6 +13466,22 @@
           "rule": "O2",
           "before": "#2A2A2A",
           "after": "currentColor"
+        }
+      ],
+      "floppy-disk": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "florist": [
@@ -13464,12 +13639,37 @@
           "after": "currentColor"
         }
       ],
+      "generate": [
+        {
+          "element": "*",
+          "category": "fixed-silhouette",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
+        }
+      ],
       "glucose-meter": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
         {
           "element": "3",
           "category": "interior-contrast",
           "rule": "O5",
           "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        }
+      ],
+      "gpu": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "gymnastic-rings": [
@@ -13892,6 +14092,13 @@
       ],
       "medical-record": [
         {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
           "element": "3",
           "category": "interior-contrast",
           "rule": "O5",
@@ -13908,10 +14115,24 @@
       ],
       "multimeter": [
         {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
           "element": "2",
           "category": "interior-contrast",
           "rule": "O5",
           "kept": "stroke #2A9D8F on own #FAEDCD 2.86:1"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         },
         {
           "element": "4",
@@ -14254,6 +14475,36 @@
           "after": "host contour follows currentColor through 0, 1, 2, 3, 4"
         }
       ],
+      "ram": [
+        {
+          "element": "1",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        }
+      ],
       "raspberry": [
         {
           "element": "3",
@@ -14542,6 +14793,13 @@
           "after": "currentColor"
         },
         {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
           "element": "5",
           "category": "fixed-ink-on-host",
           "rule": "O2",
@@ -14608,6 +14866,13 @@
           "kept": "stroke #8B5E3C on own #2A9D8F 1.68:1"
         },
         {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 4.32:1 on own #2A9D8F, 2.57:1 on own #8B5E3C; stays currentColor"
+        },
+        {
           "element": "7",
           "category": "inherited-interior",
           "rule": "O3",
@@ -14624,6 +14889,13 @@
           "ratios": {
             "#2A9D8F": 4.32
           }
+        },
+        {
+          "element": "13",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 4.32:1 on own #2A9D8F, 2.57:1 on own #8B5E3C; stays currentColor"
         },
         {
           "element": "14",
@@ -14666,6 +14938,13 @@
         }
       ],
       "snow-globe": [
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 14.35:1 on own #FFFFFF; stays currentColor"
+        },
         {
           "element": "3",
           "category": "inherited-interior",
@@ -15026,6 +15305,34 @@
           }
         },
         {
+          "element": "3",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "4",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "5",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
+          "element": "6",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
+        },
+        {
           "element": "7",
           "category": "interior-contrast",
           "rule": "O5",
@@ -15053,6 +15360,13 @@
           "category": "interior-contrast",
           "rule": "O5",
           "kept": "stroke #8B5E3C on own #264653 1.81:1"
+        },
+        {
+          "element": "2",
+          "category": "inherited-interior",
+          "rule": "O7",
+          "kept": "upstream paint by owner decision",
+          "measured": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
         }
       ],
       "water-tower": [
@@ -15130,305 +15444,6 @@
       ]
     },
     "repairs": {},
-    "pending": {
-      "aquarium": [
-        {
-          "element": "6",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, #2A9D8F, #588157; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 4.32:1 on own #2A9D8F, 3.21:1 on own #588157; stays currentColor"
-        }
-      ],
-      "bookshelf": [
-        {
-          "element": "3",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #FAEDCD; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
-        },
-        {
-          "element": "4",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #FAEDCD, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
-        },
-        {
-          "element": "5",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #FAEDCD, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
-        },
-        {
-          "element": "6",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #FAEDCD; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
-        },
-        {
-          "element": "7",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #FAEDCD, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
-        },
-        {
-          "element": "8",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #FAEDCD; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
-        },
-        {
-          "element": "9",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #FAEDCD; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
-        },
-        {
-          "element": "10",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C, #FAEDCD, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C, 12.34:1 on own #FAEDCD; stays currentColor"
-        }
-      ],
-      "bread-maker": [
-        {
-          "element": "3",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "breakpoint": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "cache": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "cassette": [
-        {
-          "element": "4",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "coffee-grinder": [
-        {
-          "element": "8",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "config": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "cottage": [
-        {
-          "element": "5",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, #FAEDCD, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 12.34:1 on own #FAEDCD; stays currentColor"
-        }
-      ],
-      "cutting-board": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C; stays currentColor"
-        },
-        {
-          "element": "2/0",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #8B5E3C; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 2.57:1 on own #8B5E3C; stays currentColor"
-        },
-        {
-          "element": "2/1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, #8B5E3C, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 2.57:1 on own #8B5E3C; stays currentColor"
-        }
-      ],
-      "fighter-jet": [
-        {
-          "element": "5",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "floppy-disk": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "3",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "generate": [
-        {
-          "element": "*",
-          "category": "fixed-silhouette",
-          "detail": "no inherited contour reaches the host; fixed outline/silhouette disposition",
-          "reason": "after O1/O2 no stroke or #2A2A2A fill reaches the host; the host contour is coloured fill only, outside the rules"
-        }
-      ],
-      "glucose-meter": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "gpu": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "medical-record": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "multimeter": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "3",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "ram": [
-        {
-          "element": "1",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "3",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "4",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "sewing-machine": [
-        {
-          "element": "3",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "ski": [
-        {
-          "element": "4",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #2A9D8F, #8B5E3C, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 4.32:1 on own #2A9D8F, 2.57:1 on own #8B5E3C; stays currentColor"
-        },
-        {
-          "element": "13",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #2A9D8F, #8B5E3C, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 4.32:1 on own #2A9D8F, 2.57:1 on own #8B5E3C; stays currentColor"
-        }
-      ],
-      "snow-globe": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, #FFFFFF; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653, 14.35:1 on own #FFFFFF; stays currentColor"
-        }
-      ],
-      "university": [
-        {
-          "element": "3",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "4",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "5",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        },
-        {
-          "element": "6",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653, currentColor; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ],
-      "vinyl": [
-        {
-          "element": "2",
-          "category": "inherited-interior",
-          "detail": "inherited stroke lies only on own paint #264653; currentColor or fixed drawing ink",
-          "reason": "O3 not applied: fixed #2A2A2A measures 1.42:1 on own #264653; stays currentColor"
-        }
-      ]
-    }
+    "pending": {}
   }
 }

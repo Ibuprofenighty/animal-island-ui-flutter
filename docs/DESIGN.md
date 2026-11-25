@@ -200,7 +200,6 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Item | Decision | Reason |
 |---|---|---|
 | Icon paint roles (709 glyphs) / 图标配色角色 | Apply the previous round's majority dispositions in bulk as importer rules: O1 coloured host stroke → `currentColor` (unless the colour is the meaning), O2 fixed `#2A2A2A` host stroke → `currentColor`, O3 inherited interior stroke → fixed ink `#2A2A2A` only where it keeps 3:1 on every own backing, O4 fixed-silhouette contours follow `currentColor`, O5 interior detail under 3:1 on its own backing keeps upstream paint as decorative. 20 roles stayed held until the [2026-11-18 decision](#owner-decisions-2026-11-18) | The earlier round chose these dispositions for most elements (148 of 167, 57 of 64, 28 of 32); the importer re-measures its output and aborts if a rule fails, and a held item never changes paint |
-| Icon paint roles (228 glyphs added by 1.17.0) / 1.17.0 新增图标的配色角色 | The same rules O1–O5, applied by the importer on 2026-11-25 without a new owner decision. 42 roles in 23 glyphs are held (`import_v1_17.pending`): 41 inherited interior strokes that stay `currentColor` because fixed ink would fall under 3:1 on the glyph's own dark paint, and the coloured-fill silhouette of `generate` | A held role keeps upstream paint and is not certified; the same categories were kept by the owner in the 1.14.0 round (O7), but that decision named its roles and does not extend to these / 沿用 O1–O5；23 个图标共 42 项角色搁置，保留上游配色、未认证，待所有者决定 |
 | Cursor selection highlight / Cursor 选区高亮 | Light theme keeps the reference `#e9c46a`; the dark theme has its own same-hue `#654c01` | Dark-theme text inks reach 4.5:1; the light muted ink at 3.27:1 is accepted; the dark highlight is only 1.5–1.8:1 from the dark papers, a stated trade-off |
 | Time style / Time 自定义样式 | `IslandTime.style` takes an `IslandTimeStyle`; the Gallery reproduces the reference `.my-time` demo with two measured differences ([table](#measured-color-differences)) | One instance API restyles both variants; caller colours stay caller-owned |
 | Home footer / 首页页脚 | States the licence and attribution only: `MIT License · Reference Gallery` | See [Gallery product version](#gallery-product-version) |
@@ -239,6 +238,12 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Form error text / Form 错误文字 | Keep the theme `dangerText`; the reference `#ff4d4f` is 3.3:1 on white, under the 4.5:1 text rule / 保持达标的 dangerText | The [measured colour rule](#measured-color-differences) |
 
 <a id="behaviour-differences-400"></a>
+## Owner decisions / 所有者决定（2026-11-25）
+
+| Item | Decision | Reason |
+|---|---|---|
+| Icon paint roles (228 glyphs added by 1.17.0) / 1.17.0 新增图标的配色角色 | The same rules O1–O5. The 42 roles they left in 23 glyphs (41 inherited interior strokes that stay `currentColor` because fixed ink would fall under 3:1 on the glyph's own dark paint, and the coloured-fill silhouette of `generate`) and the `rope` glyph, whose brown body meets the host at 2.13:1 on dark paper at 24px, keep upstream paint by owner decision of 2026-11-25 (O7) | The same disposition the owner chose for these categories in the 1.14.0 round; kept roles are measured and recorded, not certified / 沿用 O1–O5；规则留下的 23 个图标共 42 项角色与 `rope` 图标按 2026-11-25 的所有者决定保留上游配色（O7），仅记录实测值，未认证 |
+
 ## Deliberate behaviour differences (4.0.0 components) / 有意行为差异（4.0.0 新组件）
 
 | Item | Reference | This library |

@@ -15,7 +15,8 @@ import 'foundation_test.dart' show contrast;
 // multicolor assets require their own adjacency audit and are excluded.
 const transparentGlyphCount = 61;
 
-// Held for the owner and not certified here, each with its measurement.
+// Kept with upstream paint by owner decision (2026-11-25) and not certified
+// here, each with its measurement.
 const transparentHeld = <String, String>{
   'rope':
       'added by the 1.17.0 import: the body is a #8B5E3C stroke over a contour '
