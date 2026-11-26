@@ -59,7 +59,7 @@ class _PaginationStoryState extends State<PaginationStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Pagination',
-    tags: ["分页", "受控 / 非受控"],
+    tags: const ["分页", "受控 / 非受控"],
     children: [
       const StoryLabel('基础用法', strutStyle: storyCaptionStrut),
       for (final variant in IslandPaginationVariant.values) ...[

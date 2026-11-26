@@ -39,8 +39,36 @@ class IslandCardStyle {
   /// Optional complete control semantics; passive ink remains foregroundColor.
   /// Null retains the known-light paired recipe, not arbitrary host branding.
   final IslandSurfaceTheme? surfaceTheme;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandCardStyle &&
+          backgroundColor == other.backgroundColor &&
+          foregroundColor == other.foregroundColor &&
+          borderColor == other.borderColor &&
+          focusColor == other.focusColor &&
+          dividerColor == other.dividerColor &&
+          largeDotColor == other.largeDotColor &&
+          smallDotColor == other.smallDotColor &&
+          textStyle == other.textStyle &&
+          surfaceTheme == other.surfaceTheme;
+
+  @override
+  int get hashCode => Object.hash(
+    backgroundColor,
+    foregroundColor,
+    borderColor,
+    focusColor,
+    dividerColor,
+    largeDotColor,
+    smallDotColor,
+    textStyle,
+    surfaceTheme,
+  );
 }
 
+/// Theme extension supplying default style, padding, and radius for [IslandCard].
 @immutable
 class IslandCardTheme extends ThemeExtension<IslandCardTheme> {
   const IslandCardTheme({
@@ -64,6 +92,17 @@ class IslandCardTheme extends ThemeExtension<IslandCardTheme> {
   @override
   IslandCardTheme lerp(covariant IslandCardTheme? other, double t) =>
       other == null || t < .5 ? this : other;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandCardTheme &&
+          style == other.style &&
+          padding == other.padding &&
+          radius == other.radius;
+
+  @override
+  int get hashCode => Object.hash(style, padding, radius);
 }
 
 /// Slot defaults never inspect or replace explicit opaque content.
@@ -209,9 +248,63 @@ class IslandCard extends StatelessWidget {
               ],
             );
       final radius = BorderRadius.circular(theme?.radius ?? 20);
+      final cardSurface = DecoratedBox(
+        decoration: BoxDecoration(
+          color: roles.background,
+          borderRadius: radius,
+        ),
+        child: CustomPaint(
+          foregroundPainter: dashed && !patterned
+              ? IslandDashedBorderPainter(
+                  shape: RoundedRectangleBorder(borderRadius: radius),
+                  color: roles.border,
+                  strokeWidth: 2,
+                  dash: 6,
+                  gap: 4,
+                )
+              : null,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: radius,
+              border: states.contains(WidgetState.focused)
+                  ? Border.all(color: roles.focus, width: 2)
+                  : borderWidth > 0 && (!dashed || patterned)
+                  ? Border.all(color: roles.border, width: borderWidth)
+                  : null,
+            ),
+            child: ClipRRect(
+              borderRadius: radius,
+              child: CustomPaint(
+                painter: patterned
+                    ? DotPatternPainter(
+                        largeDot: roles.largeDot,
+                        smallDot: roles.smallDot,
+                      )
+                    : null,
+                child: Padding(
+                  padding: EdgeInsets.all(borderWidth),
+                  child: LightSurfaceScope(
+                    onSurface: roles.foreground,
+                    surfaceTheme: roles.surfaceTheme,
+                    // Pattern and neutral papers are light product papers
+                    // on which nested controls keep the reference recipe;
+                    // accent fills and caller backgrounds keep token roles.
+                    referencePaper:
+                        (patterned || colorway == IslandColorway.neutral) &&
+                        style?.backgroundColor == null &&
+                        themed?.backgroundColor == null,
+                    child: body,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      if (!hoverable || dashed) return cardSurface;
       return TweenAnimationBuilder<Matrix4>(
         tween: Matrix4Tween(
-          end: Matrix4.translationValues(0, hovering && !dashed ? -2 : 0, 0),
+          end: Matrix4.translationValues(0, hovering ? -2 : 0, 0),
         ),
         duration: MediaQuery.disableAnimationsOf(context)
             ? Duration.zero
@@ -222,59 +315,7 @@ class IslandCard extends StatelessWidget {
           filterQuality: FilterQuality.low,
           child: child,
         ),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: roles.background,
-            borderRadius: radius,
-          ),
-          child: CustomPaint(
-            foregroundPainter: dashed && !patterned
-                ? IslandDashedBorderPainter(
-                    shape: RoundedRectangleBorder(borderRadius: radius),
-                    color: roles.border,
-                    strokeWidth: 2,
-                    dash: 6,
-                    gap: 4,
-                  )
-                : null,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: radius,
-                border: states.contains(WidgetState.focused)
-                    ? Border.all(color: roles.focus, width: 2)
-                    : borderWidth > 0 && (!dashed || patterned)
-                    ? Border.all(color: roles.border, width: borderWidth)
-                    : null,
-              ),
-              child: ClipRRect(
-                borderRadius: radius,
-                child: CustomPaint(
-                  painter: patterned
-                      ? DotPatternPainter(
-                          largeDot: roles.largeDot,
-                          smallDot: roles.smallDot,
-                        )
-                      : null,
-                  child: Padding(
-                    padding: EdgeInsets.all(borderWidth),
-                    child: LightSurfaceScope(
-                      onSurface: roles.foreground,
-                      surfaceTheme: roles.surfaceTheme,
-                      // Pattern and neutral papers are light product papers
-                      // on which nested controls keep the reference recipe;
-                      // accent fills and caller backgrounds keep token roles.
-                      referencePaper:
-                          (patterned || colorway == IslandColorway.neutral) &&
-                          style?.backgroundColor == null &&
-                          themed?.backgroundColor == null,
-                      child: body,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: cardSurface,
       );
     }
 

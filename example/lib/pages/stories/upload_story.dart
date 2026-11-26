@@ -99,7 +99,7 @@ class _UploadStoryState extends State<UploadStory> {
     controller: notifications,
     child: StoryPanel(
       title: 'Upload',
-      tags: ["上传", "拖拽", "模拟进度"],
+      tags: const ["上传", "拖拽", "模拟进度"],
       children: [
         const StoryLabel('基础用法 — 点击上传(默认模拟上传进度)'),
         block(

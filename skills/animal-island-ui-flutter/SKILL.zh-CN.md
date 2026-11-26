@@ -23,6 +23,13 @@
 
 应用的组件测试：给测试视图设置桌面尺寸的画布；校验是异步的，编辑和提交后使用 `pumpAndSettle`；测试结束前推进时间越过通知时长。
 
+### 应用中的开销与无障碍
+
+- 长列表要惰性挂载（`ListView.builder`、`GridView.builder`）。由动作表面构成的每个条目（`IslandCard`、`IslandTag`、按钮）都是带自有焦点节点的有状态元素，在 `Column` 或 `Wrap` 中一次挂载几百个，会在用户滚动之前就付出内存和构建时间。
+- 普通 `IslandCard` 是开销最小的形态：只有 `hoverable: true` 才会加上悬停上浮动画。列表里的静态卡片不要打开它。
+- 谁创建谁释放。库只释放它自己创建的控制器和焦点节点，你传入的 `IslandFormController`、`IslandNotificationsController`、`FocusNode`、`ScrollController` 仍归你负责。
+- 控件已自带无障碍名称（`IslandIconButton.label` 是必填参数）。应用仍可能破坏的是自身布局：对关键页面用 `TextScaler.linear(2)` 和 `MediaQueryData(disableAnimations: true)` 测试，并运行 `meetsGuideline(labeledTapTargetGuideline)`。
+
 ## 选择职责所有者
 
 - 父级拥有约束、已提交的受控值及接受／拒绝变更请求的决定。

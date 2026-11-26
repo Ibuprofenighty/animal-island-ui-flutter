@@ -9,7 +9,7 @@ class DividerStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Divider',
-    tags: ["5 types + icon divider · pure CSS"],
+    tags: const ["5 types + icon divider · pure CSS"],
     children: [
       const StoryLabel('dashed-brown（虚线棕色，默认）'),
       const IslandDivider(),

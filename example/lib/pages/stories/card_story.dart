@@ -72,7 +72,7 @@ class CardStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Card',
-    tags: ["2 types", "13 colors", "14 patterns"],
+    tags: const ["2 types", "13 colors", "14 patterns"],
     children: [
       const StoryLabel('type="default"'),
       storyRow([

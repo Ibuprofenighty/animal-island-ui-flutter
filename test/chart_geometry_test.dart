@@ -58,7 +58,7 @@ void main() {
         data: IslandChartData.column(
           categories: const ['A', 'B', 'C'],
           series: [
-            IslandChartSeries.values('甲', [10, 20, 40]),
+            IslandChartSeries.values('甲', const [10, 20, 40]),
           ],
         ),
       ),
@@ -87,7 +87,7 @@ void main() {
         data: IslandChartData.bar(
           categories: const ['A', 'B', 'C'],
           series: [
-            IslandChartSeries.values('甲', [10, 20, 40]),
+            IslandChartSeries.values('甲', const [10, 20, 40]),
           ],
         ),
       ),
@@ -112,8 +112,8 @@ void main() {
           min: -20,
           max: 20,
           series: [
-            IslandChartSeries.values('甲', [10, -5]),
-            IslandChartSeries.values('乙', [5, -10]),
+            IslandChartSeries.values('甲', const [10, -5]),
+            IslandChartSeries.values('乙', const [5, -10]),
           ],
         ),
       ),
@@ -138,7 +138,7 @@ void main() {
       IslandChart(
         data: IslandChartData.column(
           series: [
-            IslandChartSeries.values('甲', [32, 79]),
+            IslandChartSeries.values('甲', const [32, 79]),
           ],
         ),
       ),
@@ -156,7 +156,7 @@ void main() {
           min: 10,
           max: 70,
           series: [
-            IslandChartSeries.values('甲', [32, 79]),
+            IslandChartSeries.values('甲', const [32, 79]),
           ],
         ),
       ),
@@ -168,7 +168,7 @@ void main() {
       IslandChart(
         data: IslandChartData.column(
           series: [
-            IslandChartSeries.values('甲', [-12, 26]),
+            IslandChartSeries.values('甲', const [-12, 26]),
           ],
         ),
       ),
@@ -187,7 +187,7 @@ void main() {
         showAxes: false,
         data: IslandChartData.line(
           series: [
-            IslandChartSeries.values('测量', [4, 6, null, 0, 8]),
+            IslandChartSeries.values('测量', const [4, 6, null, 0, 8]),
           ],
         ),
       ),
@@ -209,7 +209,7 @@ void main() {
         showAxes: false,
         data: IslandChartData.area(
           series: [
-            IslandChartSeries.values('测量', [4, 6, null, 0, 8]),
+            IslandChartSeries.values('测量', const [4, 6, null, 0, 8]),
           ],
         ),
       ),
@@ -244,7 +244,7 @@ void main() {
           data: IslandChartData.mount(
             smooth: smooth,
             series: [
-              IslandChartSeries.values('高度', [10, 20]),
+              IslandChartSeries.values('高度', const [10, 20]),
             ],
           ),
         ),
@@ -268,8 +268,8 @@ void main() {
         data: IslandChartData.mix(
           categories: const ['A', 'B'],
           series: [
-            IslandChartSeries.values('本周', [10, 20]),
-            IslandChartSeries.values('上周', [
+            IslandChartSeries.values('本周', const [10, 20]),
+            IslandChartSeries.values('上周', const [
               5,
               15,
             ], mode: IslandChartSeriesMode.line),
@@ -429,7 +429,7 @@ void main() {
       t,
       IslandChart(
         data: IslandChartData.ring(
-          series: IslandChartSeries.values('人数', [12]),
+          series: IslandChartSeries.values('人数', const [12]),
         ),
       ),
     );
@@ -448,7 +448,7 @@ void main() {
       t,
       IslandChart(
         data: IslandChartData.rose(
-          series: IslandChartSeries.values('人数', [10, 40]),
+          series: IslandChartSeries.values('人数', const [10, 40]),
         ),
       ),
     );
@@ -474,8 +474,8 @@ void main() {
           categories: const ['甲', '乙', '丙'],
           max: 100,
           series: [
-            IslandChartSeries.values('本期', [50, 100, 0]),
-            IslandChartSeries.values('残缺', [30, null, 60]),
+            IslandChartSeries.values('本期', const [50, 100, 0]),
+            IslandChartSeries.values('残缺', const [30, null, 60]),
           ],
         ),
       ),
@@ -496,8 +496,8 @@ void main() {
       IslandChart(
         data: IslandChartData.arcbar(
           series: [
-            IslandChartSeries.values('植树', [72]),
-            IslandChartSeries.values('超额', [150]),
+            IslandChartSeries.values('植树', const [72]),
+            IslandChartSeries.values('超额', const [150]),
           ],
         ),
       ),
@@ -516,7 +516,7 @@ void main() {
       IslandChart(
         data: IslandChartData.gauge(
           series: [
-            IslandChartSeries.values('舒适度', [72]),
+            IslandChartSeries.values('舒适度', const [72]),
           ],
         ),
       ),
@@ -537,7 +537,7 @@ void main() {
       t,
       IslandChart(
         data: IslandChartData.funnel(
-          series: IslandChartSeries.values('转化', [200, 100, 50]),
+          series: IslandChartSeries.values('转化', const [200, 100, 50]),
         ),
       ),
     );

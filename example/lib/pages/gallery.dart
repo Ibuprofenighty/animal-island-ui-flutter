@@ -52,10 +52,15 @@ class _GalleryPageState extends State<GalleryPage> {
   /// Escape and a scrim tap close it, and its focus scope holds traversal.
   bool _drawerOpen = false;
   LocalHistoryEntry? _drawerHistory;
-  final _drawerScope = FocusScopeNode(debugLabel: 'Gallery drawer');
+  FocusNode? _drawerReturnFocus;
+  final _drawerScope = FocusScopeNode(
+    debugLabel: 'Gallery drawer',
+    traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
+  );
 
   void _openDrawer() {
     if (_drawerOpen) return;
+    _drawerReturnFocus = FocusManager.instance.primaryFocus;
     setState(() => _drawerOpen = true);
     // Move focus into the drawer scope once it is mounted, as the Material
     // drawer does, so traversal stays inside it.
@@ -74,17 +79,31 @@ class _GalleryPageState extends State<GalleryPage> {
     }
   }
 
+  void _restoreDrawerFocus() {
+    final target = _drawerReturnFocus;
+    _drawerReturnFocus = null;
+    if (target != null && target.canRequestFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_drawerOpen && target.canRequestFocus) {
+          target.requestFocus();
+        }
+      });
+    }
+  }
+
   void _closeDrawer() {
     final entry = _drawerHistory;
     _drawerHistory = null;
     entry?.remove();
     if (_drawerOpen && mounted) setState(() => _drawerOpen = false);
+    _restoreDrawerFocus();
   }
 
   void _drawerHistoryRemoved(LocalHistoryEntry entry) {
     if (_drawerHistory != entry) return;
     _drawerHistory = null;
     if (_drawerOpen && mounted) setState(() => _drawerOpen = false);
+    _restoreDrawerFocus();
   }
 
   @override
@@ -201,6 +220,7 @@ class _GalleryPageState extends State<GalleryPage> {
                       'assets/reference/logo.png',
                       width: 25,
                       height: 25,
+                      excludeFromSemantics: true,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -229,18 +249,24 @@ class _GalleryPageState extends State<GalleryPage> {
                       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
                       // Reference `line-height: normal` measures a 17px line
                       // box (the `─` falls back to a system font).
-                      child: Text(
-                        '── ${group.key} ──',
-                        strutStyle: const StrutStyle(
-                          fontSize: 11,
-                          height: 17 / 11,
-                          forceStrutHeight: true,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: .5,
-                          color: GalleryPalette.navGroupInk,
+                      child: Semantics(
+                        header: true,
+                        label: group.key,
+                        child: ExcludeSemantics(
+                          child: Text(
+                            '── ${group.key} ──',
+                            strutStyle: const StrutStyle(
+                              fontSize: 11,
+                              height: 17 / 11,
+                              forceStrutHeight: true,
+                            ),
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: .5,
+                              color: GalleryPalette.navGroupInk,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -389,70 +415,73 @@ class _GalleryPageState extends State<GalleryPage> {
       child: IslandDrawerHost(
         child: Stack(
           children: [
-            Scaffold(
-              backgroundColor: IslandTokens.light.canvas,
-              // Reference mobile top bar: `position: fixed` over the scrolling
-              // main, so the page shows through its 92% glass and blur.
-              extendBodyBehindAppBar: true,
-              appBar: showMobileNavigation
-                  ? _GalleryMobileHeader(
-                      title: info?.title ?? 'Animal Island UI',
-                      onBack: () => widget.onNavigate('/'),
-                      onMenu: _openDrawer,
-                    )
-                  : null,
-              body: BackgroundPreview(
-                onPreview: _showPreview,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    const Positioned.fill(
-                      child: CustomPaint(painter: _GalleryDots()),
-                    ),
-                    if (_preview != null)
-                      Positioned.fill(
-                        // Reference egg overlay: `opacity 0.45s ease` over the
-                        // resident dotted wallpaper; decorative, so it may fade.
-                        child: TweenAnimationBuilder<double>(
-                          // `begin: 0` fades a newly mounted wallpaper in.
-                          tween: Tween(begin: 0, end: _previewOn ? 1 : 0),
-                          duration: MediaQuery.disableAnimationsOf(context)
-                              ? Duration.zero
-                              : const Duration(milliseconds: 450),
-                          curve: Curves.ease,
-                          onEnd: () {
-                            if (mounted && !_previewOn) {
-                              setState(() => _preview = null);
-                            }
-                          },
-                          builder: (_, opacity, child) =>
-                              Opacity(opacity: opacity, child: child),
-                          child: IslandBackground(type: _preview!),
-                        ),
+            ExcludeFocus(
+              excluding: showMobileNavigation && _drawerOpen,
+              child: Scaffold(
+                backgroundColor: IslandTokens.light.canvas,
+                // Reference mobile top bar: `position: fixed` over the scrolling
+                // main, so the page shows through its 92% glass and blur.
+                extendBodyBehindAppBar: true,
+                appBar: showMobileNavigation
+                    ? _GalleryMobileHeader(
+                        title: info?.title ?? 'Animal Island UI',
+                        onBack: () => widget.onNavigate('/'),
+                        onMenu: _openDrawer,
+                      )
+                    : null,
+                body: BackgroundPreview(
+                  onPreview: _showPreview,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      const Positioned.fill(
+                        child: CustomPaint(painter: _GalleryDots()),
                       ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (!mobile && widget.path != '/')
-                          FocusTraversalGroup(child: menu()),
-                        Expanded(
-                          child: FocusTraversalGroup(
-                            child: PrimaryScrollController(
-                              controller: _content,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: showMobileNavigation
-                                      ? _GalleryMobileHeader.height
-                                      : 0,
+                      if (_preview != null)
+                        Positioned.fill(
+                          // Reference egg overlay: `opacity 0.45s ease` over the
+                          // resident dotted wallpaper; decorative, so it may fade.
+                          child: TweenAnimationBuilder<double>(
+                            // `begin: 0` fades a newly mounted wallpaper in.
+                            tween: Tween(begin: 0, end: _previewOn ? 1 : 0),
+                            duration: MediaQuery.disableAnimationsOf(context)
+                                ? Duration.zero
+                                : const Duration(milliseconds: 450),
+                            curve: Curves.ease,
+                            onEnd: () {
+                              if (mounted && !_previewOn) {
+                                setState(() => _preview = null);
+                              }
+                            },
+                            builder: (_, opacity, child) =>
+                                Opacity(opacity: opacity, child: child),
+                            child: IslandBackground(type: _preview!),
+                          ),
+                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (!mobile && widget.path != '/')
+                            FocusTraversalGroup(child: menu()),
+                          Expanded(
+                            child: FocusTraversalGroup(
+                              child: PrimaryScrollController(
+                                controller: _content,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: showMobileNavigation
+                                        ? _GalleryMobileHeader.height
+                                        : 0,
+                                  ),
+                                  child: content,
                                 ),
-                                child: content,
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -729,38 +758,49 @@ class _MenuItemState extends State<_MenuItem> {
             final owner = holder.findAncestorStateOfType<_MenuItemState>();
             if (owner != null && owner != this) focus!.unfocus();
           },
-          child: TextButton(
-            onPressed: widget.onPressed,
-            onHover: (hovered) => setState(() => _hovered = hovered),
-            style:
-                TextButton.styleFrom(
-                  alignment: Alignment.centerLeft,
-                  minimumSize: const Size(0, 40),
-                  visualDensity: VisualDensity.standard,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.fromLTRB(26, 0, 12, 0),
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: ink,
-                  splashFactory: NoSplash.splashFactory,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+          child: Semantics(
+            selected: active,
+            child: TextButton(
+              onPressed: widget.onPressed,
+              onHover: (hovered) => setState(() => _hovered = hovered),
+              style:
+                  TextButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                    minimumSize: const Size(0, 40),
+                    visualDensity: VisualDensity.standard,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: const EdgeInsets.fromLTRB(26, 0, 12, 0),
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: ink,
+                    splashFactory: NoSplash.splashFactory,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Nunito',
+                      fontFamilyFallback: ['IslandGallerySans'],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ).copyWith(
+                    // Keyboard focus keeps a visible highlight; hover and press
+                    // paint through the animated fill above.
+                    overlayColor: WidgetStateProperty.resolveWith(
+                      (states) => states.contains(WidgetState.focused)
+                          ? IslandTokens.light.onCanvas.withValues(alpha: .12)
+                          : Colors.transparent,
+                    ),
+                    side: WidgetStateProperty.resolveWith(
+                      (states) => states.contains(WidgetState.focused)
+                          ? BorderSide(
+                              color: IslandTokens.light.focus,
+                              width: 2,
+                            )
+                          : BorderSide.none,
+                    ),
                   ),
-                  textStyle: const TextStyle(
-                    fontFamily: 'Nunito',
-                    fontFamilyFallback: ['IslandGallerySans'],
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ).copyWith(
-                  // Keyboard focus keeps a visible highlight; hover and press
-                  // paint through the animated fill above.
-                  overlayColor: WidgetStateProperty.resolveWith(
-                    (states) => states.contains(WidgetState.focused)
-                        ? IslandTokens.light.onCanvas.withValues(alpha: .12)
-                        : Colors.transparent,
-                  ),
-                ),
-            child: child!,
+              child: child!,
+            ),
           ),
         ),
       ),

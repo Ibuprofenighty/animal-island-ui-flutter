@@ -235,7 +235,7 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
             foregroundDecoration: BoxDecoration(
               borderRadius: BorderRadius.circular(hover ? 30 : 0),
               border: states.contains(WidgetState.focused)
-                  ? Border.all(color: IslandTokens.light.focus)
+                  ? Border.all(color: IslandTokens.light.focus, width: 2)
                   : null,
             ),
             child: CustomPaint(
@@ -287,9 +287,13 @@ class _IslandTableState<T> extends State<IslandTable<T>> {
                         children: [
                           Center(
                             child: SvgPicture.string(
-                              '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#9f927d" fill-opacity="0.5" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>',
+                              '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>',
                               width: 48,
                               height: 48,
+                              colorFilter: ColorFilter.mode(
+                                IslandTokens.light.muted.withValues(alpha: 0.5),
+                                BlendMode.srcIn,
+                              ),
                               excludeFromSemantics: true,
                             ),
                           ),

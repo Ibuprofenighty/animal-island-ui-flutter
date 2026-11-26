@@ -7,8 +7,8 @@ import 'chart_test.dart';
 IslandChartData twoSeries() => IslandChartData.column(
   categories: const ['一月', '二月', '三月'],
   series: [
-    IslandChartSeries.values('甲', [12, 30, 18]),
-    IslandChartSeries.values('乙', [20, 8, 26]),
+    IslandChartSeries.values('甲', const [12, 30, 18]),
+    IslandChartSeries.values('乙', const [20, 8, 26]),
   ],
 );
 
@@ -84,7 +84,7 @@ void main() {
           data: IslandChartData.column(
             categories: const ['一月'],
             series: [
-              IslandChartSeries.values('甲', [40]),
+              IslandChartSeries.values('甲', const [40]),
             ],
           ),
         ),
@@ -111,7 +111,7 @@ void main() {
           onDataActivate: events.add,
           data: IslandChartData.gauge(
             series: [
-              IslandChartSeries.values('完成度', [100]),
+              IslandChartSeries.values('完成度', const [100]),
             ],
           ),
         ),

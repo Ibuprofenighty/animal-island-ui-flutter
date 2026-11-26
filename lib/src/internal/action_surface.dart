@@ -8,8 +8,9 @@ import 'presentation_focus.dart';
 /// focus that follows a pointer press (the pressed control, or a control
 /// focused by the action it started) draws no focus indicator.
 ///
-/// Listens only while an [ActionSurface] is mounted.
-abstract final class _InputModality {
+/// Listens only between [attach] and [detach]: an [ActionSurface] holds it
+/// while mounted, and so does any other owner that reads [pointer].
+abstract final class InputModality {
   static bool pointer = false;
   static int _users = 0;
 
@@ -98,14 +99,14 @@ class _ActionSurfaceState extends State<ActionSurface> {
   @override
   void initState() {
     super.initState();
-    _InputModality.attach();
+    InputModality.attach();
     if (widget.focusNode == null) _ownedFocus = FocusNode();
   }
 
   @override
   void dispose() {
     _pointerFocused(false);
-    _InputModality.detach();
+    InputModality.detach();
     _presentationGeneration++;
     _ownedFocus?.dispose();
     super.dispose();
@@ -183,12 +184,22 @@ class _ActionSurfaceState extends State<ActionSurface> {
     return contained;
   }
 
+  late final Map<Type, Action<Intent>> _actions = {
+    ActivateIntent: CallbackAction<ActivateIntent>(
+      onInvoke: (_) {
+        _dispatch(keyboard: true);
+        return null;
+      },
+    ),
+  };
+
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onActivate != null;
+    final trackHover = enabled || widget.passiveHover;
     final states = <WidgetState>{
       if (!enabled) WidgetState.disabled,
-      if (_hover && (enabled || widget.passiveHover)) WidgetState.hovered,
+      if (_hover && trackHover) WidgetState.hovered,
       if (_focus && !_pointerFocus) WidgetState.focused,
       if (_press && enabled) WidgetState.pressed,
       if (widget.selected == true) WidgetState.selected,
@@ -197,7 +208,12 @@ class _ActionSurfaceState extends State<ActionSurface> {
       container:
           widget.button || widget.checked != null || widget.toggled != null,
       button: widget.button,
-      enabled: widget.button || widget.checked != null || widget.toggled != null
+      enabled:
+          widget.button ||
+              widget.checked != null ||
+              widget.toggled != null ||
+              widget.selected != null ||
+              widget.expanded != null
           ? enabled
           : null,
       label: widget.label,
@@ -210,15 +226,27 @@ class _ActionSurfaceState extends State<ActionSurface> {
         cursor:
             widget.mouseCursor ??
             (enabled ? SystemMouseCursors.click : SystemMouseCursors.basic),
-        onEnter: (_) => setState(() => _hover = true),
-        onExit: (_) => setState(() => _hover = false),
+        onEnter: (_) {
+          if (trackHover) {
+            setState(() => _hover = true);
+          } else {
+            _hover = true;
+          }
+        },
+        onExit: (_) {
+          if (trackHover) {
+            setState(() => _hover = false);
+          } else {
+            _hover = false;
+          }
+        },
         child: FocusableActionDetector(
           enabled: enabled,
           focusNode: node,
           autofocus: widget.autofocus,
           onShowFocusHighlight: (v) => setState(() => _focus = v),
           onFocusChange: (focused) {
-            final pointer = focused && _InputModality.pointer;
+            final pointer = focused && InputModality.pointer;
             if (pointer != _pointerFocus) {
               setState(() => _pointerFocused(pointer));
             }
@@ -227,14 +255,7 @@ class _ActionSurfaceState extends State<ActionSurface> {
             SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
             SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
           },
-          actions: {
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) {
-                _dispatch(keyboard: true);
-                return null;
-              },
-            ),
-          },
+          actions: _actions,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: enabled ? () => _dispatch() : null,

@@ -17,7 +17,7 @@ void main() {
           data: IslandChartData.column(
             categories: const ['苹果', '香梨'],
             series: [
-              IslandChartSeries.values(series, [64, 85]),
+              IslandChartSeries.values(series, const [64, 85]),
             ],
           ),
         ),

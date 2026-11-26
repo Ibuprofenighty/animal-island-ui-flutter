@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.0 — accessibility and performance pass (2026-11-25)
+
+The reference has none of the behaviours marked *owner decision*; they were kept on 2026-11-25 (`docs/DESIGN.md#owner-decisions-2026-11-25`).
+
+- **Behaviour change, Notification (owner decision):** a hovered notification, or one that holds keyboard focus, does not expire; leaving it restarts its full duration. Focus that a press on the notification left behind does not hold it. On a narrow viewport the card is at most the viewport width minus 48px (reference `max-width`); it was a fixed 384px.
+- **Behaviour change, Tooltip (owner decision):** the default hover trigger also opens for keyboard focus on a descendant, not for focus that a press left behind. `IslandTooltip.click` closes on an outside press.
+- **Behaviour change, Table (owner decision):** the row focus border is 2px (it was 1px), as every other focus ring of the library.
+- **Behaviour change, text scale:** the CodeBlock copy button, Carousel rotation control, Pagination items and jumper and the Form label grow with the text scale instead of clipping at a fixed 32px.
+- **Behaviour change, reduced motion:** Carousel autoplay stops, Scrollbar Home/End and the thumb colour switch at once, and the Form scroll to the first error jumps.
+- **Behaviour change, right-to-left:** Rate swaps the left and right arrow keys; the CodeBlock copy button and padding and the picker clear button follow the text direction.
+- **Behaviour change, focus:** clearing a text field or a picker returns focus to it; a Select with `showSearch` and `allowClear` keeps its clear button while that button has focus; a Scrollbar area that does not overflow is not a Tab stop.
+- **Behaviour change, semantics:** the Tabs panel has the tab-panel role (it stays a Tab stop, as the reference); a Drawer names its route only when `semanticLabel` is set; the Pagination ellipsis is hidden from assistive technology; the CodeBlock copy result is announced.
+- **API:** `IslandLoading` and `IslandAvatarGroup` have const constructors. `IslandLoading` still rejects a negative `delay` or `fadeDuration` in debug mode, now when it is mounted. `IslandAvatarGroup` no longer copies `children`: do not mutate the list after passing it.
+- **API:** value equality for `IslandTokens`, `IslandSurfaceTheme`, `IslandOption`, `IslandButtonTheme`, `IslandCardStyle`, `IslandCardTheme`, `IslandCodeBlockStyle`, `IslandCodeBlockTheme` and `IslandTimeStyle`, so an equal theme no longer rebuilds its dependents.
+- **Performance:** a Card without `hoverable` builds no lift animation; CodeBlock caches its highlighted text; CountUp rebuilds only its number; Chart repaints only when its scene or emphasis changes; the dot pattern and sprinkles backgrounds reuse their paints. None of this was profiled on a device.
+- **Gallery (owner decision):** sidebar and home footer entries draw a 2px focus border for keyboard focus (the reference sidebar cannot be reached by keyboard at all), the sidebar marks the current entry as selected, and closing the mobile drawer returns focus to the control that opened it.
+- **Skill:** the usage Skill gains a short section on cost and accessibility in an app, and its description names when to use it.
+
 ## 0.3.0 — naive-icons 1.17.0 (2026-11-25)
 
 - **Breaking, icons:** `IslandGlyph.boxingGlove` is removed; upstream replaced the glyph with `boxing` (`IslandGlyph.boxing`).

@@ -215,8 +215,10 @@ class IslandFormItem extends StatelessWidget {
     };
     final labelWidget = GestureDetector(
       onTap: labelFor,
-      child: SizedBox(
-        height: MediaQuery.textScalerOf(context).scale(font) * 1.6,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.textScalerOf(context).scale(font) * 1.6,
+        ),
         child: Align(
           alignment: AlignmentDirectional.centerStart,
           child: SizedBox(
@@ -376,7 +378,9 @@ class _IslandFormFieldState<T> extends State<IslandFormField<T>> {
         Scrollable.ensureVisible(
           context,
           alignment: .5,
-          duration: const Duration(milliseconds: 200),
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : const Duration(milliseconds: 200),
         );
     },
   );

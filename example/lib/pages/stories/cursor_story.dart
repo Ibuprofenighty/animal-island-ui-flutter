@@ -109,7 +109,7 @@ class CursorStory extends StatelessWidget {
 
   Widget panel(BuildContext context) => StoryPanel(
     title: 'Cursor',
-    tags: ["光标"],
+    tags: const ["光标"],
     children: [
       intro(context),
       const StoryLabel('type="default"（默认）：手指箭头'),

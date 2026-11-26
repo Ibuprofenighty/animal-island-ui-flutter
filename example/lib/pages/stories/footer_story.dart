@@ -9,7 +9,7 @@ class FooterStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Footer',
-    tags: ["版权栏"],
+    tags: const ["版权栏"],
     children: [
       const StoryLabel(
         'Footer 版权栏 — 默认展示 © 当前年份 All Rights Reserved.，年份动态获取、文案可传参自定义。',

@@ -54,7 +54,7 @@ class ModalStory extends StatelessWidget {
 
     return StoryPanel(
       title: 'Modal',
-      tags: ["弹窗"],
+      tags: const ["弹窗"],
       children: [
         const StoryLabel('异形弹窗 (game)', strutStyle: _labelMetrics),
         primary('异形 Modal', action: () => open()),

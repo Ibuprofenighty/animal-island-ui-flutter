@@ -71,7 +71,7 @@ class _ProgressStoryState extends State<ProgressStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Progress',
-    tags: ["进度条", "场景图"],
+    tags: const ["进度条", "场景图"],
     children: [
       const StoryLabel('经典场景 — 上传 / 经验 / 任务', strutStyle: storyCaptionStrut),
       bars([

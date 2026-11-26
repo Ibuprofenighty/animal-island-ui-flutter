@@ -2,6 +2,7 @@ import '../foundation/localizations.dart';
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show mapEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -12,19 +13,46 @@ import '../foundation/recipes/code_block.dart';
 import '../foundation/recipes/cursor.dart';
 import '../foundation/theme.dart';
 
-enum IslandCodeLanguage { dart, javascript, shell, plain }
+/// Syntax highlighting languages supported by [IslandCodeBlock].
+enum IslandCodeLanguage {
+  /// Dart source code.
+  dart,
+
+  /// JavaScript or TypeScript source code.
+  javascript,
+
+  /// Shell command and terminal snippets.
+  shell,
+
+  /// Unhighlighted plain text.
+  plain,
+}
 
 /// Semantic roles emitted by the single lexer. Unknown source uses foreground.
 enum IslandCodeToken {
+  /// Line or block comments.
   comment,
+
+  /// String, numeric, or subcommand literals.
   literal,
+
+  /// CLI executable commands in shell snippets.
   command,
+
+  /// Language keywords.
   keyword,
+
+  /// Type names and file names.
   type,
+
+  /// Function or method invocations.
   function,
+
+  /// Operators, brackets, flags, and punctuation.
   punctuation,
 }
 
+/// Visual styling overrides for an [IslandCodeBlock].
 @immutable
 class IslandCodeBlockStyle {
   const IslandCodeBlockStyle({
@@ -48,8 +76,36 @@ class IslandCodeBlockStyle {
   final WidgetStateProperty<Color?>? copyForegroundColor,
       copyBackgroundColor,
       copyBorderColor;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandCodeBlockStyle &&
+          backgroundColor == other.backgroundColor &&
+          foregroundColor == other.foregroundColor &&
+          borderColor == other.borderColor &&
+          textStyle == other.textStyle &&
+          mapEquals(syntaxColors, other.syntaxColors) &&
+          copyForegroundColor == other.copyForegroundColor &&
+          copyBackgroundColor == other.copyBackgroundColor &&
+          copyBorderColor == other.copyBorderColor;
+
+  @override
+  int get hashCode => Object.hash(
+    backgroundColor,
+    foregroundColor,
+    borderColor,
+    textStyle,
+    Object.hashAllUnordered(
+      syntaxColors.entries.map((e) => Object.hash(e.key, e.value)),
+    ),
+    copyForegroundColor,
+    copyBackgroundColor,
+    copyBorderColor,
+  );
 }
 
+/// Theme extension supplying default styling for [IslandCodeBlock] widgets.
 @immutable
 class IslandCodeBlockTheme extends ThemeExtension<IslandCodeBlockTheme> {
   const IslandCodeBlockTheme({this.style = const IslandCodeBlockStyle()});
@@ -60,6 +116,14 @@ class IslandCodeBlockTheme extends ThemeExtension<IslandCodeBlockTheme> {
   @override
   IslandCodeBlockTheme lerp(covariant IslandCodeBlockTheme? other, double t) =>
       other == null || t < .5 ? this : other;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandCodeBlockTheme && style == other.style;
+
+  @override
+  int get hashCode => style.hashCode;
 }
 
 const _syntaxRecipe = <IslandCodeToken, Color>{
@@ -154,6 +218,24 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
     selectionChanged.value++;
   }
 
+  String? cachedCode;
+  IslandCodeLanguage? cachedLanguage;
+  Map<IslandCodeToken, Color>? cachedSyntax;
+  TextSpan? cachedSpan;
+
+  TextSpan highlightedSpan(Map<IslandCodeToken, Color> syntax) {
+    if (cachedSpan != null &&
+        cachedCode == widget.code &&
+        cachedLanguage == widget.language &&
+        mapEquals(cachedSyntax, syntax)) {
+      return cachedSpan!;
+    }
+    cachedCode = widget.code;
+    cachedLanguage = widget.language;
+    cachedSyntax = Map<IslandCodeToken, Color>.unmodifiable(syntax);
+    return cachedSpan = _highlight(widget.code, widget.language, syntax);
+  }
+
   @override
   void dispose() {
     reset?.cancel();
@@ -217,7 +299,12 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
               scrollDirection: Axis.horizontal,
               padding:
                   widget.padding ??
-                  EdgeInsets.fromLTRB(24, 20, widget.copyable ? 96 : 24, 20),
+                  EdgeInsetsDirectional.fromSTEB(
+                    24,
+                    20,
+                    widget.copyable ? 96 : 24,
+                    20,
+                  ),
               child: _SelectedInk(
                 // Reference `.animal-cursor ::selection` also forces the
                 // selected text to #2b2620; on the light Cursor highlight the
@@ -231,7 +318,7 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
                 highlight: CursorColors.selection(Brightness.light),
                 repaint: selectionChanged,
                 child: SelectableText.rich(
-                  _highlight(widget.code, widget.language, roles.syntax),
+                  highlightedSpan(roles.syntax),
                   focusNode: focus,
                   onSelectionChanged: (_, _) => selectionChanged.value++,
                   style: textStyle,
@@ -246,103 +333,108 @@ class _IslandCodeBlockState extends State<IslandCodeBlock> {
             ),
           ),
           if (widget.copyable)
-            Positioned(
+            PositionedDirectional(
               top: 12,
-              right: 12,
-              child: ActionSurface(
-                label: switch (status) {
-                  _CopyStatus.idle => strings.copyCode,
-                  _CopyStatus.copied => strings.codeCopied,
-                  _CopyStatus.failed => strings.codeCopyFailed,
-                },
-                onActivate: copying ? null : copy,
-                builder: (_, actionStates) {
-                  final states = <WidgetState>{
-                    ...actionStates,
-                    if (status == _CopyStatus.failed) WidgetState.error,
-                  };
-                  final copyRoles = (
-                    foreground: ActionSurface.resolveStyleValue(
-                      states,
-                      local?.copyForegroundColor,
-                      themed?.copyForegroundColor,
-                      CodeBlockColors.copyForeground,
-                    ),
-                    background: ActionSurface.resolveStyleValue(
-                      states,
-                      local?.copyBackgroundColor,
-                      themed?.copyBackgroundColor,
-                      states.contains(WidgetState.hovered)
-                          ? CodeBlockColors.copyBackgroundHover
-                          : CodeBlockColors.copyBackground,
-                    ),
-                    border: ActionSurface.resolveStyleValue(
-                      states,
-                      local?.copyBorderColor,
-                      themed?.copyBorderColor,
-                      CodeBlockColors.copyBorder,
-                    ),
-                    // Reference focus-visible: a 2px ring 2px outside the
-                    // pill. A caller's focused copyBorderColor also colours
-                    // the ring so custom recipes keep one focus colour.
-                    ring: ActionSurface.resolveStyleValue(
-                      states,
-                      local?.copyBorderColor,
-                      themed?.copyBorderColor,
-                      CodeBlockColors.copyFocusRing,
-                    ),
-                  );
-                  final focused = states.contains(WidgetState.focused);
-                  // Reference hover lifts 1px; :active returns to rest.
-                  final lift =
-                      states.contains(WidgetState.hovered) &&
-                      !states.contains(WidgetState.pressed);
-                  return TweenAnimationBuilder<double>(
-                    tween: Tween(end: lift ? -1 : 0),
-                    duration: MediaQuery.disableAnimationsOf(context)
-                        ? Duration.zero
-                        : const Duration(milliseconds: 250),
-                    curve: const Cubic(.4, 0, .2, 1),
-                    builder: (_, dy, child) => Transform(
-                      transform: Matrix4.translationValues(0, dy, 0),
-                      filterQuality: FilterQuality.low,
-                      child: child,
-                    ),
-                    child: Container(
-                      height: 32,
-                      constraints: const BoxConstraints(minWidth: 62),
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      foregroundDecoration: focused
-                          ? FocusOutline(
-                              const StadiumBorder(),
-                              copyRoles.ring,
-                              width: 2,
-                              offset: 2,
-                            )
-                          : null,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: copyRoles.background,
-                        border: Border.all(color: copyRoles.border),
+              end: 12,
+              child: Semantics(
+                liveRegion: status != _CopyStatus.idle,
+                child: ActionSurface(
+                  label: switch (status) {
+                    _CopyStatus.idle => strings.copyCode,
+                    _CopyStatus.copied => strings.codeCopied,
+                    _CopyStatus.failed => strings.codeCopyFailed,
+                  },
+                  onActivate: copying ? null : copy,
+                  builder: (_, actionStates) {
+                    final states = <WidgetState>{
+                      ...actionStates,
+                      if (status == _CopyStatus.failed) WidgetState.error,
+                    };
+                    final copyRoles = (
+                      foreground: ActionSurface.resolveStyleValue(
+                        states,
+                        local?.copyForegroundColor,
+                        themed?.copyForegroundColor,
+                        CodeBlockColors.copyForeground,
                       ),
-                      child: ExcludeSemantics(
-                        child: Text(
-                          switch (status) {
-                            _CopyStatus.idle => strings.copy,
-                            _CopyStatus.copied => strings.copied,
-                            _CopyStatus.failed => strings.copyFailed,
-                          },
-                          style: TextStyle(
-                            color: copyRoles.foreground,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
+                      background: ActionSurface.resolveStyleValue(
+                        states,
+                        local?.copyBackgroundColor,
+                        themed?.copyBackgroundColor,
+                        states.contains(WidgetState.hovered)
+                            ? CodeBlockColors.copyBackgroundHover
+                            : CodeBlockColors.copyBackground,
+                      ),
+                      border: ActionSurface.resolveStyleValue(
+                        states,
+                        local?.copyBorderColor,
+                        themed?.copyBorderColor,
+                        CodeBlockColors.copyBorder,
+                      ),
+                      // Reference focus-visible: a 2px ring 2px outside the
+                      // pill. A caller's focused copyBorderColor also colours
+                      // the ring so custom recipes keep one focus colour.
+                      ring: ActionSurface.resolveStyleValue(
+                        states,
+                        local?.copyBorderColor,
+                        themed?.copyBorderColor,
+                        CodeBlockColors.copyFocusRing,
+                      ),
+                    );
+                    final focused = states.contains(WidgetState.focused);
+                    // Reference hover lifts 1px; :active returns to rest.
+                    final lift =
+                        states.contains(WidgetState.hovered) &&
+                        !states.contains(WidgetState.pressed);
+                    return TweenAnimationBuilder<double>(
+                      tween: Tween(end: lift ? -1 : 0),
+                      duration: MediaQuery.disableAnimationsOf(context)
+                          ? Duration.zero
+                          : const Duration(milliseconds: 250),
+                      curve: const Cubic(.4, 0, .2, 1),
+                      builder: (_, dy, child) => Transform(
+                        transform: Matrix4.translationValues(0, dy, 0),
+                        filterQuality: FilterQuality.low,
+                        child: child,
+                      ),
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minWidth: 62,
+                          minHeight: 32,
+                        ),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        foregroundDecoration: focused
+                            ? FocusOutline(
+                                const StadiumBorder(),
+                                copyRoles.ring,
+                                width: 2,
+                                offset: 2,
+                              )
+                            : null,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: copyRoles.background,
+                          border: Border.all(color: copyRoles.border),
+                        ),
+                        child: ExcludeSemantics(
+                          child: Text(
+                            switch (status) {
+                              _CopyStatus.idle => strings.copy,
+                              _CopyStatus.copied => strings.copied,
+                              _CopyStatus.failed => strings.copyFailed,
+                            },
+                            style: TextStyle(
+                              color: copyRoles.foreground,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
         ],
@@ -498,6 +590,30 @@ class _RenderSelectedInk extends RenderProxyBox {
   }
 }
 
+final RegExp _shellLexer = RegExp(
+  r'''((?<!\S)#[^\n]*|/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[├└]──|│|~/[\w./-]*|(?<!\S)--?[A-Za-z][\w-]*|[\w.-]*[\w-]/[\w./-]*|\b[\w-]+(?:\.[\w-]+)*\.(?:md|dart|yaml|yml|json|lock|ts|tsx|js|less|css|html|txt)\b|\b\d+(?:\.\d+)?\b|\b[A-Za-z_$][\w$]*(?:-[\w$]+)*|[{}()\[\];,:=<>!+*/%-])''',
+);
+final RegExp _codeLexer = RegExp(
+  r'''(/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b\d+(?:\.\d+)?\b|\b[A-Za-z_$][\w$]*\b|[{}()\[\];,:=<>!+*/%-])''',
+);
+final RegExp _shellFileName = RegExp(
+  r'\.(?:md|dart|yaml|yml|json|lock|ts|tsx|js|less|css|html|txt)$',
+);
+final RegExp _startsDigit = RegExp(r'^\d');
+final RegExp _startsUpper = RegExp(r'^[A-Z]');
+final RegExp _wordChar = RegExp(r'\w');
+const _shellCommands = {'flutter', 'dart', 'npm', 'git', 'yarn', 'pnpm', 'npx'};
+const _shellSubcommands = {
+  'pub',
+  'add',
+  'get',
+  'run',
+  'build',
+  'test',
+  'install',
+  'analyze',
+};
+
 TextSpan _highlight(
   String code,
   IslandCodeLanguage language,
@@ -509,14 +625,7 @@ TextSpan _highlight(
   // comments (at line start or after whitespace), tree connectors, `~/`
   // paths, `-x`/`--flag` options, paths and file names, and hyphenated words
   // kept whole so `ui-flutter` never highlights an embedded `flutter`.
-  final matcher = RegExp(
-    shell
-        ? r'''((?<!\S)#[^\n]*|/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[├└]──|│|~/[\w./-]*|(?<!\S)--?[A-Za-z][\w-]*|[\w.-]*[\w-]/[\w./-]*|\b[\w-]+(?:\.[\w-]+)*\.(?:md|dart|yaml|yml|json|lock|ts|tsx|js|less|css|html|txt)\b|\b\d+(?:\.\d+)?\b|\b[A-Za-z_$][\w$]*(?:-[\w$]+)*|[{}()\[\];,:=<>!+*/%-])'''
-        : r'''(/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b\d+(?:\.\d+)?\b|\b[A-Za-z_$][\w$]*\b|[{}()\[\];,:=<>!+*/%-])''',
-  );
-  final fileName = RegExp(
-    r'\.(?:md|dart|yaml|yml|json|lock|ts|tsx|js|less|css|html|txt)$',
-  );
+  final matcher = shell ? _shellLexer : _codeLexer;
   const keywords = {
     'import',
     'export',
@@ -575,38 +684,20 @@ TextSpan _highlight(
         token.startsWith('"') ||
         (shell && token.startsWith('~/'));
     final shellPath = shell && token.contains('/') && token.length > 1;
-    final shellFile = shell && fileName.hasMatch(token);
+    final shellFile = shell && _shellFileName.hasMatch(token);
     final shellMark =
         shell &&
         (token.startsWith('-') && token.length > 1 ||
             token.startsWith('├') ||
             token.startsWith('└') ||
             token == '│');
-    final number = RegExp(r'^\d').hasMatch(token);
+    final number = _startsDigit.hasMatch(token);
     final shellCommand =
-        language == IslandCodeLanguage.shell &&
-        {
-          'flutter',
-          'dart',
-          'npm',
-          'git',
-          'yarn',
-          'pnpm',
-          'npx',
-        }.contains(token);
+        language == IslandCodeLanguage.shell && _shellCommands.contains(token);
     final shellSub =
         language == IslandCodeLanguage.shell &&
-        {
-          'pub',
-          'add',
-          'get',
-          'run',
-          'build',
-          'test',
-          'install',
-          'analyze',
-        }.contains(token);
-    final upper = RegExp(r'^[A-Z]').hasMatch(token);
+        _shellSubcommands.contains(token);
+    final upper = _startsUpper.hasMatch(token);
     final call = code.substring(match.end).trimLeft().startsWith('(');
     final role = comment
         ? IslandCodeToken.comment
@@ -626,7 +717,7 @@ TextSpan _highlight(
         ? IslandCodeToken.type
         : call
         ? IslandCodeToken.function
-        : token.length == 1 && !RegExp(r'\w').hasMatch(token)
+        : token.length == 1 && !_wordChar.hasMatch(token)
         ? IslandCodeToken.punctuation
         : null;
     // Reference highlightShell marks its `//` comments italic at weight 400.

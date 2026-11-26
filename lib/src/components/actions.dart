@@ -12,8 +12,25 @@ import '../internal/light_surface_scope.dart';
 import '../internal/focus_outline.dart';
 import '../foundation/dashed_border.dart';
 
-enum IslandButtonVariant { primary, normal, dashed, text, link }
+/// Visual emphasis variants for [IslandButton].
+enum IslandButtonVariant {
+  /// High-emphasis filled primary action button.
+  primary,
 
+  /// Standard surface button.
+  normal,
+
+  /// Dashed-border secondary button.
+  dashed,
+
+  /// Borderless text-only button.
+  text,
+
+  /// Inline hyperlink-styled button.
+  link,
+}
+
+/// Theme extension supplying default styling for [IslandButton] instances.
 @immutable
 class IslandButtonTheme extends ThemeExtension<IslandButtonTheme> {
   const IslandButtonTheme({this.style = const ButtonStyle()});
@@ -24,6 +41,14 @@ class IslandButtonTheme extends ThemeExtension<IslandButtonTheme> {
   @override
   IslandButtonTheme lerp(covariant IslandButtonTheme? other, double t) =>
       other == null || t < .5 ? this : other;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandButtonTheme && style == other.style;
+
+  @override
+  int get hashCode => style.hashCode;
 }
 
 /// The host owns async work. A busy button never dispatches activation.

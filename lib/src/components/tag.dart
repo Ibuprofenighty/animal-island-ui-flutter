@@ -13,6 +13,8 @@ import '../foundation/dashed_border.dart';
 
 enum IslandTagVariant { solid, outlined, soft, dashed }
 
+/// Compact label pill with colorways and optional dismissal.
+///
 /// Closing requests removal; only the host decides whether the tag disappears.
 /// The close action is a separate keyboard target and never activates the tag.
 /// Its pale hover fill and colorway ink switch together, independent of ambient

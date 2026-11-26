@@ -136,21 +136,24 @@ class _IslandAvatarState extends State<IslandAvatar> {
   }
 }
 
+/// Overlapping row of [IslandAvatar] widgets with an optional overflow counter.
 class IslandAvatarGroup extends StatelessWidget {
-  IslandAvatarGroup({
+  const IslandAvatarGroup({
     super.key,
-    required List<Widget> children,
+    required this.children,
     this.maxCount,
     this.size,
     this.dimension,
     this.shape,
     this.overlap = 8,
     this.moreBuilder,
-  }) : children = List.unmodifiable(children),
-       assert(maxCount == null || maxCount > 0),
+  }) : assert(maxCount == null || maxCount > 0),
        assert(overlap >= 0),
        assert(dimension == null || dimension > 0),
        assert(size == null || dimension == null);
+
+  /// Read on every build and not copied; do not mutate the list after passing
+  /// it.
   final List<Widget> children;
   final int? maxCount;
   final IslandSize? size;

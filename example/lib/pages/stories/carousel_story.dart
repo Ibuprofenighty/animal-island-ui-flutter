@@ -9,7 +9,7 @@ class CarouselStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Carousel',
-    tags: ["轮播图", "键盘可用"],
+    tags: const ["轮播图", "键盘可用"],
     children: [
       const StoryLabel('自动播放（悬停或聚焦时暂停）', strutStyle: storyCaptionStrut),
       ConstrainedBox(

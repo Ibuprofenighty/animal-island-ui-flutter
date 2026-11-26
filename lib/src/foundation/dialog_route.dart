@@ -10,7 +10,7 @@ import '../internal/action_surface.dart';
 /// traversal overrides survive; the builder owns its surface and semantics.
 class IslandDialogRoute<T> extends DialogRoute<T> {
   IslandDialogRoute({
-    required BuildContext context,
+    required super.context,
     required super.builder,
     super.barrierColor,
     super.barrierDismissible,
@@ -18,7 +18,6 @@ class IslandDialogRoute<T> extends DialogRoute<T> {
     super.traversalEdgeBehavior = TraversalEdgeBehavior.closedLoop,
   }) : _reduced = MediaQuery.disableAnimationsOf(context),
        super(
-         context: context,
          themes: InheritedTheme.capture(
            from: context,
            to: Navigator.of(context, rootNavigator: true).context,

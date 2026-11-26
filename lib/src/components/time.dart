@@ -79,6 +79,33 @@ class IslandTimeStyle {
   /// 12) or the game HUD's weekday (default 15). The clock and the game
   /// month-day keep their sizes.
   final double? capsuleFontSize;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandTimeStyle &&
+          clockColor == other.clockColor &&
+          weekdayColor == other.weekdayColor &&
+          dateColor == other.dateColor &&
+          separatorColor == other.separatorColor &&
+          capsuleColor == other.capsuleColor &&
+          decoration == other.decoration &&
+          padding == other.padding &&
+          fontFamily == other.fontFamily &&
+          capsuleFontSize == other.capsuleFontSize;
+
+  @override
+  int get hashCode => Object.hash(
+    clockColor,
+    weekdayColor,
+    dateColor,
+    separatorColor,
+    capsuleColor,
+    decoration,
+    padding,
+    fontFamily,
+    capsuleFontSize,
+  );
 }
 
 /// A wall-clock display. [now] supplies local time and may be replaced for a

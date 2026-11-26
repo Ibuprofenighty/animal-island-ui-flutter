@@ -160,4 +160,38 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('appearing rises into place instead of popping in', (
+    tester,
+  ) async {
+    final controller = ScrollController();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Stack(
+            children: [
+              ListView(
+                controller: controller,
+                children: const [SizedBox(height: 3000)],
+              ),
+              IslandBackTop(controller: controller),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    // The button lives in the root overlay; its rocket is the top glyph.
+    double top() => tester.getTopLeft(find.byType(IslandIcon).last).dy;
+    controller.jumpTo(401);
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
+    final rising = top();
+    expect(tester.hasRunningAnimations, isTrue);
+    await tester.pumpAndSettle();
+    final settled = top();
+    expect(rising, greaterThan(settled));
+    expect(rising, lessThan(settled + 10));
+  });
 }

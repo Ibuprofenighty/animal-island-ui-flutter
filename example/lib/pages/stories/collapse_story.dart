@@ -12,7 +12,7 @@ class CollapseStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Collapse',
-    tags: ["FAQ"],
+    tags: const ["FAQ"],
     children: [
       const StoryLabel(
         '基础用法',

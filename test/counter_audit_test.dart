@@ -87,9 +87,9 @@ void main() {
     (t) async {
       await t.pumpWidget(
         host(
-          IslandAvatarGroup(
+          const IslandAvatarGroup(
             maxCount: 1,
-            children: const [
+            children: [
               IslandAvatar(child: Text('A')),
               IslandAvatar(child: Text('B')),
             ],
@@ -220,7 +220,8 @@ void main() {
         await t.pump();
         for (final ms in [16, 40, 80]) {
           await t.pump(Duration(milliseconds: ms));
-          if (button('Close preview').evaluate().isNotEmpty) opaque(t, button('Close preview'));
+          if (button('Close preview').evaluate().isNotEmpty)
+            opaque(t, button('Close preview'));
         }
         await t.pump(const Duration(milliseconds: 300));
         await mouse.removePointer();

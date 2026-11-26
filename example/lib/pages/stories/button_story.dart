@@ -8,7 +8,7 @@ class ButtonStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Button',
-    tags: ["6 types"],
+    tags: const ["6 types"],
     children: [
       const StoryLabel('type 按钮类型'),
       storyRow([

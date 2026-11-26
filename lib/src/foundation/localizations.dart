@@ -264,8 +264,10 @@ class IslandLocalizations {
   String get select => _zh ? '选择' : 'Select';
   String get selectPlaceholder => _zh ? '请选择' : 'Please select';
 
-  /// Rate group name and the name of the [count]-star choice.
+  /// Rate group name.
   String get rating => _zh ? '评分' : 'Rating';
+
+  /// Accessible name of the [count]-star choice.
   String stars(int count) =>
       _zh ? '$count 星' : '$count ${count == 1 ? 'star' : 'stars'}';
 

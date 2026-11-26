@@ -26,6 +26,8 @@ class BackgroundPainter extends CustomPainter {
     } else if (type == IslandBackgroundType.sprinkles) {
       canvas.save();
       canvas.clipRect(Offset.zero & size);
+      final fillPaint = Paint();
+      final glossPaints = <double, Paint>{};
       for (final layer in sprinkleLayers.reversed) {
         for (double x = layer.$3 - layer.$1; x < size.width; x += layer.$1) {
           for (double y = layer.$4 - layer.$2; y < size.height; y += layer.$2) {
@@ -38,10 +40,11 @@ class BackgroundPainter extends CustomPainter {
                 rect,
                 Radius.circular(shape.$5 / 2),
               );
-              canvas.drawRRect(round, Paint()..color = shape.$6);
-              canvas.drawRRect(
-                round,
-                Paint()
+              fillPaint.color = shape.$6;
+              canvas.drawRRect(round, fillPaint);
+              final glossPaint = glossPaints.putIfAbsent(
+                shape.$5,
+                () => Paint()
                   ..shader = const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -51,8 +54,9 @@ class BackgroundPainter extends CustomPainter {
                       BackgroundColors.sprinkleGlossBottom,
                     ],
                     stops: [0, .45, 1],
-                  ).createShader(rect),
+                  ).createShader(Rect.fromLTWH(0, 0, 1, shape.$5)),
               );
+              canvas.drawRRect(round, glossPaint);
               canvas.restore();
             }
           }

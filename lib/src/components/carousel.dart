@@ -107,11 +107,24 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
     schedule();
   }
 
+  bool reducedMotion = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final next = MediaQuery.disableAnimationsOf(context);
+    if (next != reducedMotion) {
+      reducedMotion = next;
+      schedule();
+    }
+  }
+
   void schedule() {
     timer?.cancel();
     timer = null;
     if (!widget.autoplay ||
         paused ||
+        reducedMotion ||
         widget.items.length < 2 ||
         (!widget.loop && index == widget.items.length - 1))
       return;
@@ -434,8 +447,10 @@ class _IslandCarouselState<T extends Object> extends State<IslandCarousel<T>> {
                             builder: (lift, tint) => Transform.translate(
                               offset: Offset(0, -lift),
                               child: Container(
-                                height: 32,
-                                constraints: const BoxConstraints(minWidth: 58),
+                                constraints: const BoxConstraints(
+                                  minWidth: 58,
+                                  minHeight: 32,
+                                ),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
                                 ),

@@ -133,6 +133,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
   String get placeholder => widget.placeholder ?? strings.selectPlaceholder;
   String get clearLabel => widget.clearLabel ?? strings.clear;
   late final ownedFocus = FocusNode();
+  final clearFocus = FocusNode();
   FocusNode get focus => widget.focusNode ?? ownedFocus;
   final text = TextEditingController();
   final optionKeys = <T, GlobalKey>{};
@@ -456,6 +457,7 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
     text.removeListener(normalizeEndedComposition);
     presentationGeneration++;
     ownedFocus.dispose();
+    clearFocus.dispose();
     optionScroll.dispose();
     text.dispose();
     super.dispose();
@@ -622,9 +624,13 @@ class _IslandSelectState<T> extends State<IslandSelect<T>> {
           if (widget.allowClear &&
               current != null &&
               enabled &&
-              (hovered || focus.hasFocus || completingPresentation))
+              (hovered ||
+                  focus.hasFocus ||
+                  clearFocus.hasFocus ||
+                  completingPresentation))
             ActionSurface(
               label: clearLabel,
+              focusNode: clearFocus,
               onActivate: clear,
               // Reference `.clear`: 20px circle with 6px trailing margin;
               // hover adds rgba(114,93,66,.1) and darkens the glyph over the

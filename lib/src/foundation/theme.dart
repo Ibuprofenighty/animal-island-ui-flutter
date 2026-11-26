@@ -174,6 +174,63 @@ class IslandTokens extends ThemeExtension<IslandTokens> {
     if (other == null) return this;
     return t < .5 ? this : other;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandTokens &&
+          canvas == other.canvas &&
+          paper == other.paper &&
+          ink == other.ink &&
+          muted == other.muted &&
+          leaf == other.leaf &&
+          onLeaf == other.onLeaf &&
+          outline == other.outline &&
+          sun == other.sun &&
+          danger == other.danger &&
+          link == other.link &&
+          linkHover == other.linkHover &&
+          linkPressed == other.linkPressed &&
+          focus == other.focus &&
+          onCanvas == other.onCanvas &&
+          onSun == other.onSun &&
+          dangerText == other.dangerText &&
+          onDanger == other.onDanger &&
+          dangerHover == other.dangerHover &&
+          dangerPressed == other.dangerPressed &&
+          leafHover == other.leafHover &&
+          leafPressed == other.leafPressed &&
+          leafSelected == other.leafSelected &&
+          warning == other.warning &&
+          inputSurface == other.inputSurface;
+
+  @override
+  int get hashCode => Object.hashAll([
+    canvas,
+    paper,
+    ink,
+    muted,
+    leaf,
+    onLeaf,
+    outline,
+    sun,
+    danger,
+    link,
+    linkHover,
+    linkPressed,
+    focus,
+    onCanvas,
+    onSun,
+    dangerText,
+    onDanger,
+    dangerHover,
+    dangerPressed,
+    leafHover,
+    leafPressed,
+    leafSelected,
+    warning,
+    inputSurface,
+  ]);
 }
 
 /// Explicit semantic recipe for controls on a caller-owned surface.
@@ -183,6 +240,16 @@ class IslandSurfaceTheme {
   const IslandSurfaceTheme({required this.brightness, required this.tokens});
   final Brightness brightness;
   final IslandTokens tokens;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandSurfaceTheme &&
+          brightness == other.brightness &&
+          tokens == other.tokens;
+
+  @override
+  int get hashCode => Object.hash(brightness, tokens);
 }
 
 /// Installs the complete visual theme while retaining Flutter's platform behavior.

@@ -144,7 +144,7 @@ class _CountdownStoryState extends State<CountdownStory> {
 
   Widget story() => StoryPanel(
     title: 'Countdown',
-    tags: ["倒计时", "实时更新"],
+    tags: const ["倒计时", "实时更新"],
     children: [
       const StoryLabel('活动倒计时', strutStyle: storyCaptionStrut),
       IslandCountdown(

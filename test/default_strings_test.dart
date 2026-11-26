@@ -137,7 +137,7 @@ void main() {
             data: IslandChartData.column(
               categories: const ['A'],
               series: [
-                IslandChartSeries.values('S', [12000]),
+                IslandChartSeries.values('S', const [12000]),
               ],
             ),
           ),

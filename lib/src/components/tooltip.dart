@@ -6,6 +6,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../internal/action_surface.dart';
 import '../internal/anchored_panel.dart';
 import '../internal/content_scope.dart';
 import '../internal/organic_bubble.dart';
@@ -102,6 +103,12 @@ class _IslandTooltipState extends State<IslandTooltip>
   }
 
   @override
+  void initState() {
+    super.initState();
+    InputModality.attach();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (MediaQuery.disableAnimationsOf(context)) motion.value = visible ? 1 : 0;
@@ -114,6 +121,7 @@ class _IslandTooltipState extends State<IslandTooltip>
 
   @override
   void dispose() {
+    InputModality.detach();
     hide?.cancel();
     motion.dispose();
     super.dispose();
@@ -139,12 +147,22 @@ class _IslandTooltipState extends State<IslandTooltip>
     final trigger =
         widget.builder?.call(context, () => visible ? close() : show()) ??
         widget.child!;
+    final open = visible || motion.value > 0;
     return Focus(
       canRequestFocus: false,
       skipTraversal: true,
-      onFocusChange: !click && widget.trigger == IslandTooltipTrigger.focus
-          ? (value) => value ? show() : scheduleHide()
-          : null,
+      // The hover trigger also answers keyboard focus, so the description is
+      // reachable without a pointer; focus that a press left behind does not
+      // open it. The focus trigger answers every focus, as the reference.
+      onFocusChange: click
+          ? null
+          : (value) {
+              if (!value) {
+                scheduleHide();
+              } else if (!hover || !InputModality.pointer) {
+                show();
+              }
+            },
       onKeyEvent: (_, event) {
         if (visible &&
             event is KeyDownEvent &&
@@ -158,8 +176,8 @@ class _IslandTooltipState extends State<IslandTooltip>
         onEnter: hover ? (_) => show() : null,
         onExit: hover ? (_) => scheduleHide() : null,
         child: AnchoredPanel(
-          open: visible || motion.value > 0,
-          onDismiss: () {},
+          open: open,
+          onDismiss: click ? close : () {},
           width: null,
           estimatedHeight: 80,
           attachment: (target: target, follower: follower, offset: offset),
@@ -167,69 +185,79 @@ class _IslandTooltipState extends State<IslandTooltip>
             tooltip: widget.excludeFromSemantics ? null : widget.message,
             child: trigger,
           ),
-          panel: SingleChildScrollView(
-            child: MouseRegion(
-              onEnter: hover ? (_) => show() : null,
-              onExit: hover ? (_) => scheduleHide() : null,
-              child: IgnorePointer(
-                ignoring: !visible,
-                child: ExcludeFocus(
-                  child: ExcludeSemantics(
-                    child: AnimatedBuilder(
-                      animation: motion,
-                      builder: (context, child) {
-                        final t = const Cubic(
-                          .4,
-                          0,
-                          .2,
-                          1,
-                        ).transform(motion.value);
-                        return Transform.translate(
-                          offset: snapToDevicePixels(
-                            offset * (-.4 * (1 - t)),
-                            MediaQuery.devicePixelRatioOf(context),
-                          ),
-                          child: child,
-                        );
-                      },
-                      child: IntrinsicWidth(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: island ? 280 : 240,
-                          ),
-                          child: CustomPaint(
-                            painter: _BubblePainter(
-                              widget.variant,
-                              widget.placement,
-                              widget.bordered,
-                            ),
-                            child: Padding(
-                              padding: island
-                                  ? EdgeInsets.symmetric(
-                                      horizontal: widget.bordered ? 22 : 20,
-                                      vertical: widget.bordered ? 14 : 12,
-                                    )
-                                  : EdgeInsets.symmetric(
-                                      horizontal: widget.bordered ? 14 : 12,
-                                      vertical: widget.bordered ? 8 : 6,
-                                    ),
-                              child: LightSurfaceScope(
-                                child: ContentScope(
-                                  textStyle: TextStyle(
-                                    fontSize: 12,
-                                    color: TooltipColors.text,
-                                    fontWeight: island
-                                        ? FontWeight.w600
-                                        : FontWeight.w500,
-                                    height: island ? 1.55 : 1.5,
-                                    letterSpacing: .12,
+          panel: !open
+              ? const SizedBox.shrink()
+              : SingleChildScrollView(
+                  child: MouseRegion(
+                    onEnter: hover ? (_) => show() : null,
+                    onExit: hover ? (_) => scheduleHide() : null,
+                    child: IgnorePointer(
+                      ignoring: !visible,
+                      child: ExcludeFocus(
+                        child: ExcludeSemantics(
+                          child: AnimatedBuilder(
+                            animation: motion,
+                            builder: (context, child) {
+                              final t = const Cubic(
+                                .4,
+                                0,
+                                .2,
+                                1,
+                              ).transform(motion.value);
+                              return Transform.translate(
+                                offset: snapToDevicePixels(
+                                  offset * (-.4 * (1 - t)),
+                                  MediaQuery.devicePixelRatioOf(context),
+                                ),
+                                child: child,
+                              );
+                            },
+                            child: IntrinsicWidth(
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: island ? 280 : 240,
+                                ),
+                                child: CustomPaint(
+                                  painter: _BubblePainter(
+                                    widget.variant,
+                                    widget.placement,
+                                    widget.bordered,
                                   ),
-                                  child: DefaultTextStyle.merge(
-                                    textAlign: island
-                                        ? TextAlign.center
-                                        : TextAlign.start,
-                                    child:
-                                        widget.content ?? Text(widget.message),
+                                  child: Padding(
+                                    padding: island
+                                        ? EdgeInsets.symmetric(
+                                            horizontal: widget.bordered
+                                                ? 22
+                                                : 20,
+                                            vertical: widget.bordered ? 14 : 12,
+                                          )
+                                        : EdgeInsets.symmetric(
+                                            horizontal: widget.bordered
+                                                ? 14
+                                                : 12,
+                                            vertical: widget.bordered ? 8 : 6,
+                                          ),
+                                    child: LightSurfaceScope(
+                                      child: ContentScope(
+                                        textStyle: TextStyle(
+                                          fontSize: 12,
+                                          color: TooltipColors.text,
+                                          fontWeight: island
+                                              ? FontWeight.w600
+                                              : FontWeight.w500,
+                                          height: island ? 1.55 : 1.5,
+                                          letterSpacing: .12,
+                                        ),
+                                        child: DefaultTextStyle.merge(
+                                          textAlign: island
+                                              ? TextAlign.center
+                                              : TextAlign.start,
+                                          child:
+                                              widget.content ??
+                                              Text(widget.message),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -240,9 +268,6 @@ class _IslandTooltipState extends State<IslandTooltip>
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
         ),
       ),
     );

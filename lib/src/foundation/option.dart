@@ -11,4 +11,15 @@ class IslandOption<T> {
   final T value;
   final String label;
   final bool disabled;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IslandOption<T> &&
+          value == other.value &&
+          label == other.label &&
+          disabled == other.disabled;
+
+  @override
+  int get hashCode => Object.hash(value, label, disabled);
 }

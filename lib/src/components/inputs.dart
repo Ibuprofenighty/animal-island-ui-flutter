@@ -279,6 +279,7 @@ class _IslandTextFieldState extends State<IslandTextField> {
                             onActivate: () {
                               editing.clear();
                               widget.onChanged?.call('');
+                              focus.requestFocus();
                             },
                             // Reference `.clear`: 150ms hover background;
                             // focus-visible 2px outline, offset 1px.
@@ -389,6 +390,7 @@ class _IslandTextFieldState extends State<IslandTextField> {
               child: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(padding, 4, padding, 0),
                 child: Semantics(
+                  container: true,
                   liveRegion: field.hasError,
                   child: Text(
                     field.errorText ?? widget.helper!,

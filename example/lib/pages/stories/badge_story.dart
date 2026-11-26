@@ -20,7 +20,7 @@ class BadgeStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Badge',
-    tags: ["数字角标", "封顶数字", "小红点", "12 colors"],
+    tags: const ["数字角标", "封顶数字", "小红点", "12 colors"],
     children: [
       const StoryLabel('基本：图标 / 头像右上角的徽标数', strutStyle: storyCaptionStrut),
       row([

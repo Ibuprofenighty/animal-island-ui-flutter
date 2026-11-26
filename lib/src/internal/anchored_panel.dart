@@ -143,15 +143,15 @@ class _AnchoredPanelState extends State<AnchoredPanel>
                         final t = widget.transitionCurve.transform(
                           motion.value,
                         );
+                        final offset =
+                            widget.transitionDuration == Duration.zero
+                            ? Offset.zero
+                            : widget.transitionOffset * (1 - t);
                         return Transform.translate(
-                          filterQuality:
-                              widget.transitionDuration == Duration.zero ||
-                                  widget.transitionOffset == Offset.zero
+                          filterQuality: offset == Offset.zero
                               ? null
                               : FilterQuality.low,
-                          offset: widget.transitionDuration == Duration.zero
-                              ? Offset.zero
-                              : widget.transitionOffset * (1 - t),
+                          offset: offset,
                           child: child,
                         );
                       },
@@ -313,5 +313,10 @@ class _AnchoredPanelLayout extends SingleChildLayoutDelegate {
 
   @override
   bool shouldRelayout(_AnchoredPanelLayout oldDelegate) =>
-      rect != oldDelegate.rect || panel != oldDelegate.panel;
+      rect != oldDelegate.rect ||
+      panel.width != oldDelegate.panel.width ||
+      panel.estimatedHeight != oldDelegate.panel.estimatedHeight ||
+      panel.gap != oldDelegate.panel.gap ||
+      panel.placement != oldDelegate.panel.placement ||
+      panel.attachment != oldDelegate.panel.attachment;
 }
