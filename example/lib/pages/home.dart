@@ -268,17 +268,20 @@ class _GalleryHomeState extends State<GalleryHome>
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  title,
-                  strutStyle: const StrutStyle(
-                    fontSize: 24,
-                    height: 33 / 24,
-                    forceStrutHeight: true,
-                  ),
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: HomeWallpaperInk.title,
+                Semantics(
+                  header: true,
+                  child: Text(
+                    title,
+                    strutStyle: const StrutStyle(
+                      fontSize: 24,
+                      height: 33 / 24,
+                      forceStrutHeight: true,
+                    ),
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: HomeWallpaperInk.title,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -917,6 +920,11 @@ class _HomeFooterAction extends StatelessWidget {
             (states) => states.contains(WidgetState.focused)
                 ? HomeWallpaperInk.body.withValues(alpha: .12)
                 : Colors.transparent,
+          ),
+          side: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.focused)
+                ? BorderSide(color: IslandTokens.light.focus, width: 2)
+                : BorderSide.none,
           ),
         ),
     child: Row(

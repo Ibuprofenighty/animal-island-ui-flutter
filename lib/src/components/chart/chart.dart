@@ -688,7 +688,7 @@ class _IslandChartState extends State<IslandChart>
           (Offset(plot.left, active.y), Offset(plot.right, active.y)),
       ],
     ];
-    final haloTypes = const {
+    const haloTypes = {
       IslandChartType.line,
       IslandChartType.area,
       IslandChartType.mix,
@@ -775,23 +775,25 @@ class _IslandChartState extends State<IslandChart>
           }
           _activate(hit);
         },
-        child: CustomPaint(
-          size: Size(width, chartHeight),
-          painter: _ChartPainter(
-            scene: scene,
-            colors: colors,
-            textStyle: base,
-            showBackground: !empty,
-            emphasis: this,
-            crosshair: crosshair,
-            indicators:
-                widget.highlight &&
-                    active != null &&
-                    (plot != null || type == IslandChartType.radar)
-                ? related
-                : const [],
-            focused: focusedMark,
-            repaint: _emphasis,
+        child: RepaintBoundary(
+          child: CustomPaint(
+            size: Size(width, chartHeight),
+            painter: _ChartPainter(
+              scene: scene,
+              colors: colors,
+              textStyle: base,
+              showBackground: !empty,
+              emphasis: this,
+              crosshair: crosshair,
+              indicators:
+                  widget.highlight &&
+                      active != null &&
+                      (plot != null || type == IslandChartType.radar)
+                  ? related
+                  : const [],
+              focused: focusedMark,
+              repaint: _emphasis,
+            ),
           ),
         ),
       ),

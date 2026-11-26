@@ -48,7 +48,7 @@ class InputStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Input',
-    tags: ["3 sizes"],
+    tags: const ["3 sizes"],
     children: [
       Padding(
         padding: const EdgeInsets.only(top: 12),
@@ -186,7 +186,7 @@ class _SwitchStoryState extends State<SwitchStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Switch',
-    tags: ["2 sizes"],
+    tags: const ["2 sizes"],
     children: [
       const StoryLabel('基础用法', strutStyle: storyCaptionStrut),
       storyRow([

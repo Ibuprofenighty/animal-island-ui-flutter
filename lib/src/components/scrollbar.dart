@@ -153,13 +153,20 @@ class _IslandScrollbarState extends State<IslandScrollbar> {
   /// one when it is the only axis. The framework binds them on some
   /// platforms only; the reference's native scrolling has them everywhere.
   void toBoundary({required bool end}) {
-    final position =
-        (vertical ? verticalController : horizontalController).position;
-    position.moveTo(
-      end ? position.maxScrollExtent : position.minScrollExtent,
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.easeInOut,
-    );
+    final controller = vertical ? verticalController : horizontalController;
+    if (!controller.hasClients) return;
+    final position = controller.position;
+    final reduced = MediaQuery.disableAnimationsOf(context);
+    final target = end ? position.maxScrollExtent : position.minScrollExtent;
+    if (reduced) {
+      position.jumpTo(target);
+    } else {
+      position.moveTo(
+        target,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   bool metricsChanged(ScrollMetricsNotification notification) {
@@ -207,8 +214,12 @@ class _IslandScrollbarState extends State<IslandScrollbar> {
     final verticalGutter = vertical && verticalOverflow ? size : 0.0;
     final horizontalGutter = horizontal && horizontalOverflow ? size : 0.0;
 
+    final scrollable =
+        (vertical && verticalOverflow) || (horizontal && horizontalOverflow);
     Widget area = Focus(
       focusNode: focus,
+      canRequestFocus: scrollable,
+      skipTraversal: !scrollable,
       onKeyEvent: keyUsed,
       child: Padding(padding: widget.padding, child: widget.child),
     );
@@ -317,7 +328,7 @@ class _IslandThumb extends RawScrollbar {
     required double size,
     required Color color,
     required this.hoverColor,
-    required Color? trackColor,
+    required super.trackColor,
     required EdgeInsets inset,
     required super.child,
   }) : super(
@@ -327,7 +338,6 @@ class _IslandThumb extends RawScrollbar {
          radius: Radius.circular(size / 2),
          trackRadius: Radius.circular(size / 2),
          thumbColor: color,
-         trackColor: trackColor,
          trackBorderColor: Colors.transparent,
          crossAxisMargin: 0,
          mainAxisMargin: 0,
@@ -356,7 +366,14 @@ class _IslandThumbState extends RawScrollbarState<_IslandThumb> {
   );
   bool over = false, held = false;
 
-  void settle() => over || held ? hover.forward() : hover.reverse();
+  void settle() {
+    final target = over || held;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      hover.value = target ? 1 : 0;
+      return;
+    }
+    target ? hover.forward() : hover.reverse();
+  }
 
   @override
   void updateScrollbarPainter() {

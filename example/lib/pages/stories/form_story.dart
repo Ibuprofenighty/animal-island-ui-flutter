@@ -106,7 +106,7 @@ class _FormStoryState extends State<FormStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Form',
-    tags: ["表单", "useForm", "校验"],
+    tags: const ["表单", "useForm", "校验"],
     children: [
       const StoryLabel(
         'Form 表单组件 — 集成表单实例、校验规则、布局网格、依赖字段等基础能力。',
@@ -289,9 +289,9 @@ class _FormStoryState extends State<FormStory> {
           children: [
             IslandForm(
               layout: IslandFormLayout.vertical,
-              initialValues: {
+              initialValues: const {
                 'radio': 'cat',
-                'check': {'b'},
+                'check': const {'b'},
               },
               onValuesChanged: (_, all) => setState(() => live = all),
               children: [

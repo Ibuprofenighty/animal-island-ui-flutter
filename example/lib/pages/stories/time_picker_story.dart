@@ -15,7 +15,7 @@ class _TimePickerStoryState extends State<TimePickerStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'TimePicker',
-    tags: ["基础用法"],
+    tags: const ["基础用法"],
     children: [
       const StoryLabel('受控模式', strutStyle: storyCaptionStrut),
       Padding(

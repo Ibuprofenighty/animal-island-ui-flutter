@@ -122,12 +122,17 @@ class _IslandRateState extends State<IslandRate>
     if (event is! KeyDownEvent || widget.readOnly)
       return KeyEventResult.ignored;
     final key = event.logicalKey;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final incKey = rtl
+        ? LogicalKeyboardKey.arrowLeft
+        : LogicalKeyboardKey.arrowRight;
+    final decKey = rtl
+        ? LogicalKeyboardKey.arrowRight
+        : LogicalKeyboardKey.arrowLeft;
     int? next;
-    if (key == LogicalKeyboardKey.arrowRight ||
-        key == LogicalKeyboardKey.arrowUp)
+    if (key == incKey || key == LogicalKeyboardKey.arrowUp)
       next = math.min(widget.count, value + 1);
-    if (key == LogicalKeyboardKey.arrowLeft ||
-        key == LogicalKeyboardKey.arrowDown)
+    if (key == decKey || key == LogicalKeyboardKey.arrowDown)
       next = math.max(1, value - 1);
     if (key == LogicalKeyboardKey.home) next = 1;
     if (key == LogicalKeyboardKey.end) next = widget.count;

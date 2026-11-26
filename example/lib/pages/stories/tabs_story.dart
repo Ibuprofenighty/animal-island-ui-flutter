@@ -81,7 +81,7 @@ class _TabsStoryState extends State<TabsStory> {
     ];
     return StoryPanel(
       title: 'Tab',
-      tags: ["基础用法"],
+      tags: const ["基础用法"],
       children: [
         const StoryLabel('shadow 阴影控制'),
         storyRow([

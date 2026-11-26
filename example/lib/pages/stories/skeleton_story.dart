@@ -48,7 +48,7 @@ class _SkeletonStoryState extends State<SkeletonStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Skeleton',
-    tags: ["骨架屏", "加载占位"],
+    tags: const ["骨架屏", "加载占位"],
     children: [
       const StoryLabel('loading 切换'),
       Row(

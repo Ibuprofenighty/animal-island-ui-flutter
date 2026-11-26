@@ -29,7 +29,7 @@ class _DrawerStoryState extends State<DrawerStory> {
     children: [
       StoryPanel(
         title: 'Drawer',
-        tags: ["下沉景深抽屉"],
+        tags: const ["下沉景深抽屉"],
         children: [
           const StoryLabel('四个方向', strutStyle: storyCaptionStrut),
           Wrap(

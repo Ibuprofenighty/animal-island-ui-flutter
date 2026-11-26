@@ -223,16 +223,18 @@ class _IslandPaginationState extends State<IslandPagination> {
       for (final number in pageItems(v.page, count))
         if (number == null)
           flexible(
-            SizedBox(
-              width: 24,
-              height: 32,
-              child: Center(
-                child: Text(
-                  '···',
-                  style: TextStyle(
-                    color: tokens.muted,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
+            ExcludeSemantics(
+              child: SizedBox(
+                width: 24,
+                height: 32,
+                child: Center(
+                  child: Text(
+                    '···',
+                    style: TextStyle(
+                      color: tokens.muted,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1,
+                    ),
                   ),
                 ),
               ),
@@ -275,50 +277,51 @@ class _IslandPaginationState extends State<IslandPagination> {
             spacing: 6,
             children: [
               Text(strings.jumpTo, style: jumperText),
-              SizedBox(
-                width: 52,
-                height: 32,
-                child: Semantics(
-                  label: strings.jumpPage,
-                  child: TextField(
-                    controller: input,
-                    focusNode: inputFocus,
-                    enabled: !widget.disabled,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onSubmitted: (_) => jump(),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: PaginationColors.text,
-                      height: 1,
-                    ),
-                    cursorColor: PaginationColors.text,
-                    decoration: InputDecoration(
-                      visualDensity: VisualDensity.standard,
-                      constraints: const BoxConstraints(minHeight: 32),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 9),
-                      filled: true,
-                      fillColor: widget.disabled
-                          ? PaginationColors.jumperFillDisabled
-                          : PaginationColors.jumperFill,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide.none,
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 52, minHeight: 32),
+                child: IntrinsicWidth(
+                  child: Semantics(
+                    label: strings.jumpPage,
+                    child: TextField(
+                      controller: input,
+                      focusNode: inputFocus,
+                      enabled: !widget.disabled,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onSubmitted: (_) => jump(),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: PaginationColors.text,
+                        height: 1,
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide(
-                          color: IslandTokens.light.outline,
+                      cursorColor: PaginationColors.text,
+                      decoration: InputDecoration(
+                        visualDensity: VisualDensity.standard,
+                        constraints: const BoxConstraints(minHeight: 32),
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 9),
+                        filled: true,
+                        fillColor: widget.disabled
+                            ? PaginationColors.jumperFillDisabled
+                            : PaginationColors.jumperFill,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: BorderSide.none,
                         ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide(
-                          color: IslandTokens.light.focus,
-                          width: 2,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: BorderSide(
+                            color: IslandTokens.light.outline,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: BorderSide(
+                            color: IslandTokens.light.focus,
+                            width: 2,
+                          ),
                         ),
                       ),
                     ),
@@ -414,8 +417,7 @@ class _IslandPaginationState extends State<IslandPagination> {
   ) {
     final teal = widget.variant == IslandPaginationVariant.teal;
     return Container(
-      width: 32,
-      height: 32,
+      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(50),

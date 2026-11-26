@@ -41,7 +41,7 @@ class TooltipStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Tooltip',
-    tags: ["气泡提示"],
+    tags: const ["气泡提示"],
     children: [
       const StoryLabel('基础用法 — hover 触发'),
       box(

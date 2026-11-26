@@ -24,29 +24,31 @@ class IslandBackground extends StatelessWidget {
     final scene =
         type == IslandBackgroundType.sweetCorner ||
         type == IslandBackgroundType.coffeeBreak;
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: CustomPaint(
-        painter: BackgroundPainter(type),
-        child: Stack(
-          children: [
-            if (scene)
-              Positioned.fill(
-                child: ExcludeSemantics(
-                  child: Transform.scale(
-                    scale: sceneScale,
-                    child: SvgPicture.asset(
-                      'assets/scenes/${type.referenceName}.svg',
-                      package: 'animal_island_ui',
-                      fit: sceneScale == 1 ? BoxFit.cover : BoxFit.fitWidth,
-                    ),
-                  ),
-                ),
-              ),
-            Padding(padding: padding, child: child ?? const SizedBox.expand()),
-          ],
+    final content = Stack(
+      children: [
+        Positioned.fill(
+          child: RepaintBoundary(
+            child: CustomPaint(
+              painter: BackgroundPainter(type),
+              child: scene
+                  ? ExcludeSemantics(
+                      child: Transform.scale(
+                        scale: sceneScale,
+                        child: SvgPicture.asset(
+                          'assets/scenes/${type.referenceName}.svg',
+                          package: 'animal_island_ui',
+                          fit: sceneScale == 1 ? BoxFit.cover : BoxFit.fitWidth,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.expand(),
+            ),
+          ),
         ),
-      ),
+        Padding(padding: padding, child: child ?? const SizedBox.expand()),
+      ],
     );
+    if (borderRadius == BorderRadius.zero) return content;
+    return ClipRRect(borderRadius: borderRadius, child: content);
   }
 }

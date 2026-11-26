@@ -90,7 +90,7 @@ class _NotificationStoryState extends State<NotificationStory> {
     controller: notifications,
     child: StoryPanel(
       title: 'Notification',
-      tags: ["命令式", "4 types", "6 positions"],
+      tags: const ["命令式", "4 types", "6 positions"],
       children: [
         // Reference <p>: labelStyle (14/500, margin 20 / 12) with inline <code>.
         Padding(

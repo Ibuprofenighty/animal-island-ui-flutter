@@ -39,7 +39,7 @@ class _RateStoryState extends State<RateStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Rate',
-    tags: ["评分"],
+    tags: const ["评分"],
     children: [
       const StoryLabel('基础用法（受控）— 点击星星评分', strutStyle: storyCaptionStrut),
       caption(descriptions[score]),

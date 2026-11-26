@@ -119,7 +119,7 @@ Future<void> semanticTap(WidgetTester t, String label) async {
   await t.pump();
 }
 
-final basicSeries = IslandChartSeries.values('到访', [12, null, 25]);
+final basicSeries = IslandChartSeries.values('到访', const [12, null, 25]);
 
 IslandChartData basicData(IslandChartType type) {
   final s = basicSeries;
@@ -149,8 +149,8 @@ void main() {
           data: IslandChartData.column(
             categories: const ['周一', '周二'],
             series: [
-              IslandChartSeries.values('本周', [10, 20]),
-              IslandChartSeries.values('上周', [8, 16]),
+              IslandChartSeries.values('本周', const [10, 20]),
+              IslandChartSeries.values('上周', const [8, 16]),
             ],
           ),
         ),
@@ -236,8 +236,8 @@ void main() {
           data: IslandChartData.column(
             categories: const ['周一', '周二'],
             series: [
-              IslandChartSeries.values('本周', [10, 20]),
-              IslandChartSeries.values('上周', [8, 16]),
+              IslandChartSeries.values('本周', const [10, 20]),
+              IslandChartSeries.values('上周', const [8, 16]),
             ],
           ),
         ),
@@ -259,7 +259,7 @@ void main() {
   testWidgets('ring shares follow visible items; legends restore; custom '
       'and disabled tooltips', (t) async {
     final semantics = t.ensureSemantics();
-    final series = const IslandChartSeries(
+    const series = IslandChartSeries(
       name: '区域',
       data: [
         IslandChartValue(30, name: '果园'),
@@ -419,7 +419,7 @@ void main() {
         IslandChart(
           data: IslandChartData.column(
             series: [
-              IslandChartSeries.values('目标', [42]),
+              IslandChartSeries.values('目标', const [42]),
             ],
           ),
           onDataActivate: events.add,
@@ -493,7 +493,7 @@ void main() {
         IslandChart(
           data: IslandChartData.column(
             series: [
-              IslandChartSeries.values('测量', [
+              IslandChartSeries.values('测量', const [
                 null,
                 double.nan,
                 double.infinity,
@@ -596,7 +596,7 @@ void main() {
       chartHost(
         IslandChart(
           data: IslandChartData.pie(
-            series: IslandChartSeries.values('人数', [0, -4]),
+            series: IslandChartSeries.values('人数', const [0, -4]),
           ),
         ),
       ),
@@ -610,7 +610,7 @@ void main() {
         'real value', (t) async {
       final semantics = t.ensureSemantics();
       final series = [
-        IslandChartSeries.values('目标', [150]),
+        IslandChartSeries.values('目标', const [150]),
       ];
       await t.pumpWidget(
         chartHost(
@@ -697,7 +697,7 @@ void main() {
       chartHost(
         IslandChart(
           data: IslandChartData.map(
-            series: IslandChartSeries.values('人数', [1]),
+            series: IslandChartSeries.values('人数', const [1]),
             regions: const [],
           ),
         ),
@@ -760,8 +760,8 @@ void main() {
             categories: const ['甲', '乙', '丙', '丁'],
             max: 100,
             series: [
-              IslandChartSeries.values('本期', [0, 60, null, 50]),
-              IslandChartSeries.values('上期', [0, 70, 40, 55]),
+              IslandChartSeries.values('本期', const [0, 60, null, 50]),
+              IslandChartSeries.values('上期', const [0, 70, 40, 55]),
             ],
           ),
         ),
@@ -795,8 +795,8 @@ void main() {
       'once', (t) async {
     final data = IslandChartData.column(
       series: [
-        IslandChartSeries.values('甲', [10]),
-        IslandChartSeries.values('乙', [20]),
+        IslandChartSeries.values('甲', const [10]),
+        IslandChartSeries.values('乙', const [20]),
       ],
     );
     final g = await mouse(t);
@@ -836,8 +836,8 @@ void main() {
             description: '本周与上周',
             data: IslandChartData.column(
               series: [
-                IslandChartSeries.values('甲', [10]),
-                IslandChartSeries.values('乙', [20]),
+                IslandChartSeries.values('甲', const [10]),
+                IslandChartSeries.values('乙', const [20]),
               ],
             ),
           ),
@@ -893,7 +893,7 @@ void main() {
         IslandChart(
           data: IslandChartData.line(
             series: [
-              IslandChartSeries.values('甲', [1, 2, 3]),
+              IslandChartSeries.values('甲', const [1, 2, 3]),
             ],
           ),
         ),
@@ -941,7 +941,7 @@ void main() {
         IslandChart(
           data: IslandChartData.column(
             series: [
-              IslandChartSeries.values('甲', [10, 20]),
+              IslandChartSeries.values('甲', const [10, 20]),
             ],
           ),
         ),
@@ -971,7 +971,7 @@ void main() {
     final chart = IslandChart(
       data: IslandChartData.column(
         series: [
-          IslandChartSeries.values('甲', [10, 20]),
+          IslandChartSeries.values('甲', const [10, 20]),
         ],
       ),
     );
@@ -1016,7 +1016,7 @@ void main() {
             description: description,
             data: IslandChartData.column(
               series: [
-                IslandChartSeries.values('甲', [10]),
+                IslandChartSeries.values('甲', const [10]),
               ],
             ),
           ),
@@ -1048,7 +1048,7 @@ void main() {
             description: description,
             data: IslandChartData.column(
               series: [
-                IslandChartSeries.values('a', [10]),
+                IslandChartSeries.values('a', const [10]),
               ],
             ),
           ),

@@ -53,7 +53,7 @@ class _CountUpStoryState extends State<CountUpStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'CountUp',
-    tags: ["数字滚动", "游戏结算"],
+    tags: const ["数字滚动", "游戏结算"],
     children: [
       const StoryLabel('游戏结算：从 0 滚到本局总分，结束时庆祝一下'),
       IslandCountUp(

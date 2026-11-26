@@ -93,14 +93,14 @@ void main() {
                   child: storyRow([
                     IslandSelect<String>(
                       label: 'Flower',
-                      options: [const IslandOption(value: 'a', label: 'A')],
+                      options: const [IslandOption(value: 'a', label: 'A')],
                       value: null,
                       onChanged: (_) {},
                     ),
                     IslandSelect<String>(
                       label: 'Fruit',
                       focusNode: focus,
-                      options: [const IslandOption(value: 'b', label: 'B')],
+                      options: const [IslandOption(value: 'b', label: 'B')],
                       value: value,
                       onChanged: (next) => set(() => value = next),
                     ),

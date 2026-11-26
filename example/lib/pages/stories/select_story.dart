@@ -102,7 +102,7 @@ class _SelectStoryState extends State<SelectStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Select',
-    tags: ["基础用法"],
+    tags: const ["基础用法"],
     children: [
       label('variant 弹出方式', first: true),
       box(

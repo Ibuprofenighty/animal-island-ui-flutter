@@ -22,7 +22,7 @@ class _DatePickerStoryState extends State<DatePickerStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'DatePicker',
-    tags: ["基础用法"],
+    tags: const ["基础用法"],
     children: [
       const StoryLabel('受控模式', strutStyle: storyCaptionStrut),
       selection('当前选中: ', value == null ? '未选择' : date(value!)),

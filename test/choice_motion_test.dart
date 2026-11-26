@@ -123,7 +123,7 @@ void main() {
               builder: (_, set) {
                 update = set;
                 return IslandCheckboxGroup(
-                  options: [const IslandOption(value: 1, label: 'Choice')],
+                  options: const [IslandOption(value: 1, label: 'Choice')],
                   values: checked ? {1} : <int>{},
                   onChanged: (_) => requests++,
                 );

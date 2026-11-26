@@ -24,7 +24,7 @@ class _TagStoryState extends State<TagStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Tag',
-    tags: ["4 variants", "16 colors", "3 sizes"],
+    tags: const ["4 variants", "16 colors", "3 sizes"],
     children: [
       const StoryLabel('variant 风格变体'),
       storyRow([

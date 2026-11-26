@@ -89,8 +89,13 @@ class _IslandCountUpState extends State<IslandCountUp>
     vsync: this,
     duration: const Duration(milliseconds: 900),
   );
+  static final RegExp trailingZeros = RegExp(r'0+$');
+  static final RegExp thousands = RegExp(r'\B(?=(\d{3})+(?!\d))');
+
   late double from = widget.start;
-  late double display = widget.start;
+  late final ValueNotifier<double> display = ValueNotifier<double>(
+    widget.start,
+  );
   bool finished = false;
   int generation = 0;
   Timer? repeat, celebrationRemoval;
@@ -134,7 +139,8 @@ class _IslandCountUpState extends State<IslandCountUp>
     timeline.removeListener(tick);
     timeline.value = 0;
     timeline.addListener(tick);
-    setState(() => display = from);
+    display.value = from;
+    setState(() {});
     scheduleStart();
   }
 
@@ -182,7 +188,7 @@ class _IslandCountUpState extends State<IslandCountUp>
         : micros;
     final progress = (elapsed / widget.duration.inMicroseconds).clamp(0.0, 1.0);
     final next = from + (widget.end - from) * widget.curve.transform(progress);
-    if (next != display) setState(() => display = next);
+    if (next != display.value) display.value = next;
     widget.onUpdate?.call(next);
   }
 
@@ -191,9 +197,12 @@ class _IslandCountUpState extends State<IslandCountUp>
     final token = generation;
     finished = true;
     timeline.stop();
-    setState(() => display = widget.end);
-    if (widget.celebrate || widget.celebration != null) {
-      setState(() => celebrating = true);
+    display.value = widget.end;
+    final shouldCelebrate = widget.celebrate || widget.celebration != null;
+    setState(() {
+      if (shouldCelebrate) celebrating = true;
+    });
+    if (shouldCelebrate) {
       celebrationRemoval?.cancel();
       celebrationRemoval = Timer(const Duration(milliseconds: 900), () {
         if (mounted && token == generation) setState(() => celebrating = false);
@@ -222,6 +231,7 @@ class _IslandCountUpState extends State<IslandCountUp>
     repeat?.cancel();
     celebrationRemoval?.cancel();
     widget.controller?.removeListener(resetFromController);
+    display.dispose();
     timeline.dispose();
     celebration.dispose();
     super.dispose();
@@ -231,7 +241,7 @@ class _IslandCountUpState extends State<IslandCountUp>
     final text = v.toString();
     final parts = text.toLowerCase().split('e');
     final fraction = parts[0].contains('.')
-        ? parts[0].split('.').last.replaceAll(RegExp(r'0+$'), '').length
+        ? parts[0].split('.').last.replaceAll(trailingZeros, '').length
         : 0;
     final exponent = parts.length == 2 ? int.parse(parts[1]) : 0;
     return (fraction - exponent).clamp(0, 20);
@@ -243,7 +253,7 @@ class _IslandCountUpState extends State<IslandCountUp>
         math.max(decimals(widget.start), decimals(widget.end));
     final parts = v.toStringAsFixed(places).split('.');
     final integer = parts[0].replaceAllMapped(
-      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      thousands,
       (_) => widget.thousandsSeparator,
     );
     return places == 0
@@ -292,8 +302,11 @@ class _IslandCountUpState extends State<IslandCountUp>
               letterSpacing: font * .01,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
-            child:
-                widget.builder?.call(context, display) ?? Text(format(display)),
+            child: ValueListenableBuilder<double>(
+              valueListenable: display,
+              builder: (context, value, _) =>
+                  widget.builder?.call(context, value) ?? Text(format(value)),
+            ),
           ),
           if (widget.suffix != null) affix(widget.suffix!),
         ],
@@ -303,7 +316,7 @@ class _IslandCountUpState extends State<IslandCountUp>
       container: true,
       liveRegion: !timeline.isAnimating,
       label: widget.semanticLabel,
-      value: timeline.isAnimating ? '' : format(display),
+      value: timeline.isAnimating ? '' : format(display.value),
       child: ExcludeSemantics(
         child: ExcludeFocus(
           child: NumberSurface(

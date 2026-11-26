@@ -10,7 +10,7 @@ class IconStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Icon',
-    tags: ["naive-icons"],
+    tags: const ["naive-icons"],
     children: [
       const StoryLabel(
         '图标来自 naive-icons —— 手绘 naive folk art 风格的 SVG 图标库，原创图标；Flutter 包已内置固定版本资源。',
@@ -98,9 +98,7 @@ class IconStory extends StatelessWidget {
               spacing: 14,
               runSpacing: 14,
               children: [
-                for (final glyph in (List<IslandGlyph>.of(
-                  IslandGlyph.values,
-                )..sort((a, b) => '${a.name}Icon'.compareTo('${b.name}Icon'))))
+                for (final glyph in _sortedGlyphs)
                   SizedBox(width: width, child: _IconTile(glyph)),
               ],
             );
@@ -126,6 +124,11 @@ class IconStory extends StatelessWidget {
   );
 }
 
+final List<IslandGlyph> _sortedGlyphs = List<IslandGlyph>.unmodifiable(
+  List<IslandGlyph>.of(IslandGlyph.values)
+    ..sort((a, b) => '${a.name}Icon'.compareTo('${b.name}Icon')),
+);
+
 class _IconTile extends StatefulWidget {
   const _IconTile(this.glyph);
   final IslandGlyph glyph;
@@ -135,87 +138,98 @@ class _IconTile extends StatefulWidget {
 
 class _IconTileState extends State<_IconTile> {
   bool hover = false;
+  bool interacted = false;
+
   @override
   Widget build(BuildContext context) {
     final name = widget.glyph.name;
     final title = name[0].toUpperCase() + name.substring(1);
-    return MouseRegion(
-      onEnter: (_) => setState(() => hover = true),
-      onExit: (_) => setState(() => hover = false),
-      child: TweenAnimationBuilder<Matrix4>(
+    final decoration = BoxDecoration(
+      color: hover ? GalleryPalette.iconTileHover : GalleryPalette.iconTile,
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(
+        color: hover ? GalleryPalette.iconTileHoverBorder : Colors.transparent,
+      ),
+    );
+    final content = Column(
+      spacing: 8,
+      children: [
+        IslandIcon(widget.glyph, size: 45),
+        Text(
+          '${title}Icon',
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.visible,
+          strutStyle: const StrutStyle(
+            fontSize: 11,
+            height: 13 / 11,
+            forceStrutHeight: true,
+          ),
+          style: const TextStyle(
+            fontSize: 11,
+            fontFamily: IslandTheme.codeFontFamily,
+            height: 13 / 11,
+            letterSpacing: 0,
+            color: GalleryPalette.iconTileName,
+          ),
+        ),
+        Text(
+          iconLabels[name] ?? title,
+          strutStyle: StrutStyle(
+            fontSize: 13,
+            height: _cjkPattern.hasMatch(iconLabels[name] ?? title)
+                ? 20 / 13
+                : 18 / 13,
+            forceStrutHeight: true,
+          ),
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: GalleryPalette.storyInk,
+          ),
+        ),
+      ],
+    );
+    const tilePadding = EdgeInsets.symmetric(horizontal: 6, vertical: 14);
+    Widget tile;
+    if (!interacted) {
+      tile = DecoratedBox(
+        decoration: decoration,
+        child: Padding(padding: tilePadding, child: content),
+      );
+    } else {
+      final duration = MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 150);
+      tile = TweenAnimationBuilder<Matrix4>(
         tween: Matrix4Tween(
           end: Matrix4.translationValues(0, hover ? -2 : 0, 0),
         ),
-        duration: MediaQuery.disableAnimationsOf(context)
-            ? Duration.zero
-            : const Duration(milliseconds: 150),
+        duration: duration,
         curve: Curves.ease,
         builder: (_, matrix, child) => Transform(
           transform: matrix,
           filterQuality: FilterQuality.low,
-
           child: child,
         ),
         child: AnimatedContainer(
-          duration: MediaQuery.disableAnimationsOf(context)
-              ? Duration.zero
-              : const Duration(milliseconds: 150),
+          duration: duration,
           curve: Curves.ease,
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
-          decoration: BoxDecoration(
-            color: hover
-                ? GalleryPalette.iconTileHover
-                : GalleryPalette.iconTile,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: hover
-                  ? GalleryPalette.iconTileHoverBorder
-                  : Colors.transparent,
-            ),
-          ),
-          child: Column(
-            spacing: 8,
-            children: [
-              IslandIcon(widget.glyph, size: 45),
-              Text(
-                '${title}Icon',
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.visible,
-                strutStyle: const StrutStyle(
-                  fontSize: 11,
-                  height: 13 / 11,
-                  forceStrutHeight: true,
-                ),
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontFamily: IslandTheme.codeFontFamily,
-                  height: 13 / 11,
-                  letterSpacing: 0,
-                  color: GalleryPalette.iconTileName,
-                ),
-              ),
-              Text(
-                iconLabels[name] ?? title,
-                strutStyle: StrutStyle(
-                  fontSize: 13,
-                  height:
-                      RegExp(r'[\u3400-\u9fff]')
-                          .hasMatch(iconLabels[name] ?? title)
-                      ? 20 / 13
-                      : 18 / 13,
-                  forceStrutHeight: true,
-                ),
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: GalleryPalette.storyInk,
-                ),
-              ),
-            ],
-          ),
+          padding: tilePadding,
+          decoration: decoration,
+          child: content,
         ),
-      ),
+      );
+    }
+    return MouseRegion(
+      onEnter: (_) => setState(() {
+        interacted = true;
+        hover = true;
+      }),
+      onExit: (_) => setState(() => hover = false),
+      child: tile,
     );
   }
 }
+
+final RegExp _cjkPattern = RegExp(r'[\u3400-\u9fff]');

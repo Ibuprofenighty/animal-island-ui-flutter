@@ -22,7 +22,7 @@ void main() {
                     onPressed: () {},
                     child: const Text('Outside'),
                   ),
-                  IslandLoading(tip: const Text('Busy')),
+                  const IslandLoading(tip: Text('Busy')),
                 ],
               ),
             ),
@@ -52,10 +52,10 @@ void main() {
     t,
   ) async {
     await t.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: MediaQuery(
-          data: const MediaQueryData(disableAnimations: true),
-          child: Scaffold(body: IslandLoading(tip: const Text('vignette'))),
+          data: MediaQueryData(disableAnimations: true),
+          child: Scaffold(body: IslandLoading(tip: Text('vignette'))),
         ),
       ),
     );
@@ -260,15 +260,15 @@ void main() {
     'removal cancels pending show and snow ticker; siblings have isolated lifecycles',
     (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: Column(
               children: [
                 IslandLoading(
-                  delay: const Duration(seconds: 2),
-                  tip: const Text('Delayed'),
+                  delay: Duration(seconds: 2),
+                  tip: Text('Delayed'),
                 ),
-                IslandLoading(tip: const Text('Immediate')),
+                IslandLoading(tip: Text('Immediate')),
               ],
             ),
           ),

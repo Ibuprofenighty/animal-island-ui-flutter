@@ -54,8 +54,13 @@ class _ChartPainter extends CustomPainter {
 
   Color _tone(_Tone tone) => tone.color ?? _ink(tone.ink!);
 
+  static final Expando<Path> _dashedCache = Expando<Path>('chartDashedPath');
+
   @override
   void paint(Canvas canvas, Size size) {
+    // Bounded so the dimming layers stay small, with room for a mark's 2px
+    // drop shadow, its blur and a stroke that reaches past the canvas edge.
+    final bounds = (Offset.zero & size).inflate(16);
     if (showBackground) {
       for (final shape in scene.background) {
         _shape(canvas, shape);
@@ -64,6 +69,7 @@ class _ChartPainter extends CustomPainter {
     for (final layer in scene.layers) {
       _group(
         canvas,
+        bounds,
         emphasis.layerOpacity(layer.seriesIndex),
         () => layer.shapes.forEach((s) => _shape(canvas, s)),
       );
@@ -83,7 +89,7 @@ class _ChartPainter extends CustomPainter {
     }
     for (final mark in scene.marks) {
       final shadow = emphasis.markShadow(mark.identity);
-      _group(canvas, emphasis.markOpacity(mark.identity), () {
+      _group(canvas, bounds, emphasis.markOpacity(mark.identity), () {
         if (shadow > 0) _shadow(canvas, mark, shadow);
         for (final s in mark.shapes) {
           _shape(canvas, s);
@@ -113,13 +119,13 @@ class _ChartPainter extends CustomPainter {
     }
   }
 
-  void _group(Canvas canvas, double opacity, VoidCallback draw) {
+  void _group(Canvas canvas, Rect bounds, double opacity, VoidCallback draw) {
     if (opacity >= 1) {
       draw();
       return;
     }
     canvas.saveLayer(
-      null,
+      bounds,
       Paint()..color = colors.surface.withValues(alpha: opacity),
     );
     draw();
@@ -179,6 +185,7 @@ class _ChartPainter extends CustomPainter {
               ..strokeCap = shape.round ? StrokeCap.round : StrokeCap.butt
               ..strokeJoin = shape.round ? StrokeJoin.round : StrokeJoin.miter,
             shape.dash,
+            cacheKey: shape,
           );
         }
       case _TextShape():
@@ -186,26 +193,36 @@ class _ChartPainter extends CustomPainter {
     }
   }
 
-  void _stroke(Canvas canvas, Path path, Paint paint, List<double>? dash) {
+  void _stroke(
+    Canvas canvas,
+    Path path,
+    Paint paint,
+    List<double>? dash, {
+    Object? cacheKey,
+  }) {
     if (dash == null) {
       canvas.drawPath(path, paint);
       return;
     }
-    final dashed = Path();
-    for (final metric in path.computeMetrics()) {
-      var distance = 0.0;
-      var i = 0;
-      while (distance < metric.length) {
-        final length = dash[i % dash.length];
-        if (i.isEven) {
-          dashed.addPath(
-            metric.extractPath(distance, distance + length),
-            Offset.zero,
-          );
+    Path? dashed = cacheKey != null ? _dashedCache[cacheKey] : null;
+    if (dashed == null) {
+      dashed = Path();
+      for (final metric in path.computeMetrics()) {
+        var distance = 0.0;
+        var i = 0;
+        while (distance < metric.length) {
+          final length = dash[i % dash.length];
+          if (i.isEven) {
+            dashed.addPath(
+              metric.extractPath(distance, distance + length),
+              Offset.zero,
+            );
+          }
+          distance += length;
+          i++;
         }
-        distance += length;
-        i++;
       }
+      if (cacheKey != null) _dashedCache[cacheKey] = dashed;
     }
     canvas.drawPath(dashed, paint);
   }
@@ -247,5 +264,12 @@ class _ChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _ChartPainter old) => true;
+  bool shouldRepaint(covariant _ChartPainter old) =>
+      !identical(old.scene, scene) ||
+      old.colors != colors ||
+      old.textStyle != textStyle ||
+      old.showBackground != showBackground ||
+      old.focused != focused ||
+      !listEquals(old.crosshair, crosshair) ||
+      !listEquals(old.indicators, indicators);
 }

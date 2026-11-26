@@ -48,6 +48,7 @@ class PickerTrigger extends StatelessWidget {
     return ActionSurface(
       expanded: open,
       focusNode: focusNode,
+      isolateChildFocus: true,
       onKeyboardActivate: onKeyboardActivate,
       label: label,
       onActivate: disabled ? null : onActivate,
@@ -122,10 +123,13 @@ class PickerTrigger extends StatelessWidget {
                   ),
                   if (onClear != null && !disabled && hasValue)
                     Padding(
-                      padding: const EdgeInsets.only(left: 12),
+                      padding: const EdgeInsetsDirectional.only(start: 12),
                       child: ActionSurface(
                         label: clearLabel,
-                        onActivate: onClear,
+                        onActivate: () {
+                          onClear!();
+                          focusNode?.requestFocus();
+                        },
                         builder: (_, states) => Container(
                           width: 20,
                           height: 20,

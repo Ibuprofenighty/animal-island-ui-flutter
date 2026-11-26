@@ -58,7 +58,7 @@ class ImageStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Image',
-    tags: ["13 props"],
+    tags: const ["13 props"],
     children: [
       const StoryLabel(
         '点击预览（preview 默认开启，点击图片弹出大图，ESC / 遮罩 / 关闭按钮均可关闭）',

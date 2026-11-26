@@ -45,7 +45,7 @@ class BackgroundStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Background',
-    tags: ["19 types · Card pattern base · 2 scene images"],
+    tags: const ["19 types · Card pattern base · 2 scene images"],
     children: [
       const StoryLabel('全部类型（dots-* 底色对应 Card pattern-* 系列，hover 预览整站壁纸）'),
       Wrap(

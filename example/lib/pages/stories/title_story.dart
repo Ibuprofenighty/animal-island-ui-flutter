@@ -68,7 +68,7 @@ class _TitleStoryState extends State<TitleStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Title',
-    tags: ["标题"],
+    tags: const ["标题"],
     children: [
       label('全部类型（随机取色）'),
       _TitleDemoBox(

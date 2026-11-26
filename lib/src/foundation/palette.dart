@@ -1,7 +1,7 @@
 import 'package:flutter/painting.dart';
 
 /// Tier 1 of the colour system: every raw colour value the library paints
-/// outside its indexed foundation tables ([IslandColorway] data, the generated
+/// outside its indexed foundation tables (`IslandColorway` data, the generated
 /// Background/sprinkle tables), defined exactly once.
 ///
 /// Names follow a tonal palette (as in Material 3 tonal palettes): a hue
@@ -12,7 +12,7 @@ import 'package:flutter/painting.dart';
 /// green, teal, blue, violet and red by OKLCH hue. Near-identical values keep
 /// separate names; merging them would change rendering.
 ///
-/// Semantic roles ([IslandTokens]) and the per-component recipes in
+/// Semantic roles (`IslandTokens`) and the per-component recipes in
 /// `recipes/` reference these names; components and Gallery never hold
 /// colour literals. Internal: not exported from the public root.
 abstract final class Primitive {

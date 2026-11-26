@@ -21,7 +21,7 @@ void main() {
                     StatefulBuilder(
                       builder: (_, set) {
                         update = set;
-                        final items = const [
+                        const items = [
                           IslandTab(
                             value: 'a',
                             label: Text('Alpha'),
@@ -328,6 +328,52 @@ void main() {
             .map((d) => d.color);
         expect(fills, contains(expected));
       }
+    },
+  );
+  testWidgets(
+    'the panel is a Tab stop after the active tab, as the reference',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: IslandTabs<String>(
+              value: 'a',
+              onChanged: (_) {},
+              items: const [
+                IslandTab(
+                  value: 'a',
+                  label: Text('Alpha'),
+                  child: Text('Panel A'),
+                ),
+                IslandTab(
+                  value: 'b',
+                  label: Text('Beta'),
+                  child: Text('Panel B'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      final tab = FocusManager.instance.primaryFocus;
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      final panel = FocusManager.instance.primaryFocus!;
+      expect(panel, isNot(tab));
+      var holdsPanel = false;
+      panel.context!.visitChildElements((child) {
+        holdsPanel = find
+            .descendant(
+              of: find.byElementPredicate((e) => e == child),
+              matching: find.text('Panel A'),
+              matchRoot: true,
+            )
+            .evaluate()
+            .isNotEmpty;
+      });
+      expect(holdsPanel, isTrue);
     },
   );
 }

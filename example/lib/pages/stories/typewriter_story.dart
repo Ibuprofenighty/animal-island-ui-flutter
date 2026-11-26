@@ -24,7 +24,7 @@ class _TypewriterStoryState extends State<TypewriterStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Typewriter',
-    tags: ["打字机"],
+    tags: const ["打字机"],
     children: [
       const StoryLabel('基础用法', strutStyle: storyCaptionStrut),
       box(

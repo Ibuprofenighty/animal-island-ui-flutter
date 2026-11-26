@@ -238,11 +238,17 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 | Form error text / Form 错误文字 | Keep the theme `dangerText`; the reference `#ff4d4f` is 3.3:1 on white, under the 4.5:1 text rule / 保持达标的 dangerText | The [measured colour rule](#measured-color-differences) |
 
 <a id="behaviour-differences-400"></a>
+<a id="owner-decisions-2026-11-25"></a>
 ## Owner decisions / 所有者决定（2026-11-25）
 
 | Item | Decision | Reason |
 |---|---|---|
 | Icon paint roles (228 glyphs added by 1.17.0) / 1.17.0 新增图标的配色角色 | The same rules O1–O5. The 42 roles they left in 23 glyphs (41 inherited interior strokes that stay `currentColor` because fixed ink would fall under 3:1 on the glyph's own dark paint, and the coloured-fill silhouette of `generate`) and the `rope` glyph, whose brown body meets the host at 2.13:1 on dark paper at 24px, keep upstream paint by owner decision of 2026-11-25 (O7) | The same disposition the owner chose for these categories in the 1.14.0 round; kept roles are measured and recorded, not certified / 沿用 O1–O5；规则留下的 23 个图标共 42 项角色与 `rope` 图标按 2026-11-25 的所有者决定保留上游配色（O7），仅记录实测值，未认证 |
+| Notification hold / 通知保持 | Kept: a hovered notification, or one with keyboard focus, does not expire and leaving restarts the full duration. Focus left by a press does not hold it. The reference timer runs regardless | WCAG 2.2.1 (timing adjustable); a press must not pin a notification open |
+| Tooltip on keyboard focus / Tooltip 键盘焦点 | Kept: the hover trigger also opens for keyboard focus on a descendant, not for focus left by a press. The reference hover trigger listens to the pointer only | WCAG 1.4.13: the description must be reachable without a pointer |
+| Focus ring after a pointer press under accessible navigation / 读屏开启时指针按下后的焦点环 | Removed: the ring follows `:focus-visible` only, as the reference | No platform convention; assistive technology draws its own focus indicator |
+| Table row focus border / Table 行焦点边框 | Kept at 2px (was 1px); the reference has no row focus style | The library's focus rings are 2px (WCAG 2.4.13 basis) |
+| Gallery sidebar and home footer focus / Gallery 侧栏与首页页脚焦点 | Kept: 2px focus-token border for keyboard focus. Observed on 2026-11-25 in the local upstream build: the reference sidebar entries are plain `div` elements with no tab stop, so there is no reference focus style to match | WCAG 2.4.7 (focus visible) for entries the Gallery makes keyboard reachable |
 
 ## Deliberate behaviour differences (4.0.0 components) / 有意行为差异（4.0.0 新组件）
 
@@ -294,7 +300,7 @@ The Time colon is a decorative separator: it blinks on the reference 1s step-end
 
 The 4.0.0 ports and new components keep the reference values below, or the stated current behavior, until the owner decides. Colour items that the [measured colour rule](#measured-color-differences) settles are registered in its table; only items it does not settle remain here. Contrast figures are measured on the composited surfaces named and are not acceptance evidence. 4.0.0 版本既有组件移植与新组件暂保留下列参考值或所述现状，待所有者裁决；实测配色规则可裁定的颜色项已登记于其表格，此处仅保留该规则无法裁定的项目。对比度为在所列合成表面上的实测值，不构成验收证据。
 
-None at present; the last two items were decided on 2026-11-20 and moved to the [owner decisions](#owner-decisions-2026-11-19). 目前没有待决项；最后两项已于 2026-11-20 裁决并移入所有者决定。
+None at present; the five items an accessibility pass added on 2026-11-25 were decided the same day and moved to the [owner decisions](#owner-decisions-2026-11-25). 目前没有待决项；2026-11-25 无障碍改动带来的五项已于当日裁决并移入所有者决定。
 
 <a id="notification-type"></a>
 ## Notification type / 通知类型

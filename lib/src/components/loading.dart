@@ -26,7 +26,7 @@ enum IslandLoadingType {
 /// The host owns activity and work; this root overlay owns display delay,
 /// decoration and animation resources. Input is restored only after removal.
 class IslandLoading extends StatefulWidget {
-  IslandLoading({
+  const IslandLoading({
     super.key,
     this.type = IslandLoadingType.snow,
     this.showBoat = true,
@@ -35,8 +35,7 @@ class IslandLoading extends StatefulWidget {
     this.delay = Duration.zero,
     this.fadeDuration = const Duration(milliseconds: 600),
     this.semanticLabel,
-  }) : assert(!delay.isNegative),
-       assert(!fadeDuration.isNegative);
+  });
 
   /// Presentation form; the snow form is the default.
   final IslandLoadingType type;
@@ -48,7 +47,7 @@ class IslandLoading extends StatefulWidget {
   final Widget? tip;
 
   /// [fadeDuration] is the snow fade, or the circle-reveal length of the
-  /// circle form.
+  /// circle form. Neither may be negative.
   final Duration delay, fadeDuration;
   final String? semanticLabel;
   @override
@@ -110,6 +109,7 @@ class _IslandLoadingState extends State<IslandLoading>
   @override
   void initState() {
     super.initState();
+    assert(!widget.delay.isNegative && !widget.fadeDuration.isNegative);
     // An immediately active surface is present from the first build, so the
     // content below never shows before the mask.
     if (widget.active && widget.delay == Duration.zero) {
@@ -221,6 +221,7 @@ class _IslandLoadingState extends State<IslandLoading>
   @override
   void didUpdateWidget(IslandLoading old) {
     super.didUpdateWidget(old);
+    assert(!widget.delay.isNegative && !widget.fadeDuration.isNegative);
     if (old.type != widget.type || old.showBoat != widget.showBoat) {
       driveScene();
     }

@@ -43,7 +43,7 @@ class _BackTopStoryState extends State<BackTopStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'BackTop',
-    tags: ["返回顶部", "上箭头"],
+    tags: const ["返回顶部", "上箭头"],
     children: [
       Text(
         '页面已自动滚动到底部，点击右下角的上箭头返回顶部。',

@@ -253,10 +253,13 @@ class _ViewportOverlayState extends State<ViewportOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    // Register dependencies so frozen theme captures refresh while open.
+    // Register dependencies so frozen captures refresh while open.
     Theme.of(context);
     IconTheme.of(context);
     DefaultTextStyle.of(context);
+    MediaQuery.of(context);
+    Directionality.of(context);
+    Localizations.maybeLocaleOf(context);
     return const SizedBox.shrink();
   }
 }

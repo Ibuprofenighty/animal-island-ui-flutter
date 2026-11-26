@@ -345,7 +345,7 @@ class _IslandDrawerState extends State<IslandDrawer>
             child: Semantics(
               role: SemanticsRole.dialog,
               scopesRoute: true,
-              namesRoute: true,
+              namesRoute: widget.semanticLabel != null,
               explicitChildNodes: true,
               label: widget.semanticLabel,
               child: LightSurfaceScope(

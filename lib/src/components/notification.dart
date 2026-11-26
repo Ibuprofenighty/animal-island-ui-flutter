@@ -73,6 +73,7 @@ class _Entry {
   final Object id;
   IslandNotification notification;
   Timer? expiry, removal;
+  bool paused = false;
   bool leaving = false;
   VoidCallback? closed;
   void cancel() {
@@ -112,9 +113,28 @@ class IslandNotificationsController extends ChangeNotifier {
 
   void _schedule(_Entry entry) {
     entry.expiry?.cancel();
+    entry.expiry = null;
+    // A new or updated notification always starts its own duration; a hold
+    // begins again with the next pointer entry or focus change.
+    entry.paused = false;
     if (entry.notification.duration > Duration.zero) {
       entry.expiry = Timer(entry.notification.duration, () => _close(entry));
     }
+  }
+
+  /// A hovered or focused notification stays; leaving it restarts the full
+  /// duration, so the remaining time never depends on a wall clock.
+  void _pause(_Entry entry) {
+    if (_disposed || entry.leaving || entry.paused) return;
+    entry.paused = true;
+    entry.expiry?.cancel();
+    entry.expiry = null;
+  }
+
+  void _resume(_Entry entry) {
+    if (_disposed || entry.leaving || !entry.paused) return;
+    entry.paused = false;
+    _schedule(entry);
   }
 
   void _close(_Entry entry) {
@@ -326,6 +346,9 @@ class _IslandNotificationsState extends State<IslandNotifications> {
                                 key: ObjectKey(entry),
                                 entry: entry,
                                 onClose: () => widget.controller._close(entry),
+                                onPause: () => widget.controller._pause(entry),
+                                onResume: () =>
+                                    widget.controller._resume(entry),
                               ),
                           ],
                         ),
@@ -345,15 +368,30 @@ class _NotificationCard extends StatefulWidget {
     super.key,
     required this.entry,
     required this.onClose,
+    required this.onPause,
+    required this.onResume,
   });
   final _Entry entry;
   final VoidCallback onClose;
+  final VoidCallback onPause;
+  final VoidCallback onResume;
   @override
   State<_NotificationCard> createState() => _NotificationCardState();
 }
 
 class _NotificationCardState extends State<_NotificationCard>
     with SingleTickerProviderStateMixin {
+  bool hovered = false;
+  bool focusedWithin = false;
+
+  void syncPause() {
+    if (hovered || focusedWithin) {
+      widget.onPause();
+    } else {
+      widget.onResume();
+    }
+  }
+
   late final motion = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 250),
@@ -469,18 +507,39 @@ class _NotificationCardState extends State<_NotificationCard>
             // a live region. Only the Web engine projects these roles and
             // the framework forbids a role together with the live-region
             // flag, so the other platforms keep the flag.
-            child: Semantics(
-              liveRegion: !kIsWeb || n.onPressed != null,
-              container: true,
-              role: !kIsWeb || n.onPressed != null
-                  ? null
-                  : n.type == IslandNotificationType.error
-                  ? SemanticsRole.alert
-                  : SemanticsRole.status,
-              child: ActionSurface(
-                onActivate: n.onPressed,
-                button: n.onPressed != null,
-                builder: surface,
+            child: MouseRegion(
+              onEnter: (_) {
+                hovered = true;
+                syncPause();
+              },
+              onExit: (_) {
+                hovered = false;
+                syncPause();
+              },
+              child: Focus(
+                canRequestFocus: false,
+                skipTraversal: true,
+                onFocusChange: (focused) {
+                  // Keyboard focus holds the notification; focus that a
+                  // press on it left behind must not keep it open.
+                  focusedWithin = focused && !InputModality.pointer;
+                  syncPause();
+                },
+                child: Semantics(
+                  liveRegion: !kIsWeb || n.onPressed != null,
+                  container: true,
+                  role: !kIsWeb || n.onPressed != null
+                      ? null
+                      : n.type == IslandNotificationType.error
+                      ? SemanticsRole.alert
+                      : SemanticsRole.status,
+                  child: ActionSurface(
+                    onActivate: n.onPressed,
+                    button: n.onPressed != null,
+                    isolateChildFocus: n.onPressed != null,
+                    builder: surface,
+                  ),
+                ),
               ),
             ),
           ),
@@ -500,7 +559,8 @@ class _NotificationCardState extends State<_NotificationCard>
     return AnimatedContainer(
       duration: reduced ? Duration.zero : hoverMotion,
       curve: Curves.ease,
-      width: 384,
+      // Reference `width: 384px; max-width: calc(100vw - 48px)`.
+      width: (MediaQuery.sizeOf(context).width - 48).clamp(0.0, 384.0),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: fill,

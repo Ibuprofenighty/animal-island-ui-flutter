@@ -49,7 +49,7 @@ class _LoadingStoryState extends State<LoadingStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Loading',
-    tags: ["全屏落雪", "圆形扩散展开", "渐变消失"],
+    tags: const ["全屏落雪", "圆形扩散展开", "渐变消失"],
     children: [
       const StoryLabel(
         "形态切换 — type='snow' 是全屏落雪，type='circle' 关闭时从中心圆形扩散展开，右下角有一艘随波逐流的帆船",

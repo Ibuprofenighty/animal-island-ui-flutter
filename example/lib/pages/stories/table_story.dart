@@ -32,7 +32,7 @@ class _TableStoryState extends State<TableStory> {
   @override
   Widget build(BuildContext context) => StoryPanel(
     title: 'Table',
-    tags: ["表格"],
+    tags: const ["表格"],
     children: [
       const StoryLabel('数据表格组件，支持斑马纹、边框、加载状态等常用功能。', lineHeight: 1.5),
       storyRow([

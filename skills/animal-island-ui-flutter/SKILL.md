@@ -1,6 +1,6 @@
 ---
 name: animal-island-ui-flutter
-description: Use and extend the Animal Island Flutter component library with explicit ownership, composable styles and reference-led Gallery behavior.
+description: Use and extend the Animal Island Flutter component library (package animal_island_ui) with explicit ownership, composable styles and reference-led Gallery behavior. Use whenever code imports animal_island_ui or mentions an Island* widget, when building or testing an app screen with these components, and when changing the library, its tokens, icons or Gallery.
 ---
 
 # Animal Island Flutter
@@ -27,6 +27,13 @@ Applies when building an application with the library; skip to the later section
 | Icon names | `IslandGlyph` values in `lib/src/foundation/icon_names.dart`, or the Gallery Icon page |
 
 Widget tests of an app: give the test view a desktop-sized surface, use `pumpAndSettle` after edits and submit because validation is asynchronous, and pump past the notification duration before the test ends.
+
+### Cost and accessibility in an app
+
+- Mount long collections lazily (`ListView.builder`, `GridView.builder`). Every tile built from an action surface (`IslandCard`, `IslandTag`, buttons) is a stateful element with its own focus node, so a `Column` or `Wrap` of several hundred costs memory and build time before the user scrolls.
+- A plain `IslandCard` is the cheap one: only `hoverable: true` adds the lift animation. Leave it off for static cards in a list.
+- You dispose what you create. The library disposes only the controllers and focus nodes it made itself, so an `IslandFormController`, `IslandNotificationsController`, `FocusNode` or `ScrollController` you pass in stays yours.
+- Controls already carry their accessible names (`IslandIconButton.label` is required). What an app can still break is its own layout: test key screens at `TextScaler.linear(2)` and with `MediaQueryData(disableAnimations: true)`, and run `meetsGuideline(labeledTapTargetGuideline)` over them.
 
 ## Choose the owner
 

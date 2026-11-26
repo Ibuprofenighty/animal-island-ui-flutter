@@ -358,6 +358,7 @@ class _IslandTabsState<T extends Object> extends State<IslandTabs<T>> {
                 Focus(
                   child: Semantics(
                     container: true,
+                    role: SemanticsRole.tabPanel,
                     label: active?.semanticLabel,
                     // Reference `.tabContent { animation: fadeIn .25s ease }`
                     // plays once on mount (no replay on switch). Readable

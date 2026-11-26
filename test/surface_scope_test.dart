@@ -213,7 +213,7 @@ void main() {
           home: Scaffold(
             body: IslandThemeHost(
               data: data,
-              child: IslandLoading(active: true, tip: icon),
+              child: const IslandLoading(active: true, tip: icon),
             ),
           ),
         ),
